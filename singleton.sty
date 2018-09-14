@@ -1,0 +1,175 @@
+\RequirePackage{expl3}
+
+\ProvidesExplPackage
+  {singleton}
+  {2018/09/01}
+  {0.1}
+  {Macros for (sub)singleton processes}
+
+\RequirePackage { xparse }
+
+\RequirePackage { amsmath }
+\RequirePackage { stmaryrd }
+
+\RequirePackage { accents }
+
+\RequirePackage { pdelim } % for \DeclarePairedDelimiterKV
+\prop_new:N \l__singleton_defaults_prop
+\cs_new_protected:Npn \__singleton_add_default:nn #1 #2
+  {
+    \prop_pop:NnNTF \l__singleton_defaults_prop {#1} \l_tmpa_tl
+      {
+        \tl_put_right:Nn \l_tmpa_tl { , #2 }
+        \prop_put:NnV \l__singleton_defaults_prop {#1} \l_tmpa_tl
+      }
+      { \prop_put:Nnn \l__singleton_defaults_prop {#1} {#2} }
+  }
+
+\cs_new_protected:Npn \__singleton_setkeys:nn #1 #2
+  {
+    \prop_get:NnNF \l__singleton_defaults_prop {#1} \l_tmpa_tl
+      { \tl_clear:N \l_tmpa_tl }
+
+    \keys_set:nV {#1} \l_tmpa_tl
+    \keys_set:nn {#1} {#2}
+  }
+
+\cs_new_protected:Npn \__singleton_keyword:n #1 {#1}
+
+\keys_define:nn { __singleton } {
+  keyword .code:n =
+    \cs_set:Npn \__singleton_keyword:n ##1 {#1} ,
+  keyword .value_required:n = true ,
+}
+
+\__singleton_add_default:nn { __singleton } { keyword = \mathsf {#1} }
+
+\cs_new_protected:Npn \__singleton_multiline:n #1
+  {
+    \group_begin:
+      \cs_set:Npn \arraystretch { 0 }
+      \begin { array } [ t ] { @{} l @{} }
+        #1
+      \end { array }
+    \group_end:
+  }
+
+\NewDocumentCommand \kay { } { \__singleton_kay: }
+\cs_new:Npn \__singleton_kay: { k }
+
+\NewDocumentCommand \spawn { m m } { \__singleton_spawn:nn {#1} {#2} }
+\cs_new_protected:Npn \__singleton_spawn:nn #1 #2
+  { \__singleton_multiline:n { #1 \triangleright #2 } }
+
+\NewDocumentCommand \fwd { } { \__singleton_fwd: }
+\cs_new_protected:Npn \__singleton_fwd:
+  { \mathord { \leftrightarrowtriangle } }
+
+\clist_map_inline:nn { R , L }
+  {
+    \exp_args:Nc \NewDocumentCommand { case #1 } { o O{} m }
+      {
+        \group_begin:
+          \__singleton_setkeys:nn { __singleton } {##2}
+
+          \use:x
+            {
+              \exp_not:c { __singleton_case #1 :wn }
+                [ split
+                  \IfValueT {##1} { , sub = \exp_not:n { \sb {##1} } }
+                ]
+            }
+            {##3}
+        \group_end:
+      }
+
+    \exp_args:Nc \DeclarePairedDelimiterKV { __singleton_case #1 :wn }
+      {
+        pre = \__singleton_keyword:n { case #1 } ,
+        delimiters = \lparen \rparen ,
+        body =
+          \seq_set_split:Nnn \l_tmpa_seq { | } {##1}
+          \seq_clear:N \l_tmpb_seq
+          \seq_map_variable:NNn \l_tmpa_seq \l_tmpa_tl
+            {
+              \tl_replace_once:Nnn \l_tmpa_tl { => } { \Rightarrow }
+              \seq_put_right:NV \l_tmpb_seq \l_tmpa_tl
+            }
+          \seq_use:Nn \l_tmpb_seq { \mid }
+        ,
+        post = ,
+      }
+  }
+
+\clist_map_inline:nn { selectR , selectL , select }
+  {
+    \exp_args:Nc \NewDocumentCommand { #1 } { O{} m o }
+      {
+        \group_begin:
+          \__singleton_setkeys:nn { __singleton } {##1}
+
+          \IfNoValueTF {##3}
+            { \use:c { __singleton_ #1 :n } {##2} }
+            { \use:c { __singleton_ #1 :nn } {##2} {##3} }
+        \group_end:
+      }
+  }
+
+\cs_new_protected:Npn \__singleton_selectR:n #1
+  { \underaccent { \vec } {#1} }
+
+\cs_new_protected:Npn \__singleton_selectL:n #1
+  { \mathrlap { \reflectbox { $ \__singleton_selectR:n { \phantom {#1} } $ } } #1 }
+
+\cs_new_protected:Npn \__singleton_select:n #1
+  { \underaccent { \bar } {#1} }
+
+\clist_map_inline:nn { R , L }
+  {
+    \cs_new_protected:cpn { __singleton_select #1 :nn } ##1 ##2
+      {
+        \__singleton_multiline:n
+          { \__singleton_keyword:n { sel #1 } \mkern\medmuskip ##1 ; ##2 }
+      }
+  }
+
+
+\clist_map_inline:nn { R , L }
+  {
+    \exp_args:Nc \NewDocumentCommand { wait #1 } { O{} m }
+      {
+        \group_begin:
+          \__singleton_setkeys:nn { __singleton } {##1}
+
+          \use:c { __singleton_wait #1 :n }
+            {##2}
+        \group_end:
+      }
+
+    \cs_new_protected:cpn { __singleton_wait #1 :n } ##1
+      { \__singleton_multiline:n { \__singleton_keyword:n { wait #1 } ; ##1 } }
+  }
+
+\clist_map_inline:nn { R , L }
+  {
+    \exp_args:Nc \NewDocumentCommand { close #1 } { O{} }
+      {
+        \group_begin:
+          \__singleton_setkeys:nn { __singleton } {##1}
+
+          \use:c { __singleton_close #1 : }
+        \group_end:
+      }
+
+    \cs_new_protected:cpn { __singleton_close #1 : }
+      { \__singleton_keyword:n { close #1 } }
+  }
+
+\NewDocumentCommand \cnf { } { \__singleton_cnf: }
+\cs_new_protected:Npn \__singleton_cnf: { \mathcal { C } }
+
+\NewDocumentCommand \cnfe { } { \__singleton_cnfe: }
+\cs_new_protected:Npn \__singleton_cnfe: { \cdot }
+
+\NewDocumentCommand \cc { } { \__singleton_cc: }
+\cs_new_protected:Npn \__singleton_cc: { \parallel }

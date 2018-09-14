@@ -1,0 +1,105 @@
+\chapter{Typed bisimilarity}\label{ch:typed-bisim}
+
+\begin{definition}
+  \emph{Typed bisimilarity} is the largest \emph{symmetric} typed binary relation that satisfies the following conditions.
+  \begin{thmdescription}
+  \item[Output bisimilarity]
+    If $\slcof{\sctx |- \cnf \tsim \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ and $\cnf \Reduces \cnf' \cc \selectR{\kay}$, then $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\sctx |- \cnf' \tsim \dnf' : A_{\kay}}$.
+    Symmetrically, if $\slcof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \cnf \tsim \dnf : \sctx'}$ and $\cnf \Reduces \selectL{\kay} \cc \cnf'$, then $\dnf \Reduces \selectL{\kay} \cc \dnf'$ for some $\dnf'$ such that $\slcof{A_{\kay} |- \cnf' \tsim \dnf' : \sctx'}$.
+
+  \item[Input bisimilarity]
+    If $\slcof{\sctx |- \cnf \tsim \dnf : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ and $\cnf \cc \selectL{\kay} \Reduces \cnf'$, then $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\mist \cnf' : A_{\kay}}$.
+    Symmetrically, if $\slcof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \cnf \tsim \dnf : \sctx'}$ and $\selectR{\kay} \cc \cnf \Reduces \cnf'$, then $\slcof{A_{\kay} |- \selectR{\kay} \cc \dnf \Reduces\mist \cnf' : \sctx'}$.
+
+  \item[Reduction bisimilarity]
+    If $\slcof{\sctx |- \dnf \mist\Reduces \cnf' : \sctx'}$, then $\slcof{\sctx |- \dnf \Reduces\mist \cnf' : \sctx'}$.
+  \end{thmdescription}
+\end{definition}
+
+What about reduction closure?
+Compare with ordered bisimilarity.
+
+\begin{theorem}
+  Let $\simu{R}$ be a typed binary relation that satisfies the following conditions.
+  Then $\simu{R}$ is included in typed bisimilarity.
+  \begin{thmdescription}
+  \item[Immediate output bisimilarity]
+    If $\slcof{\sctx |- \cnf' \cc \selectR{\kay} \tsim \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\sctx |- \cnf' \tsim \dnf' : A_{\kay}}$.
+    Symmetrically, if $\slcof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \cnf \tsim \dnf : \sctx'}$ and $\cnf \Reduces \selectL{\kay} \cc \cnf'$, then $\dnf \Reduces \selectL{\kay} \cc \dnf'$ for some $\dnf'$ such that $\slcof{A_{\kay} |- \cnf' \tsim \dnf' : \sctx'}$.
+
+  \item[Immediate input bisimilarity]
+    If $\slcof{\sctx |- \cnf' \cc \caseR[\ell \in L]{\ell => P_{\ell}} \tsim \dnf : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\mist \cnf' \cc P_{\kay} : A_{\kay}}$.
+    Symmetrically, if $\slcof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => Q_{\ell}} \cc \cnf' \tsim \dnf : \sctx'}$, then $\slcof{A_{\kay} |- \selectR{\kay} \cc \dnf \Reduces\mist Q_{\kay} \cc \cnf' : \sctx'}$.
+
+  \item[Reduction bisimilarity]
+    If $\slcof{\sctx |- \dnf \mist\reduces \cnf' : \sctx'}$, then $\slcof{\sctx |- \dnf \Reduces\mist \cnf' : \sctx'}$.
+  \end{thmdescription}
+\end{theorem}
+
+
+What about closed bisimilarity?
+Transducers from the example would be closed bisimilar, I think, but they are not (open) bisimilar.
+
+
+\begin{definition}
+  \emph{Typed closed bisimilarity} is the largest \emph{symmetric} typed binary relation that satisfies the following conditions.
+  \begin{thmdescription}
+  \item[Closure]
+    If $\sctx$ is a compound type, then $\slcof{\sctx |- \cnf \tsim \dnf : \sctx'}$ if and only if $\slcof{\alpha |- \cnf_0 \tsim \dnf_0 : \sctx}$ implies $\slcof{\alpha |- \cnf_0 \cc \cnf \tsim \dnf_0 \cc \dnf : \sctx'}$.
+  \item[Output bisimilarity]
+    If $\slcof{\alpha |- \cnf \tsim \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ and $\cnf \Reduces \cnf' \cc \selectR{\kay}$, then $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\alpha |- \cnf' \tsim \dnf' : A_{\kay}}$.
+  \item[Input bisimilarity]
+    If $\slcof{\alpha |- \cnf \tsim \dnf : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ and $\cnf \cc \selectL{\kay} \Reduces \cnf'$, then $\slcof{\alpha |- \dnf \cc \selectL{\kay} \Reduces\mist \cnf' : A_{\kay}}$.
+  \end{thmdescription}
+\end{definition}
+
+
+\begin{conjecture}
+  Let $\simu{R}$ be a typed binary relation that satisfies the following conditions.
+  Then $\simu{R}$ is included in closed typed bisimilarity.
+  \begin{thmdescription}
+  \item[Closure]
+    If $\sctx$ is a compound type, then $\slcof{\sctx |- \cnf \tsim \dnf : \sctx'}$ if and only if $\slcof{\alpha |- \cnf_0 \tsim \dnf_0 : \sctx}$ implies $\slcof{\alpha |- \cnf_0 \cc \cnf \tsim \dnf_0 \cc \dnf : \sctx'}$.
+  \item[Immediate output bisimulation]
+    If $\slcof{\alpha |- \cnf' \cc \selectR{\kay} \simu{R} \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\alpha |- \cnf' \simu{R} \dnf' : A_{\kay}}$.
+  \item[Immediate input bisimulation]
+    If $\slcof{\alpha |- \cnf' \cc \caseR[\ell \in L]{\ell => P_{\ell}} \simu{R} \dnf : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\slcof{\alpha |- \dnf \cc \selectL{\kay} \Reduces\simu{R}^{-1} \cnf' \cc P_{\kay} : A_{\kay}}$.
+  \item[Reduction bisimulation]
+    If $\slcof{\alpha |- \dnf \simu{R}^{-1}\reduces \cnf' : A}$, then $\slcof{\alpha |- \dnf \Reduces\simu{R}^{-1} \cnf' : A}$.
+  \end{thmdescription}
+\end{conjecture}
+
+
+\subsection{Example}
+
+Given the type $\alpha \defd \plus*{a:\alpha}$, the following are well-typed at $\slseq{\alpha |- \alpha}$.
+\begin{equation*}
+  q \defd \caseL{a => \spawn{q}{\selectR{a}}}
+  \qquad
+  \begin{lgathered}[t]
+    s_0 \defd \caseL{a => s_1} \\
+    s_1 \defd \caseL{a => \spawn{\spawn{s_0}{\selectR{a}}}{\selectR{a}}}
+  \end{lgathered}
+\end{equation*}
+We would like to prove that $q$ and $s_0$ are typed-bisimilar configurations, but that is false for open typed bisimilarity.
+Suppose, for the sake of deriving a contradiction, that $q \tsim s_0$.
+By input bisimilarity, $\slcof{\alpha |- \selectR{a} \cc s_0 \Reduces\mist q \cc \selectR{a} : \alpha}$.
+By output bisimilarity, $\selectR{a} \cc s_0 \Reduces \dnf' \cc \selectR{a}$ for some $\dnf'$ such that $\slcof{\alpha |- q \tsim \dnf' : \alpha}$.
+This is impossible because $\selectR{a} \cc s_0$ reduces only to $s_1$ (and itself).
+
+
+\begin{equation*}
+  g \defd \spawn{g}{\selectR{a}}
+\end{equation*}
+
+\begin{description}
+\item{}
+\item[Immediate input bisimulation]
+  Assume that $\slcof{\epsilon |- g \cc q \simu{R} g \cc s_0 : \alpha}$;
+  we must show that $\slcof{\epsilon |- g \cc s_0 \ \tsim \dnf' : \alpha}$.
+\end{description}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End:

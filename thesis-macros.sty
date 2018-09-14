@@ -1,0 +1,320 @@
+\ProvidesExplPackage
+  {thesis-macros} {2018/08/25} {0.1}
+  {Henry DeYoung's thesis macros}
+
+\RequirePackage { l3keys2e }
+\RequirePackage { xparse }
+
+%%%%%%%%%%%%%%
+%% Automata %%
+%%%%%%%%%%%%%%
+
+\RequirePackage { acro }
+
+\DeclareAcronym { NFA }
+  {
+    short = NFA ,
+    long = nondeterministic~finite~automaton ,
+    short-indefinite = an ,
+    long-plural-form = nondeterministic~finite~automata
+  }
+
+\DeclareAcronym { DFA }
+  {
+    short = DFA ,
+    long = deterministic~finite~automaton ,
+    long-plural-form = deterministic~finite~automata
+  }
+
+\DeclareAcronym { DPDA }
+  {
+    short = DPDA ,
+    long = deterministic~pushdown~automaton ,
+    long-plural-form = deterministic~pushdown~automata
+  }
+
+\DeclareAcronym { LCA }
+  {
+    short = LCA ,
+    long = linear~communicating~automaton ,
+    short-indefinite = an ,
+    long-plural-form = linear~communicating~automata
+  }
+
+\NewDocumentCommand \wc { } { \__thesis_wc: }
+\cs_new:Npn \__thesis_wc: { \mkern2mu }
+
+\NewDocumentCommand \emp { } { \__thesis_emp: }
+\cs_new:Npn \__thesis_emp: { \epsilon }
+
+\NewDocumentCommand \aut { m } { \__thesis_aut:n {#1} }
+\cs_new:Npn \__thesis_aut:n #1
+  { \mathord { \mathcal {#1} } }
+
+\NewDocumentCommand \ialph { } { \__thesis_ialph: }
+\cs_new:Npn \__thesis_ialph: { \Sigma }
+
+\NewDocumentCommand \finwds { m } { \__thesis_finwds:n {#1} }
+\cs_new:Npn \__thesis_finwds:n #1 { #1 ^* }
+
+\NewDocumentCommand \infinwds { m } { \__thesis_infinwds:n {#1} }
+\cs_new:Npn \__thesis_infinwds:n #1 { #1 ^{\omega} }
+
+\NewDocumentCommand \wds { m } { \__thesis_wds:n {#1} }
+\cs_new:Npn \__thesis_wds:n #1 { #1 ^{\infty} }
+
+\NewDocumentCommand \augalph { m m } { \__thesis_augalph:nn {#1} {#2} }
+\cs_new:Npn \__thesis_augalph:nn #1 #2 { #1 \sb{#2} }
+
+\NewDocumentCommand \salph { } { \__thesis_salph: }
+\cs_new:Npn \__thesis_salph: { \Gamma }
+
+\NewDocumentCommand \nfareduces { o }
+  {
+    \IfNoValueTF {#1}
+      { \__thesis_nfareduces: }
+      { \__thesis_nfareduces:n {#1} }
+  }
+\cs_new:Npn \__thesis_nfareduces: { \longrightarrow }
+\cs_new:Npn \__thesis_nfareduces:n #1
+  { \overset {#1} { \__thesis_nfareduces: } }
+
+\NewDocumentCommand \nfaReduces { o }
+  {
+    \IfNoValueTF {#1}
+      { \__thesis_nfaReduces: }
+      { \__thesis_nfaReduces:n {#1} }
+  }
+\cs_new:Npn \__thesis_nfaReduces: { \Longrightarrow }
+\cs_new:Npn \__thesis_nfaReduces:n #1
+  { \overset {#1} { \__thesis_nfaReduces: } }
+
+\NewDocumentCommand \autlang { m m } { \__thesis_autlang:nn {#1} {#2} }
+\cs_new:Npn \__thesis_autlang:nn #1 #2 { \mathcal { L } \sb{#1} ( #2 ) }
+
+\NewDocumentCommand \tio { m m }
+  { \__thesis_tio:nn {#1} {#2} }
+\cs_new:Npn \__thesis_tio:nn #1#2 { #1 \mid #2 }
+
+\tikzgraphsset
+  {
+    automaton / .style = {
+      math~nodes , nodes = state ,
+      edges = { node~quotes~mean / .try = { label=$########1$ } }
+    }
+  }
+
+\NewDocumentCommand \nfa { m } { \__thesis_nfa:n {#1} }
+\cs_new:Npn \__thesis_nfa:n #1 { \hat {#1} }
+
+\NewDocumentCommand \asim { } { \__thesis_asim: }
+\cs_new:Npn \__thesis_asim: { \sim }
+
+\NewDocumentCommand \misa { } { \__thesis_misa: }
+\cs_new:Npn \__thesis_misa: { \__thesis_asim: ^{-1} }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%% Ordered rewriting %%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage { accents }
+
+\NewDocumentCommand \atmR { m } { \__thesis_atmR:n {#1} }
+\cs_new:Npn \__thesis_atmR:n #1
+  { \underaccent { \vec } {#1} }
+
+\NewDocumentCommand \atmL { m } { \__thesis_atmL:n {#1} }
+\cs_new:Npn \__thesis_atmL:n #1
+  { \mathrlap { \reflectbox { $ \atmR { \phantom {#1} } $ } } #1 }
+
+\NewDocumentCommand \oseq { > { \SplitArgument { 1 } { |- } } m }
+  { \__thesis_oseq:nn #1 }
+\cs_new:Npn \__thesis_oseq:nn #1#2 { #1 \vdash #2 }
+
+
+%%%%%%%%%%%%%%%%%%%%%
+%% Singleton logic %%
+%%%%%%%%%%%%%%%%%%%%%
+
+\NewDocumentCommand \sctx { } { \__thesis_sctx: }
+\cs_new:Npn \__thesis_sctx: { \delta }
+
+\NewDocumentCommand \slseq { > { \SplitArgument { 1 } { |- } } m }
+  { \__thesis_slseq:nn #1 }
+\cs_new:Npn \__thesis_slseq:nn #1#2 { #1 \vdash #2 }
+
+\cs_new:Npn \__thesis_pred_font:n #1 { \mathit {#1} }
+
+\NewDocumentCommand \proc { m } { \__thesis_proc:n {#1} }
+\cs_new:Npn \__thesis_proc:n #1 { \__thesis_pred_font:n { proc } (#1) }
+
+\NewDocumentCommand \msgR { m } { \__thesis_msgR:n {#1} }
+\cs_new:Npn \__thesis_msgR:n #1 { \__thesis_pred_font:n { msgR } (#1) }
+
+\NewDocumentCommand \msgL { m } { \__thesis_msgL:n {#1} }
+\cs_new:Npn \__thesis_msgL:n #1 { \__thesis_pred_font:n { msgL } (#1) }
+
+\NewDocumentCommand \slof { > { \SplitArgument { 1 } { |- } } m }
+  { \__thesis_slof:nn #1 }
+\cs_new:Npn \__thesis_slof:nn #1#2 { #1 \vdash #2 }
+
+\NewDocumentCommand \multipremise { m m }
+  { \__thesis_multipremise:nn {#1} {#2} }
+\cs_new:Npn \__thesis_multipremise:nn #1#2 { \forall #1 \colon\enspace #2 }
+
+\NewDocumentCommand \slcof { > { \SplitArgument { 1 } { |- } } m }
+  { \__thesis_slcof:nn #1 }
+\cs_new:Npn \__thesis_slcof:nn #1#2 { #1 \Vdash #2 }
+
+\NewDocumentCommand \dnf { } { \__thesis_dnf: }
+\cs_new:Npn \__thesis_dnf: { \mathcal { D } }
+
+\NewDocumentCommand \tsim { } { \__thesis_tsim: }
+\cs_new:Npn \__thesis_tsim: { \cong }
+
+\NewDocumentCommand \mist { } { \__thesis_mist: }
+\cs_new:Npn \__thesis_mist: { \mathrel { \__thesis_tsim: ^{-1} } }
+
+%%%%%%%%%%%
+%% Other %%
+%%%%%%%%%%%
+
+\NewDocumentCommand \union { } { \__thesis_union: }
+\cs_new:Npn \__thesis_union: { \mathbin { \cup } }
+
+\DeclarePairedDelimiter \set \lbrace \rbrace
+
+\NewDocumentCommand \bigwith { } { \__thesis_bigwith: }
+\cs_new:Npn \__thesis_bigwith:
+  {
+    \mathop {
+      \mathchoice { \__thesis_bigwith:N \LARGE }
+                  { \__thesis_bigwith:N \large }
+                  { \__thesis_bigwith:N \normalsize }
+                  { \__thesis_bigwith:N \small } }
+  }
+\cs_new:Npn \__thesis_bigwith:N #1
+  { \vcenter { #1 \kern.2ex \hbox:n {$\mathord{\binampersand}$} \kern.2ex } }
+
+\NewDocumentCommand \simu { m } { \__thesis_simu:n {#1} }
+\cs_new:Npn \__thesis_simu:n #1
+  { \mathrel { \mathcal {#1} } }
+
+
+\NewDocumentCommand \refl { s m }
+  {
+    \IfBooleanTF {#1}
+      { \__thesis_refl_star:n {#2} }
+      { \__thesis_refl:n {#2} }
+  }
+\cs_new:Npn \__thesis_refl:n #1
+  { \mathrel { #1 ^{ \mathord{=} } } }
+\cs_new:Npn \__thesis_refl_star:n #1
+  { \mathrel { ( \__thesis_refl:n {#1} ) } }
+
+\NewDocumentCommand \osim { } { \__thesis_osim: }
+\cs_new:Npn \__thesis_osim: { \mathrel { \cong } }
+
+\NewDocumentCommand \miso { } { \__thesis_miso: }
+\cs_new:Npn \__thesis_miso: { \mathrel { \cong } ^ {-1} }
+
+\NewDocumentCommand \lrframe { m m m }
+  { \__thesis_lrframe:nnn {#1} {#2} {#3} }
+\cs_new:Npn \__thesis_lrframe:nnn #1#2#3
+  { \mathrel { ( #1 \mathord{#2} #3 ) } }
+
+\NewDocumentCommand \lframe { m m }
+  { \__thesis_lframe:nn {#1} {#2} }
+\cs_new:Npn \__thesis_lframe:nn #1#2
+  { \__thesis_lrframe:nnn {#1} {#2} { } }
+
+\NewDocumentCommand \rframe { m m }
+  { \__thesis_rframe:nn {#1} {#2} }
+\cs_new:Npn \__thesis_rframe:nn #1#2
+  { \__thesis_lrframe:nnn { } {#1} {#2} }
+
+
+\cs_new:Npn \__thesis_tmp:n #1 {#1}
+
+\NewDocumentCommand \ireduces { m m m }
+  {
+    \group_begin:
+      \cs_set:Npn \__thesis_tmp:n ##1 {#1}
+      \__thesis_ireduces:Nnn \__thesis_tmp:n {#2} {#3}
+    \group_end:
+  }
+\cs_new_protected:Npn \__thesis_ireduces:Nnn #1#2#3
+  { #1 { [#2] } \reduces #3 }
+
+\NewDocumentCommand \tr { m } { \__thesis_tr:n {#1} }
+\cs_new:Npn \__thesis_tr:n #1 { \llbracket #1 \rrbracket }
+
+\NewDocumentCommand \vocab { m } { \emph {#1} }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Inferences environment %
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NewDocumentEnvironment { inferences } { }
+  { \__thesis_inferences_begin: }
+  { \__thesis_inferences_end: }
+
+\cs_new_protected:Npn \__thesis_inferences_begin:
+  {
+    \group_begin:
+      \cs_set_eq:NN \and \qquad
+      \use:c { spreadlines } { \jot + 1.5ex }
+        \use:c { gather* }
+  }
+
+\cs_new_protected:Npn \__thesis_inferences_end:
+  {
+        \use:c { endgather* }
+      \use:c { endspreadlines }
+    \group_end:
+  }
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+% Syntax environment %
+%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage { array }
+\RequirePackage { collcell }
+\RequirePackage { textcase }
+
+\cs_new_protected:Npn \__thesis_syntext:n #1
+  { \text { \scshape \MakeTextLowercase {#1} } }
+
+\NewDocumentEnvironment { syntax* } { }
+  { \__thesis_syntaxstar_begin: }
+  { \__thesis_syntaxstar_end: }
+
+\cs_new_protected:Npn \__thesis_syntaxstar_begin:
+  {
+    \group_begin:
+      \use:c { equation* }
+        \cs_set:Npn \arraystretch { 1.5 }
+        \use:c { array }
+          {
+            @{}
+            >{ \collectcell \__thesis_syntext:n }
+            r
+            <{ \endcollectcell }
+            @{ \quad }
+            r
+            @{ {} \Coloneqq {} }
+            >{ \renewcommand\arraystretch{1} }
+            l
+            @{} 
+          }
+  }
+
+\cs_new_protected:Npn \__thesis_syntaxstar_end:
+  {
+        \use:c { endarray }
+      \use:c { endequation* }
+    \group_end:
+  }

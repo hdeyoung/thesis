@@ -1,0 +1,151 @@
+\chapter{Session-typed processes}\label{ch:session-typed-procs}
+
+\begin{itemize}
+\item Connections to SILL
+\end{itemize}
+
+\section{Singleton linear logic}\label{sec:singleton-logic}
+
+\begin{syntax*}
+  Propositions &
+    A & \alpha \mid A \plus B \mid \zero \mid A \with B \mid \top
+  \\
+  Contexts & \sctx & A
+\end{syntax*}
+
+\begin{inferences}
+  \infer[\jrule{CUT}^A]{\slseq{\sctx |- C}}{
+    \slseq{\sctx |- A} & \slseq{A |- C}}
+  \and
+  \infer[\jrule{ID}^A]{\slseq{A |- A}}{}
+  \\
+  \infer[\rrule{\plus}_1]{\slseq{\sctx |- A \plus B}}{
+    \slseq{\sctx |- A}}
+  \and
+  \infer[\rrule{\plus}_2]{\slseq{\sctx |- A \plus B}}{
+    \slseq{\sctx |- B}}
+  \and
+  \infer[\lrule{\plus}]{\slseq{A \plus B |- C}}{
+    \slseq{A |- C} & \slseq{B |- C}}
+  \\
+  \text{(no $\rrule{\zero}$ rule)}
+  \and
+  \infer[\lrule{\zero}]{\slseq{\zero |- C}}{}
+  \\
+  \infer[\rrule{\with}]{\slseq{\sctx |- A \with B}}{
+    \slseq{\sctx |- A} & \slseq{\sctx |- B}}
+  \and
+  \infer[\lrule{\with}_1]{\slseq{A \with B |- C}}{
+    \slseq{A |- C}}
+  \and
+  \infer[\lrule{\with}_2]{\slseq{A \with B |- C}}{
+    \slseq{B |- C}}
+  \\
+  \infer[\rrule{\top}]{\slseq{\sctx |- \top}}{}
+  \and
+  \text{(no $\lrule{\top}$ rule)}
+\end{inferences}
+
+This is not the additive fragment of linear logic.
+
+\begin{theorem}
+  The $\jrule{CUT}^A$ and $\jrule{ID}^A$ rules are admissible in the system having
+  \begin{equation*}
+    \infer[\normalfont\jrule{ID}^{\alpha}]{\slseq{\alpha |- \alpha}}{}
+  \end{equation*}
+  as its only judgmental rule.
+\end{theorem}
+
+
+\subsection{A subsingleton extension}
+
+Multiplicative units
+
+
+\section{Session-typed processes: A Curry--Howard interpretation of singleton linear logic}
+
+\begin{syntax*}
+  Session types &
+    A & \alpha \mid \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
+  \\
+  Process terms &
+    P,Q & \spawn{P}{Q} \mid \fwd
+            \begin{array}[t]{@{{} \mid {}}l@{}}
+              \selectR{\kay} \mid \caseL[\ell \in L]{\ell => Q_{\ell}} \\
+              \caseR[\ell \in L]{\ell => P_{\ell}} \mid \selectL{\kay}
+            \end{array}
+\end{syntax*}
+
+\begin{inferences}
+  \infer[\jrule{CUT}^A]{\slof{\sctx |- \spawn{P}{Q} : C}}{
+    \slof{\sctx |- P : A} & \slof{A |- Q : C}}
+  \and
+  \infer[\jrule{ID}^A]{\slof{A |- \fwd : A}}{}
+  \\
+  \infer[\rrule{\plus}]{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \text{($\kay \in L$)}}
+  \and
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => Q_{\ell}} : C}}{
+    \multipremise{\ell \in L}{\slof{A_{\ell} |- Q_{\ell} : C}}}
+  \\
+  \infer[\rrule{\with}]{\slof{\sctx |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \multipremise{\ell \in L}{\slof{\sctx |- P_{\ell} : A_{\ell}}}}
+  \and
+  \infer[\lrule{\with}]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectL{\kay} : C}}{
+    \text{($\kay \in L$)}}
+\end{inferences}
+
+Discussion of cut reduction vs.\ admissibility
+
+\begin{syntax*}
+  Configurations &
+    \cnf & \cnfe \mid (\cnf_1 \cc \cnf_2) \mid P
+\end{syntax*}
+
+\begin{inferences}
+  \infer[\jrule{CUT}^{\sctx'}]{\slcof{\sctx |- \cnf_1 \cc \cnf_2 : \sctx''}}{
+    \slcof{\sctx |- \cnf_1 : \sctx'} & \slcof{\sctx' |- \cnf_2 : \sctx''}}
+  \and
+  \infer[\jrule{ID}^{\sctx}]{\slcof{\sctx |- \cnfe : \sctx}}{}
+  \and
+  \infer[\jrule{PROC}]{\slcof{\sctx |- P : A}}{
+    \slof{\sctx |- P : A}}
+\end{inferences}
+
+\begin{inferences}
+  \infer{\spawn{P}{Q} \reduces P \cc Q}{}
+  \and
+  \infer{\fwd \reduces \cnfe}{}
+  \\
+  \infer{\selectR{\kay} \cc \caseL[\ell \in L]{\ell => Q_{\ell}} \reduces Q_{\kay}}{}
+  \and
+  \infer{\caseR[\ell \in L]{\ell => P_{\ell}} \cc \selectL{\kay} \reduces P_{\kay}}{}
+\end{inferences}
+
+\begin{itemize}
+\item SSOS is an ordered rewriting specification.  (How does this work with definitions?)
+\end{itemize}
+
+\begin{equation*}
+  \begin{lgathered}
+    \proc{\spawn{P}{Q}} \defd \proc{P} \fuse \proc{Q} \\
+    \proc{\fwd} \defd \one \\
+    \proc{\caseL[\ell \in L]{\ell => Q_{\ell}}} \defd \bigwith_{\ell \in L}\bigl(\proc{\selectR{\ell}} \limp \proc{Q_{\ell}}\bigr) \\
+    \proc{\caseR[\ell \in L]{\ell => P_{\ell}}} \defd \bigwith_{\ell \in L}\bigl(\proc{P_{\ell}} \pmir \proc{\selectL{\ell}}\bigr)
+  \end{lgathered}
+\end{equation*}
+
+\subsection{Example: Binary counter}
+
+\begin{equation*}
+  \proc{b_1} \defd (\msgL{i} \fuse \proc{b_0} \pmir \msgL{i}) \with (\proc{b_0} \fuse \msgR{s} \pmir \msgL{d})
+\end{equation*}
+
+\subsection{Example: \Aclp*{DFA}}
+
+Contrast with inability to express \acp{NFA} (languages vs.\ operational semantics)
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End:

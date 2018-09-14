@@ -1,0 +1,152 @@
+\chapter{From ordered rewriting to concurrency}\label{ch:ordered-bisimilarity}
+
+\section{}
+
+\begin{definition}
+  \vocab{Ordered bisimilarity} is the largest \emph{symmetric} binary relation among contexts that satisfies the following conditions.
+  \begin{thmdescription}
+  \item[Output bisimilarity]
+    If $\octx \miso\Reduces \atm{\lctx}'_L \oc \lctx' \oc \atm{\lctx}'_R$, then $\octx \Reduces\lrframe{\atm{\lctx}'_L}{\osim}{\atm{\lctx}'_R}^{-1} \atm{\lctx}'_L \oc \lctx' \oc \atm{\lctx}'_R$.
+  \item[Input bisimilarity]
+    If $\atmR{a} \oc \octx \lframe{\atmR{a}}{\osim}^{-1}\Reduces \lctx'$, then $\atmR{a} \oc \octx \Reduces\miso \lctx'$.
+    Symmetrically, if $\octx \oc \atmL{a} \rframe{\osim}{\atmL{a}}^{-1}\Reduces \lctx'$, then $\octx \oc \atmL{a} \Reduces\miso \lctx'$.
+  \item[Reduction bisimilarity]
+    If $\octx \miso\Reduces \lctx'$, then $\octx \Reduces\miso \lctx'$.
+  \end{thmdescription}
+\end{definition}
+
+\begin{definition}
+  \vocab{Ordered bisimilarity} is the largest \emph{symmetric} binary relation among contexts that satisfies the following conditions.
+  \begin{thmdescription}
+  \item[Output bisimilarity]
+    If $\octx \miso\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\osim}{\atmR{\lctx}'_R}^{-1} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+  \item[Input bisimilarity]
+    If $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\osim}{\atmL{\lctx}_R}^{-1}\Reduces \lctx'$, then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\miso \lctx'$.
+  \end{thmdescription}
+\end{definition}
+
+\subsection{Counterexample}
+
+
+This definition is too fine, ruling out desirable equivalences.
+For example, $e \oc b_0 \not\osim e$.
+Suppose, for the sake of deriving a contradiction, that $e \oc b_0 \osim e$.
+Because $e \oc b_0 \oc \atm{d} \Reduces \atm{z} \oc b'_0$, it follows from input bisimilarity that $e \oc \atm{d} \Reduces\miso \atm{z} \oc b'_0$.
+So either $\atm{z} \oc b'_0 \osim e \oc \atm{d}$ or $\atm{z} \oc b'_0 \osim \atm{z}$.
+The former is impossible because $\atm{z} \oc b'_0$ cannot produce $\atm{d}$ on the right\footnote{Nor, in fact, on the left.} and so violates output bisimilarity.
+
+The latter is also impossible.
+It has an output of $\atm{z}$ on the left of $\atm{z} \oc b'_0$, from which output bisimilarity yields $b'_0 \osim \octxe$.
+From input bisimilarity, $b'_0 \oc \atm{a} \osim \atm{a}$ follows, for any $\atm{a}$.
+And, that violates output bisimilarity because $b'_0 \oc \atm{a}$, which does not reduce, cannot match the left output that $\atm{a}$ makes.
+
+The key feature of this counterexample is that atoms' lack of direction means that the output bisimilarity condition also applies to atoms intended to act as inputs ($\atm{d}$ and $\atm{a}$, for instance).
+
+
+\section{Input transitions}
+
+\begin{inferences}
+  \infer{\ireduces{\atm{a} \oc #1}{\atm{a} \limp A}{A}}{}
+  \and
+  \infer{\ireduces{#1 \oc \atm{a}}{A \pmir \atm{a}}{A}}{}
+  \\
+  \infer{\ireduces{\atm{a} \oc #1}{\octx \oc B}{\octx' \oc B}}{
+    \ireduces{\atm{a} \oc #1}{\octx}{\octx'}}
+  \and
+  \infer{\ireduces{#1 \oc \atm{a}}{B \oc \octx}{B \oc \octx'}}{
+    \ireduces{#1 \oc \atm{a}}{\octx}{\octx'}}
+\end{inferences}
+Ultimately, $\ireduces{\atm{a} \oc #1}{\octx}{\octx'}$ exactly when $\octx = (\atm{a} \limp A) \oc \octx'_R$ and $\octx' = A \oc \octx'_R$ for some $\octx'_R$.
+Symmetrically, $\ireduces{#1 \oc \atm{a}}{\octx}{\octx'}$ exactly when $\octx = \octx'_L \oc (A \pmir \atm{a})$ and $\octx' = \octx'_L \oc A$ for some $\octx'_L$.
+
+\section{A proof technique for ordered bisimilarity}
+
+\begin{theorem}
+  Let $\simu{R}$ be a \emph{symmetric} binary relation among contexts that satisfies the following conditions.
+  \begin{thmdescription}
+  \item[Immediate output bisimulation]
+    If $\lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R \simu{R} \octx$, then $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\refl{\simu{R}}}{\atmR{\lctx}'_R}^{-1} \lctx$.
+  \item[Immediate input bisimulation]
+    If $\lctx \simu{R} \octx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_L}{\lctx}{\lctx'}$, then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\refl*{\simu{R}}^{-1} \lctx'$.
+  \item[Reduction bisimulation]
+    If $\octx \simu{R}^{-1}\reduces \lctx'$, then $\octx \Reduces\refl*{\simu{R}}^{-1} \lctx'$.
+  \item[Emptiness bisimulation]
+    If $\octxe \simu{R} \octx$, then:
+    \begin{itemize}
+    \item $\atmR{\lctx} \oc \octx \Reduces\rframe{\refl{\simu{R}}}{\atmR{\lctx}}^{-1} \atmR{\lctx}$ for all $\atmR{\lctx}$; and
+    \item $\octx \oc \atmL{\lctx} \Reduces\lframe{\atmL{\lctx}}{\refl{\simu{R}}}^{-1} \atmL{\lctx}$ for all $\atmL{\lctx}$.
+    \end{itemize}
+  \end{thmdescription}
+  Then $\refl{\simu{R}}$ is included in ordered bisimilarity.
+\end{theorem}
+
+
+\section{Examples of ordered bisimilarity}
+
+\subsection{\Aclp*{NFA}}
+
+\begin{theorem}
+  If $q \asim s$, then $\nfa{q} \osim \nfa{s}$.
+\end{theorem}
+%
+\begin{proof}
+  Only the immediate input bisimulation and reduction bisimulation conditions apply to the relation $\simu{R}$.
+  \begin{description}
+  \item[Immediate input bisimulation]
+    Assume that $q \asim s$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\nfa{q}}{\lctx'}$;
+    we must show that $\atmR{\lctx}_L \oc \nfa{s} \oc \atmL{\lctx}_R \Reduces\refl*{\simu{R}}^{-1} \lctx'$.
+    \begin{itemize}
+    \item Consider the case in which: $\atmR{\lctx}_L = \atmR{a}$ for some $a \in \ialph$; $\atmL{\lctx}_R = \octxe$; and $\lctx' = \bigwith_{q' \mid q \nfareduces[a] q'} \nfa{q}'$.
+      Unfortunately, $\lctx' = \bigwith_{q' \mid q \nfareduces[a] q'} \nfa{q}'$ is not in the relation $\refl{\simu{R}}$, except trivially.
+    \item Consider the case in which $\atmR{\lctx}_L = \atmR{\emp}$; $\atmL{\lctx}_R = \octxe$; and $\lctx' = \one$ because $q$ is a final state.
+        Because $q \asim s$, we know that $s$ is also a final state.
+        Therefore, $\atmR{\emp} \oc \nfa{s} \Reduces \one \refl*{\simu{R}} \one = \lctx'$.
+      \end{itemize}
+    \end{itemize}
+  %
+  \item[Reduction bisimulation]
+  \end{description}
+\end{proof}
+
+\begin{theorem}
+  If $\nfa{q} \osim \nfa{s}$, then $q \asim s$.
+\end{theorem}
+%
+\begin{proof}
+  Let $\simu{R}$ be the binary relation on states such that $q \simu{R} s$ exactly when $\nfa{q} \osim \nfa{s}$.
+  We will show that $\simu{R}$ is \iacs{NFA} bisimulation.
+
+  Among other properties, we must show that $\simu{R}$ simulates inputs.
+  Assume that $\nfa{s} \miso \nfa{q}$ and $q \nfareduces[a] q'$; we must show that $s \nfareduces[a] s'$ for some $s'$ such that $\nfa{s}' \miso \nfa{q}'$.
+  Because $\atmR{a} \oc \nfa{q} \Reduces \nfa{q}'$, it follows by input bisimilarity that $\atmR{a} \oc \nfa{s} \Reduces\miso \nfa{q}'$.
+  There are two cases, according to the structure of the reduction sequence from $\atmR{a} \oc \nfa{s}$.
+  \begin{itemize}
+  \item If the reduction sequence is trivial, then $\atmR{a} \oc \nfa{s} \miso \nfa{q}'$.
+    Because the transition relation is left-total, $s \nfareduces[a] s'$ for some state $s'$.
+    It follows that $\atmR{a} \oc \nfa{s} \Reduces \nfa{s}'$, and so, by input bisimilarity, $\nfa{q}' \Reduces\osim \nfa{s}'$.
+    However, $\nfa{q}' \longarrownot\reduces$, allowing us to conclude that $\nfa{q}' \osim \nfa{s}'$.
+  \item If the reduction sequence is nontrivial, then $\atmR{a} \oc \nfa{s} \reduces\Reduces\miso \nfa{q}'$.
+    Then
+    \begin{equation*}
+      \with_{s^* \mid s \nfareduces[a] s^*} \nfa{s}^* \Reduces\miso \nfa{q}'
+    \end{equation*}
+    It follows that $\with_{s^* \in S} \nfa{s}^* \miso \nfa{q}$ where $S$ is a subset of the $a$-successors of state $s$.
+    Because bisimilarity is reduction-closed, $\nfa{s}^* \miso \nfa{q}'$ for each $s^* \in S$.
+
+    How do we know that the subset $S$ is nonempty?
+    In other words, what happens if $\top \miso \nfa{q}'$?
+  \end{itemize}
+
+  Assume that $\nfa{s} \miso \nfa{q}$ and $q$ is a final state;
+  we must show that $s$ is also a final state.
+  Because $q$ is final, $\atmR{\emp} \oc \nfa{q} \Reduces \octxe$.
+  By input bisimilarity, $\atmR{\emp} \oc \nfa{s} \Reduces\miso \octxe$.
+  Choose a fresh atom $\atmR{x}$.
+  It follows by emptiness bisimilarity that $\atmR{x} \oc \atmR{\emp} \oc \nfa{s} \Reduces\rframe{\osim}{\atmR{x}}^{-1} \atmR{x}$.
+  However, $\atmR{x} \oc \atmR{\emp} \oc \nfa{s}$ exposes $\atmR{x}$ on the right only if $s$ is also a final state.
+\end{proof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End:

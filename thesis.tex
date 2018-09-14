@@ -1,0 +1,49 @@
+\documentclass[tufte-book,notoc]{tufte-thesis}
+
+\input{preamble}
+
+\usepackage{lipsum}
+
+\title{Untitled thesis}
+\author{Henry DeYoung}
+
+\begin{document}
+
+\frontmatter
+
+\maketitle
+\tableofcontents
+\listoffigures
+\listoftables
+
+\mainmatter
+
+\include{introduction}
+
+\part{Preliminaries}
+
+\include{finite-automata}
+\include{ordered-logic}
+
+\part{Concurrency as proof construction}
+
+\include{ordered-rewriting}
+\include{ordered-bisimilarity}
+
+\part{Concurrency as proof reduction}
+
+\include{session-typed-procs}
+\include{typed-bisim}
+
+\part{Comparing the two approaches}
+
+\include{from-procs-to-rewriting}
+\include{session-typed-rewriting}
+
+\appendix
+
+\include{misc}
+
+\backmatter
+
+\end{document}

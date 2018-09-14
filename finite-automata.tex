@@ -1,0 +1,213 @@
+\chapter{Preliminaries: Automata}\label{ch:automata}
+
+\section{Alphabets, words, and languages}
+
+An alphabet $\ialph$ is simply a set of letters, $a \in \ialph$.
+A finite word $w$ over the alphabet $\ialph$ is then a (possibly empty) finite sequence of letters drawn from $\ialph$;
+we denote the empty word by $\emp$ and the set of all finite words over $\ialph$ by $\finwds{\ialph}$.
+Finite words form a monoid under concatenation, with $\emp$ being the unit.
+
+It is also possible to construct infinite words.
+An infinite word over the alphabet $\ialph$ is a countably infinite sequence of letters drawn from $\ialph$;
+we denote the set of all infinite words over $\ialph$ by $\infinwds{\ialph}$.
+We also use $\wds{\ialph}$ to denote the set of all words -- finite or infinite -- over the alphabet $\ialph$; that is, $\wds{\ialph} = \finwds{\ialph} \union \infinwds{\ialph}$.
+
+A language is a set of words  -- a subset of $\wds{\ialph}$.
+
+It will occasionally be useful to work with an augmented alphabet.
+Given a symbol $c$ not found in the alphabet $\ialph$, we may form the augmented alphabet $\augalph{\ialph}{c} = \ialph \union \{c\}$.
+The augmented alphabet $\augalph{\ialph}{\emp}$ is the most
+
+\section{\Aclp*{NFA}}
+
+\begin{definition}
+  \Iac{NFA} over a finite alphabet $\ialph$ is a triple $\aut{A} = (Q, \mathord{\nfareduces}, F)$ consisting of:
+  \begin{itemize}
+  \item a finite set of \vocab{states}, $Q$;
+  \item a \vocab{transition relation}, $\mathord{\nfareduces} \subseteq (Q \times \ialph) \times Q$; and
+  \item a subset of \vocab{final states}, $F \subseteq Q$.
+  \end{itemize}
+  We will write $q \nfareduces[a] q'$ whenever $((q, a), q') \in \mathord{\nfareduces}$.
+
+  The transition relation can be lifted to one involving finite input words: For each word $w = a_1 \wc a_2 \dotsm a_n \in \finwds{\ialph}$, let $q \nfareduces[w] q'$ if $q = q_0 \nfareduces[a_1] q_1 \nfareduces[a_2] \dotsb \nfareduces[a_n] q_n = q'$ for some sequence of states $q_0, q_1, \dotsc, q_n \in Q$.
+
+  The \ac{NFA} $\aut{A}$ accepts input word $w$ from state $q$ if there exists a state $q' \in Q$ such that $q \nfareduces[w] q' \in F$;
+  otherwise, the automaton rejects word $w$ from state $q$.
+  The language of all words accepted by automaton $\aut{A}$ from state $q$ is denoted $\autlang{\aut{A}}{q}$.%
+  \footnote{We sometimes omit the subscript if the automaton is clear from the context.}
+\end{definition}
+
+Also, notice that, unlike most standard definitions of \acp{NFA}, this definition does not fix an initial state for the automaton.
+This is because we will be primarily interested in the operational aspects of \iac{NFA}, rather than its linguistic aspects.
+
+\begin{example}
+  \begin{marginfigure}
+    \begin{equation*}
+      \mathllap{\aut{A}_1 = {}}
+      \begin{tikzpicture}[baseline=(q_0.base)]
+        \graph [automaton] {
+          q_0
+           -> [loop above, "a,b"]
+          q_0
+           -> ["b"]
+          q_1 [accepting]
+           -> ["a,b"]
+          q_2
+           -> [loop above, "a,b"]
+          q_2;
+        };
+      \end{tikzpicture}
+    \end{equation*}
+    \caption{\Iac*{NFA} that accepts, from state $q_0$, exactly those words that end with $b$.}\label{fig:nfa-example-ends-b}
+  \end{marginfigure}
+  %
+  As a concrete example, consider the \ac{NFA} $\aut{A}_1$ over the input alphabet $\ialph = \set{a, b}$ that is depicted in \cref{fig:nfa-example-ends-b}.
+  This \ac{NFA} accepts, from state $q_0$, exactly those words that end with $b$.
+  For comparison, the only word accepted from state $q_1$ is $\emp$.
+  This \ac{NFA} is indeed nondeterministic, as both $q_0 \nfareduces[b] q_0$ and $q_0 \nfareduces[b] q_1$ hold.
+\end{example}
+
+\begin{definition}
+  \Iacf{DFA} is \iac{NFA} whose transition relation is, more precisely, a function.
+\end{definition}
+
+\begin{example}
+  \begin{marginfigure}
+    \begin{equation*}
+      \mathllap{\aut{A}_2 = {}}
+      \begin{tikzpicture}[baseline=(s_0.base)]
+        \graph [automaton] {
+          s_0
+           -> [loop above, "a"]
+          s_0
+           -> [bend left, "b"]
+          s_1 [accepting]
+           -> [loop above, "b"]
+          s_1
+           -> [bend left, "a"]
+          s_0;
+        };
+      \end{tikzpicture}
+    \end{equation*}
+    \caption{\Iac*{DFA} that accepts, from state $s_0$, exactly those words that end with $b$.}\label{fig:dfa-example-ends-b}
+  \end{marginfigure}
+  \Cref{fig:dfa-example-ends-b} depicts \iac{DFA} over the input alphabet $\ialph = \set{a, b}$ that accepts, from state $s_0$, exactly those words that end with $b$.
+  For comparrison, the empty word $\emp$, too, is accepted from the state $s_1$.
+\end{example}
+
+\subsection{\acs*{NFA} bisimilarity}
+
+\begin{definition}
+  Let $\aut{A}_1 = (Q, \mathord{\nfareduces}_1, F_1)$ and $\aut{A}_2 = (S, \mathord{\nfareduces}_2, F_2)$ be \acp{NFA}.
+  \emph{\ac{NFA} bisimilarity}, $\asim$, is the largest relation on pairs of states%
+  \footnote{That is, $\mathord{\asim} \subseteq Q \times S$.}
+  that satifies the following conditions.
+  \begin{description}
+  \item[Finality]
+    If $s \misa q \in F_1$, then $s \in F_2$.
+    Symmetrically, if $q \asim s \in F_2$, then $q \in F_1$.
+  \item[Input bisimilarity]
+    If $s \misa\nfareduces[a]_1 q'$, then $s \nfareduces[a]_2\misa q'$.
+    Symmetrically, if $q \asim\nfareduces[a]_2 s'$, then $q \nfareduces[a]_1\asim s'$.
+  \end{description}
+\end{definition}
+
+\begin{theorem}
+  Let $\aut{A}_1 = (Q, \mathord{\nfareduces}_1, F_1)$ and $\aut{A}_2 = (S, \mathord{\nfareduces}_2, F_2)$ be \acp{NFA}.
+  If $q \asim s$, then $\autlang{\aut{A}_1}{q} = \autlang{\aut{A}_2}{s}$.
+\end{theorem}
+%
+\begin{proof}
+  Each direction of the equality is proved by induction on the structure of an arbitrary word in the language.
+\end{proof}
+
+The converse is false.
+%
+\begin{falseclaim}
+  Let $\aut{A}_1 = (Q, \mathord{\nfareduces}_1, F_1)$ and $\aut{A}_2 = (S, \mathord{\nfareduces}_2, F_2)$ be \acp{NFA}.
+  If $\autlang{\aut{A}_1}{q} = \autlang{\aut{A}_2}{s}$, then $q \asim s$.
+\end{falseclaim}
+%
+\begin{proof}[Counterexample]
+  Recall the \acp{NFA} $\aut{A}_1$ and $\aut{A}_2$ given in \cref{fig:nfa-example-ends-b,fig:dfa-example-ends-b}.
+  Although the languages accepted by states $q_0$ and $s_0$ are the same, the two states are \emph{not} bisimilar:
+
+  For the sake of deriving a contradiction, assume that $q_0 \asim s_0$.
+  Because $s_0 \misa q_0 \nfareduces[b] q_0$, it follows by the input bisimilarity condition that $s_0 \nfareduces[b]\misa q_0$.
+  But $s_1$ is the unique $b$-successor of $s_0$, and so we may deduce $q_0 \asim s_1$.
+  Just as $s_1$ is a final state, the finality condition demands that $q_0$ be final.
+  From this contradiction, we conclude that $q_0$ and $s_0$ are \emph{not} bisimilar. 
+\end{proof}
+
+
+\subsection{\Aclp*{NFA} with $\emp$-transitions}
+
+\begin{definition}
+  \Iac{NFA} with $\emp$-moves over a finite alphabet $\ialph$ is a triple $\aut{A} = (Q, \mathord{\nfareduces}, F)$ consisting of:
+  \begin{itemize}
+  \item a finite set of \vocab{states}, $Q$;
+  \item a \vocab{transition relation}, $\mathord{\nfareduces} \subseteq (Q \times \ialph) \times Q$; and
+  \item a subset of \vocab{final states}, $F \subseteq Q$.
+  \end{itemize}
+  We will write $q \nfaReduces[a] q'$ whenever $q \nfareduces[\emp] \dotsb \nfareduces[\emp] \nfareduces[a] \nfareduces[\emp] \dotsb \nfareduces[\emp] q'$.
+
+  The transition relation can be lifted to one involving finite input words: For each input word $w = a_1 \wc a_2 \dotsm a_n$, let $q \nfaReduces[w] q'$ if $q = q_0 \nfaReduces[a_1] q_1 \nfaReduces[a_2] \dotsb \nfaReduces[a_n] q_n = q'$ for some sequence of states $q_0, q_1, \dotsc, q_n \in Q$.
+
+  The automaton $\aut{A}$ accepts input word $w$ from state $q$ if there exists a state $q' \in Q$ such that $q \nfaReduces[w] q' \in F$;
+  otherwise, the automaton rejects word $w$ from state $q$.
+\end{definition}
+
+% \begin{marginfigure}
+%   \begin{tikzcd}
+%     \graph {
+      
+%   \end{tikzcd}
+% \end{marginfigure}
+
+\section{Finite transducers}
+
+\begin{marginfigure}
+  \begin{gather*}
+    \mathllap{\aut{T}_1 = {}}
+    \begin{tikzpicture}[baseline=(q_0.base)]
+      \graph [automaton] {
+        q_0
+         -> [loop above, "$\tio{a}{a}$"]
+        q_0;      };
+    \end{tikzpicture}
+    \\
+    \mathllap{\aut{T}_2 = {}}
+    \begin{tikzpicture}[baseline=(s_0.base)]
+      \graph [automaton] {
+        s_0
+         -> [bend left, "$\tio{a}{\emp}$"]
+        s_1
+         -> [bend left, "$\tio{a}{aa}$"]
+        s_0;
+      };
+    \end{tikzpicture}
+  \end{gather*}
+  \caption{Two \acp{NFA} that copy streams of $a$s.}
+\end{marginfigure}
+
+
+\section{\Aclp*{DPDA}}
+
+\begin{definition}
+  \Iac{DPDA} over a finite input alphabet $\ialph$ and a finite stack alphabet $\salph$ is a triple $\aut{A} = (Q, \mathord{\nfareduces}, F)$ consisting of:
+  \begin{itemize}
+  \item a finite set of states, $Q$;
+  \item a transition relation on state-stack pairs, $\mathord{\nfareduces} \subseteq (Q \times \finwds{\salph}) \times \ialph \times (Q \times \finwds{\salph})$; and
+  \item a set of final states, $F$.
+  \end{itemize}
+  $\statestack{q}{s} = \statestack{q_0}{s_0} \nfareduces[\alpha_1] \statestack{q_1}{s_1} \nfareduces[\alpha_2] \dotsb \nfareduces[\alpha_n] \statestack{q'}{s'}$ with $q' \in F$.
+\end{definition}
+
+
+\section{\Aclp*{LCA}}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End:

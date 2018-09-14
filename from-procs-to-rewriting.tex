@@ -1,0 +1,121 @@
+\chapter{From processes to rewriting}
+
+\begin{equation*}
+  \begin{lgathered}
+    \tr{\spawn{P}{Q}} = \tr{P} \fuse \tr{Q} \\
+    \tr{\fwd} = \one
+    \\
+    \tr{\selectR{\kay}[P]} = \tr{P} \fuse \atmR{\kay} \\
+    \tr{\caseL[\ell \in L]{\ell => Q_{\ell}}} = \with_{\ell \in L}(\atmR{\ell} \limp \tr{Q_{\ell}})
+    \\
+    \tr{\caseR[\ell \in L]{\ell => P_{\ell}}} = \with_{\ell \in L}(\tr{P_{\ell}} \pmir \atmL{\ell}) \\
+    \tr{\selectL{\kay}[Q]} = \atmL{\kay} \fuse \tr{Q}
+  \end{lgathered}
+\end{equation*}
+
+\begin{inferences}
+  \infer{\slof{\sctx |- A_1 \fuse A_2 : C}}{
+    \slof{\sctx |- A_1 : A} & \slof{A |- A_2 : C}}
+  \and
+  \infer{\slof{A |- A : A}}{}
+  \\
+  \infer{\slof{\sctx |- A \fuse \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \text{($\kay \in L$)} & \slof{\sctx |- A : A_{\kay}}}
+  \and
+  \infer{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \bigwith_{\ell \in L} (\selectR{\ell} \limp A_{\ell}) : C}}{
+    \multipremise{\ell \in L}{\slof{A_{\ell} |- A_{\ell} : C}}}
+  \\
+  \text{(etc...)}
+\end{inferences}
+
+\footnote{Careful with the 0-ary forms because you could end up with $\slof{\zero |- \top : C}$ and \emph{also} $\slof{\sctx |- \top : \top}$.}
+
+\section{}
+
+\begin{equation*}
+  \begin{lgathered}
+    \tr{\spawn{P}{Q}} = \up (\dn \tr{P} \fuse \dn \tr{Q}) \\
+    \tr{\fwd} = \up \one
+    \\
+    \tr{\selectR{\kay}[P]} = \up (\dn \tr{P} \fuse \atmR{\kay}) \\
+    \tr{\caseL[\ell \in L]{\ell => Q_{\ell}}} = \with_{\ell \in L}(\atmR{\ell} \limp \up \dn \tr{Q_{\ell}})
+    \\
+    \tr{\caseR[\ell \in L]{\ell => P_{\ell}}} = \with_{\ell \in L}(\up \dn \tr{P_{\ell}} \pmir \atmL{\ell}) \\
+    \tr{\selectL{\kay}[Q]} = \up (\atmL{\kay} \fuse \dn \tr{Q})
+  \end{lgathered}
+\end{equation*}
+
+\begin{equation*}
+  \begin{tikzcd}
+    \spawn{P}{Q} \rar["\text{small step}"] \dar[dash] & P \cc Q \dar[dash] \\
+    \up (\dn \tr{P} \fuse \dn \tr{Q}) \rar["\text{big step}"] & \tr{P} \oc \tr{Q}
+  \end{tikzcd}
+\end{equation*}
+
+\begin{equation*}
+  \begin{tikzcd}
+    \selectR{\kay}[P] \rar["\text{small step}"] \dar[dash] & P \cc \selectR{\kay} \dar[dash] \\
+    \up (\dn \tr{P} \fuse \selectR{\kay}) \rar["\text{big step}"] & \tr{P} \oc \selectR{\kay}
+  \end{tikzcd}
+\end{equation*}
+
+\begin{equation*}
+  \begin{tikzcd}
+    \spawn{P}{(\selectR{\kay}[Q])} \arrow["\text{big step}"]{rr} \dar[dash] & & P \cc Q \cc \selectR{\kay} \dar[dash] \\
+    \up (\dn \tr{P} \fuse \dn \up (\dn \tr{Q} \fuse \selectR{\kay})) \rar["\text{big step}"] & \tr{P} \oc \up (\dn \tr{Q} \fuse \selectR{\kay}) \rar["\text{big step}"] & \tr{P} \oc \tr{Q} \oc \selectR{\kay}
+  \end{tikzcd}
+\end{equation*}
+
+\subsection{}
+
+\begin{equation*}
+  \begin{tikzcd}
+    \spawn{P}{(\selectR{\kay}[Q])} \arrow["\text{big step}"]{r} \dar[dash] & P \cc Q \cc \selectR{\kay} \dar[dash] \\
+    \llceil P \rrceil \fuse (\llceil Q \rrceil \fuse \selectR{\kay}) \rar["\text{big step}"] & \llceil P \rrceil \oc \llceil Q \rrceil \oc \selectR{\kay}
+  \end{tikzcd}
+\end{equation*}
+
+\begin{equation*}
+  \begin{lgathered}
+    \llceil \spawn{P}{Q} \rrceil = \llceil P \rrceil \fuse \llceil Q \rrceil \\
+    \llceil \fwd \rrceil = \one
+    \\
+    \llceil \selectR{\kay}[P] \rrceil = \llceil P \rrceil \fuse \atmR{\kay} \\
+    \llceil \caseL[\ell \in L]{\ell => Q_{\ell}} \rrceil = \dn \bigwith_{\ell \in L}(\atmR{\ell} \limp \up \llceil Q_{\ell} \rrceil)
+    \\
+    \llceil \caseR[\ell \in L]{\ell => P_{\ell}} \rrceil = \dn \bigwith_{\ell \in L}(\up \llceil P_{\ell} \rrceil \pmir \atmL{\ell}) \\
+    \llceil \selectL{\kay}[Q] \rrceil = \atmL{\kay} \fuse \llceil Q \rrceil
+  \end{lgathered}
+\end{equation*}
+
+\subsection{}
+
+\NewDocumentCommand \trp { s m } { \IfBooleanF {#1} ( #2 \IfBooleanF {#1} ) ^{-} }
+\NewDocumentCommand \trc { s m } { \IfBooleanF {#1} ( #2 \IfBooleanF {#1} ) ^{+} }
+
+\begin{syntax*}
+  Processes & P & \caseL[\ell \in L]{\ell => \cnf_{\ell}} \mid \caseR[\ell \in L]{\ell => \cnf_{\ell}} \mid \mathsf{conf}\:\cnf
+  \\
+  Configurations & \cnf & (\cnf_1 \cc \cnf_2) \mid \cnfe \mid \selectL{\kay} \mid \selectR{\kay} \mid \mathsf{proc}\:P
+\end{syntax*}
+
+\begin{equation*}
+  \begin{lgathered}[t]
+    \trc{\cnf_1 \cc \cnf_2} = \trc*{\cnf_1} \fuse \trc*{\cnf_2} \\
+    \trc{\cnfe} = \one \\
+    \trc{\selectL{\kay}} = \atmL{\kay} \\
+    \trc{\selectR{\kay}} = \atmR{\kay} \\
+    \trc{\mathsf{proc}\:P} = \dn \trp*{P}
+  \end{lgathered}
+  \qquad
+  \begin{lgathered}[t]
+    \trp{\caseL[\ell \in L]{\ell => \cnf_{\ell}}} = \bigwith_{\ell \in L}(\atmR{\ell} \limp \up \trc*{\cnf_{\ell}}) \\
+    \trp{\caseR[\ell \in L]{\ell => \cnf_{\ell}}} = \bigwith_{\ell \in L}(\up \trc*{\cnf_{\ell}} \pmir \atmL{\ell}) \\
+    \trp{\mathsf{conf}\:\cnf} = \up \trc*{\cnf}
+  \end{lgathered}
+\end{equation*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End:

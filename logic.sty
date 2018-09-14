@@ -1,0 +1,234 @@
+%%
+%% This is file `logic.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% logic.dtx  (with options: `package')
+%% ----------------------------------------------------------------
+%% demopkg --- description text
+%% E-mail: you@your.domain
+%% Released under the LaTeX Project Public License v1.3c or later
+%% See http://www.latex-project.org/lppl.txt
+%% ----------------------------------------------------------------
+%% 
+\RequirePackage {expl3}
+\ProvidesExplPackage
+  {logic} {2017/04/12} {1.0}
+  {Henry DeYoung's macros for logic}
+
+\RequirePackage { l3keys2e }
+\RequirePackage { xparse }
+
+\PassOptionsToPackage { heavycircles } { stmaryrd }
+\RequirePackage { stmaryrd }
+
+\RequirePackage { pdelim }
+
+\clist_map_inline:nn { r , l }
+  {
+    \exp_args:Nc \NewDocumentCommand { #1 rule } { m }
+      { \use:c { __logic_ #1 rule:n } {##1} }
+
+    \cs_new:cpn { __logic_ #1 rule:n } ##1
+      {
+        \mathord {##1} \text { \scshape \MakeTextLowercase {#1} }
+      }
+  }
+
+\NewDocumentCommand \jrule { m } { \__logic_jrule:n {#1} }
+\cs_new:Npn \__logic_jrule:n #1 { \text { \scshape \MakeTextLowercase {#1} } }
+
+%%%%%%%%%%%%
+%% Common %%
+%%%%%%%%%%%%
+
+\RequirePackage { accents }
+
+\NewDocumentCommand \atm { m } { \__logic_atm:n {#1} }
+\cs_new:Npn \__logic_atm:n #1 { \underaccent { \bar } {#1} }
+
+%% Reduction
+
+\NewDocumentCommand \reduces { o }
+ {
+   \IfValueTF {#1}
+     { \__logic_reduces:n {#1} }
+     { \__logic_reduces: }
+ }
+\cs_new:Npn \__logic_reduces:n #1 { \overset {#1} { \__logic_reduces: } }
+\cs_new:Npn \__logic_reduces: { \longrightarrow }
+\NewDocumentCommand \secuder { } { \__logic_secuder: }
+\cs_new:Npn \__logic_secuder: { \longleftarrow }
+
+\NewDocumentCommand \Reduces { o }
+ {
+   \IfValueTF {#1}
+     { \__logic_Reduces:n {#1} }
+     { \__logic_Reduces: }
+ }
+\cs_new:Npn \__logic_Reduces:n #1 { \overset {#1} { \__logic_Reduces: } }
+\cs_new:Npn \__logic_Reduces: { \Longrightarrow }
+\NewDocumentCommand \secudeR { } { \__logic_secudeR: }
+\cs_new:Npn \__logic_secudeR: { \Longleftarrow }
+
+%% Definitions
+
+\NewDocumentCommand \defd { } { \__logic_defd: }
+\cs_new:Npn \__logic_defd: { \triangleq }
+
+\NewDocumentCommand \sig { } { \__logic_sig: }
+\cs_new:Npn \__logic_sig: { \Sigma }
+\NewDocumentCommand \sige { } { \__logic_sige: }
+\cs_new:Npn \__logic_sige: { \cdot }
+
+%% Polarities
+
+\NewDocumentCommand \p { m } { \__logic_polarity_pos:n {#1} }
+\cs_new:Npn \__logic_polarity_pos:n #1 { #1 ^ + }
+\NewDocumentCommand \n { m } { \__logic_polarity_neg:n {#1} }
+\cs_new:Npn \__logic_polarity_neg:n #1 { #1 ^ - }
+
+\NewDocumentCommand \up { } { \__logic_upshift: }
+\cs_new:Npn \__logic_upshift: { \mathord { \uparrow } }
+\NewDocumentCommand \dn { } { \__logic_dnshift: }
+\cs_new:Npn \__logic_dnshift: { \mathord { \downarrow } }
+
+%% Parentheses
+
+\DeclarePairedDelimiterKV \parens
+  {
+    pre = ,
+    delimiters = \lparen \rparen ,
+    post = ,
+    body = #1 ,
+  }
+
+%%%%%%%%%%%%%%%%%%
+%% Linear logic %%
+%%%%%%%%%%%%%%%%%%
+
+%% Contexts and consequents
+
+\NewDocumentCommand \lctx { } { \__logic_lctx: }
+\cs_new:Npn \__logic_lctx: { \Delta }
+
+\NewDocumentCommand \lctxe { } { \__logic_lctxe: }
+\cs_new:Npn \__logic_lctxe: { \cdot }
+
+\NewDocumentCommand \conc { } { \__logic_conc: }
+\cs_new:Npn \__logic_conc: { \gamma }
+
+\NewDocumentCommand \conce { } { \__logic_conce: }
+\cs_new:Npn \__logic_conce: { \cdot }
+
+%% Multiplicative connectives
+
+\NewDocumentCommand \lolli { } { \__logic_lolli: }
+\cs_new:Npn \__logic_lolli: { \mathbin { \multimap } }
+
+\NewDocumentCommand \tensor { } { \__logic_tensor: }
+\cs_new:Npn \__logic_tensor: { \mathbin { \otimes } }
+
+\NewDocumentCommand \one { } { \__logic_one: }
+\cs_new:Npn \__logic_one: { \mathord { \mathbf { 1 } } }
+
+\NewDocumentCommand \parr { } { \__logic_parr: }
+\cs_new:Npn \__logic_parr: { \mathbin { \bindnasrepma } }
+
+%% Additive connectives
+
+\NewDocumentCommand \zero { } { \__logic_zero: }
+\cs_new:Npn \__logic_zero: { \mathord { \mathbf { 0 } } }
+
+\NewDocumentCommand \plus { s }
+  { \IfBooleanTF {#1} \__logic_plus:wn \__logic_plus: }
+
+\cs_new:Npn \__logic_plus: { \mathbin { \oplus } }
+
+\DeclarePairedDelimiterKV \__logic_plus:wn
+  {
+    pre = \mathord { \__logic_plus: } , % Prefix operator
+    delimiters = \lbrace \rbrace , % Delimiters
+    post = ,
+    body = #1 ,
+  }
+  % \tl_set:Nn \l_tmpa_tl {#1}
+  % \tl_replace_all:Nnn \l_tmpa_tl { : } { \colon }
+  % \tl_use:N \l_tmpa_tl
+
+\NewDocumentCommand \with { s }
+  { \IfBooleanTF {#1} \__logic_with:wn \__logic_with: }
+
+\cs_new:Npn \__logic_with: { \mathbin { \binampersand } }
+
+\DeclarePairedDelimiterKV \__logic_with:wn
+  {
+    pre = \mathord { \__logic_with: } , % Prefix operator
+    delimiters = \lbrace \rbrace , % Delimiters
+    post = ,
+    body = #1 ,
+  }
+  % \tl_set:Nn \l_tmpa_tl {#1}
+  % \tl_replace_all:Nnn \l_tmpa_tl { : } { \colon }
+  % \tl_use:N \l_tmpa_tl
+
+%%%%%%%%%%%%%%%%%%%
+%% Ordered logic %%
+%%%%%%%%%%%%%%%%%%%
+
+\NewDocumentCommand \octx { } { \__logic_octx: }
+\cs_new:Npn \__logic_octx: { \Omega }
+
+\NewDocumentCommand \octxe { } { \__logic_octxe: }
+\cs_new:Npn \__logic_octxe: { \cdot }
+
+\NewDocumentCommand \oc { } { \__logic_oc: }
+\cs_new:Npn \__logic_oc: { \mskip\thinmuskip }
+
+\NewDocumentCommand \ofill { O{\frame} m }
+  {
+    \group_begin:
+      \__logic_ofill:nn {#1} {#2}
+    \group_end:
+  }
+\cs_new:Npn \__logic_ofill:nn #1#2
+  { \cs_set:Npn \frame { \Theta }
+    #1 \{
+      \tl_if_empty:nTF {#2}
+        { \mathord { - } }
+        {#2}
+    \}
+  }
+
+\NewDocumentCommand \fuse { } { \__logic_fuse: }
+\cs_new:Npn \__logic_fuse: { \mathbin { \bullet } }
+
+\NewDocumentCommand \oimp { } { \__logic_oimp: }
+\cs_new:Npn \__logic_oimp: { \mathbin { \rightarrow } }
+
+\NewDocumentCommand \limp { } { \__logic_limp: }
+\cs_new:Npn \__logic_limp: { \mathbin { \rightarrowtail } }
+
+\NewDocumentCommand \pmir { } { \__logic_pmir: }
+\cs_new:Npn \__logic_pmir: { \mathbin { \twoheadleftarrow } }
+
+%% 
+%% Copyright (C) 2009 by You <you@your.domain>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License (LPPL), either
+%% version 1.3c of this license or (at your option) any later
+%% version.  The latest version of this license is in the file:
+%% 
+%% http://www.latex-project.org/lppl.txt
+%% 
+%% This work is "maintained" (as per LPPL maintenance status) by
+%% You.
+%% 
+%% This work consists of the file  demopkg.dtx
+%% and the derived files           demopkg.ins,
+%%                                 demopkg.pdf and
+%%                                 demopkg.sty.
+%%
+%% End of file `logic.sty'.

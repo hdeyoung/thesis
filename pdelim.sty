@@ -1,0 +1,206 @@
+\RequirePackage {expl3}
+
+\ProvidesExplPackage
+  {pdelim} {2017/12/12} {1.0}
+  {Customizable paired delimiters}
+
+\RequirePackage { l3keys2e }
+\RequirePackage { xparse }
+
+\RequirePackage { mathtools } % for \DeclarePairedDelimiterXPP
+
+\cs_generate_variant:Nn \keys_set:nn { nx }
+
+%% Keys set statically (i.e., at declare-time)
+
+\tl_new:N \l__pdelim_left_tl
+\tl_new:N \l__pdelim_right_tl
+
+\keys_define:nn { __pdelim / static } {
+  left .tl_set:N = \l__pdelim_left_tl ,
+  left .value_required:n = true ,
+
+  right .tl_set:N = \l__pdelim_right_tl ,
+  right .value_required:n = true ,
+
+  delimiters .code:n = {
+    \keys_set:nx { __pdelim / static }
+      {
+        left  = \exp_not:o { \use_i:nn  #1 } ,
+        right = \exp_not:o { \use_ii:nn #1 }
+      }
+  } ,
+  delimiters .value_required:n = true ,
+  delimiters .initial:n = \lbrace \rbrace ,
+}
+
+\tl_new:N \l__pdelim_pre_tl
+\tl_new:N \l__pdelim_post_tl
+
+\keys_define:nn { __pdelim / static } {
+  pre .code:n = {
+    \tl_set:Nn \l__pdelim_pre_tl {#1}
+    \tl_put_right:Nn \l__pdelim_pre_tl
+      { \tl_use:N \l__pdelim_presub_tl }
+  } ,
+  pre .value_required:n = true ,
+  pre .initial:n = ,
+
+  post .tl_set:N = \l__pdelim_post_tl ,
+  post .value_required:n = true ,
+  post .initial:n = ,
+}
+
+\tl_new:N \l__pdelim_body_tl
+
+\keys_define:nn { __pdelim / static } {
+  body .tl_set:N = \l__pdelim_body_tl ,
+  body .value_required:n = true ,
+  body .initial:n = #1 ,
+}
+
+%% Keys set dynamically (i.e., at time of use)
+
+\tl_new:N \l__pdelim_size_tl
+
+\keys_define:nn { __pdelim / dynamic } {
+  size .choices:nn =
+    { big , Big , bigg , Bigg }
+    {
+      \tl_set:Nx \l__pdelim_size_tl
+        { [ \exp_not:c { \tl_use:N \l_keys_choice_tl } ] }
+    } ,
+
+  size / auto .code:n =
+    { \tl_set:Nn \l__pdelim_size_tl { * } } ,
+
+  size / none .code:n =
+    { \tl_clear:N \l__pdelim_size_tl } ,
+
+  size .value_required:n = true ,
+  size .initial:n = none ,
+}
+
+\tl_new:N \l__pdelim_cols_tl
+
+\keys_define:nn { __pdelim / dynamic } {
+  cols .tl_set:N = \l__pdelim_cols_tl ,
+  cols .value_required:n = true ,
+  cols .initial:n = l ,
+}
+
+\bool_new:N \l__pdelim_split_bool
+
+\keys_define:nn { __pdelim / dynamic } {
+  split .bool_set:N = \l__pdelim_split_bool ,
+  split .default:n = true ,
+  split .initial:n = false ,
+}
+
+\tl_new:N \l__pdelim_presub_tl
+
+\keys_define:nn { __pdelim / dynamic } {
+  sub .tl_set:N = \l__pdelim_presub_tl ,
+  sub .initial:n = ,
+}
+
+\cs_new_protected:Npn \__pdelim_reset_dynkeys: {
+  \keys_set:nn { __pdelim / dynamic }
+    { size=none , split=false , cols=l , sub= }
+}
+
+%% Declare paired delimiter with key-value syntax
+
+\NewDocumentCommand \DeclarePairedDelimiterKV { m m }
+  { \__pdelim_declare:Nn #1 {#2} }
+
+\bool_new:N \l__pdelim_splitdecl_bool
+
+\cs_new_protected:Npn \__pdelim_declare:Nn #1 #2 {
+  % Declare internal split and unsplit paired delimiters
+  \bool_set_true:N \l__pdelim_splitdecl_bool
+  \__pdelim_declare_aux:Nn #1 {#2}
+  \bool_set_false:N \l__pdelim_splitdecl_bool
+  \__pdelim_declare_aux:Nn #1 {#2}
+
+  % Document-level paired delimiter
+  \NewDocumentCommand #1 { O{} m }
+    {
+      \group_begin:
+        \__pdelim_reset_dynkeys:
+        \keys_set:nn { __pdelim / dynamic } {##1}
+
+        \use:x
+          {
+            \exp_not:c
+              {
+                __ \cs_to_str:N #1 _split
+                \bool_if:NTF \l__pdelim_split_bool
+                  { true } { false }
+                :wn
+              }
+            \exp_not:V \l__pdelim_size_tl
+          }
+          {##2}
+      \group_end:
+    }
+}
+
+\cs_new_protected:Npn \__pdelim_declare_aux:Nn #1 #2 {
+  \keys_set:nn { __pdelim / static } { #2 }
+
+  \tl_set_eq:NN \l_tmpa_tl \l__pdelim_body_tl
+
+  % \bool_if:NTF \l__pdelim_splitdecl_bool
+  %   {
+  %     \tl_put_left:Nn \l_tmpa_tl
+  %       {
+  %         \use:x
+  %           {
+  %             \exp_not:N \begin { array } [ t ]
+  %               { @{} \exp_not:V \l__pdelim_cols_tl @{} }
+  %           }
+  %       }
+  %   }
+  %   {
+  %     \tl_put_left:Nn \l_tmpa_tl
+  %       {
+  %         \use:x
+  %           {
+  %             \exp_not:N \begin { array }
+  %               { @{} \exp_not:V \l__pdelim_cols_tl @{} }
+  %           }
+  %       }
+  %   }
+
+  \tl_put_left:Nx \l_tmpa_tl
+    {
+      \exp_not:N \use:x
+        {
+          \exp_not:n { \exp_not:N \begin }
+          { array }
+          \bool_if:NT \l__pdelim_splitdecl_bool { [ t ] }
+          \exp_not:n { { @{} \exp_not:V \l__pdelim_cols_tl @{} } }
+        }
+    }
+
+  \tl_put_right:Nn \l_tmpa_tl { \end { array } }
+
+  \__pdelim_declare_xpp:cVVVVV
+    {
+      __ \cs_to_str:N #1 _split
+      \bool_if:NTF \l__pdelim_splitdecl_bool
+        { true } { false }
+      :wn
+    }
+    \l__pdelim_pre_tl
+    \l__pdelim_left_tl
+    \l__pdelim_right_tl
+    \l__pdelim_post_tl
+    \l_tmpa_tl
+}
+
+\cs_new_protected:Npn \__pdelim_declare_xpp:Nnnnnn #1 #2 #3 #4 #5 #6 {
+  \DeclarePairedDelimiterXPP #1 [1] {#2} {#3} {#4} {#5} {#6}
+}
+\cs_generate_variant:Nn \__pdelim_declare_xpp:Nnnnnn { cVVVVV }
