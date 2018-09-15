@@ -48,6 +48,23 @@
 
 This is not the additive fragment of linear logic.
 
+\subsection{Cut reduction}
+
+\begin{equation*}
+  \infer[\jrule{CUT}^{A \plus B}]{\slseq{\sctx |- C}}{
+    \infer[\rrule{\plus}_1]{\slseq{\sctx |- A \plus B}}{
+      \slseq{\sctx |- A}} &
+    \infer[\lrule{\plus}]{\slseq{A \plus B |- C}}{
+      \slseq{A |- C} & \slseq{B |- C}}}
+  %
+  \quad\cutreduces\quad
+  %
+  \infer[\jrule{CUT}^A]{\slseq{\sctx |- C}}{
+    \slseq{\sctx |- A} & \slseq{A |- C}}
+\end{equation*}
+
+There are no right commutative cut reductions involving left rules -- more symmetric than ordered logic.
+
 \begin{theorem}
   The $\jrule{CUT}^A$ and $\jrule{ID}^A$ rules are admissible in the system having
   \begin{equation*}
@@ -91,11 +108,27 @@ Multiplicative units
   \infer[\rrule{\with}]{\slof{\sctx |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
     \multipremise{\ell \in L}{\slof{\sctx |- P_{\ell} : A_{\ell}}}}
   \and
-  \infer[\lrule{\with}]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectL{\kay} : C}}{
+  \infer[\lrule{\with}]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectL{\kay} : A_{\kay}}}{
     \text{($\kay \in L$)}}
 \end{inferences}
 
+\subsection{Cut reduction}
+
+\begin{gather*}
+  \infer[\jrule{CUT}]{\slof{A_{\kay} |- \spawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => Q_{\ell}}} : C}}{
+  \infer[\rrule{\plus}]{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \text{($\kay \in L$)}} &
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => Q_{\ell}} : C}}{
+    \multipremise{\ell \in L}{\slof{A_{\ell} |- Q_{\ell} : C}}}}
+  \\
+  \cutreduces
+  \\
+  \slof{A_{\kay} |- Q_{\kay} : C}
+\end{gather*}
+
 Discussion of cut reduction vs.\ admissibility
+
+\subsection{An operational semantics}
 
 \begin{syntax*}
   Configurations &

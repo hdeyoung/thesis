@@ -12,10 +12,11 @@ An infinite word over the alphabet $\ialph$ is a countably infinite sequence of 
 we denote the set of all infinite words over $\ialph$ by $\infinwds{\ialph}$.
 We also use $\wds{\ialph}$ to denote the set of all words -- finite or infinite -- over the alphabet $\ialph$; that is, $\wds{\ialph} = \finwds{\ialph} \union \infinwds{\ialph}$.
 
-A language is a set of words  -- a subset of $\wds{\ialph}$.
+A language is a set of words.
+Depending on the context, it will be a subset of either $\wds{\ialph}$, $\infinwds{\ialph}$, or $\finwds{\ialph}$.
 
-It will occasionally be useful to work with an augmented alphabet.
-Given a symbol $c$ not found in the alphabet $\ialph$, we may form the augmented alphabet $\augalph{\ialph}{c} = \ialph \union \{c\}$.
+It will sometimes be useful to work with an augmented alphabet.
+Given a symbol $c \notin \ialph$, we may form the augmented alphabet $\augalph{\ialph}{c} = \ialph \union \{c\}$.
 The augmented alphabet $\augalph{\ialph}{\emp}$ is the most
 
 \section{\Aclp*{NFA}}
@@ -196,10 +197,20 @@ The converse is false.
 \begin{definition}
   \Iac{DPDA} over a finite input alphabet $\ialph$ and a finite stack alphabet $\salph$ is a triple $\aut{A} = (Q, \mathord{\nfareduces}, F)$ consisting of:
   \begin{itemize}
-  \item a finite set of states, $Q$;
-  \item a transition relation on state-stack pairs, $\mathord{\nfareduces} \subseteq (Q \times \finwds{\salph}) \times \ialph \times (Q \times \finwds{\salph})$; and
-  \item a set of final states, $F$.
+  \item a finite set of \vocab{states}, $Q$;
+  \item a \vocab{transition relation} on state-stack pairs, $\mathord{\nfareduces} \subseteq (Q \times \finwds{\salph}) \times \augalph{\ialph}{\emp} \times (Q \times \finwds{\salph})$; and
+  \item a subset of \vocab{final states}, $F \subseteq Q$.
   \end{itemize}
+
+  We will write $q \nfareduces[a] q'$ whenever $((q, a), q') \in \mathord{\nfareduces}$.
+
+  The transition relation can be lifted to one involving finite input words: For each word $w = \alpha_1 \wc \alpha_2 \dotsm \alpha_n \in \finwds{\ialph}$, let $q \nfareduces[w] q'$ if $q = q_0 \nfareduces[\alpha_1] q_1 \nfareduces[\alpha_2] \dotsb \nfareduces[\alpha_n] q_n = q'$ for some sequence of states $q_0, q_1, \dotsc, q_n \in Q$.
+
+  The \ac{DPDA} $\aut{A}$ accepts input word $w$ from state $q$ if there exists a state $q' \in Q$ such that $q \nfareduces[w] q' \in F$;
+  otherwise, the automaton rejects word $w$ from state $q$.
+  The language of all words accepted by automaton $\aut{A}$ from state $q$ is denoted $\autlang{\aut{A}}{q}$.%
+  \footnote{We sometimes omit the subscript if the automaton is clear from the context.}
+
   $\statestack{q}{s} = \statestack{q_0}{s_0} \nfareduces[\alpha_1] \statestack{q_1}{s_1} \nfareduces[\alpha_2] \dotsb \nfareduces[\alpha_n] \statestack{q'}{s'}$ with $q' \in F$.
 \end{definition}
 

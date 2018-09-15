@@ -1,16 +1,26 @@
 \chapter{From processes to rewriting}
 
+\section{}
+
 \begin{equation*}
-  \begin{lgathered}
-    \tr{\spawn{P}{Q}} = \tr{P} \fuse \tr{Q} \\
-    \tr{\fwd} = \one
+  \begin{aligned}
+    \trproc{\spawn{P}{Q}} &= \trproc{P} \fuse \trproc{Q} \\
+            \trproc{\fwd} &= \one
     \\
-    \tr{\selectR{\kay}[P]} = \tr{P} \fuse \atmR{\kay} \\
-    \tr{\caseL[\ell \in L]{\ell => Q_{\ell}}} = \with_{\ell \in L}(\atmR{\ell} \limp \tr{Q_{\ell}})
+                         \trproc{\selectR{\kay}} &= \atmR{\kay} \\
+    \trproc{\caseL[\ell \in L]{\ell => Q_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\atmR{\ell} \limp \trproc{Q_{\ell}}\bigr)
     \\
-    \tr{\caseR[\ell \in L]{\ell => P_{\ell}}} = \with_{\ell \in L}(\tr{P_{\ell}} \pmir \atmL{\ell}) \\
-    \tr{\selectL{\kay}[Q]} = \atmL{\kay} \fuse \tr{Q}
-  \end{lgathered}
+    \trproc{\caseR[\ell \in L]{\ell => P_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\trproc{P_{\ell}} \pmir \atmL{\ell}\bigr) \\
+                         \trproc{\selectL{\kay}} &= \atmL{\kay}
+  \end{aligned}
+\end{equation*}
+
+\begin{equation*}
+  \begin{aligned}
+    \trconf{\cnfe} &= \cnfe \\
+    \trconf{\cnf_1 \cc \cnf_2} &= \trconf{\cnf_1} \oc \trconf{\cnf_2} \\
+    \trconf{P} &= \trproc{P}
+  \end{aligned}
 \end{equation*}
 
 \begin{inferences}
@@ -26,9 +36,28 @@
     \multipremise{\ell \in L}{\slof{A_{\ell} |- A_{\ell} : C}}}
   \\
   \text{(etc...)}
+  \\
+  \infer{\slcof{\sctx |- \octx_1 \oc \octx_2 : \sctx''}}{
+    \slcof{\sctx |- \octx_1 : \sctx'} & \slcof{\sctx' |- \octx_2 : \sctx''}}
+  \and
+  \infer{\slcof{\sctx |- \octxe : \sctx'}}{}
+  \and
+  \infer{\slcof{\sctx |- A : A}}{
+    \slof{\sctx |- A : A}}
 \end{inferences}
 
 \footnote{Careful with the 0-ary forms because you could end up with $\slof{\zero |- \top : C}$ and \emph{also} $\slof{\sctx |- \top : \top}$.}
+
+\begin{theorem}
+  If $\slof{\sctx |- P : A}$, then $\slof{\sctx |- \trproc{P} : A}$.
+  Similarly, if $\slcof{\sctx |- \cnf : \sctx'}$, then $\slcof{\sctx |- \trconf{\cnf} : \sctx'}$.
+\end{theorem}
+
+\begin{theorem}
+  If $\slof{\sctx |- A : A}$, then $\trproc{P} = A$ for some process $P$ such that $\slof{\sctx |- P : A}$.
+  Similarly, if $\slcof{\sctx |- \octx : \sctx'}$, then $\trconf{\cnf} = \octx$ for some configuration $\cnf$ such that $\slcof{\sctx |- \cnf : \sctx'}$.
+\end{theorem}
+
 
 \section{}
 

@@ -180,6 +180,9 @@
 %% Other %%
 %%%%%%%%%%%
 
+\NewDocumentCommand \cutreduces { } { \__thesis_cutreduces: }
+\cs_new:Npn \__thesis_cutreduces: { \rightsquigarrow }
+
 \NewDocumentCommand \union { } { \__thesis_union: }
 \cs_new:Npn \__thesis_union: { \mathbin { \cup } }
 
@@ -247,8 +250,11 @@
 \cs_new_protected:Npn \__thesis_ireduces:Nnn #1#2#3
   { #1 { [#2] } \reduces #3 }
 
-\NewDocumentCommand \tr { m } { \__thesis_tr:n {#1} }
-\cs_new:Npn \__thesis_tr:n #1 { \llbracket #1 \rrbracket }
+\NewDocumentCommand \trproc { m } { \__thesis_trproc:n {#1} }
+\cs_new:Npn \__thesis_trproc:n #1 { \llbracket #1 \rrbracket }
+
+\NewDocumentCommand \trconf { m } { \__thesis_trconf:n {#1} }
+\cs_new:Npn \__thesis_trconf:n #1 { \llbracket #1 \rrbracket }
 
 \NewDocumentCommand \vocab { m } { \emph {#1} }
 
