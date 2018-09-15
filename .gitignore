@@ -1,9 +1,13 @@
+.DS_Store
+thesis.pdf
+
 *.aux
 *.bcf
 *.log
 *.lof
 *.lot
 *.out
+*.rel
 *.run.xml
 *.synctex.gz
 *.tex~
