@@ -61,7 +61,7 @@ Symmetrically, $\ireduces{#1 \oc \atm{a}}{\octx}{\octx'}$ exactly when $\octx = 
 
 \section{A proof technique for ordered bisimilarity}
 
-\begin{theorem}
+\begin{theorem}\label{thm:ord-bisim-technique}
   Let $\simu{R}$ be a \emph{symmetric} binary relation among contexts that satisfies the following conditions.
   \begin{thmdescription}
   \item[Immediate output bisimulation]
@@ -90,18 +90,38 @@ Symmetrically, $\ireduces{#1 \oc \atm{a}}{\octx}{\octx'}$ exactly when $\octx = 
 \end{theorem}
 %
 \begin{proof}
+  Let $\simu{R}$ be the least binary relation%
+  \alertnote{What about symmetry?}
+  on ordered contexts given by
+  \begin{equation*}
+    \infer{\nfa{q} \simu{R} \nfa{s}}{
+      q \asim s}
+  \end{equation*}
+  To establish the completness of our \ac{NFA} encoding with respect to bisimularity, it then suffices to show that ordered bisimularity contains the relation $\simu{R}$.
+  Appealing to the preceding proof technique for ordered bisimularity\pcref{thm:ord-bisim-technique}, we need only establish that $\simu{R}$ has immediate output bisimulation, immediate input bisimulation, reduction bisimulation, and emptiness bisimulation properties.
+
   Only the immediate input bisimulation and reduction bisimulation conditions apply to the relation $\simu{R}$.
   \begin{description}
   \item[Immediate input bisimulation]
-    Assume that $q \asim s$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\nfa{q}}{\lctx'}$;
-    we must show that $\atmR{\lctx}_L \oc \nfa{s} \oc \atmL{\lctx}_R \Reduces\refl*{\simu{R}}^{-1} \lctx'$.
+    Assume that $\lctx \simu{R} \octx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$;
+    we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\refl*{\simu{R}}^{-1} \lctx'$.
+
+    Inversion allows us to deduce $\lctx = \nfa{q}$ and $\octx = \nfa{s}$ for some states $q$ and $s$ such that $q \asim s$.
+    Examining the encoding, we see that there are two possible input transitions from $\nfa{q}$.
     \begin{itemize}
-    \item Consider the case in which: $\atmR{\lctx}_L = \atmR{a}$ for some $a \in \ialph$; $\atmL{\lctx}_R = \octxe$; and $\lctx' = \bigwith_{q' \mid q \nfareduces[a] q'} \nfa{q}'$.
-      Unfortunately, $\lctx' = \bigwith_{q' \mid q \nfareduces[a] q'} \nfa{q}'$ is not in the relation $\refl{\simu{R}}$, except trivially.
-    \item Consider the case in which $\atmR{\lctx}_L = \atmR{\emp}$; $\atmL{\lctx}_R = \octxe$; and $\lctx' = \one$ because $q$ is a final state.
-        Because $q \asim s$, we know that $s$ is also a final state.
-        Therefore, $\atmR{\emp} \oc \nfa{s} \Reduces \one \refl*{\simu{R}} \one = \lctx'$.
-      \end{itemize}
+    \item Consider the input transition $\ireduces{\atmR{a} \oc #1}{\nfa{q}}{\nfa{q}'_a}$, with $a \in \ialph$ and $q \nfareduces[a] q'_a$ -- that is, $\atmR{\lctx}_L = \atmR{a}$; $\atmL{\lctx}_R = \octxe$; and $\lctx' = \nfa{q}'_a$.
+      We must show that $\atmR{a} \oc \nfa{s} \Reduces\refl*{\simu{R}}^{-1} \nfa{q}'_a$.
+
+      Because $q$ and $s$ are bisimilar states, $s \nfareduces[a] s'_a \misa q'_a$ for some state $s'_a$.
+      Recall from \cref{thm:nfa-encoding-reduces} that the encoding of \acp{NFA} is complete with respect to input transitions; so, $\atmR{a} \oc \nfa{s} \reduces \nfa{s}'_a$.
+      As $q'_a$ and $s'_a$ are bisimilar states, we conclude that $\atmR{a} \oc \nfa{s} \reduces\refl*{\simu{R}}^{-1} \nfa{q}'_a$, as required.
+
+    \item Consider the input transition $\ireduces{\atmR{\emp} \oc #1}{\nfa{q}}{\octxe}$ when $q$ is a final state -- that is, $\atmR{\lctx}_L = \atmR{\emp}$ and $\atmL{\lctx}_R = \lctx' = \octxe$.
+      We must show that $\atmR{\emp} \oc \nfa{s} \Reduces\refl*{\simu{R}}^{-1} \octxe$.
+
+      Because $q$ and $s$ are bisimilar states, $s$ must also be a final state.
+      Recall from \cref{thm:nfa-encoding-reduces} that the encoding of \acp{NFA} is complete with respect to input transitions; so, $\atmR{\emp} \oc \nfa{s} \reduces \octxe$.
+      We conclude that $\atmR{\emp} \oc \nfa{s} \reduces\refl*{\simu{R}}^{-1} \octxe$, as required.
     \end{itemize}
   %
   \item[Reduction bisimulation]

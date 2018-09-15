@@ -301,6 +301,9 @@
 
 \RequirePackage { cleveref }
 
+\NewDocumentCommand \pcref { m } { \__thesis_pcref:n {#1} }
+\cs_new:Npn \__thesis_pcref:n #1 { \nobreakspace (\cref{#1}) }
+
 
 %%%%%%%%%%%%%%%%
 % Bibliography %
