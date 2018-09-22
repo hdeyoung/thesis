@@ -1,5 +1,55 @@
 \chapter{From ordered rewriting to concurrency}\label{ch:ordered-bisimilarity}
 
+\begin{syntax*}
+  Propositions &
+    A & p \mid \atmL{a} \mid \atmR{a}
+          \mid \atmR{a} \limp A \mid A \pmir \atmL{a}
+          \mid A \fuse B \mid \one
+          \mid A \with B \mid \top
+  \\
+  Ordered contexts & 
+    \octx & \octxe \mid \octx_1 \oc \octx_2 \mid A
+\end{syntax*}
+
+\begin{itemize}
+\item Assign direction to uninterpreted atoms so they act like messages
+\item Defined atoms are like processes
+\item Left and right implications are restricted to messages (compare with higher-order $\pi$ calculus)
+\end{itemize}
+
+\section{Input transitions}
+
+\begin{inferences}
+  \infer{\ireduces{\atmR{a} \oc #1}{\atmR{a} \limp A}{A}}{}
+  \and
+  \infer{\ireduces{#1 \oc \atmL{a}}{A \pmir \atmL{a}}{A}}{}
+  \\
+  \infer{\ireduces{\atmR{a} \oc #1}{\octx \oc B}{\octx' \oc B}}{
+    \ireduces{\atmR{a} \oc #1}{\octx}{\octx'}}
+  \and
+  \infer{\ireduces{#1 \oc \atmL{a}}{B \oc \octx}{B \oc \octx'}}{
+    \ireduces{#1 \oc \atmL{a}}{\octx}{\octx'}}
+\end{inferences}
+Ultimately, $\ireduces{\atmR{a} \oc #1}{\octx}{\octx'}$ holds exactly when $\octx = (\atmR{a} \limp A) \oc \octx'_R$ and $\octx' = A \oc \octx'_R$ for some $\octx'_R$.
+Symmetrically, $\ireduces{#1 \oc \atmL{a}}{\octx}{\octx'}$ holds exactly when $\octx = \octx'_L \oc (A \pmir \atmL{a})$ and $\octx' = \octx'_L \oc A$ for some $\octx'_L$.
+
+\begin{theorem}
+  If $\ireduces{\atmR{a} \oc #1}{\octx}{\octx'}$, then $\atmR{a} \oc \octx \reduces \octx'$.
+  Symmetrically, if $\ireduces{#1 \oc \atmL{a}}{\octx}{\octx'}$, then $\octx \oc \atmL{a} \reduces \octx'$.
+\end{theorem}
+
+\begin{theorem}
+  If $\octx \reduces \octx'$, then either:
+  \begin{itemize}[nosep]
+  \item $\octx = \octx_L \oc \atmR{a} \oc \octx_0 \oc \octx_R$ and $\ireduces{\atmR{a} \oc #1}{\octx_0}{\octx'_0}$ and $\octx' = \octx_L \oc \octx'_0 \oc \octx_R$;
+  \item $\octx = \octx_L \oc \octx_0 \oc \atmL{a} \oc \octx_R$ and $\ireduces{#1 \oc \atmL{a}}{\octx_0}{\octx'_0}$ and $\octx' = \octx_L \oc \octx'_0 \oc \octx_R$;
+  \item $\octx = \octx_L \oc (A \fuse B) \oc \octx_R$ and $\octx' = \octx_L \oc A \oc B \oc \octx_R$;
+  \item $\octx = \octx_L \oc \one \oc \octx_R$ and $\octx' = \octx_L \oc \octx_R$;
+  \item $\octx = \octx_L \oc (A \with B) \oc \octx_R$ and $\octx' = \octx_L \oc A \oc \octx_R$; or
+  \item $\octx = \octx_L \oc (A \with B) \oc \octx_R$ and $\octx' = \octx_L \oc B \oc \octx_R$.
+  \end{itemize}
+\end{theorem}
+
 \section{}
 
 \begin{definition}
@@ -41,23 +91,6 @@ From input bisimilarity, $b'_0 \oc \atm{a} \osim \atm{a}$ follows, for any $\atm
 And, that violates output bisimilarity because $b'_0 \oc \atm{a}$, which does not reduce, cannot match the left output that $\atm{a}$ makes.
 
 The key feature of this counterexample is that atoms' lack of direction means that the output bisimilarity condition also applies to atoms intended to act as inputs ($\atm{d}$ and $\atm{a}$, for instance).
-
-
-\section{Input transitions}
-
-\begin{inferences}
-  \infer{\ireduces{\atm{a} \oc #1}{\atm{a} \limp A}{A}}{}
-  \and
-  \infer{\ireduces{#1 \oc \atm{a}}{A \pmir \atm{a}}{A}}{}
-  \\
-  \infer{\ireduces{\atm{a} \oc #1}{\octx \oc B}{\octx' \oc B}}{
-    \ireduces{\atm{a} \oc #1}{\octx}{\octx'}}
-  \and
-  \infer{\ireduces{#1 \oc \atm{a}}{B \oc \octx}{B \oc \octx'}}{
-    \ireduces{#1 \oc \atm{a}}{\octx}{\octx'}}
-\end{inferences}
-Ultimately, $\ireduces{\atm{a} \oc #1}{\octx}{\octx'}$ exactly when $\octx = (\atm{a} \limp A) \oc \octx'_R$ and $\octx' = A \oc \octx'_R$ for some $\octx'_R$.
-Symmetrically, $\ireduces{#1 \oc \atm{a}}{\octx}{\octx'}$ exactly when $\octx = \octx'_L \oc (A \pmir \atm{a})$ and $\octx' = \octx'_L \oc A$ for some $\octx'_L$.
 
 \section{A proof technique for ordered bisimilarity}
 

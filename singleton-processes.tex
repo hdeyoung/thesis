@@ -1,85 +1,10 @@
-\chapter{Session-typed processes}\label{ch:session-typed-procs}
+\chapter{Session-typed processes}\label{ch:singleton-processes}
 
 \begin{itemize}
 \item Connections to SILL
 \end{itemize}
 
-\section{Singleton linear logic}\label{sec:singleton-logic}
-
-\begin{syntax*}
-  Propositions &
-    A & \alpha \mid A \plus B \mid \zero \mid A \with B \mid \top
-  \\
-  Contexts & \sctx & A
-\end{syntax*}
-
-\begin{inferences}
-  \infer[\jrule{CUT}^A]{\slseq{\sctx |- C}}{
-    \slseq{\sctx |- A} & \slseq{A |- C}}
-  \and
-  \infer[\jrule{ID}^A]{\slseq{A |- A}}{}
-  \\
-  \infer[\rrule{\plus}_1]{\slseq{\sctx |- A \plus B}}{
-    \slseq{\sctx |- A}}
-  \and
-  \infer[\rrule{\plus}_2]{\slseq{\sctx |- A \plus B}}{
-    \slseq{\sctx |- B}}
-  \and
-  \infer[\lrule{\plus}]{\slseq{A \plus B |- C}}{
-    \slseq{A |- C} & \slseq{B |- C}}
-  \\
-  \text{(no $\rrule{\zero}$ rule)}
-  \and
-  \infer[\lrule{\zero}]{\slseq{\zero |- C}}{}
-  \\
-  \infer[\rrule{\with}]{\slseq{\sctx |- A \with B}}{
-    \slseq{\sctx |- A} & \slseq{\sctx |- B}}
-  \and
-  \infer[\lrule{\with}_1]{\slseq{A \with B |- C}}{
-    \slseq{A |- C}}
-  \and
-  \infer[\lrule{\with}_2]{\slseq{A \with B |- C}}{
-    \slseq{B |- C}}
-  \\
-  \infer[\rrule{\top}]{\slseq{\sctx |- \top}}{}
-  \and
-  \text{(no $\lrule{\top}$ rule)}
-\end{inferences}
-
-This is not the additive fragment of linear logic.
-
-\subsection{Cut reduction}
-
-\begin{equation*}
-  \infer[\jrule{CUT}^{A \plus B}]{\slseq{\sctx |- C}}{
-    \infer[\rrule{\plus}_1]{\slseq{\sctx |- A \plus B}}{
-      \slseq{\sctx |- A}} &
-    \infer[\lrule{\plus}]{\slseq{A \plus B |- C}}{
-      \slseq{A |- C} & \slseq{B |- C}}}
-  %
-  \quad\cutreduces\quad
-  %
-  \infer[\jrule{CUT}^A]{\slseq{\sctx |- C}}{
-    \slseq{\sctx |- A} & \slseq{A |- C}}
-\end{equation*}
-
-There are no right commutative cut reductions involving left rules -- more symmetric than ordered logic.
-
-\begin{theorem}
-  The $\jrule{CUT}^A$ and $\jrule{ID}^A$ rules are admissible in the system having
-  \begin{equation*}
-    \infer[\normalfont\jrule{ID}^{\alpha}]{\slseq{\alpha |- \alpha}}{}
-  \end{equation*}
-  as its only judgmental rule.
-\end{theorem}
-
-
-\subsection{A subsingleton extension}
-
-Multiplicative units
-
-
-\section{Session-typed processes: A Curry--Howard interpretation of singleton linear logic}
+\section{Session-typed processes: A Curry--Howard interpretation of singleton logic}
 
 \begin{syntax*}
   Session types &
@@ -167,6 +92,10 @@ Discussion of cut reduction vs.\ admissibility
     \proc{\caseR[\ell \in L]{\ell => P_{\ell}}} \defd \bigwith_{\ell \in L}\bigl(\proc{P_{\ell}} \pmir \proc{\selectL{\ell}}\bigr)
   \end{lgathered}
 \end{equation*}
+
+\paragraph{Hypersequent}
+
+
 
 \subsection{Example: Binary counter}
 

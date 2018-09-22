@@ -114,6 +114,17 @@
 \cs_new:Npn \__thesis_misa: { \__thesis_asim: ^{-1} }
 
 
+%%%%%%%%%%%%%%%%%%%
+%% Ordered logic %%
+%%%%%%%%%%%%%%%%%%%
+
+\NewDocumentCommand \cseq { } { \__thesis_cseq: }
+\cs_new:Npn \__thesis_cseq: { \gamma }
+
+\NewDocumentCommand \cseqe { } { \__thesis_cseqe: }
+\cs_new:Npn \__thesis_cseqe: { \cdot }
+
+
 %%%%%%%%%%%%%%%%%%%%%%%
 %% Ordered rewriting %%
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -139,6 +150,9 @@
 
 \NewDocumentCommand \sctx { } { \__thesis_sctx: }
 \cs_new:Npn \__thesis_sctx: { \delta }
+
+\NewDocumentCommand \sctxe { } { \__thesis_sctxe: }
+\cs_new:Npn \__thesis_sctxe: { \cdot }
 
 \NewDocumentCommand \slseq { > { \SplitArgument { 1 } { |- } } m }
   { \__thesis_slseq:nn #1 }
@@ -204,7 +218,6 @@
 \cs_new:Npn \__thesis_simu:n #1
   { \mathrel { \mathcal {#1} } }
 
-
 \NewDocumentCommand \refl { s m }
   {
     \IfBooleanTF {#1}
@@ -215,6 +228,16 @@
   { \mathrel { #1 ^{ \mathord{=} } } }
 \cs_new:Npn \__thesis_refl_star:n #1
   { \mathrel { ( \__thesis_refl:n {#1} ) } }
+
+\NewDocumentCommand \congrel { s m }
+  {
+    \IfBooleanTF {#1}
+      { \__thesis_congrel_star:n {#2} }
+      { \__thesis_congrel:n {#2} }
+  }
+\cs_new:Npn \__thesis_congrel:n #1
+  { \mathrel { [ #1 ] } }
+\cs_set_eq:NN \__thesis_congrel_star:n \__thesis_congrel:n
 
 \NewDocumentCommand \osim { } { \__thesis_osim: }
 \cs_new:Npn \__thesis_osim: { \mathrel { \cong } }
@@ -292,7 +315,12 @@
 \RequirePackage { textcase }
 
 \cs_new_protected:Npn \__thesis_syntext:n #1
-  { \text { \scshape \MakeTextLowercase {#1} } }
+  {
+    \text {
+      \color { structure } \scshape
+      \MakeTextLowercase {#1}
+    }
+  }
 
 \NewDocumentEnvironment { syntax* } { }
   { \__thesis_syntaxstar_begin: }

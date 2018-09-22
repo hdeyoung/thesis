@@ -2,61 +2,76 @@
 
 \section{Propositional ordered logic}
 
+\begin{itemize}
+\item Lambek calculus, given a judgmental reconstruction by Polakow and Pfenning
+\item Propositional fragment only, omitting first-order universal and existential quantifiers
+\end{itemize}
+
+
 \subsection{Propositions and contexts}
 
 \begin{syntax*}
   Propositions &
     A & \begin{array}[t]{@{}l@{}}
-          p \mid A \limp B \mid B \pmir A
+          p \mid A \limp B \mid B \pmir A \mid \bot
             \mid A \fuse B \mid \one \\
-            \mid A \with B \mid \top
+          \mathllap{\mid {}} A \with B \mid \top
             \mid A \plus B \mid \zero
         \end{array}
   \\
   Ordered contexts &
-    \octx & \octxe \mid \octx \oc A
+    \octx & \octxe \mid \octx_1 \oc \octx_2 \mid A
+  \\
+  Conseq\relax uents &
+    \cseq & A \mid \octxe
 \end{syntax*}
+
+\begin{itemize}
+\item Contexts form a monoid
+\item None of the usual structural properties -- weakening, contraction, exchange -- but we still have (implicitly, judgmentally) associativity
+\item Multiplicative falsehood\alertnote{Get rid of this?}
+\end{itemize}
 
 \subsection{Rules of logical inference}
 
 \begin{figure}
   \begin{inferences}
-    \infer[\jrule{CUT}^A]{\oseq{\octx_L \oc \octx_A \oc \octx_R |- C}}{
-      \oseq{\octx_A |- A} & \oseq{\octx_L \oc A \oc \octx_R |- C}}
+    \infer[\jrule{CUT}^A]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- \cseq}}{
+      \oseq{\octx |- A} & \oseq{\octx'_L \oc A \oc \octx'_R |- \cseq}}
     \and
     \infer[\jrule{ID}^A]{\oseq{A |- A}}{}
     \\
     \infer[\rrule{\limp}]{\oseq{\octx |- A \limp B}}{
       \oseq{A \oc \octx |- B}}
     \and
-    \infer[\lrule{\limp}]{\oseq{\octx_L \oc \octx_A \oc (A \limp B) \oc \octx_R |- C}}{
-      \oseq{\octx_A |- A} & \oseq{\octx_L \oc B \oc \octx_R |- C}}
+    \infer[\lrule{\limp}]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- \cseq}}{
+      \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- \cseq}}
     \\
     \infer[\rrule{\pmir}]{\oseq{\octx |- B \pmir A}}{
       \oseq{\octx \oc A |- B}}
     \and
-    \infer[\lrule{\pmir}]{\oseq{\octx_L \oc (B \pmir A) \oc \octx_A \oc \octx_R |- C}}{
-      \oseq{\octx_A |- A} & \oseq{\octx_L \oc B \oc \octx_R |- C}}
+    \infer[\lrule{\pmir}]{\oseq{\octx'_L \oc (B \pmir A) \oc \octx \oc \octx'_R |- \cseq}}{
+      \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- \cseq}}
     \\
     \infer[\rrule{\fuse}]{\oseq{\octx_A \oc \octx_B |- A \fuse B}}{
       \oseq{\octx_A |- A} & \oseq{\octx_B |- B}}
     \and
-    \infer[\lrule{\fuse}]{\oseq{\octx_L \oc (A \fuse B) \oc \octx_R |- C}}{
-      \oseq{\octx_L \oc A \oc B \oc \octx_R |- C}}
+    \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- \cseq}}{
+      \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- \cseq}}
     \\
     \infer[\rrule{\one}]{\oseq{\octxe |- \one}}{}
     \and
-    \infer[\lrule{\one}]{\oseq{\octx_L \oc \one \oc \octx_R |- C}}{
-      \oseq{\octx_L \oc \octx_R |- C}}
+    \infer[\lrule{\one}]{\oseq{\octx'_L \oc \one \oc \octx'_R |- \cseq}}{
+      \oseq{\octx'_L \oc \octx'_R |- \cseq}}
     \\
     \infer[\rrule{\with}]{\oseq{\octx |- A \with B}}{
       \oseq{\octx |- A} & \oseq{\octx |- B}}
     \and
-    \infer[\lrule{\with}_1]{\oseq{\octx_L \oc (A \with B) \oc \octx_R |- C}}{
-      \oseq{\octx_L \oc A \oc \octx_R |- C}}
+    \infer[\lrule{\with}_1]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- \cseq}}{
+      \oseq{\octx'_L \oc A \oc \octx'_R |- \cseq}}
     \and
-    \infer[\lrule{\with}_2]{\oseq{\octx_L \oc (A \with B) \oc \octx_R |- C}}{
-      \oseq{\octx_L \oc B \oc \octx_R |- C}}
+    \infer[\lrule{\with}_2]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- \cseq}}{
+      \oseq{\octx'_L \oc B \oc \octx'_R |- \cseq}}
     \\
     \infer[\rrule{\top}]{\oseq{\octx |- \top}}{}
     \and
@@ -68,25 +83,44 @@
     \infer[\rrule{\plus}_2]{\oseq{\octx |- A \plus B}}{
       \oseq{\octx |- B}}
     \and
-    \infer[\lrule{\plus}]{\oseq{\octx_L \oc (A \plus B) \oc \octx_R |- C}}{
-      \oseq{\octx_L \oc A \oc \octx_R |- C} &
-      \oseq{\octx_L \oc B \oc \octx_R |- C}}
+    \infer[\lrule{\plus}]{\oseq{\octx'_L \oc (A \plus B) \oc \octx'_R |- \cseq}}{
+      \oseq{\octx'_L \oc A \oc \octx'_R |- \cseq} &
+      \oseq{\octx'_L \oc B \oc \octx'_R |- \cseq}}
     \\
     \text{(no $\rrule{\zero}$ rule)}
     \and
-    \infer[\lrule{\zero}]{\oseq{\octx_L \oc \zero \oc \octx_R |- C}}{}
+    \infer[\lrule{\zero}]{\oseq{\octx'_L \oc \zero \oc \octx'_R |- \cseq}}{}
     \\
     \infer[\rrule{\bot}]{\oseq{\octx |- \bot}}{
-      \oseq{\octx |- }}
+      \oseq{\octx |- \cseqe}}
     \and
-    \infer[\lrule{\bot}]{\oseq{\bot |- }}{}
+    \infer[\lrule{\bot}]{\oseq{\bot |- \cseqe}}{}
   \end{inferences}
 \end{figure}  
 
+\begin{theorem}[Admissibility of cut]
+  If $\oseq{\octx |- A}$ and $\oseq{\octx'_L \oc A \oc \octx'_R |- \cseq}$, then $\oseq{\octx'_L \oc \octx \oc \octx'_R |- \cseq}$.
+\end{theorem}
+\begin{proof}
+  By lexicographic induction, first on the structure of the cut formula and then simultaneously on the structures of the given derivations.
+\end{proof}
+
+\begin{theorem}[Identity expansion]
+  $\oseq{A |- A}$ for all propositions $A$.
+\end{theorem}
+\begin{proof}
+  By induction on the structure of the proposition $A$.
+\end{proof}
+
+\subsection{Circular propositions and circular derivations}
+
 \begin{itemize}
-\item Metatheory: Admissibility of cut and identity
-\item Recursive definitions (circular proofs and $\mu$MALL)
-\item Multiplicative falsehood?
+\item No exponentials; recursion/circularity instead (Milner)\alertnote{Should this go in ordered rewriting chapter instead?}
+\item $\mu$MALL (Baelde) and circular proofs (Fortier and Santocanale)
+\item Contractivity requirement
+\item We will use only general recursion.
+  Inductive and coinductive types are outside our scope.
+\item Subset of infinite propositions/derivations
 \end{itemize}
 
 %%% Local Variables:

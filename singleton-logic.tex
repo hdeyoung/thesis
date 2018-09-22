@@ -1,0 +1,181 @@
+\chapter{Singleton logic}\label{ch:singleton-logic}
+
+Ordered logic is a substructural logic.
+Although \cref{ch:ordered-logic} presented it from first principles, ordered logic can also be seen as 
+%
+Are there other logics that may be obtained from ordered logic by reconsidering the structural properties of sequents?
+
+In this \lcnamecref{ch:singleton-logic}, we present one such logic, \emph{singleton logic}.
+As its name suggests, singleton logic is the fragment of ordered logic obtained by requiring sequent antecedents to have exactly one hypothesis -- no more and no less.
+That such a drastic restriction on the structure of contexts yields a well-defined, computationally useful logic is somewhat surprising.
+
+\section{An algebraic view of structural properties}
+
+Draws from \textcite{ReedPfenning:10}
+
+From an algebraic perspective, persistent contexts form an idempotent, commutative monoid -- equivalently, a bounded semilattice.
+\begin{center}
+  \begin{tabular}{@{}>{\itshape}r>{$}c<{$}>{\itshape}l@{}}
+    \normalfont\textsc{algebraic law} && \normalfont\pbox[b]{0.3\textswidth}{\scshape structural\\[-1ex]property}
+    \\[1ex]
+    Infimum &
+      \begin{array}[b]{@{}c@{}}
+        A \circledwedge B \preccurlyeq A \\[-.5ex]
+        A \circledwedge B \preccurlyeq B \\[-.5ex]
+        (C \preccurlyeq A) \land (C \preccurlyeq B) \Rightarrow (C \preccurlyeq A \circledwedge B)
+      \end{array} &
+      Weakening
+    \\[1.5ex]
+    Idempotence & A \preccurlyeq A \circledwedge A & Contraction
+    \\[1.5ex]
+    Commutativity & A \circledwedge B = B \circledwedge A & Exchange
+    \\[1.5ex]
+    Associativity & A \circledwedge (B \circledwedge C) = (A \circledwedge B) \circledwedge C & --
+    \\[1.5ex]
+    Identity & 1 \circledwedge A = A \circledwedge 1 = A & --
+  \end{tabular}
+\end{center}
+
+\begin{gather*}
+  (C = C \circledwedge A) \land (C = C \circledwedge B) \Rightarrow (C = C \circledwedge (A \circledwedge B)) \\
+  A_1 \circledwedge A_2 = (A_1 \circledwedge A_2) \circledwedge A_i
+\end{gather*}
+
+
+Linear logic rejects weakening and contraction, so that linear contexts form a commutative monoid.
+Ordered logic goes further and also rejects exchange, so that ordered contexts form a monoid.
+
+We can also consider restricting other, more extreme restrictions that go beyond the usual structural properties of weakening, contraction, and exchange to the other algebraic laws.
+less apparent structural properties.
+Rejecting associativity, for example, leads to \emph{nonassociative logic}\autocite{}\alertnote{Where is this reference?}, in which contexts form a unital magma.
+Carrying such restrictions even further, we might ask why contexts should form an algebraic structure at all.
+Instead of restricting only the algebraic laws imposed on $\circledwedge$, why not eliminate the binary operation altogether?%
+\footnote{There are other, nonalgebraic (\ie, computational) reasons to be interested in this restriction to singleton contexts, but we will postpone a discussion of them to \cref{ch:singleton-processes}.}
+
+In doing so, the effect is to limit contexts to hold exactly one hypothesis.
+
+\section{Singleton logic}
+
+\begin{syntax*}
+  Propositions &
+    A & \alpha \mid A \plus B \mid \zero \mid A \with B \mid \top
+  \\
+  Contexts & \sctx & A
+\end{syntax*}
+
+\begin{inferences}
+  \infer[\jrule{CUT}^A]{\slseq{\sctx |- C}}{
+    \slseq{\sctx |- A} & \slseq{A |- C}}
+  \and
+  \infer[\jrule{ID}^A]{\slseq{A |- A}}{}
+  \\
+  \infer[\rrule{\plus}_1]{\slseq{\sctx |- A \plus B}}{
+    \slseq{\sctx |- A}}
+  \and
+  \infer[\rrule{\plus}_2]{\slseq{\sctx |- A \plus B}}{
+    \slseq{\sctx |- B}}
+  \and
+  \infer[\lrule{\plus}]{\slseq{A \plus B |- C}}{
+    \slseq{A |- C} & \slseq{B |- C}}
+  \\
+  \text{(no $\rrule{\zero}$ rule)}
+  \and
+  \infer[\lrule{\zero}]{\slseq{\zero |- C}}{}
+  \\
+  \infer[\rrule{\with}]{\slseq{\sctx |- A \with B}}{
+    \slseq{\sctx |- A} & \slseq{\sctx |- B}}
+  \and
+  \infer[\lrule{\with}_1]{\slseq{A \with B |- C}}{
+    \slseq{A |- C}}
+  \and
+  \infer[\lrule{\with}_2]{\slseq{A \with B |- C}}{
+    \slseq{B |- C}}
+  \\
+  \infer[\rrule{\top}]{\slseq{\sctx |- \top}}{}
+  \and
+  \text{(no $\lrule{\top}$ rule)}
+\end{inferences}
+
+This is not the additive fragment of linear logic.
+
+\subsection{Cut reduction}
+
+\begin{equation*}
+  \infer[\jrule{CUT}^{A \plus B}]{\slseq{\sctx |- C}}{
+    \infer[\rrule{\plus}_1]{\slseq{\sctx |- A \plus B}}{
+      \slseq{\sctx |- A}} &
+    \infer[\lrule{\plus}]{\slseq{A \plus B |- C}}{
+      \slseq{A |- C} & \slseq{B |- C}}}
+  %
+  \quad\cutreduces\quad
+  %
+  \infer[\jrule{CUT}^A]{\slseq{\sctx |- C}}{
+    \slseq{\sctx |- A} & \slseq{A |- C}}
+\end{equation*}
+
+There are no right commutative cut reductions involving left rules -- more symmetric than ordered logic.
+
+\begin{theorem}
+  The $\jrule{CUT}^A$ and $\jrule{ID}^A$ rules are admissible in the system having
+  \begin{equation*}
+    \infer[\normalfont\jrule{ID}^{\alpha}]{\slseq{\alpha |- \alpha}}{}
+  \end{equation*}
+  as its only judgmental rule.
+\end{theorem}
+
+
+\subsection{Extensions of singleton logic}
+
+\begin{itemize}
+\item Multiplicative units (subsingletons)
+\item Exponentials
+\end{itemize}
+
+\begin{syntax*}
+  Propositions & A & \dotsb \mid \one \\
+  Contexts & \sctx & \dotsb \mid \sctxe
+\end{syntax*}
+
+\begin{inferences}
+  \infer[\rrule{\one}]{\slseq{\sctxe |- \one}}{}
+  \and
+  \infer[\lrule{\one}]{\slseq{\one |- C}}{
+    \slseq{\sctxe |- C}}
+\end{inferences}
+
+\begin{syntax*}
+  Propositions & A & \dotsb \mid \bot \\
+  Conseq\relax uents & \cseq & C \mid \cseqe
+\end{syntax*}
+
+\begin{inferences}
+  \infer[\rrule{\bot}]{\slseq{\sctx |- \bot}}{
+    \slseq{\sctx |- \cseqe}}
+  \and
+  \infer[\lrule{\bot}]{\slseq{\bot |- \cseqe}}{}
+\end{inferences}
+
+\begin{syntax*}
+  Propositions & A & \dotsb \mid \bang A \\
+  Persistent contexts & \uctx & \uctxe \mid \uctx, A
+\end{syntax*}
+
+\begin{inferences}
+  \infer[\jrule{CUT!}^A]{\slseq{\uctx, A ; \sctx |- \cseq}}{
+    \slseq{\uctx ; \sctxe |- A} & \slseq{\uctx, A ; \sctx |- \cseq}}
+  \and
+  \infer[\jrule{COPY}]{\slseq{\uctx, A ; \sctxe |- \cseq}}{
+    \slseq{\uctx, A ; A |- \cseq}}
+  \\
+  \infer[\rrule{\bang}]{\slseq{\uctx ; \sctxe |- \bang A}}{
+    \slseq{\uctx ; \sctxe |- A}}
+  \and
+  \infer[\lrule{\bang}]{\slseq{\uctx ; \bang A |- \cseq}}{
+    \slseq{\uctx, A ; \sctxe |- \cseq}}
+\end{inferences}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End:

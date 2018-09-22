@@ -1,17 +1,19 @@
 \chapter{Ordered rewriting}\label{ch:ordered-rewriting}
 
+\section{Propositional ordered rewriting}
+
 \begin{syntax*}
   Propositions &
     A & p \mid A \limp B \mid B \pmir A
-          \mid A \with B \mid \top
           \mid A \fuse B \mid \one
+          \mid A \with B \mid \top
   \\
   Ordered contexts & 
-    \octx & \octxe \mid \octx \oc A
+    \octx & \octxe \mid \octx_1 \oc \octx_2 \mid A
 \end{syntax*}
 
 \begin{itemize}
-\item Lambek calculus and rewriting; compare to multiset rewriting
+\item Lambek calculus and rewriting; compare to multiset rewriting; compare to string rewriting
 \item Explain why $\plus$, $\zero$, and $\bot$ are undesirable here.
 \item Connections to left rules
 \end{itemize}
@@ -36,22 +38,33 @@ We will also refer to this relation as \vocab{reduction}%
 \footnote{Input transitions are postponed to \cref{ch:ordered-bisimilarity}.}%
 .
 
+$\Reduces$ is the reflexive-transitive closure of $\reduces$
+
+\section{Definitions}
+
+\begin{itemize}
+\item not very interesting without recursion
+\end{itemize}
 
 \section{Examples}
 
 \subsection{Automata and transducers}
 
 \begin{equation*}
-  \begin{lgathered}
-    q_0 \defd (\atm{a} \limp q_0) \with (\atm{b} \limp q_0 \with q_1) \with (\atm{\emp} \limp \top) \\
-    q_1 \defd (\atm{a} \limp q_2) \with (\atm{b} \limp q_2) \with (\atm{\emp} \limp \one) \\
-    q_2 \defd (\atm{a} \limp q_2) \with (\atm{b} \limp q_2) \with (\atm{\emp} \limp \top)
+  \begin{lgathered}[t]
+    q_0 \defd (a \limp q_0) \with (b \limp q_0 \with q_1) \\
+    q_1 \defd (a \limp q_2) \with (b \limp q_2) \with (\emp \limp \one) \\
+    q_2 \defd (a \limp q_2) \with (b \limp q_2)
   \end{lgathered}
   \qquad
-  \begin{lgathered}
-    s_0 \defd (\atm{a} \limp s_0) \with (\atm{b} \limp s_1) \with (\atm{\emp} \limp \top) \\
-    s_1 \defd (\atm{a} \limp s_0) \with (\atm{b} \limp s_1) \with (\atm{\emp} \limp \one)
+  \begin{lgathered}[t]
+    s_0 \defd (a \limp s_0) \with (b \limp s_1) \\
+    s_1 \defd (a \limp s_0) \with (b \limp s_1) \with (\emp \limp \one)
   \end{lgathered}
+\end{equation*}
+
+\begin{equation*}
+  \nfa{q} \defd \bigwith_{a \in \ialph} \bigl({\textstyle a \limp \bigwith_{q'_a} \nfa{q}'_a}\bigr)
 \end{equation*}
 
 \begin{theorem}
@@ -60,37 +73,28 @@ We will also refer to this relation as \vocab{reduction}%
   \begin{itemize}[nosep]
   \item $q \nfareduces[a] q'$ if and only if $\atm{a} \oc \nfa{q} \Reduces \nfa{q}'$.
   \item $q \in F$ if and only if $\atm{\emp} \oc \nfa{q} \Reduces \octxe$.
-  \item $q \notin F$ if and only if $\atm{\emp} \oc \nfa{q} \Reduces \top$.
+  \item $q \notin F$ if and only if $\atm{\emp} \oc \nfa{q} \longarrownot\reduces$.\alertnote{Careful -- depends on focusing!}
   \end{itemize}
   % \item
   %   If $\atm{a} \oc \nfa{q} \Reduces \nfa{q}'$, then $q \nfareduces[a] q'$.
   %   If $\atm{\emp} \oc \nfa{q} \Reduces \octxe$, then $q \in F$.
 \end{theorem}
 
-\begin{equation*}
-  q_0 \defd \atm{a} \limp q_0 \fuse \atm{a}
-  \qquad
-  \begin{lgathered}
-    s_0 \defd \atm{a} \limp s_1 \\
-    s_1 \defd \atm{a} \limp s_0 \fuse \atm{a} \fuse \atm{a}
-  \end{lgathered}
-\end{equation*}
 
 \subsection{Binary counter}
 
 \begin{equation*}
   \begin{lgathered}
-    e \defd (e \fuse b_1 \pmir \atm{i}) \with (\atm{z} \pmir \atm{d}) \\
-    b_0 \defd (b_1 \pmir \atm{i}) \with (\atm{d} \fuse b'_0 \pmir \atm{d}) \\
-    b_1 \defd (\atm{i} \fuse b_0 \pmir \atm{i}) \with (b_0 \fuse \atm{s} \pmir \atm{d}) \\
-    b'_0 \defd (\atm{z} \limp \atm{z}) \with (\atm{s} \limp b_1 \fuse \atm{s})
+    e \defd (e \fuse b_1 \pmir i) \with (z \pmir d) \\
+    b_0 \defd (b_1 \pmir i) \with (d \fuse b'_0 \pmir d) \\
+    b_1 \defd (i \fuse b_0 \pmir i) \with (b_0 \fuse s \pmir d) \\
+    b'_0 \defd (z \limp z) \with (s \limp b_1 \fuse s)
   \end{lgathered}
 \end{equation*}
 
 \begin{itemize}
 \item Concurrency that is not message-passing
-\end{itemize}
-
+\item Alternative choreography -- how are these related?
 \begin{equation*}
   \begin{lgathered}
     i \defd (e \limp e \fuse b_1) \with (b_0 \limp b_1) \with (b_1 \limp i \fuse b_0) \\
@@ -99,6 +103,15 @@ We will also refer to this relation as \vocab{reduction}%
   \end{lgathered}
 \end{equation*}
 
+\begin{equation*}
+  \begin{lgathered}
+    i \defd (e \limp e \fuse b_1) \with (b_0 \limp b_1) \with (b_1 \limp i \fuse b_0) \\
+    d \defd (e \limp z) \with (b_0 \limp d \fuse b'_0) \with (b_1 \limp b_0 \fuse s) \\
+    z \defd z \pmir b'_0 \\
+    s \defd b_1 \fuse s \pmir b'_0
+  \end{lgathered}
+\end{equation*}
+\end{itemize}
 
 %%% Local Variables:
 %%% mode: latex
