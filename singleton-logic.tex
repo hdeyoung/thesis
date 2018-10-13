@@ -1,116 +1,126 @@
 \chapter{Singleton logic}\label{ch:singleton-logic}
 
-Ordered logic is a substructural logic.
-Although \cref{ch:ordered-logic} presented it from first principles, ordered logic can also be seen as 
-%
-Are there other logics that may be obtained from ordered logic by reconsidering the structural properties of sequents?
+
 
 In this \lcnamecref{ch:singleton-logic}, we present one such logic, \emph{singleton logic}.
 As its name suggests, singleton logic is the fragment of ordered logic obtained by requiring sequent antecedents to have exactly one hypothesis -- no more and no less.
 That such a drastic restriction on the structure of contexts yields a well-defined, computationally useful logic is somewhat surprising.
 
-\section{An algebraic view of structural properties}
+A discussion of singleton logic's isomorphic\alertnote{Is it really isomorphic?} computational model is postponed to the following \lcnamecref{ch:singleton-processes}.
+In this \lcnamecref{ch:singleton-logic}, we confine our attention to the logical aspects of singleton logic.
 
-Draws from \textcite{ReedPfenning:10}
+\section{Bringing symmetry to intuitionistic sequents}
 
-From an algebraic perspective, persistent contexts form an idempotent, commutative monoid -- equivalently, a bounded semilattice.
-\begin{center}
-  \begin{tabular}{@{}>{\itshape}r>{$}c<{$}>{\itshape}l@{}}
-    \normalfont\textsc{algebraic law} && \normalfont\pbox[b]{0.3\textswidth}{\scshape structural\\[-1ex]property}
-    \\[1ex]
-    Infimum &
-      \begin{array}[b]{@{}c@{}}
-        A \circledwedge B \preccurlyeq A \\[-.5ex]
-        A \circledwedge B \preccurlyeq B \\[-.5ex]
-        (C \preccurlyeq A) \land (C \preccurlyeq B) \Rightarrow (C \preccurlyeq A \circledwedge B)
-      \end{array} &
-      Weakening
-    \\[1.5ex]
-    Idempotence & A \preccurlyeq A \circledwedge A & Contraction
-    \\[1.5ex]
-    Commutativity & A \circledwedge B = B \circledwedge A & Exchange
-    \\[1.5ex]
-    Associativity & A \circledwedge (B \circledwedge C) = (A \circledwedge B) \circledwedge C & --
-    \\[1.5ex]
-    Identity & 1 \circledwedge A = A \circledwedge 1 = A & --
-  \end{tabular}
-\end{center}
+\begin{equation*}
+  \infer[\rrule{\limp}?]{\slseq{A |- B_1 \limp B_2}}{
+    \slseq{B_1 \fuse A |- B_2}}
+\end{equation*}
 
-\begin{gather*}
-  (C = C \circledwedge A) \land (C = C \circledwedge B) \Rightarrow (C = C \circledwedge (A \circledwedge B)) \\
-  A_1 \circledwedge A_2 = (A_1 \circledwedge A_2) \circledwedge A_i
-\end{gather*}
+\begin{equation*}
+  \infer[\lrule{\limp}?]{\slseq{A \fuse (B_1 \limp B_2) |- C}}{
+    \slseq{A |- B_1} & \slseq{B_2 |- C}}
+\end{equation*}
 
+\begin{marginfigure}
+  \begin{inferences}
+    \infer[\rrule{\pmir}?]{\slseq{A |- B_2 \pmir B_1}}{
+      \slseq{A \fuse B_1 |- B_2}}
+    \and
+    \infer[\lrule{\pmir}?]{\slseq{(B_2 \pmir B_1) \fuse A |- C}}{
+      \slseq{A |- B_1} & \slseq{B_2 |- C}}
+  \end{inferences}
+  \caption{Equally problematic rules for right implication}
+\end{marginfigure}
 
-Linear logic rejects weakening and contraction, so that linear contexts form a commutative monoid.
-Ordered logic goes further and also rejects exchange, so that ordered contexts form a monoid.
+\begin{inferences}
+  \infer[\rrule{\fuse}?]{\slseq{A_1 \fuse A_2 |- B_1 \fuse B_2}}{
+    \slseq{A_1 |- B_1} & \slseq{A_2 |- B_2}}
+  \and
+  \infer[\lrule{\fuse}?]{\slseq{B_1 \fuse B_2 |- C}}{
+    \slseq{B_1 \fuse B_2 |- C}}
+\end{inferences}
 
-We can also consider restricting other, more extreme restrictions that go beyond the usual structural properties of weakening, contraction, and exchange to the other algebraic laws.
-less apparent structural properties.
-Rejecting associativity, for example, leads to \emph{nonassociative logic}\autocite{}\alertnote{Where is this reference?}, in which contexts form a unital magma.
-Carrying such restrictions even further, we might ask why contexts should form an algebraic structure at all.
-Instead of restricting only the algebraic laws imposed on $\circledwedge$, why not eliminate the binary operation altogether?%
-\footnote{There are other, nonalgebraic (\ie, computational) reasons to be interested in this restriction to singleton contexts, but we will postpone a discussion of them to \cref{ch:singleton-processes}.}
-
-In doing so, the effect is to limit contexts to hold exactly one hypothesis.
+\begin{inferences}
+  \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+    \slseq{A |- B_1}}
+  \and
+  \infer[\rrule{\plus}_2]{\slseq{A |- B_1 \plus B_2}}{
+    \slseq{A |- B_2}}
+  \and
+  \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
+    \slseq{B_1 |- C} & \slseq{B_2 |- C}}
+\end{inferences}
 
 \section{Singleton logic}
 
 \begin{syntax*}
   Propositions &
     A & \alpha \mid A \plus B \mid \zero \mid A \with B \mid \top
-  \\
-  Contexts & \sctx & A
 \end{syntax*}
 
 \begin{inferences}
-  \infer[\jrule{CUT}^A]{\slseq{\sctx |- C}}{
-    \slseq{\sctx |- A} & \slseq{A |- C}}
+  \infer[\jrule{CUT}^A]{\slseq{A |- C}}{
+    \slseq{A |- B} & \slseq{B |- C}}
   \and
   \infer[\jrule{ID}^A]{\slseq{A |- A}}{}
   \\
-  \infer[\rrule{\plus}_1]{\slseq{\sctx |- A \plus B}}{
-    \slseq{\sctx |- A}}
+  \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+    \slseq{A |- B_1}}
   \and
-  \infer[\rrule{\plus}_2]{\slseq{\sctx |- A \plus B}}{
-    \slseq{\sctx |- B}}
+  \infer[\rrule{\plus}_2]{\slseq{A |- B_1 \plus B_2}}{
+    \slseq{A |- B_2}}
   \and
-  \infer[\lrule{\plus}]{\slseq{A \plus B |- C}}{
-    \slseq{A |- C} & \slseq{B |- C}}
+  \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
+    \slseq{B_1 |- C} & \slseq{B_2 |- C}}
   \\
   \text{(no $\rrule{\zero}$ rule)}
   \and
   \infer[\lrule{\zero}]{\slseq{\zero |- C}}{}
   \\
-  \infer[\rrule{\with}]{\slseq{\sctx |- A \with B}}{
-    \slseq{\sctx |- A} & \slseq{\sctx |- B}}
+  \infer[\rrule{\with}]{\slseq{A |- B_1 \with B_2}}{
+    \slseq{A |- B_1} & \slseq{A |- B_2}}
   \and
-  \infer[\lrule{\with}_1]{\slseq{A \with B |- C}}{
-    \slseq{A |- C}}
+  \infer[\lrule{\with}_1]{\slseq{B_1 \with B_2 |- C}}{
+    \slseq{B_1 |- C}}
   \and
-  \infer[\lrule{\with}_2]{\slseq{A \with B |- C}}{
-    \slseq{B |- C}}
+  \infer[\lrule{\with}_2]{\slseq{B_1 \with B_2 |- C}}{
+    \slseq{B_2 |- C}}
   \\
-  \infer[\rrule{\top}]{\slseq{\sctx |- \top}}{}
+  \infer[\rrule{\top}]{\slseq{A |- \top}}{}
   \and
   \text{(no $\lrule{\top}$ rule)}
 \end{inferences}
 
-This is not the additive fragment of linear logic.
+This is not the additive fragment of ordered (or linear) logic.
 
 \subsection{Cut reduction}
 
 \begin{equation*}
-  \infer[\jrule{CUT}^{A \plus B}]{\slseq{\sctx |- C}}{
-    \infer[\rrule{\plus}_1]{\slseq{\sctx |- A \plus B}}{
-      \slseq{\sctx |- A}} &
-    \infer[\lrule{\plus}]{\slseq{A \plus B |- C}}{
-      \slseq{A |- C} & \slseq{B |- C}}}
+  \infer[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
+    \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+      \slseq{A |- B_1}} &
+    \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
+      \slseq{B_1 |- C} & \slseq{B_2 |- C}}}
   %
   \quad\cutreduces\quad
   %
-  \infer[\jrule{CUT}^A]{\slseq{\sctx |- C}}{
-    \slseq{\sctx |- A} & \slseq{A |- C}}
+  \infer[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
+    \slseq{A |- B_1} & \slseq{B_1 |- C}}
+\end{equation*}
+
+\begin{equation*}
+  \infer[\jrule{CUT}^B]{\slseq{A_1 \plus A_2 |- C}}{
+    \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- B}}{
+      \slseq{A_1 |- B} & \slseq{A_2 |- B}} &
+    \slseq{B |- C}}
+  %
+  \quad\cutreduces
+  %
+  \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
+    \infer[\jrule{CUT}^B]{\slseq{A_1 |- C}}{
+      \slseq{A_1 |- B} & \slseq{B |- C}} &
+    \infer[\jrule{CUT}^B]{\slseq{A_2 |- C}}{
+      \slseq{A_2 |- B} & \slseq{B |- C}}}
 \end{equation*}
 
 There are no right commutative cut reductions involving left rules -- more symmetric than ordered logic.
@@ -123,6 +133,78 @@ There are no right commutative cut reductions involving left rules -- more symme
   as its only judgmental rule.
 \end{theorem}
 
+\subsection{Commuting conversions}
+
+\begin{syntax*}
+  Proof terms &
+    M,N & \begin{array}[t]{@{}l@{}}
+            \spawn{M}{N} \mid \fwd \\
+              \mathllap{\mid {}} \selectR{\inl}[M] \mid \selectR{\inr}[M] \mid \caseL{\inl => N_1 | \inr => N_2} \\
+              \mathllap{\mid {}} \caseL{} \\
+              \mathllap{\mid {}} \caseR{\inl => M_1 | \inr => M_2} \mid \selectL{\inl}[N] \mid \selectL{\inr}[N] \\
+              \mathllap{\mid {}} \caseR{}
+          \end{array}
+\end{syntax*}
+
+\begin{inferences}
+  \infer[\jrule{CUT}^A]{\slof{A |- \spawn{M}{N} : C}}{
+    \slof{A |- M : B} & \slof{B |- N : C}}
+  \and
+  \infer[\jrule{ID}^A]{\slof{A |- \fwd : A}}{}
+  \\
+  \infer[\rrule{\plus}_1]{\slof{A |- \selectR{\inl}[M] : B_1 \plus B_2}}{
+    \slof{A |- M : B_1}}
+  \and
+  \infer[\rrule{\plus}_2]{\slof{A |- \selectR{\inr}[M] : B_1 \plus B_2}}{
+    \slof{A |- M : B_2}}
+  \\
+  \infer[\lrule{\plus}]{\slof{B_1 \plus B_2 |- \caseL{\inl => N_1 | \inr => N_2} : C}}{
+    \slof{B_1 |- N_1 : C} & \slof{B_2 |- N_2 : C}}
+  \\
+  \text{(no $\rrule{\zero}$ rule)}
+  \and
+  \infer[\lrule{\zero}]{\slof{\zero |- \caseL{} : C}}{}
+  \\
+  \infer[\rrule{\with}]{\slof{A |- \caseR{\inl => M_1 | \inr => M_2} : B_1 \with B_2}}{
+    \slof{A |- M_1 : B_1} & \slof{A |- M_2 : B_2}}
+  \\
+  \infer[\lrule{\with}_1]{\slof{B_1 \with B_2 |- \selectL{\inl}[N] : C}}{
+    \slof{B_1 |- N : C}}
+  \and
+  \infer[\lrule{\with}_2]{\slof{B_1 \with B_2 |- \selectL{\inr}[N] : C}}{
+    \slof{B_2 |- N : C}}
+  \\
+  \infer[\rrule{\top}]{\slof{A |- \caseR{} : \top}}{}
+  \and
+  \text{(no $\lrule{\top}$ rule)}
+\end{inferences}
+
+\begin{gather*}
+  \selectR{\inl}[\caseL{\inl => M | \inr => N}] \equiv \caseL{\inl => \selectR{\inl}[M] | \inr => \selectR{\inl}[N]} \\
+  % \selectR{\inr}[\caseL{\inl => M | \inr => N}] \equiv \caseL{\inl => \selectR{\inr}[M] | \inr => \selectR{\inr}[N]} \\
+  \selectR{\inl}[\selectL{\inl}[M]] \equiv \selectL{\inl}[\selectR{\inl}[M]] \\
+  \selectR{\inl}[\selectL{\inr}[M]] \equiv \selectL{\inr}[\selectR{\inl}[M]] \\
+  \selectR{\inl}[\caseL{}] \equiv \caseL{} \\
+  %
+  \selectL{\inl}[\caseR{\inl => M | \inr => N}] \equiv \caseR{\inl => \selectL{\inl}[M] | \inr => \selectL{\inl}[N]} \\
+  % \selectR{\inr}[\caseL{\inl => M | \inr => N}] \equiv \caseL{\inl => \selectR{\inr}[M] | \inr => \selectR{\inr}[N]} \\
+  \selectL{\inl}[\selectR{\inl}[M]] \equiv \selectR{\inl}[\selectL{\inl}[M]] \\
+  \selectL{\inl}[\selectR{\inr}[M]] \equiv \selectR{\inr}[\selectL{\inl}[M]] \\
+  \selectL{\inl}[\caseR{}] \equiv \caseR{} \\
+  %
+  \begin{lgathered}
+    \caseR{\inl => \caseL{\inl => M_1 | \inr => M_2}
+         | \inr => \caseL{\inl => N_1 | \inr => N_2}} \\[-1ex]
+      \quad \equiv \caseL{\inl => \caseR{\inl => M_1 | \inr => N_1}
+                        | \inr => \caseR{\inl => M_2 | \inr => N_2}}
+  \end{lgathered}
+  \\
+  \caseR{\inl => \caseL{} | \inr => \caseL{}} \equiv \caseL{} \\
+  %
+  \caseL{\inl => \caseR{} | \inr => \caseR{}} \equiv \caseR{} \\
+  %
+  \caseL{} \equiv \caseR{}
+\end{gather*}
 
 \subsection{Extensions of singleton logic}
 
@@ -133,7 +215,7 @@ There are no right commutative cut reductions involving left rules -- more symme
 
 \begin{syntax*}
   Propositions & A & \dotsb \mid \one \\
-  Contexts & \sctx & \dotsb \mid \sctxe
+  Contexts & \sctx & A \mid \sctxe
 \end{syntax*}
 
 \begin{inferences}
@@ -172,6 +254,15 @@ There are no right commutative cut reductions involving left rules -- more symme
   \and
   \infer[\lrule{\bang}]{\slseq{\uctx ; \bang A |- \cseq}}{
     \slseq{\uctx, A ; \sctxe |- \cseq}}
+\end{inferences}
+
+
+\begin{inferences}
+  \infer[\rrule{\bang\tensor}]{\slseq{\uctx ; \sctx |- A_1 \bang\tensor A_2}}{
+    \slseq{\uctx ; \sctxe |- A_1} & \slseq{\uctx ; \sctx |- A_2}}
+  \and
+  \infer[\lrule{\bang\tensor}]{\slseq{\uctx ; A_1 \bang\tensor A_2 |- \cseq}}{
+    \slseq{\uctx, A_1 ; A_2 |- \cseq}}
 \end{inferences}
 
 

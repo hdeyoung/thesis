@@ -116,6 +116,12 @@
 \NewDocumentCommand \lctxe { } { \__logic_lctxe: }
 \cs_new:Npn \__logic_lctxe: { \cdot }
 
+\NewDocumentCommand \uctx { } { \__logic_uctx: }
+\cs_new:Npn \__logic_uctx: { \Gamma }
+
+\NewDocumentCommand \uctxe { } { \__logic_uctxe: }
+\cs_new:Npn \__logic_uctxe: { \cdot }
+
 \NewDocumentCommand \conc { } { \__logic_conc: }
 \cs_new:Npn \__logic_conc: { \gamma }
 
@@ -151,11 +157,10 @@
     pre = \mathord { \__logic_plus: } , % Prefix operator
     delimiters = \lbrace \rbrace , % Delimiters
     post = ,
-    body = #1 ,
+    body = \tl_set:Nn \l_tmpa_tl {#1}
+           \tl_replace_all:Nnn \l_tmpa_tl { : } { \colon }
+           \tl_use:N \l_tmpa_tl
   }
-  % \tl_set:Nn \l_tmpa_tl {#1}
-  % \tl_replace_all:Nnn \l_tmpa_tl { : } { \colon }
-  % \tl_use:N \l_tmpa_tl
 
 \NewDocumentCommand \with { s }
   { \IfBooleanTF {#1} \__logic_with:wn \__logic_with: }
@@ -172,6 +177,11 @@
   % \tl_set:Nn \l_tmpa_tl {#1}
   % \tl_replace_all:Nnn \l_tmpa_tl { : } { \colon }
   % \tl_use:N \l_tmpa_tl
+
+%% Exponentials
+
+\NewDocumentCommand \bang { } { \__logic_bang: }
+\cs_new:Npn \__logic_bang: { \mathord { ! } }
 
 %%%%%%%%%%%%%%%%%%%
 %% Ordered logic %%

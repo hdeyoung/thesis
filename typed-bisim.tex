@@ -1,5 +1,7 @@
 \chapter{Typed bisimilarity}\label{ch:typed-bisim}
 
+\section{Open typed bisimilarity}
+
 \begin{definition}
   \emph{Typed bisimilarity} is the largest \emph{symmetric} typed binary relation that satisfies the following conditions.
   \begin{thmdescription}
@@ -20,10 +22,10 @@ What about reduction closure?
 Compare with ordered bisimilarity.
 
 
-\begin{lemma}
-  Let $\simu{R}$ be a symmetric typed binary relation for which $\slcof{\sctx |- \dnf \simu{R}^{-1}\reduces \cnf' : \sctx'}$ implies $\slcof{\sctx |- \dnf \Reduces\simu{R}^{-1} \cnf' : \sctx'}$.
-  Then $\slcof{\sctx |- \dnf \congrel*{\refl{\simu{R}}}^{-1}\reduces \cnf' : \sctx'}$ implies $\slcof{\sctx |- \dnf \Reduces\congrel*{\refl{\simu{R}}}^{-1} \cnf' : \sctx'}$.
-\end{lemma}
+% \begin{lemma}
+%   Let $\simu{R}$ be a symmetric typed binary relation for which $\slcof{\sctx |- \dnf \simu{R}^{-1}\reduces \cnf' : \sctx'}$ implies $\slcof{\sctx |- \dnf \Reduces\simu{R}^{-1} \cnf' : \sctx'}$.
+%   Then $\slcof{\sctx |- \dnf \congrel*{\refl{\simu{R}}}^{-1}\reduces \cnf' : \sctx'}$ implies $\slcof{\sctx |- \dnf \Reduces\congrel*{\refl{\simu{R}}}^{-1} \cnf' : \sctx'}$.
+% \end{lemma}
 
 
 \begin{conjecture}
@@ -31,7 +33,8 @@ Compare with ordered bisimilarity.
   Then $\simu{R}$ is included in typed bisimilarity.
   \begin{thmdescription}
   \item[Immediate output bisimulation]
-    If $\slcof{\sctx |- (\cnf' \cc \selectR{\kay}) \simu{R} \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\sctx |- \cnf' \refl{\simu{R}} \dnf' : A_{\kay}}$.
+    If $\slcof{\sctx |- (\cnf' \cc \selectR{\kay}) \simu{R} \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\sctx |- \cnf' \refl{\simu{R}} \dnf' : A_{\kay}}$.%
+    \footnote{If $\slcof{\sctx |- (\cnf' \cc \selectR{\kay}) \simu{R} \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\slcof{\sctx |- \dnf \Reduces\mathrel{(\refl{\simu{R}} \cc \selectR{\kay})}^{-1} \cnf' \cc \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$; where $\slcof{\sctx |- \cnf \mathrel{(\simu{S} \cc \selectR{\kay})} \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ exactly when $\cnf = \cnf' \cc \selectR{\kay}$ and $\dnf = \dnf' \cc \selectR{\kay}$ and $\slcof{\sctx |- \cnf' \simu{S} \dnf' : A_{\kay}}$.}
     Symmetrically, if $\slcof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- (\selectL{\kay} \cc \cnf') \simu{R} \dnf : \sctx'}$, then $\dnf \Reduces \selectL{\kay} \cc \dnf'$ for some $\dnf'$ such that $\slcof{A_{\kay} |- \cnf' \refl{\simu{R}} \dnf' : \sctx'}$.
 
   \item[Immediate input bisimulation]
@@ -42,53 +45,57 @@ Compare with ordered bisimilarity.
     If $\slcof{\sctx |- \dnf \simu{R}^{-1}\reduces \cnf' : \sctx'}$, then $\slcof{\sctx |- \dnf \Reduces\refl*{\simu{R}}^{-1} \cnf' : \sctx'}$.
 
   \item[Emptiness bisimulation]
+    If $\slcof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \cnfe \simu{R} \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\selectR{\kay} \cc \dnf \Reduces \dnf'_{\kay} \cc \selectR{\kay}$ for some $\dnf'_{\kay}$ such that $\slcof{A_{\kay} |- \cnfe \refl{\simu{R}} \dnf'_{\kay} : A_{\kay}}$, for all $\kay \in L$.
+    Symmetrically, if $\slcof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \cnfe \simu{R} \dnf : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\dnf \cc \selectL{\kay} \Reduces \selectL{\kay} \cc \dnf'_{\kay}$ for some $\dnf'_{\kay}$ such that $\slcof{A_{\kay} |- \cnfe \refl{\simu{R}} \dnf'_{\kay} : A_{\kay}}$, for all $\kay \in L$.
   \end{thmdescription}
 \end{conjecture}
 %
-\begin{proof}
-  We must establish the output, input, and reduction bisimilarity properties:
-  \begin{description}
-  \item[Output bisimilarity]
-    Assume that $\slcof{\sctx |- \dnf \congrel*{\refl{\simu{R}}}^{-1}\Reduces \cnf' \cc \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$;
-    we must exhibit $\dnf'$ such that $\dnf \Reduces \dnf' \cc \selectR{\kay}$ and $\slcof{\sctx |- \cnf' \congrel{\refl{\simu{R}}} \dnf' : A_{\kay}}$.
+% \begin{proof}
+%   We must establish the output, input, and reduction bisimilarity properties:
+%   \begin{description}
+%   \item[Output bisimilarity]
+%     Assume that $\slcof{\sctx |- \dnf \congrel*{\refl{\simu{R}}}^{-1}\Reduces \cnf' \cc \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$;
+%     we must exhibit $\dnf'$ such that $\dnf \Reduces \dnf' \cc \selectR{\kay}$ and $\slcof{\sctx |- \cnf' \congrel{\refl{\simu{R}}} \dnf' : A_{\kay}}$.
 
-    Because $\congrel{\refl{\simu{R}}}$ is a reduction bisimulation\pcref{lem:congrel-reduction-bisim}, $\slcof{\sctx |- \dnf \Reduces\congrel*{\refl{\simu{R}}}^{-1} \cnf' \cc \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$.
-    The relation $\congrel{\refl{\simu{R}}}$ is also an imediate output bisimulation, so, indeed, $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\sctx |- \cnf' \congrel{\refl{\simu{R}}} \dnf' : A_{\kay}}$.
-    \begin{itemize}
-    \item In case $\slcof{\sctx |- \dnf \Reduces= \cnf' \cc \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then choose $\dnf'$ to be $\cnf'$ and note that $\slcof{\sctx |- \cnf' \refl{\simu{R}} \dnf' : A_{\kay}}$.
-    \item In case $\slcof{\sctx |- \dnf \Reduces\simu{R}^{-1} \cnf' \cc \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then appeal to immediate output bisimilarity: there must exist a configuration $\dnf'$ such that $\dnf \Reduces\Reduces \dnf' \cc \selectR{\kay}$ and $\slcof{\sctx |- \cnf' \refl{\simu{R}} \dnf' : A_{\kay}}$.
-    \end{itemize}
-    In either case, $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\sctx |- \cnf' \refl{\simu{R}} \dnf' : A_{\kay}}$.
+%     Because $\congrel{\refl{\simu{R}}}$ is a reduction bisimulation\pcref{lem:congrel-reduction-bisim}, $\slcof{\sctx |- \dnf \Reduces\congrel*{\refl{\simu{R}}}^{-1} \cnf' \cc \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$.
+%     The relation $\congrel{\refl{\simu{R}}}$ is also an imediate output bisimulation, so, indeed, $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\sctx |- \cnf' \congrel{\refl{\simu{R}}} \dnf' : A_{\kay}}$.
+%     \begin{itemize}
+%     \item In case $\slcof{\sctx |- \dnf \Reduces= \cnf' \cc \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then choose $\dnf'$ to be $\cnf'$ and note that $\slcof{\sctx |- \cnf' \refl{\simu{R}} \dnf' : A_{\kay}}$.
+%     \item In case $\slcof{\sctx |- \dnf \Reduces\simu{R}^{-1} \cnf' \cc \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then appeal to immediate output bisimilarity: there must exist a configuration $\dnf'$ such that $\dnf \Reduces\Reduces \dnf' \cc \selectR{\kay}$ and $\slcof{\sctx |- \cnf' \refl{\simu{R}} \dnf' : A_{\kay}}$.
+%     \end{itemize}
+%     In either case, $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\sctx |- \cnf' \refl{\simu{R}} \dnf' : A_{\kay}}$.
 
-  \item[Input bisimilarity]
-    Assume that $\slcof{\sctx |- \cnf \congrel{\refl{\simu{R}}} \dnf : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ and $\cnf \cc \selectL{\kay} \Reduces \cnf'$;
-    we must show that $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\congrel*{\refl{\simu{R}}}^{-1} \cnf' : A_{\kay}}$.
+%   \item[Input bisimilarity]
+%     Assume that $\slcof{\sctx |- \cnf \congrel{\refl{\simu{R}}} \dnf : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ and $\cnf \cc \selectL{\kay} \Reduces \cnf'$;
+%     we must show that $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\congrel*{\refl{\simu{R}}}^{-1} \cnf' : A_{\kay}}$.
 
-    By the definition of $\congrel{\refl{\simu{R}}}$, we have $\slcof{\sctx |- \dnf \cc \selectL{\kay} \congrel*{\refl{\simu{R}}}^{-1}\Reduces \cnf' : A_{\kay}}$.
-    Because $\congrel{\refl{\simu{R}}}$ is a reduction bisimulation\pcref{lem:congrel-reduction-bisim}, $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\congrel*{\refl{\simu{R}}}^{-1} \cnf' : A_{\kay}}$, as required.
+%     By the definition of $\congrel{\refl{\simu{R}}}$, we have $\slcof{\sctx |- \dnf \cc \selectL{\kay} \congrel*{\refl{\simu{R}}}^{-1}\Reduces \cnf' : A_{\kay}}$.
+%     Because $\congrel{\refl{\simu{R}}}$ is a reduction bisimulation\pcref{lem:congrel-reduction-bisim}, $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\congrel*{\refl{\simu{R}}}^{-1} \cnf' : A_{\kay}}$, as required.
 
     
-    \begin{itemize}
-    \item In case $\cnf \cc \selectL{\kay} = \cnf'$, then...
-    \item In case $\cnf \cc \selectL{\kay} \reduces\Reduces \cnf'$, there are two subcases according to whether the message is read during the first reduction step.
-      \begin{itemize}
-      \item Consider the subcase in which the message is read during the first step -- that is, $\cnf = \cnf'_0 \cc \caseR[\ell \in L]{\ell => P_{\ell}}$ and $\cnf'_0 \cc P_{\kay} \Reduces \cnf'$.
-        By immediate input bisimilarity, $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\refl*{\simu{R}}^{-1} \cnf'_0 \cc P_{\kay} : A_{\kay}}$.
-        Upon appealing to reduction bisimilarity, we obtain the required $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\refl*{\simu{R}}^{-1} \cnf' : A_{\kay}}$.
-      \item Consider the subcase in which the message is \emph{not} read during the first step -- that is, $\cnf \reduces \cnf'_0$ and $\cnf'_0 \cc \selectL{\kay} \Reduces \cnf'$ for some $\cnf'_0$.
-        By reduction bisimilarity, $\slcof{\sctx |- \dnf \Reduces\refl*{\simu{R}}^{-1} \cnf'_0 : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$.
-        \begin{itemize}
-        \item In case $\slcof{\sctx |- \dnf \Reduces= \cnf'_0 : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then the frame property for reduction yields $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces= \cnf' : A_{\kay}}$.
-        \item In case $\slcof{\sctx |- \dnf \Reduces\simu{R}^{-1} \cnf'_0 : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then we may obtain $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\refl*{\simu{R}}^{-1} \cnf' : A_{\kay}}$ by appealing to the inductive hypothesis (and the frame property for reduction).
-        \end{itemize}
-      \end{itemize}
-    \end{itemize}
-    In all cases, $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\refl*{\simu{R}}^{-1} \cnf' : A_{\kay}}$.
+%     \begin{itemize}
+%     \item In case $\cnf \cc \selectL{\kay} = \cnf'$, then...
+%     \item In case $\cnf \cc \selectL{\kay} \reduces\Reduces \cnf'$, there are two subcases according to whether the message is read during the first reduction step.
+%       \begin{itemize}
+%       \item Consider the subcase in which the message is read during the first step -- that is, $\cnf = \cnf'_0 \cc \caseR[\ell \in L]{\ell => P_{\ell}}$ and $\cnf'_0 \cc P_{\kay} \Reduces \cnf'$.
+%         By immediate input bisimilarity, $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\refl*{\simu{R}}^{-1} \cnf'_0 \cc P_{\kay} : A_{\kay}}$.
+%         Upon appealing to reduction bisimilarity, we obtain the required $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\refl*{\simu{R}}^{-1} \cnf' : A_{\kay}}$.
+%       \item Consider the subcase in which the message is \emph{not} read during the first step -- that is, $\cnf \reduces \cnf'_0$ and $\cnf'_0 \cc \selectL{\kay} \Reduces \cnf'$ for some $\cnf'_0$.
+%         By reduction bisimilarity, $\slcof{\sctx |- \dnf \Reduces\refl*{\simu{R}}^{-1} \cnf'_0 : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$.
+%         \begin{itemize}
+%         \item In case $\slcof{\sctx |- \dnf \Reduces= \cnf'_0 : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then the frame property for reduction yields $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces= \cnf' : A_{\kay}}$.
+%         \item In case $\slcof{\sctx |- \dnf \Reduces\simu{R}^{-1} \cnf'_0 : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then we may obtain $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\refl*{\simu{R}}^{-1} \cnf' : A_{\kay}}$ by appealing to the inductive hypothesis (and the frame property for reduction).
+%         \end{itemize}
+%       \end{itemize}
+%     \end{itemize}
+%     In all cases, $\slcof{\sctx |- \dnf \cc \selectL{\kay} \Reduces\refl*{\simu{R}}^{-1} \cnf' : A_{\kay}}$.
 
-  \item[Reduction bisimilarity]
-  \end{description}
-\end{proof}
+%   \item[Reduction bisimilarity]
+%   \end{description}
+% \end{proof}
 
+
+\section{Closed typed bisimilarity}
 
 What about closed bisimilarity?
 Transducers from the example would be closed bisimilar, I think, but they are not (open) bisimilar.
@@ -98,27 +105,31 @@ Transducers from the example would be closed bisimilar, I think, but they are no
   \emph{Typed closed bisimilarity} is the largest \emph{symmetric} typed binary relation that satisfies the following conditions.
   \begin{thmdescription}
   \item[Closure]
-    If $\sctx$ is a compound type, then $\slcof{\sctx |- \cnf \tsim \dnf : \sctx'}$ if and only if $\slcof{\alpha |- \cnf_0 \tsim \dnf_0 : \sctx}$ implies $\slcof{\alpha |- \cnf_0 \cc \cnf \tsim \dnf_0 \cc \dnf : \sctx'}$.
+    For compound types $\sctx$, if $\slcof{\sctx |- \cnf \tsim \dnf : \sctx'}$ and $\slcof{\alpha |- \cnf_0 \tsim \dnf_0 : \sctx}$, then $\slcof{\alpha |- \cnf_0 \cc \cnf \tsim \dnf_0 \cc \dnf : \sctx'}$.
   \item[Output bisimilarity]
     If $\slcof{\alpha |- \cnf \tsim \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ and $\cnf \Reduces \cnf' \cc \selectR{\kay}$, then $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\alpha |- \cnf' \tsim \dnf' : A_{\kay}}$.
   \item[Input bisimilarity]
     If $\slcof{\alpha |- \cnf \tsim \dnf : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ and $\cnf \cc \selectL{\kay} \Reduces \cnf'$, then $\slcof{\alpha |- \dnf \cc \selectL{\kay} \Reduces\mist \cnf' : A_{\kay}}$.
+  \item[Reduction bisimilarity]
+    If $\slcof{\alpha |- \dnf \mist\reduces \cnf' : \sctx'}$, then $\slcof{\alpha |- \dnf \Reduces\mist \cnf' : \sctx'}$.%
+    \alertnote{Do I need this clause?}
   \end{thmdescription}
 \end{definition}
 
 
 \begin{conjecture}
-  Let $\simu{R}$ be a typed binary relation that satisfies the following conditions.
+  Let $\simu{R}$ be a symmetric typed binary relation that satisfies the following conditions.
   Then $\simu{R}$ is included in closed typed bisimilarity.
   \begin{thmdescription}
   \item[Closure]
-    If $\sctx$ is a compound type, then $\slcof{\sctx |- \cnf \tsim \dnf : \sctx'}$ if and only if $\slcof{\alpha |- \cnf_0 \tsim \dnf_0 : \sctx}$ implies $\slcof{\alpha |- \cnf_0 \cc \cnf \tsim \dnf_0 \cc \dnf : \sctx'}$.
+    For compound types $\sctx$, if $\slcof{\sctx |- \cnf \simu{R} \dnf : \sctx'}$ and $\slcof{\alpha |- \cnf_0 \simu{R} \dnf_0 : \sctx}$, then $\slcof{\alpha |- \cnf_0 \cc \cnf \refl{\simu{R}} \dnf_0 \cc \dnf : \sctx'}$.
   \item[Immediate output bisimulation]
-    If $\slcof{\alpha |- \cnf' \cc \selectR{\kay} \simu{R} \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\alpha |- \cnf' \simu{R} \dnf' : A_{\kay}}$.
+    If $\slcof{\alpha |- \cnf' \cc \selectR{\kay} \simu{R} \dnf : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\dnf \Reduces \dnf' \cc \selectR{\kay}$ for some $\dnf'$ such that $\slcof{\alpha |- \cnf' \refl{\simu{R}} \dnf' : A_{\kay}}$.
   \item[Immediate input bisimulation]
-    If $\slcof{\alpha |- \cnf' \cc \caseR[\ell \in L]{\ell => P_{\ell}} \simu{R} \dnf : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\slcof{\alpha |- \dnf \cc \selectL{\kay} \Reduces\simu{R}^{-1} \cnf' \cc P_{\kay} : A_{\kay}}$.
+    If $\slcof{\alpha |- \cnf' \cc \caseR[\ell \in L]{\ell => P_{\ell}} \simu{R} \dnf : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, then $\slcof{\alpha |- \dnf \cc \selectL{\kay} \Reduces\refl*{\simu{R}}^{-1} \cnf' \cc P_{\kay} : A_{\kay}}$.
   \item[Reduction bisimulation]
-    If $\slcof{\alpha |- \dnf \simu{R}^{-1}\reduces \cnf' : A}$, then $\slcof{\alpha |- \dnf \Reduces\simu{R}^{-1} \cnf' : A}$.
+    If $\slcof{\alpha |- \dnf \simu{R}^{-1}\reduces \cnf' : \sctx'}$, then $\slcof{\alpha |- \dnf \Reduces\refl*{\simu{R}}^{-1} \cnf' : \sctx'}$.%
+    \alertnote{I don't think I need emptiness bisimulation.}
   \end{thmdescription}
 \end{conjecture}
 
@@ -136,20 +147,26 @@ Given the type $\alpha \defd \plus*{a:\alpha}$, the following are well-typed at 
 \end{equation*}
 We would like to prove that $q$ and $s_0$ are typed-bisimilar configurations, but that is false for open typed bisimilarity.
 Suppose, for the sake of deriving a contradiction, that $q \tsim s_0$.
-By input bisimilarity, $\slcof{\alpha |- \selectR{a} \cc s_0 \Reduces\mist q \cc \selectR{a} : \alpha}$.
-By output bisimilarity, $\selectR{a} \cc s_0 \Reduces \dnf' \cc \selectR{a}$ for some $\dnf'$ such that $\slcof{\alpha |- q \tsim \dnf' : \alpha}$.
-This is impossible because $\selectR{a} \cc s_0$ reduces only to $s_1$ (and itself).
+Because $\selectR{a} \cc q \Reduces q \cc \selectR{a}$, it follows by input bisimilarity that $\slcof{\alpha |- \selectR{a} \cc s_0 \Reduces\mist q \cc \selectR{a} : \alpha}$.
+Furthermore, by output bisimilarity, $\selectR{a} \cc s_0 \Reduces \dnf' \cc \selectR{a}$ for some $\dnf'$ such that $\slcof{\alpha |- q \tsim \dnf' : \alpha}$.
+This is impossible because $\selectR{a} \cc s_0$ reduces only to $s_1$ (and, trivially, to itself).
 
-
-\begin{equation*}
-  g \defd \spawn{g}{\selectR{a}}
-\end{equation*}
+What about closed typed bisimilarity?
+For some relation $\simu{R}$, we must show that $\slcof{\epsilon |- \cnf_0 \cc q \refl{\simu{R}} \dnf_0 \cc s_0 : \plus*{a:\alpha}}$ for all $\slcof{\epsilon |- \cnf_0 \simu{R} \dnf_0 : \plus*{a:\alpha}}$.
+\begin{inferences}
+  \infer{\slcof{\epsilon |- (\cnf_0 \cc \selectR{a}^n \cc q \cc \selectR{a}^m) \simu{R} (\dnf_0 \cc \selectR{a}^i \cc s_0 \cc \selectR{a}^j) : \plus*{a:\alpha}}}{
+    \slcof{\epsilon |- \cnf_0 \tsim \dnf_0 : \plus*{a:\alpha}}}
+  \\
+  \infer{\slcof{\epsilon |- (\cnf_0 \cc \selectR{a}^n \cc q \cc \selectR{a}^m) \simu{R} (\dnf_0 \cc \selectR{a}^i \cc s_1 \cc \selectR{a}^j) : \plus*{a:\alpha}}}{
+    \slcof{\epsilon |- \cnf_0 \tsim \dnf_0 : \plus*{a:\alpha}}}
+\end{inferences}
+We don't benefit from inversion, like we did with ordered bisimilarity.
+Why don't we have eager decomposition of spawns?
 
 \begin{description}
-\item{}
-\item[Immediate input bisimulation]
-  Assume that $\slcof{\epsilon |- g \cc q \simu{R} g \cc s_0 : \alpha}$;
-  we must show that $\slcof{\epsilon |- g \cc s_0 \ \tsim \dnf' : \alpha}$.
+\item[Immediate output bisimulation]
+\item[Reduction bisimulation]
+  
 \end{description}
 
 %%% Local Variables:

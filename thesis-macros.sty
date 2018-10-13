@@ -26,6 +26,13 @@
     long-plural-form = deterministic~finite~automata
   }
 
+\DeclareAcronym { SFT }
+  {
+    short = SFT ,
+    long = subsequential~finite~transducer ,
+    short-indefinite = an
+  }
+
 \DeclareAcronym { DPDA }
   {
     short = DPDA ,
@@ -41,8 +48,14 @@
     long-plural-form = linear~communicating~automata
   }
 
-\NewDocumentCommand \wc { } { \__thesis_wc: }
+\NewDocumentCommand \wc { s }
+  {
+    \IfBooleanTF {#1}
+      { \__thesis_wc_star: }
+      { \__thesis_wc: }
+  }
 \cs_new:Npn \__thesis_wc: { \mkern2mu }
+\cs_new:Npn \__thesis_wc_star: { \mathbin { \cdot } }
 
 \NewDocumentCommand \emp { } { \__thesis_emp: }
 \cs_new:Npn \__thesis_emp: { \epsilon }
@@ -65,6 +78,18 @@
 
 \NewDocumentCommand \augalph { m m } { \__thesis_augalph:nn {#1} {#2} }
 \cs_new:Npn \__thesis_augalph:nn #1 #2 { #1 \sb{#2} }
+
+\NewDocumentCommand \oalph { } { \__thesis_oalph: }
+\cs_new:Npn \__thesis_oalph: { \Gamma }
+
+\NewDocumentCommand \sftnext { } { \__thesis_sftnext: }
+\cs_new:Npn \__thesis_sftnext: { \delta }
+
+\NewDocumentCommand \sftout { } { \__thesis_sftout: }
+\cs_new:Npn \__thesis_sftout: { \sigma }
+
+\NewDocumentCommand \sftterm { } { \__thesis_sftterm: }
+\cs_new:Npn \__thesis_sftterm: { \rho }
 
 \NewDocumentCommand \salph { } { \__thesis_salph: }
 \cs_new:Npn \__thesis_salph: { \Gamma }
@@ -89,11 +114,44 @@
 \cs_new:Npn \__thesis_nfaReduces:n #1
   { \overset {#1} { \__thesis_nfaReduces: } }
 
+\NewDocumentCommand \sftReduces { o }
+  {
+    \IfNoValueTF {#1}
+      { \__thesis_sftReduces: }
+      { \__thesis_sftReduces:n {#1} }
+  }
+\cs_new:Npn \__thesis_sftReduces: { \Longrightarrow }
+\cs_new:Npn \__thesis_sftReduces:n #1
+  { \overset {#1} { \__thesis_sftReduces: } }
+
+\NewDocumentCommand \sftReducesEnd { o }
+  {
+    \IfNoValueTF {#1}
+      { \__thesis_sftReducesEnd: }
+      { \__thesis_sftReducesEnd:n {#1} }
+  }
+\cs_new:Npn \__thesis_sftReducesEnd: { \mathrel{\Longrightarrow\mkern1mu\Mapsfromchar} }
+\cs_new:Npn \__thesis_sftReducesEnd:n #1
+  { \overset {#1} { \__thesis_sftReducesEnd: } }
+
+\NewDocumentCommand \sftreduces { o }
+  {
+    \IfNoValueTF {#1}
+      { \__thesis_sftreduces: }
+      { \__thesis_sftreduces:n {#1} }
+  }
+\cs_new:Npn \__thesis_sftreduces: { \longrightarrow }
+\cs_new:Npn \__thesis_sftreduces:n #1
+  { \overset {#1} { \__thesis_sftreduces: } }
+
+
+
+
 \NewDocumentCommand \autlang { m m } { \__thesis_autlang:nn {#1} {#2} }
 \cs_new:Npn \__thesis_autlang:nn #1 #2 { \mathcal { L } \sb{#1} ( #2 ) }
 
-\NewDocumentCommand \tio { m m }
-  { \__thesis_tio:nn {#1} {#2} }
+\NewDocumentCommand \tio { >{ \SplitArgument { 1 } { | } } m }
+  { \__thesis_tio:nn #1 }
 \cs_new:Npn \__thesis_tio:nn #1#2 { #1 \mid #2 }
 
 \tikzgraphsset
@@ -107,11 +165,22 @@
 \NewDocumentCommand \nfa { m } { \__thesis_nfa:n {#1} }
 \cs_new:Npn \__thesis_nfa:n #1 { \hat {#1} }
 
+\NewDocumentCommand \sft { m } { \__thesis_sft:n {#1} }
+\cs_new:Npn \__thesis_sft:n #1 { \hat {#1} }
+
 \NewDocumentCommand \asim { } { \__thesis_asim: }
 \cs_new:Npn \__thesis_asim: { \sim }
 
 \NewDocumentCommand \misa { } { \__thesis_misa: }
 \cs_new:Npn \__thesis_misa: { \__thesis_asim: ^{-1} }
+
+\NewDocumentCommand \tape { o }
+  {
+    \IfNoValueTF {#1}
+      \__thesis_tape:
+      { \__thesis_tape: \sb{#1} }
+  }
+\cs_new:Npn \__thesis_tape: { \text{\sffamily tape} }
 
 
 %%%%%%%%%%%%%%%%%%%

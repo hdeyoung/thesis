@@ -1,6 +1,9 @@
 \chapter{From processes to rewriting}
 
-\section{}
+\section{A shallow embedding of processes in ordered rewriting}
+
+\alertnote{Is this a shallow embedding?
+Is HOAS deep or shallow?}
 
 \begin{equation*}
   \begin{aligned}
@@ -23,126 +26,116 @@
   \end{aligned}
 \end{equation*}
 
+\begin{theorem}
+  If $\cnf \reduces \cnf'$, then $\trconf{\cnf} \Reduces \trconf{\cnf'}$.\alertnote{Weak reduction only because rewriting is unfocused...}
+\end{theorem}
+
+\begin{theorem}
+  If $\trconf{\cnf} \Reduces \trconf{\cnf'}$, then $\cnf \Reduces \cnf'$.
+\end{theorem}
+
+These two theorems do not establish $\trconf{}$ as a (weak) reduction bisimulation\alertnote{Is this the right term?} because the second theorem assumes a reduction to an ordered context that is in the translation's image.
+The second theorem is equivalent to 
+\begin{theorem}
+  If $\trconf{\cnf} = P \Reduces P' = \trconf{\cnf'}$, then $\cnf \Reduces \cnf'$.
+\end{theorem}
+For the translation to be a (weak) reduction bisimulation, we would need to prove the following, which is false for unfocused rewriting.
+\begin{falseclaim}
+  If $\trconf{\cnf} = P \Reduces P'$, then $\cnf \Reduces \cnf'$ and $\trconf{\cnf'} = P'$ for some $\cnf'$.
+\end{falseclaim}
+It is false because of rewritings like $\bigwith_{\ell \in L} (\selectR{\ell} \limp \trproc{Q_{\ell}}) \reduces \selectR{\kay} \limp \trproc{Q_{\kay}}$ for $\kay \in L$.
+
+However, for focused rewriting, the translation (with appropriate shifts added) would be a (strong) reduction bisimulation:
+\begin{theorem}
+  If $\cnf \reduces \cnf'$, then $\trconf{\cnf} \reduces \trconf{\cnf'}$.
+\end{theorem}
+%
+\begin{theorem}
+  If $\trconf{\cnf} \reduces P'$, then $\cnf \reduces \cnf'$ and $\trconf{\cnf'} = P'$ for some $\cnf'$.
+\end{theorem}
+
+
+\section{A session type system for ordered rewriting}
+
 \begin{inferences}
-  \infer{\slof{\sctx |- A_1 \fuse A_2 : C}}{
-    \slof{\sctx |- A_1 : A} & \slof{A |- A_2 : C}}
+  \infer{\slof{A |- A_1 \fuse A_2 : C}}{
+    \slof{A |- A_1 : B} & \slof{B |- A_2 : C}}
   \and
-  \infer{\slof{A |- A : A}}{}
+  \infer{\slof{A |- \one : A}}{}
   \\
-  \infer{\slof{\sctx |- A \fuse \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
-    \text{($\kay \in L$)} & \slof{\sctx |- A : A_{\kay}}}
+  \infer{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \text{($\kay \in L$)}}
   \and
   \infer{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \bigwith_{\ell \in L} (\selectR{\ell} \limp A_{\ell}) : C}}{
     \multipremise{\ell \in L}{\slof{A_{\ell} |- A_{\ell} : C}}}
   \\
-  \text{(etc...)}
+  \infer{\slof{A |- \bigwith_{\ell \in L} (A_{\ell} \pmir \selectL{\ell}) : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+    \multipremise{\ell \in L}{\slof{A |- A_{\ell} : B_{\ell}}}}
+  \and
+  \infer{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \selectL{\kay} : B_{\kay}}}{
+    \text{($\kay \in L$)}}
   \\
-  \infer{\slcof{\sctx |- \octx_1 \oc \octx_2 : \sctx''}}{
-    \slcof{\sctx |- \octx_1 : \sctx'} & \slcof{\sctx' |- \octx_2 : \sctx''}}
+  \infer{\slcof{A |- \octx_1 \oc \octx_2 : C}}{
+    \slcof{A |- \octx_1 : B} & \slcof{B |- \octx_2 : C}}
   \and
-  \infer{\slcof{\sctx |- \octxe : \sctx'}}{}
+  \infer{\slcof{A |- \octxe : A}}{}
   \and
-  \infer{\slcof{\sctx |- A : A}}{
-    \slof{\sctx |- A : A}}
+  \infer{\slcof{A |- A : B}}{
+    \slof{A |- A : B}}
 \end{inferences}
 
-\footnote{Careful with the 0-ary forms because you could end up with $\slof{\zero |- \top : C}$ and \emph{also} $\slof{\sctx |- \top : \top}$.}
+\footnote{Careful with the 0-ary forms because you could end up with $\slof{\zero |- \top : C}$ and \emph{also} $\slof{A |- \top : \top}$.}
 
 \begin{theorem}
-  If $\slof{\sctx |- P : A}$, then $\slof{\sctx |- \trproc{P} : A}$.
-  Similarly, if $\slcof{\sctx |- \cnf : \sctx'}$, then $\slcof{\sctx |- \trconf{\cnf} : \sctx'}$.
+  If $\slof{A |- P : B}$, then $\slof{A |- \trproc{P} : B}$.
+  Similarly, if $\slcof{A |- \cnf : B}$, then $\slcof{A |- \trconf{\cnf} : B}$.
 \end{theorem}
 
 \begin{theorem}
-  If $\slof{\sctx |- A : A}$, then $\trproc{P} = A$ for some process $P$ such that $\slof{\sctx |- P : A}$.
-  Similarly, if $\slcof{\sctx |- \octx : \sctx'}$, then $\trconf{\cnf} = \octx$ for some configuration $\cnf$ such that $\slcof{\sctx |- \cnf : \sctx'}$.
+  If $\slof{A |- A : B}$, then there exists a process $P$ such that $\trproc{P} = A$ and $\slof{A |- P : B}$.
+  Similarly, if $\slcof{A |- \octx : B}$, then there exists a configuration $\cnf$ such that $\trconf{\cnf} = \octx$ and $\slcof{A |- \cnf : B}$.
 \end{theorem}
 
+\section{Open bisimilarity}
 
-\section{}
+\begin{falseclaim}
+  If $\slcof{A |- \cnf \tsim \dnf : B}$, then $\trconf{\cnf} \osim \trconf{\dnf}$.
+\end{falseclaim}
 
-\begin{equation*}
-  \begin{lgathered}
-    \tr{\spawn{P}{Q}} = \up (\dn \tr{P} \fuse \dn \tr{Q}) \\
-    \tr{\fwd} = \up \one
-    \\
-    \tr{\selectR{\kay}[P]} = \up (\dn \tr{P} \fuse \atmR{\kay}) \\
-    \tr{\caseL[\ell \in L]{\ell => Q_{\ell}}} = \with_{\ell \in L}(\atmR{\ell} \limp \up \dn \tr{Q_{\ell}})
-    \\
-    \tr{\caseR[\ell \in L]{\ell => P_{\ell}}} = \with_{\ell \in L}(\up \dn \tr{P_{\ell}} \pmir \atmL{\ell}) \\
-    \tr{\selectL{\kay}[Q]} = \up (\atmL{\kay} \fuse \dn \tr{Q})
-  \end{lgathered}
-\end{equation*}
+Consider $\slcof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \cnf = \cnfe : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ and $\slcof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \dnf = \caseL[\ell \in L]{\ell => \selectR{\ell}} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$.
+We do not have $\octxe \osim \bigwith_{\ell \in L}(\selectR{\ell} \limp \selectR{\ell})$ because of atoms from outside $L$ -- for example, $\selectR{a} \oc \bigwith_{\ell \in L}(\selectR{\ell} \limp \selectR{\ell})$ can not emit $\selectR{a}$ when $a \notin L$.
 
-\begin{equation*}
-  \begin{tikzcd}
-    \spawn{P}{Q} \rar["\text{small step}"] \dar[dash] & P \cc Q \dar[dash] \\
-    \up (\dn \tr{P} \fuse \dn \tr{Q}) \rar["\text{big step}"] & \tr{P} \oc \tr{Q}
-  \end{tikzcd}
-\end{equation*}
+\begin{conjecture}
+  If $\slcof{A |- \cnf : B}$ and $\trconf{\cnf} \osim \octx$, then there exists a configuration $\dnf$ such that $\slcof{A |- \cnf \tsim \dnf : B}$ and $\trconf{\dnf} = \octx$.
+\end{conjecture}
+\begin{proof}[Proof idea]
+  By structural induction on $\cnf$, using the following.
+  \begin{quotation}
+    If $\slof{A |- P : B}$ and $\trproc{P} \osim \octx$, then there exists a process $Q$ such that $\slof{A |- P \tsim Q : B}$ and $\trproc{Q} \secudeR \octx$.
+  \end{quotation}
 
-\begin{equation*}
-  \begin{tikzcd}
-    \selectR{\kay}[P] \rar["\text{small step}"] \dar[dash] & P \cc \selectR{\kay} \dar[dash] \\
-    \up (\dn \tr{P} \fuse \selectR{\kay}) \rar["\text{big step}"] & \tr{P} \oc \selectR{\kay}
-  \end{tikzcd}
-\end{equation*}
+  Suppose $\slof{A_{\ell} |- P_{\ell} ; B}$ and $\bigwith_{\ell \in L}(\selectR{\ell} \limp \trproc{P_{\ell}}) \osim \octx$; we must exibit a configuation $Q$ such that $\slof{\plus*[sub=_{\ell \in L}]{\ell;A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} \tsim Q : B}$ and $\trproc{Q} \secudeR \octx$.
+  By input bisimilarity, $\selectR{\ell} \oc \octx \Reduces\miso \trproc{P_{\ell}}$ for all $\ell \in L$.
+  By the inductive hypothesis, there exist processes $Q_{\ell}$ such that $\slof{A_{\ell} |- P_{\ell} \tsim Q_{\ell} : B}$ and $\trproc{Q_{\ell}} \secudeR \selectR{\ell} \oc \octx$.
+  Is $\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} \tsim \caseL[\ell \in L]{\ell => Q_{\ell}} : B}$ true?
+  I think so. 
+  Is $\trproc{\caseL[\ell \in L]{\ell => Q_{\ell}}} = \bigwith_{\ell \in L}(\selectR{\ell} \limp \trproc{Q_{\ell}}) \secudeR \octx$ true?
+\end{proof}
 
-\begin{equation*}
-  \begin{tikzcd}
-    \spawn{P}{(\selectR{\kay}[Q])} \arrow["\text{big step}"]{rr} \dar[dash] & & P \cc Q \cc \selectR{\kay} \dar[dash] \\
-    \up (\dn \tr{P} \fuse \dn \up (\dn \tr{Q} \fuse \selectR{\kay})) \rar["\text{big step}"] & \tr{P} \oc \up (\dn \tr{Q} \fuse \selectR{\kay}) \rar["\text{big step}"] & \tr{P} \oc \tr{Q} \oc \selectR{\kay}
-  \end{tikzcd}
-\end{equation*}
 
-\subsection{}
+\begin{conjecture}
+  If $\slcof{A |- \cnf : B}$ and $\slcof{A |- \dnf : B}$ and $\trconf{\cnf} \osim \trconf{\dnf}$, then $\slcof{A |- \cnf \tsim \dnf : B}$.
+\end{conjecture}
+\begin{proof}[Proof idea]
+  By structural induction on $\cnf$, using the following.
+  \begin{quotation}
+    If $\slof{A |- P : B}$ and $\slof{A |- Q : B}$ and $\trproc{P} \osim \trproc{Q}$, then $\slof{A |- P \tsim Q : B}$.
+  \end{quotation}
 
-\begin{equation*}
-  \begin{tikzcd}
-    \spawn{P}{(\selectR{\kay}[Q])} \arrow["\text{big step}"]{r} \dar[dash] & P \cc Q \cc \selectR{\kay} \dar[dash] \\
-    \llceil P \rrceil \fuse (\llceil Q \rrceil \fuse \selectR{\kay}) \rar["\text{big step}"] & \llceil P \rrceil \oc \llceil Q \rrceil \oc \selectR{\kay}
-  \end{tikzcd}
-\end{equation*}
-
-\begin{equation*}
-  \begin{lgathered}
-    \llceil \spawn{P}{Q} \rrceil = \llceil P \rrceil \fuse \llceil Q \rrceil \\
-    \llceil \fwd \rrceil = \one
-    \\
-    \llceil \selectR{\kay}[P] \rrceil = \llceil P \rrceil \fuse \atmR{\kay} \\
-    \llceil \caseL[\ell \in L]{\ell => Q_{\ell}} \rrceil = \dn \bigwith_{\ell \in L}(\atmR{\ell} \limp \up \llceil Q_{\ell} \rrceil)
-    \\
-    \llceil \caseR[\ell \in L]{\ell => P_{\ell}} \rrceil = \dn \bigwith_{\ell \in L}(\up \llceil P_{\ell} \rrceil \pmir \atmL{\ell}) \\
-    \llceil \selectL{\kay}[Q] \rrceil = \atmL{\kay} \fuse \llceil Q \rrceil
-  \end{lgathered}
-\end{equation*}
-
-\subsection{}
-
-\NewDocumentCommand \trp { s m } { \IfBooleanF {#1} ( #2 \IfBooleanF {#1} ) ^{-} }
-\NewDocumentCommand \trc { s m } { \IfBooleanF {#1} ( #2 \IfBooleanF {#1} ) ^{+} }
-
-\begin{syntax*}
-  Processes & P & \caseL[\ell \in L]{\ell => \cnf_{\ell}} \mid \caseR[\ell \in L]{\ell => \cnf_{\ell}} \mid \mathsf{conf}\:\cnf
-  \\
-  Configurations & \cnf & (\cnf_1 \cc \cnf_2) \mid \cnfe \mid \selectL{\kay} \mid \selectR{\kay} \mid \mathsf{proc}\:P
-\end{syntax*}
-
-\begin{equation*}
-  \begin{lgathered}[t]
-    \trc{\cnf_1 \cc \cnf_2} = \trc*{\cnf_1} \fuse \trc*{\cnf_2} \\
-    \trc{\cnfe} = \one \\
-    \trc{\selectL{\kay}} = \atmL{\kay} \\
-    \trc{\selectR{\kay}} = \atmR{\kay} \\
-    \trc{\mathsf{proc}\:P} = \dn \trp*{P}
-  \end{lgathered}
-  \qquad
-  \begin{lgathered}[t]
-    \trp{\caseL[\ell \in L]{\ell => \cnf_{\ell}}} = \bigwith_{\ell \in L}(\atmR{\ell} \limp \up \trc*{\cnf_{\ell}}) \\
-    \trp{\caseR[\ell \in L]{\ell => \cnf_{\ell}}} = \bigwith_{\ell \in L}(\up \trc*{\cnf_{\ell}} \pmir \atmL{\ell}) \\
-    \trp{\mathsf{conf}\:\cnf} = \up \trc*{\cnf}
-  \end{lgathered}
-\end{equation*}
+  Suppose that $P = \caseL[\ell \in L]{\ell => P_{\ell}}$ and $\slof{A_{\ell} |- P_{\ell} : B}$; we must show that $\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} \tsim Q : B}$.
+  By input bisimilarity, we have $\selectR{\ell} \oc \trproc{Q} \Reduces \octx_{\ell} \miso \trproc{P_{\ell}}$.
+  I'm not sure how to continue from here.
+\end{proof}
 
 %%% Local Variables:
 %%% mode: latex

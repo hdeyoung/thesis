@@ -167,23 +167,80 @@ The converse is false.
 
 \section{Finite transducers}
 
+\begin{definition}
+  \Iac{SFT} over a finite input alphabet $\ialph$ and a finite output alphabet $\oalph$ is a tuple $\aut{T} = (Q, \sftnext, \sftout, \sftterm)$ consisting of:
+  \begin{itemize}
+  \item a finite set of \vocab{states}, $Q$;
+  \item a \vocab{transition function}, $\sftnext\colon Q \times \ialph \to Q$;
+  \item a \vocab{output function}, $\sftout\colon Q \times \ialph \to \finwds{\oalph}$; and
+  \item a \vocab{terminal output function}, $\sftterm\colon Q \to \finwds{\oalph}$.
+  \end{itemize}
+
+  Define a combined transition--output function $\mathord{\sftreduces}\colon Q \times \ialph \to \finwds{\oalph} \times Q$:
+  \begin{equation*}
+    q \sftreduces[\tio{a | v}] \sftnext(q, a) \text{, where $v = \sftout(q, a)$}
+  \end{equation*}
+  We then lift this function, defining a function $\mathord{\sftReducesEnd}\colon Q \times \finwds{\ialph} \to \finwds{\oalph}$ on finite input words: 
+  For each input word $w = a_1 \wc a_2 \dotsm a_n$:
+  \begin{gather*}
+    q \sftReducesEnd[w] v
+    \\ \text{if and only if} \\
+    q \sftreduces[\tio{a_1 | v_1}] q_1 \sftreduces[\tio{a_2 | v_2}] \dotsb \sftreduces[\tio{a_n | v_n}] q_n
+    \text{ and }
+    v = (v_1 \wc v_2 \dotsm v_n) \wc* \sftterm(q_n)
+    \mathrlap{\,.}
+  \end{gather*}
+
+  The \ac{SFT} $\aut{T}$ transforms, from state $q$, the input word $w$ into the output word $v$ if $(q, \emp) \sftReducesEnd[w] v$.
+\end{definition}
+
+
+
+\subsection{From \acp*{SFT} to proofs}
+
+\begin{equation*}
+  \begin{lgathered}
+    \finwds{\ialph} \defd \plus*[sub=_{a \in \ialph}]{a\colon\finwds{\ialph}, \emp\colon \varepsilon} \\
+    \finwds{\oalph} \defd \plus*[sub=_{a \in \oalph}]{a\colon\finwds{\oalph}, \emp\colon \varepsilon} \\
+    \slof{\finwds{\ialph} |- \hat{q} : \finwds{\oalph}} \defd
+      \caseL[a \in \ialph]{a => \spawn{\hat{q}'_a}{\selectR{\sftout}(q, a)} | \emp => \selectR{\sftterm}(q)}
+  \end{lgathered}
+\end{equation*}
+
+\subsection{From proofs to \acp*{SFT}}
+
+\begin{equation*}
+  \begin{lgathered}
+    \slof{\finwds{\ialph} |- p : \finwds{\oalph}}
+      \defd \caseL[a \in \ialph]{a => \spawn{p'_a}{\selectR{v}_{p,a}} | \emp => \spawn{e_p}{\selectR{v}'_{p,a}}} \\
+    \slof{\finwds{\ialph} |- p : \finwds{\oalph}}
+      \defd \spawn{p'}{\selectR{v}_p} \\
+    \slof{\finwds{\ialph} |- p : \varepsilon}
+      \defd \dotso \\
+    \slof{\varepsilon |- p : \finwds{\oalph}}
+      \defd \dotso
+  \end{lgathered}
+\end{equation*}
+
+
 \begin{marginfigure}
   \begin{gather*}
     \mathllap{\aut{T}_1 = {}}
     \begin{tikzpicture}[baseline=(q_0.base)]
       \graph [automaton] {
         q_0
-         -> [loop above, "$\tio{a}{a}$"]
-        q_0;      };
+         -> [loop above, "$\tio{a | a}$"]
+        q_0;
+      };
     \end{tikzpicture}
     \\
     \mathllap{\aut{T}_2 = {}}
     \begin{tikzpicture}[baseline=(s_0.base)]
       \graph [automaton] {
         s_0
-         -> [bend left, "$\tio{a}{\emp}$"]
+         -> [bend left, "$\tio{a | \emp}$"]
         s_1
-         -> [bend left, "$\tio{a}{aa}$"]
+         -> [bend left, "$\tio{a | aa}$"]
         s_0;
       };
     \end{tikzpicture}
@@ -211,7 +268,7 @@ The converse is false.
   The language of all words accepted by automaton $\aut{A}$ from state $q$ is denoted $\autlang{\aut{A}}{q}$.%
   \footnote{We sometimes omit the subscript if the automaton is clear from the context.}
 
-  $\statestack{q}{s} = \statestack{q_0}{s_0} \nfareduces[\alpha_1] \statestack{q_1}{s_1} \nfareduces[\alpha_2] \dotsb \nfareduces[\alpha_n] \statestack{q'}{s'}$ with $q' \in F$.
+  $(q, s) = (q_0, s_0) \nfareduces[\alpha_1] (q_1, s_1) \nfareduces[\alpha_2] \dotsb \nfareduces[\alpha_n] (q', s')$ with $q' \in F$.
 \end{definition}
 
 

@@ -59,7 +59,15 @@
 
 \NewDocumentCommand \spawn { m m } { \__singleton_spawn:nn {#1} {#2} }
 \cs_new_protected:Npn \__singleton_spawn:nn #1 #2
-  { \__singleton_multiline:n { #1 \triangleright #2 } }
+  { \__singleton_multiline:n { #1 \mathbin{\diamond} #2 } }
+
+\NewDocumentCommand \spawnR { m m } { \__singleton_spawnR:nn {#1} {#2} }
+\cs_new_protected:Npn \__singleton_spawnR:nn #1 #2
+  { \__singleton_multiline:n { #1 \mathbin{\scriptscriptstyle\blacksquare} \selectR{#2} } }
+
+\NewDocumentCommand \spawnL { m m } { \__singleton_spawnL:nn {#1} {#2} }
+\cs_new_protected:Npn \__singleton_spawnL:nn #1 #2
+  { \__singleton_multiline:n { \selectL{#1} \mathbin{\scriptscriptstyle\blacksquare} #2 } }
 
 \NewDocumentCommand \fwd { } { \__singleton_fwd: }
 \cs_new_protected:Npn \__singleton_fwd:
@@ -129,8 +137,17 @@
     \cs_new_protected:cpn { __singleton_select #1 :nn } ##1 ##2
       {
         \__singleton_multiline:n
-          { \__singleton_keyword:n { sel #1 } \mkern\medmuskip ##1 ; ##2 }
+          { \__singleton_keyword:n { select #1 } \mkern\medmuskip ##1 ; ##2 }
       }
+  }
+
+\clist_map_inline:nn { r , l }
+  {
+    \exp_args:Nc \NewDocumentCommand { in #1 } { }
+      { \use:c { __singleton_in #1 : } }
+
+    \cs_new_protected:cpn { __singleton_in #1 : }
+      { \__singleton_keyword:n { in #1 } }
   }
 
 
