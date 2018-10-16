@@ -3,13 +3,21 @@
 
 
 In this \lcnamecref{ch:singleton-logic}, we present one such logic, \emph{singleton logic}.
-As its name suggests, singleton logic is the fragment of ordered logic obtained by requiring sequent antecedents to have exactly one hypothesis -- no more and no less.
+As its name suggests, singleton logic is the fragment of ordered logic obtained by requiring sequents to have exactly one antecedent -- no more and no less.
 That such a drastic restriction on the structure of contexts yields a well-defined, computationally useful logic is somewhat surprising.
 
 A discussion of singleton logic's isomorphic\alertnote{Is it really isomorphic?} computational model is postponed to the following \lcnamecref{ch:singleton-processes}.
-In this \lcnamecref{ch:singleton-logic}, we confine our attention to the logical aspects of singleton logic.
+In this \lcnamecref{ch:singleton-logic}, we confine our attention to the proof-theoretic aspects of singleton logic.
 
 \section{Bringing symmetry to intuitionistic sequents}
+
+As reviewed in \cref{ch:ordered-logic}, the sequents of intuitionistic ordered logic are inherently asymmetric.
+Although there is only a single consequent%
+\footnote{Or, at most one consequent if multiplicative falsehood is included\parencref[see]{sec:ordered-logic:mult-falsehood}.}
+in an ordered sequent such as $\oseq{\octx |- A}$, there are finitely many antecedents, collected into the context $\octx$.
+
+One way to bring symmetry to intuitionistic ordered sequents might be to permit finitely many consequents, in the vein of multiple-conclusion sequent calculi for ??\autocite{??}.
+Instead, we will follow a dual path to symmetry and require exactly one antecedent.
 
 \begin{equation*}
   \infer[\rrule{\limp}?]{\slseq{A |- B_1 \limp B_2}}{

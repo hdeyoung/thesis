@@ -301,8 +301,10 @@
 
 \RequirePackage { cleveref }
 
-\NewDocumentCommand \pcref { m } { \__thesis_pcref:n {#1} }
-\cs_new:Npn \__thesis_pcref:n #1 { \nobreakspace (\cref{#1}) }
+\NewDocumentCommand \parencref { O{} m }
+  { \__thesis_parencref:nn {#1} {#2} }
+\cs_new:Npn \__thesis_parencref:nn #1 #2
+  { \nobreakspace ( \tl_if_empty:nF {#1} { #1 ~ } \cref{#2} ) }
 
 
 %%%%%%%%%%%%%%%%
