@@ -48,6 +48,15 @@
 \NewDocumentCommand \atm { m } { \__logic_atm:n {#1} }
 \cs_new:Npn \__logic_atm:n #1 { \underaccent { \bar } {#1} }
 
+\NewDocumentCommand \DD { } { \__logic_DD: }
+\cs_new:Npn \__logic_DD: { \mathcal { D } }
+
+\NewDocumentCommand \EE { } { \__logic_EE: }
+\cs_new:Npn \__logic_EE: { \mathcal { E } }
+
+\NewDocumentCommand \FF { } { \__logic_FF: }
+\cs_new:Npn \__logic_FF: { \mathcal { F } }
+
 %% Reduction
 
 \NewDocumentCommand \reduces { o }

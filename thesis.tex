@@ -1,4 +1,8 @@
-\documentclass[tufte-book,notoc]{tufte-thesis}
+% arara: pdflatex
+% arara: biber
+% arara: pdflatex
+% arara: pdflatex
+\documentclass[tufte-book,notoc,biblatex={citestyle=authoryear, autocite=footnote}]{tufte-thesis}
 
 \input{preamble}
 
@@ -6,6 +10,8 @@
 
 \title{Untitled thesis}
 \author{Henry DeYoung}
+
+\addbibresource{thesis.bib}
 
 \begin{document}
 
@@ -33,6 +39,7 @@
 \part{Concurrency as proof reduction}
 
 \include{singleton-logic}
+\include{pattern-normal}
 \include{singleton-processes}
 \include{typed-bisim}
 
@@ -47,5 +54,7 @@
 \include{misc}
 
 \backmatter
+
+\printbibliography
 
 \end{document}

@@ -1,33 +1,64 @@
 \chapter{Singleton logic}\label{ch:singleton-logic}
 
+Recall from \cref{ch:ordered-logic} that the sequents of intuitionistic ordered logic are inherently asymmetric.
+In an ordered sequent such as $\oseq{\octx |- A}$, there are finitely many antecedents, all collected into the context $\octx$, yet there is only a single consequent.%
+\footnote{Or, at most one consequent if multiplicative falsehood is included\parencref[see]{sec:ordered-logic:mult-falsehood}.}
+We might naturally wonder if a greater degree of symmetry can be brought to these ordered sequents.
+Does there exist a related logic whose sequent calculus presentation uses symmetric sequents?
 
+To achieve greater symmetry, intuitionism could, of course, be abandoned in favor of a classical noncommutative logic~\autocite{Abrusci:JSL91}.
+One alternative that maintains an intuitionistic character might be to permit finitely many consequents, in a vein similar to multiple-conclusion sequent calculi for ??\autocite{??}.%
+\footnote{However, \textcite{Steinberger:JPL11} raises concerns about meaning-theoretic explanations of such calculi.}
 
-In this \lcnamecref{ch:singleton-logic}, we present one such logic, \emph{singleton logic}.
-As its name suggests, singleton logic is the fragment of ordered logic obtained by requiring sequents to have exactly one antecedent -- no more and no less.
+In this \lcnamecref{ch:singleton-logic}, we will instead follow a dual path to symmetry and examine a fragment of intuitionistic ordered logic that is obtained by requiring sequents to have exactly one antecedent -- no more and no less.
+We call this fragment \emph{singleton logic}.
 That such a drastic restriction on the structure of contexts yields a well-defined, computationally useful logic is somewhat surprising.
 
-A discussion of singleton logic's isomorphic\alertnote{Is it really isomorphic?} computational model is postponed to the following \lcnamecref{ch:singleton-processes}.
+A discussion of singleton logic's isomorphic\alertnote{Is it really isomorphic?} computational model\alertinline{interpretation?} is postponed to the following \lcnamecref{ch:singleton-processes}.
 In this \lcnamecref{ch:singleton-logic}, we confine our attention to the proof-theoretic aspects of singleton logic.
+
+
+%  and require exactly one antecedent.
+
+%  we present one such logic, \emph{singleton logic}.
+% As its name suggests, singleton logic is the fragment of ordered logic obtained by requiring sequents to have exactly one antecedent -- no more and no less.
+% That such a drastic restriction on the structure of contexts yields a well-defined, computationally useful logic is somewhat surprising.
+
+% A discussion of singleton logic's isomorphic\alertnote{Is it really isomorphic?} computational model is postponed to the following \lcnamecref{ch:singleton-processes}.
+% In this \lcnamecref{ch:singleton-logic}, we confine our attention to the proof-theoretic aspects of singleton logic.
 
 \section{Bringing symmetry to intuitionistic sequents}
 
-As reviewed in \cref{ch:ordered-logic}, the sequents of intuitionistic ordered logic are inherently asymmetric.
-Although there is only a single consequent%
-\footnote{Or, at most one consequent if multiplicative falsehood is included\parencref[see]{sec:ordered-logic:mult-falsehood}.}
-in an ordered sequent such as $\oseq{\octx |- A}$, there are finitely many antecedents, collected into the context $\octx$.
+The sequents of singleton logic have exactly one consequent and, more characteristically, exactly one antecedent: $\slseq{A |- B}$ instead of $\oseq{\octx |- B}$.
 
-One way to bring symmetry to intuitionistic ordered sequents might be to permit finitely many consequents, in the vein of multiple-conclusion sequent calculi for ??\autocite{??}.
-Instead, we will follow a dual path to symmetry and require exactly one antecedent.
+In addition to providing sequents with an elegant symmetry, this single-antecedent restriction is also natural from a category-theoretic perspective.
 
+Once we impose the single-antecedent restriction upon sequents, all of the rules from the sequent calculus for intuitionistic ordered logic must be reconsidered.
+
+Take the right rule for left-handed implication, for instance.
 \begin{equation*}
+  \infer[\rrule{\limp}]{\oseq{\octx |- B_1 \limp B_2}}{
+    \oseq{B_1 \oc \octx |- B_2}}
+  \rightsquigarrow
+  \infer{\slseq{A |- B_1 \limp B_2}}{
+    \slseq{B_1 \oc A |- B_2}}
+  \rightsquigarrow
   \infer[\rrule{\limp}?]{\slseq{A |- B_1 \limp B_2}}{
     \slseq{B_1 \fuse A |- B_2}}
 \end{equation*}
+Beginning with the rule's conclusion, we must replace the finitary context $\octx$ with a single antecedent $A$.
+Although the conclusion is now a well-formed sequent, 
+
+Viewed through a category-theoretic lens, this rule is quite innocuous, even natural.
+But from a proof-theoretic perspective, the meaning of a logical connective should be independent of other connectives, and this rule creates an objectionable dependence of left-handed implication upon ordered conjunction.
+As a practical consequence, the subformula property would fail to hold under this rule.
+
 
 \begin{equation*}
   \infer[\lrule{\limp}?]{\slseq{A \fuse (B_1 \limp B_2) |- C}}{
     \slseq{A |- B_1} & \slseq{B_2 |- C}}
 \end{equation*}
+
 
 \begin{marginfigure}
   \begin{inferences}
@@ -37,7 +68,7 @@ Instead, we will follow a dual path to symmetry and require exactly one antecede
     \infer[\lrule{\pmir}?]{\slseq{(B_2 \pmir B_1) \fuse A |- C}}{
       \slseq{A |- B_1} & \slseq{B_2 |- C}}
   \end{inferences}
-  \caption{Equally problematic rules for right implication}
+  \caption{Equally problematic rules for right-handed implication}
 \end{marginfigure}
 
 \begin{inferences}
@@ -59,7 +90,7 @@ Instead, we will follow a dual path to symmetry and require exactly one antecede
     \slseq{B_1 |- C} & \slseq{B_2 |- C}}
 \end{inferences}
 
-\section{Singleton logic}
+\section{A sequent calculus for singleton logic}
 
 \begin{syntax*}
   Propositions &
@@ -67,7 +98,7 @@ Instead, we will follow a dual path to symmetry and require exactly one antecede
 \end{syntax*}
 
 \begin{inferences}
-  \infer[\jrule{CUT}^A]{\slseq{A |- C}}{
+  \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
     \slseq{A |- B} & \slseq{B |- C}}
   \and
   \infer[\jrule{ID}^A]{\slseq{A |- A}}{}
@@ -99,120 +130,102 @@ Instead, we will follow a dual path to symmetry and require exactly one antecede
   \text{(no $\lrule{\top}$ rule)}
 \end{inferences}
 
-This is not the additive fragment of ordered (or linear) logic.
+Although the propositions of singleton logic are exactly the additive propositions of ordered (or linear) logic, notice that singleton logic is not the additive fragment of ordered (or linear) logic.
+For instance, the sequent $\oseq{A \oc B |- \top}$ is provable in the additive fragment of ordered logic, but $\slseq{A \oc B |- \top}$ is not even a well-formed sequent in singleton logic, for the simple reason that it violates the single-antecedent restriction.
 
-\subsection{Cut reduction}
+\subsection{Metatheory: Cut elimination and identity expansion}
 
-\begin{equation*}
-  \infer[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
-    \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
-      \slseq{A |- B_1}} &
-    \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
-      \slseq{B_1 |- C} & \slseq{B_2 |- C}}}
-  %
-  \quad\cutreduces\quad
-  %
-  \infer[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
-    \slseq{A |- B_1} & \slseq{B_1 |- C}}
-\end{equation*}
-
-\begin{equation*}
-  \infer[\jrule{CUT}^B]{\slseq{A_1 \plus A_2 |- C}}{
-    \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- B}}{
-      \slseq{A_1 |- B} & \slseq{A_2 |- B}} &
-    \slseq{B |- C}}
-  %
-  \quad\cutreduces
-  %
-  \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
-    \infer[\jrule{CUT}^B]{\slseq{A_1 |- C}}{
-      \slseq{A_1 |- B} & \slseq{B |- C}} &
-    \infer[\jrule{CUT}^B]{\slseq{A_2 |- C}}{
-      \slseq{A_2 |- B} & \slseq{B |- C}}}
-\end{equation*}
-
-There are no right commutative cut reductions involving left rules -- more symmetric than ordered logic.
-
-\begin{theorem}
-  The $\jrule{CUT}^A$ and $\jrule{ID}^A$ rules are admissible in the system having
-  \begin{equation*}
-    \infer[\normalfont\jrule{ID}^{\alpha}]{\slseq{\alpha |- \alpha}}{}
-  \end{equation*}
-  as its only judgmental rule.
+\begin{theorem}[Admissibility of cut]\label{thm:sync-cut-admissible}
+  If cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ exist, then there exists a cut-free proof of $\slseq{A |- C}$.
 \end{theorem}
+%
+\begin{proof}
+  We use the standard technique for proving the admissibility of a cut principle\autocite{Pfenning:CUT} -- a lexicographic induction, first on the structure of the principal type, and then on the structures of the given proofs.
 
-\subsection{Commuting conversions}
+  One of the principal cases in this induction pairs the $\rrule{\plus}_1$ rule with the $\lrule{\plus}$ rule.
+  If we represent the admissible $\jrule{CUT}$ rule with a dotted line, then that case is resolved as follows.
+  \begin{equation*}
+    \infer-[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
+      \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+        \deduce{\slseq{A |- B_1}}{\DD_1}} &
+      \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
+        \deduce{\slseq{B_1 |- C}}{\EE_1} &
+        \deduce{\slseq{B_2 |- C}}{\EE_2}}}
+    % 
+    \quad=\quad
+    % 
+    \infer-[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
+      \deduce{\slseq{A |- B_1}}{\DD_1} &
+      \deduce{\slseq{B_1 |- C}}{\EE_1}}
+  \end{equation*}
 
-\begin{syntax*}
-  Proof terms &
-    M,N & \begin{array}[t]{@{}l@{}}
-            \spawn{M}{N} \mid \fwd \\
-              \mathllap{\mid {}} \selectR{\inl}[M] \mid \selectR{\inr}[M] \mid \caseL{\inl => N_1 | \inr => N_2} \\
-              \mathllap{\mid {}} \caseL{} \\
-              \mathllap{\mid {}} \caseR{\inl => M_1 | \inr => M_2} \mid \selectL{\inl}[N] \mid \selectL{\inr}[N] \\
-              \mathllap{\mid {}} \caseR{}
-          \end{array}
-\end{syntax*}
+  \begin{equation*}
+    \infer-[\jrule{CUT}^A]{\slseq{A |- C}}{
+      \infer[\jrule{ID}^A]{\slseq{A |- A}}{} &
+        \deduce{\slseq{A |- C}}{\EE}}
+    % 
+    \quad=\quad
+    % 
+    \deduce{\slseq{A |- C}}{\EE}
+  \end{equation*}
 
-\begin{inferences}
-  \infer[\jrule{CUT}^A]{\slof{A |- \spawn{M}{N} : C}}{
-    \slof{A |- M : B} & \slof{B |- N : C}}
-  \and
-  \infer[\jrule{ID}^A]{\slof{A |- \fwd : A}}{}
-  \\
-  \infer[\rrule{\plus}_1]{\slof{A |- \selectR{\inl}[M] : B_1 \plus B_2}}{
-    \slof{A |- M : B_1}}
-  \and
-  \infer[\rrule{\plus}_2]{\slof{A |- \selectR{\inr}[M] : B_1 \plus B_2}}{
-    \slof{A |- M : B_2}}
-  \\
-  \infer[\lrule{\plus}]{\slof{B_1 \plus B_2 |- \caseL{\inl => N_1 | \inr => N_2} : C}}{
-    \slof{B_1 |- N_1 : C} & \slof{B_2 |- N_2 : C}}
-  \\
-  \text{(no $\rrule{\zero}$ rule)}
-  \and
-  \infer[\lrule{\zero}]{\slof{\zero |- \caseL{} : C}}{}
-  \\
-  \infer[\rrule{\with}]{\slof{A |- \caseR{\inl => M_1 | \inr => M_2} : B_1 \with B_2}}{
-    \slof{A |- M_1 : B_1} & \slof{A |- M_2 : B_2}}
-  \\
-  \infer[\lrule{\with}_1]{\slof{B_1 \with B_2 |- \selectL{\inl}[N] : C}}{
-    \slof{B_1 |- N : C}}
-  \and
-  \infer[\lrule{\with}_2]{\slof{B_1 \with B_2 |- \selectL{\inr}[N] : C}}{
-    \slof{B_2 |- N : C}}
-  \\
-  \infer[\rrule{\top}]{\slof{A |- \caseR{} : \top}}{}
-  \and
-  \text{(no $\lrule{\top}$ rule)}
-\end{inferences}
+  \begin{equation*}
+    \infer-[\jrule{CUT}^B]{\slseq{A_1 \plus A_2 |- C}}{
+      \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- B}}{
+        \deduce{\slseq{A_1 |- B}}{\DD_1} &
+        \deduce{\slseq{A_2 |- B}}{\DD_2}} &
+      \deduce{\slseq{B |- C}}{\EE}}
+    % 
+    \quad=\quad
+    % 
+    \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
+      \infer-[\jrule{CUT}^B]{\slseq{A_1 |- C}}{
+        \deduce{\slseq{A_1 |- B}}{\DD_1} &
+        \deduce{\slseq{B |- C}}{\EE}} &
+      \infer-[\jrule{CUT}^B]{\slseq{A_2 |- C}}{
+        \deduce{\slseq{A_2 |- B}}{\DD_2} &
+        \deduce{\slseq{B |- C}}{\EE}}}
+  \end{equation*}
 
-\begin{gather*}
-  \selectR{\inl}[\caseL{\inl => M | \inr => N}] \equiv \caseL{\inl => \selectR{\inl}[M] | \inr => \selectR{\inl}[N]} \\
-  % \selectR{\inr}[\caseL{\inl => M | \inr => N}] \equiv \caseL{\inl => \selectR{\inr}[M] | \inr => \selectR{\inr}[N]} \\
-  \selectR{\inl}[\selectL{\inl}[M]] \equiv \selectL{\inl}[\selectR{\inl}[M]] \\
-  \selectR{\inl}[\selectL{\inr}[M]] \equiv \selectL{\inr}[\selectR{\inl}[M]] \\
-  \selectR{\inl}[\caseL{}] \equiv \caseL{} \\
-  %
-  \selectL{\inl}[\caseR{\inl => M | \inr => N}] \equiv \caseR{\inl => \selectL{\inl}[M] | \inr => \selectL{\inl}[N]} \\
-  % \selectR{\inr}[\caseL{\inl => M | \inr => N}] \equiv \caseL{\inl => \selectR{\inr}[M] | \inr => \selectR{\inr}[N]} \\
-  \selectL{\inl}[\selectR{\inl}[M]] \equiv \selectR{\inl}[\selectL{\inl}[M]] \\
-  \selectL{\inl}[\selectR{\inr}[M]] \equiv \selectR{\inr}[\selectL{\inl}[M]] \\
-  \selectL{\inl}[\caseR{}] \equiv \caseR{} \\
-  %
-  \begin{lgathered}
-    \caseR{\inl => \caseL{\inl => M_1 | \inr => M_2}
-         | \inr => \caseL{\inl => N_1 | \inr => N_2}} \\[-1ex]
-      \quad \equiv \caseL{\inl => \caseR{\inl => M_1 | \inr => N_1}
-                        | \inr => \caseR{\inl => M_2 | \inr => N_2}}
-  \end{lgathered}
-  \\
-  \caseR{\inl => \caseL{} | \inr => \caseL{}} \equiv \caseL{} \\
-  %
-  \caseL{\inl => \caseR{} | \inr => \caseR{}} \equiv \caseR{} \\
-  %
-  \caseL{} \equiv \caseR{}
-\end{gather*}
+  \begin{equation*}
+    \infer-[\jrule{CUT}^B]{\slseq{A |- C_1 \plus C_2}}{
+      \deduce{\slseq{A |- B}}{\DD} &
+      \infer[\rrule{\plus}_1]{\slseq{B |- C_1 \plus C_2}}{
+        \deduce{\slseq{B |- C_1}}{\EE_1}}}
+    % 
+    \quad=\quad
+    % 
+    \infer[\rrule{\plus}_1]{\slseq{A |- C_1 \plus C_2}}{
+      \infer-[\jrule{CUT}^B]{\slseq{A |- C_1}}{
+        \deduce{\slseq{A |- B}}{\DD} &
+        \deduce{\slseq{B |- C_1}}{\EE_1}}}
+  \end{equation*}
+  There are no right commutative cut reductions involving left rules -- more symmetric than ordered logic.
+\end{proof}
+
+\begin{corollary}[Cut elimination]\label{thm:sync-cut-elim}
+  If a proof of $\slseq{A |- C}$ exists, then a cut-free proof of $\slseq{A |- C}$ exists.
+\end{corollary}
+\begin{proof}
+  By structural induction on the proof of $\slseq{A |- C}$, appealing to the admissibility of cut\parencref{thm:sync-cut-admissible} when encountering a $\jrule{CUT}$ rule.
+\end{proof}
+
+\begin{theorem}[Identity expansion]
+  For all propositions $A$, there exists a proof of $\slseq{A |- A}$
+\end{theorem}
+%
+\begin{proof}
+  By induction on the structure of the proposition $A$.
+  \begin{gather*}
+    \infer-[\mathrlap{\jrule{ID}^{A_1 \plus A_2}}]{\slseq{A_1 \plus A_2 |- A_1 \plus A_2}}{}
+    \\=\\
+    \infer[\mathrlap{\lrule{\plus}}]{\slseq{A_1 \plus A_2 |- A_1 \plus A_2}}{
+      \infer[\rrule{\plus}_1]{\slseq{A_1 |- A_1 \plus A_2}}{
+        \infer-[\jrule{ID}^{A_1}]{\slseq{A_1 |- A_1}}{}} &
+      \infer[\mathrlap{\rrule{\plus}_2}]{\slseq{A_2 |- A_1 \plus A_2}}{
+        \infer-[\mathrlap{\jrule{ID}^{A_2}}]{\slseq{A_2 |- A_2}}{}}}
+  \end{gather*}
+\end{proof}
 
 \subsection{Extensions of singleton logic}
 
@@ -266,13 +279,233 @@ There are no right commutative cut reductions involving left rules -- more symme
 
 
 \begin{inferences}
-  \infer[\rrule{\bang\tensor}]{\slseq{\uctx ; \sctx |- A_1 \bang\tensor A_2}}{
+  \infer[\rrule{\bang\tensor}]{\slseq{\uctx ; \sctx |- A_1 \mathbin{\bang\tensor} A_2}}{
     \slseq{\uctx ; \sctxe |- A_1} & \slseq{\uctx ; \sctx |- A_2}}
   \and
-  \infer[\lrule{\bang\tensor}]{\slseq{\uctx ; A_1 \bang\tensor A_2 |- \cseq}}{
+  \infer[\lrule{\bang\tensor}]{\slseq{\uctx ; A_1 \mathbin{\bang\tensor} A_2 |- \cseq}}{
     \slseq{\uctx, A_1 ; A_2 |- \cseq}}
 \end{inferences}
 
+
+\section{An asynchronous sequent calculus for singleton logic}
+
+\begin{equation*}
+  \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+    \slseq{A |- B_1}}
+  \leftrightsquigarrow
+  \infer[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
+    \slseq{A |- B_1} &
+    \infer[\rrule{\plus}_1']{\slseq{B_1 |- B_1 \plus B_2}}{}}
+\end{equation*}
+
+\begin{equation*}
+  \infer-[\jrule{CUT}^{A_1}]{\slseq{A_1 |- C}}{
+    \infer[\rrule{\plus}_1']{\slseq{A_1 |- A_1 \plus A_2}}{} &
+    \infer[\lrules{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
+      \deduce{\slseq{A_1 |- C}}{\EE_1} &
+      \deduce{\slseq{A_2 |- C}}{\EE_2}}
+  \rightsquigarrow
+  \deduce{\slseq{A_1 |- C}}{\EE_1}
+\end{equation*}
+
+
+\begin{syntax*}
+  Propositions &
+    A & \alpha \mid A \plus B \mid \zero \mid A \with B \mid \top
+\end{syntax*}
+
+\begin{inferences}
+  \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
+    \slseq{A |- B} & \slseq{B |- C}}
+  \and
+  \infer[\jrule{ID}^A]{\slseq{A |- A}}{}
+  \\
+  \infer[\rrule{\plus}_1']{\slseq{A_1 |- A_1 \plus A_2}}{}
+  \and
+  \infer[\rrule{\plus}_2']{\slseq{A_2 |- A_1 \plus A_2}}{}
+  \and
+  \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
+    \slseq{A_1 |- C} & \slseq{A_2 |- C}}
+  \\
+  \text{(no $\rrule{\zero}$ rule)}
+  \and
+  \infer[\lrule{\zero}]{\slseq{\zero |- C}}{}
+  \\
+  \infer[\rrule{\with}]{\slseq{A |- C_1 \with C_2}}{
+    \slseq{A |- C_1} & \slseq{A |- C_2}}
+  \and
+  \infer[\lrule{\with}_1']{\slseq{C_1 \with C_2 |- C_1}}{}
+  \and
+  \infer[\lrule{\with}_2']{\slseq{C_1 \with C_2 |- C_2}}{}
+  \\
+  \infer[\rrule{\top}]{\slseq{A |- \top}}{}
+  \and
+  \text{(no $\lrule{\top}$ rule)}
+\end{inferences}
+
+\subsection{Weak normalization}
+
+\begin{syntax*}
+  Proof terms &
+    P & \begin{array}[t]{@{}l@{}}
+          \spawn{P_1}{P_2} \mid \fwd \\
+          \begin{array}[t]{@{\mathllap{\mid {}}}l@{}}
+            \selectR{\kay} \mid \caseL[\ell \in L]{\ell => P_{\ell}} \\
+            \caseR[\ell \in L]{\ell => P_{\ell}} \mid \selectL{\kay}
+          \end{array}
+        \end{array}
+\end{syntax*}
+
+\begin{inferences}
+  \infer[\jrule{CUT}^B]{\slseq{A |- \spawn{P_1}{P_2} : C}}{
+    \slseq{A |- P_1 : B} & \slseq{B |- P_2 : C}}
+  \and
+  \infer[\jrule{ID}^A]{\slseq{A |- \fwd : A}}{}
+  \\
+  \infer[\rrule{\plus}]{\slseq{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \text{($\kay \in L$)}}
+  \and
+  \infer[\lrule{\plus}]{\slseq{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
+    \multipremise{\ell \in L}{\slseq{A_{\ell} |- P_{\ell} : C}}}
+  \\
+  \infer[\rrule{\with}]{\slseq{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \multipremise{\ell \in L}{\slseq{A |- P_{\ell} : C_{\ell}}}}
+  \and
+  \infer[\lrule{\with}]{\slseq{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
+    \text{($\kay \in L$)}}
+\end{inferences}
+
+\begin{equation*}
+  \infer-[\jrule{NCUT}^B]{\slof{A |- \nspawn{N}{M} : C}}{
+    \slof{A |- N : B} & \slof{B |- M : C}}
+\end{equation*}
+
+While the above approach does establish admissibility, the principal cases do not suggest an asynchronous operational semantics quite as strongly as they might.
+Here is a different approach that gives a better match with the eventual operational semantics.
+The grammar of normal terms changes slightly:
+\begin{syntax*}
+  Normal terms &
+    N,M & \begin{array}[t]{@{}l@{}}
+            \fwd \mid \spawn{N}{\selectR{\kay}} \mid \spawn{\selectL{\kay}}{N} \\
+            \begin{array}[t]{@{\mathllap{\mid {}}}l@{}}
+              \selectR{\kay} \mid \caseL[\ell \in L]{\ell => N_{\ell}} \\
+              \caseR[\ell \in L]{\ell => N_{\ell}} \mid \selectL{\kay}
+            \end{array}
+          \end{array}
+\end{syntax*}
+
+\begin{gather*}
+  \infer-[\jrule{CUT-N}^B]{\slof{A |- \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} : C}}{
+    \infer[\jrule{CUT}^{B_{\kay}}]{\slof{A |- \spawn{N_0}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+      \slof{A |- N_0 : B_{\kay}} &
+      \infer[\rrule{\plus}]{\slof{B_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+        \text{($\kay \in L$)}}} &
+    \slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- M : C}}
+  \\=\\
+  \infer-[\jrule{CUT-N}^{B_{\kay}}]{\slof{A |- \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} : C}}{
+    \slof{A |- N_0 : B_{\kay}} &
+    \infer-[\jrule{CUT-N}^B]{\slof{B_{\kay} |- \nspawn{\selectR{\kay}}{M} : C}}{
+      \infer[\rrule{\plus}]{\slof{B_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+        \text{($\kay \in L$)}} &
+    \slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- M : C}}}
+\end{gather*}
+
+
+\begin{description}
+\item[Identity cuts]
+  \begin{gather*}
+    \nspawn{\fwd}{M} = M \\
+    \nspawn{N}{\fwd} = N
+  \end{gather*}
+
+\item[Associative cuts]
+  \begin{gather*}
+    \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} \\
+    \nspawn{N}{(\spawn{\selectL{\kay}}{M_0})} = \nspawn{(\nspawn{N}{\selectL{\kay}})}{M_0}
+  \end{gather*}
+
+\item[Principal cuts]
+  \begin{gather*}
+    \nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}} = M_{\kay} \\
+    \nspawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{\selectL{\kay}} = N_{\kay}
+  \end{gather*}
+
+\item[Left commutative cuts]
+  \begin{gather*}
+    \nspawn{\selectL{\kay}}{M} = \spawn{\selectL{\kay}}{M} \\
+    \nspawn{(\spawn{\selectL{\kay}}{N_0})}{M} = \spawn{\selectL{\kay}}{(\nspawn{N_0}{M})} \\
+    \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{M} =
+      \begin{array}[t]{@{}l@{}}
+        \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M}} \mathrlap{\,,} \\
+        \mathrlap{\quad\text{if $M \neq \selectR{\kay}$ and $M \neq \spawn{M_0}{\selectR{\kay}}$ for all $M_0$}}
+      \end{array}
+  \end{gather*}
+  Without this side condition, the grammar of normal terms would include reducible terms like $\spawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{\selectR{\kay}}$.
+
+\item[Right commutative cuts]
+  \begin{gather*}
+    \nspawn{N}{\selectR{\kay}} = \spawn{N}{\selectR{\kay}} \\
+    \nspawn{N}{(\spawn{M_0}{\selectR{\kay}})} = \spawn{(\nspawn{N}{M_0})}{\selectR{\kay}} \\
+    \nspawn{N}{\caseR[\ell \in L]{\ell => M_{\ell}}} =
+      \begin{array}[t]{@{}l@{}}
+        \caseR[\ell \in L]{\ell => \nspawn{N}{M_{\ell}}} \mathrlap{\,,} \\
+        \mathrlap{\quad\text{if $N \neq \selectL{\kay}$ and $N \neq \spawn{\selectL{\kay}}{N_0}$ for all $N_0$}}
+      \end{array}
+  \end{gather*}
+\end{description}
+Proving termination of this second procedure is slightly more involved than that of the first approach.
+We still use a lexicographic induction, but instead of using the structure of the type and then the structures of the proofs, we may need to introduce an explicit metric.
+Consider
+\begin{equation*}
+  \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M}
+    = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} \,.
+\end{equation*}
+The inner cut uses thie same type with smaller proofs; the outer cut uses a smaller type.
+In case $\selectR{\kay}$ is not considered a structural component of $\spawn{N_0}{\selectR{\kay}}$, then we can use a metric that sets
+\begin{align*}
+  \lvert \spawn{N_0}{\selectR{\kay}} \rvert &= 2 + \lvert N_0 \rvert \\
+\shortintertext{and}
+  \lvert \selectR{\kay} \rvert &= 1 \,.
+\end{align*}
+
+
+\subsection{Operational semantics}
+
+\begin{syntax*}
+  Configurations & \cnf & \cnf_1 \cc \cnf_2 \mid \cnfe \mid P
+\end{syntax*}
+
+\begin{equation*}
+  \begin{gathered}
+    \!\begin{aligned}
+      \fwd &\reduces \cdot \\
+      \spawn{P_1}{P_2} &\reduces P_1 \cc P_2
+    \end{aligned} \\
+    \selectR{\kay} \cc \caseL[\ell \in L]{\ell => P_{\ell}}
+      \reduces P_{\kay} \\
+    \caseR[\ell \in L]{\ell => P_{\ell}} \cc \selectL{\kay}
+      \reduces P_{\kay}
+    \\[2\jot]
+    \cnf \cc \cnfe = \cnf = \cnfe \cc \cnf \\
+    (\cnf_1 \cc \cnf_2) \cc \cnf_3 = \cnf_1 \cc (\cnf_2 \cc \cnf_3)
+  \end{gathered}
+\end{equation*}
+
+\begin{equation*}
+  \begin{aligned}
+    (\cnf_1 \cc \cnf_2)^\sharp &= \spawn{\cnf_1^\sharp}{\cnf_2^\sharp} \\
+    (\cnfe)^\sharp &= \fwd \\
+    P^\sharp &= P
+  \end{aligned}
+\end{equation*}
+
+
+
+\begin{inferences}
+  \infer[\rrule{\bang}]{\slseq{\uctx, A ; \sctxe |- \bang A}}{}
+  \and
+  \infer[\rrule{\bang\tensor}]{\slseq{\uctx, A_1 ; A_2 |- A_1 \mathbin{\bang\tensor} A_2}}{}
+\end{inferences}
 
 %%% Local Variables:
 %%% mode: latex

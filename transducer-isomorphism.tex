@@ -1,30 +1,26 @@
 \chapter{Isomorphisms}
 
-\section{Analytic cuts}
+\section{An asynchronous sequent calculus}
 
+Here are the propositions and proof terms for singleton logic's asynchronous sequent calculus.
 \begin{syntax*}
   Propositions & A,B &
-    \alpha \mid \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
+    \alpha \mid \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}
+           \mid \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
   \\
   Proof terms & P,Q &
-    \begin{array}[t]{@{}l@{}}
-      \spawn{P}{Q} \mid \fwd \mid \spawnL{\kay}{P} \mid \spawnR{P}{\kay} \\
-        \mathllap{\mid {}} \selectR{\kay} \mid \caseL[\ell \in L]{\ell => P_{\kay}} \\
-        \mathllap{\mid {}} \caseR[\ell \in L]{\ell => P_{\kay}} \mid \selectL{\kay}
-    \end{array}
+    \spawn{P}{Q} \mid \fwd
+      \begin{array}[t]{@{{} \mid {}}l@{}}
+        \selectR{\kay} \mid \caseL[\ell \in L]{\ell => P_{\kay}} \\
+        \caseR[\ell \in L]{\ell => P_{\kay}} \mid \selectL{\kay}
+      \end{array}
 \end{syntax*}
-
+The inference rules for singleton logic's asynchronous sequent calculus are:
 \begin{inferences}
   \infer[\jrule{CUT}^B]{\slof{A |- \spawn{P}{Q} : C}}{
     \slof{A |- P : B} & \slof{B |- Q : C}}
   \and
   \infer[\jrule{ID}]{\slof{A |- \fwd : A}}{}
-  \\
-  \infer[\jrule{$\plus$-CUT}]{\slof{A |- \spawnR{P}{\kay} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
-    \text{($\kay \in L$)} & \slof{A |- P : C_{\kay}}}
-  \and
-  \infer[\jrule{$\with$-CUT}]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \spawnL{\kay}{P} : C}}{
-    \text{($\kay \in L$)} & \slof{A_{\kay} |- P : C}}
   \\
   \infer[\rrule{\plus}]{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
     \text{($\kay \in L$)}}
@@ -32,419 +28,1182 @@
   \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
     \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C}}}
   \\
-  \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
-    \multipremise{\ell \in L}{\slof{A |- P_{\ell} : B_{\ell}}}}
+  \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \multipremise{\ell \in L}{\slof{A |- P_{\ell} : C_{\ell}}}}
   \and
-  \infer[\lrule{\with}]{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \selectL{\kay} : B_{\kay}}}{
+  \infer[\lrule{\with}]{\slof{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
     \text{($\kay \in L$)}}
 \end{inferences}
 
-\subsection{Cut elimination}
 
-% \begin{equation*}
-%   \infer[\jrule{CUT}]{\slof{A_{\kay} |- \spawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => Q_{\ell}}} : C}}{
-%     \infer[\rrule{\plus}]{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
-%       \text{($\kay \in L$)}} &
-%     \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => Q_{\ell}} : C}}{
-%       \multipremise{\ell \in L}{\slof{A_{\ell} |- Q_{\ell} : C}}}}
-%   \reduces
-%   \slof{A_{\ell} |- Q_{\kay} : C}
-% \end{equation*}
 
-To keep things simple, we'll start with the fragment that does not contain external choice and the $\jrule{$\with$-CUT}$, $\rrule{\with}$, and $\lrule{\with}$ rules.
+\section{Normalization of proofs}
 
-Some of the cut reductions naturally carry over from the sequent calculus:
-\begin{gather*}
-  \spawn{\fwd}{Q} \reduces Q \\
-  \spawn{P}{\fwd} \reduces P
-  \\
-  \spawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => Q_{\ell}}} \reduces Q_{\kay}
-  \\
-  \spawn{\caseL[\ell \in L]{\ell => P_{\ell}}}{Q} \reduces \caseL[\ell \in L]{\ell => \spawn{P_{\ell}}{Q}}
-\end{gather*}
-The question is what to do with $\spawn{P}{\selectR{\kay}}$.
-Because $\selectR{\kay}$ has no continuation, a right commutative cut reduction, like $\spawn{P}{(\selectR{\kay}[Q])} \reduces \selectR{\kay}[(\spawn{P}{Q})]$ in the sequent calculus, is not possible.
-
-We could try to adopt the following as a reduction.
-\begin{equation*}
-  \infer[\jrule{CUT}]{\slof{A |- \spawn{P}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
-    \slof{A |- P : C_{\kay}} &
-    \infer[\rrule{\plus}]{\slof{C_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
-      \text{($\kay \in L$)}}}
-  \reduces
-  \infer[\jrule{$\plus$-CUT}]{\slof{A |- \spawnR{P}{\kay} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
-      \text{($\kay \in L$)} & \slof{A |- P : C_{\kay}}}
-\end{equation*}
-One problem with adopting this as a reduction is that cut reduction is then not confluent.
-\begin{align*}
-  \MoveEqLeft[0.5]
-  \spawn{(\spawn{\fwd}{\selectR{\kay}})}{\caseL[\ell \in L]{\ell => Q_{\ell}}} \\
-    &\reduces \spawn{(\spawnR{\fwd}{\kay})}{\caseL[\ell \in L]{\ell => Q_{\ell}}} \\
-    &\longarrownot\reduces
-%
-\shortintertext{but}
-%
-  \MoveEqLeft[0.5]
-  \spawn{(\spawn{\fwd}{\selectR{\kay}})}{\caseL[\ell \in L]{\ell => Q_{\ell}}} \\
-    &\equiv \spawn{\fwd}{(\spawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => Q_{\ell}}})} \\
-    &\reduces \spawn{\fwd}{Q_{\kay}}
-\end{align*}
-I suppose that confluence could be restored by adopting 
-\begin{equation*}
-  \spawn{(\spawnR{P}{\kay})}{\caseL[\ell \in L]{\ell => Q_{\ell}}} \reduces \spawn{P}{Q_{\kay}}
-\end{equation*}
-as a reduction, but it feels odd to allow this reduction if our goal is a close correspondence between cut reduction and asynchronous communication.
-
-Maybe $\spawn{P}{\selectR{\kay}}$ and $\spawnR{P}{\kay}$ should be related only with a commuting conversion?
-\begin{equation*}
-  \spawn{P}{\selectR{\kay}} \equiv \spawnR{P}{\kay}
-\end{equation*}
-We would also have a commuting conversion when a $\jrule{$\plus$-CUT}$ appears in the right premise of a $\jrule{CUT}$:
-\begin{gather*}
-  \infer[\jrule{CUT}]{\slof{A |- \spawn{P}{(\spawnR{Q}{\kay})} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
-    \slof{A |- P : B} &
-    \infer[\jrule{$\plus$-CUT}]{\slof{B |- \spawnR{Q}{\kay} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
-      \text{($\kay \in L$)} & \slof{B |- Q : C_{\kay}}}}
-  \\\equiv\\
-  \infer[\jrule{$\plus$-CUT}]{\slof{A |- \spawnR{(\spawn{P}{Q})}{\kay} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
-      \text{($\kay \in L$)} &
-      \infer[\jrule{CUT}]{\slof{A |- \spawn{P}{Q} : C_{\kay}}}{
-        \slof{A |- P : B} & \slof{B |- Q : C_{\kay}}}}
-\end{gather*}
-
+\subsection{Normal proofs}
 
 \begin{inferences}
-  \infer[\jrule{CUT}]{\slof{A |- C}}{
-    \slof{A |- B} & \slof{B |- C}}
-  \and
-  \infer[\jrule{ID}]{\slof{A |- A}}{}
-  \and
-  \infer[\jrule{$\plus$-CUT}_1]{\slof{A |- B_1 \plus B_2}}{
-    \slof{A |- B_1}}
-  \and
-  \infer[\jrule{$\plus$-CUT}_2]{\slof{A |- B_1 \plus B_2}}{
-    \slof{A |- B_2}}
+  \infer[\jrule{ID}]{\slof{A |- \fwd : A}}{}
   \\
-  \infer[\rrule{\plus}_1]{\slof{A_1 |- A_1 \plus A_2}}{}
+  \infer[]{\slof{A |- \spawn{N}{Q^{\plus}} : C}}{
+    \slof{A |- N : B} & \slofp{B ||- Q^{\plus} : C}}
   \and
-  \infer[\rrule{\plus}_2]{\slof{A_2 |- A_1 \plus A_2}}{}
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
+    \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C}}}
+  \\
+  \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \multipremise{\ell \in L}{\slof{A |- P_{\ell} : C_{\ell}}}}
   \and
-  \infer[\lrule{\plus}]{\slof{A_1 \plus A_2 |- C}}{
-    \slof{A_1 |- C} & \slof{A_2 |- C}}
+  \infer[]{\slof{A |- \spawn{Q^{\with}}{N} : C}}{
+    \slofn{A ||- Q^{\with} : B} & \slof{B |- N : C}}
+  \\
+  \infer[\rrule{\plus}]{\slofp{A ||- \spawn{Q^{\plus}}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \text{($\kay \in L$)} & \slofp{A ||- Q^{\plus} : C_{\kay}}}
+  \and
+  \infer[\n{\jrule{ID}}]{\slofp{\n{A} ||- \fwd : \n{A}}}{}
+  \\
+  \infer[\lrule{\with}]{\slofn{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} ||- \spawn{\selectL{\kay}}{Q^{\with}} : C}}{
+    \text{($\kay \in L$)} & \slofn{A_{\kay} ||- Q^{\with} : C}}
+  \and
+  \infer[\p{\jrule{ID}}]{\slofn{\p{A} ||- \fwd : \p{A}}}{}
 \end{inferences}
 
+\subsection{Admissibility of normal cut}
 
-\section{Isomorphism with transducers}
+\NewDocumentCommand \nspawn { m m } { #1 \mathbin{\blacksquare} #2 }
 
-\begin{syntax*}
-  Transducers & T &
-    q \mid \spawnR{T}{\kay} \mid \caseL[\ell \in L]{\ell => T_{\ell}} \mid \selectR{\kay}
-\end{syntax*}
-Transducers are isomorphic to the $\eta$-long circular proofs constructed from the above grammar.
-Such a proof is $\eta$-long if the axiom for $\selectR{\kay}$ is used only at atomic type:
 \begin{equation*}
-  \infer[\rrule{\plus}]{\slof{\alpha |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
-    \text{($\kay \in L$)} & \text{($A_{\kay} = \alpha$)}}
+  \infer-[\jrule{CUT}]{\slof{A |- \nspawn{M}{N} : C}}{
+    \slof{A |- M : B} & \slof{B |- N : C}}
 \end{equation*}
-From the perspective of a transducer, this means that the $\rrule{\plus}$ rule may be used only for terminal symbols in the output alphabet.
-
-\section{}
-
-Only perform $\spawn{P}{\selectR{\kay}} \reduces \spawnR{P}{\kay}$ in right premises of ordinary cuts?
-This way, there will be no recipient for $\selectR{\kay}$.
-
-
-\section{Only one form of cut?}
-
-What about reconsidering the system with only one form of cut?
-To keep things simpler, start with just internal choice and no circularity.
-I claim that, up to associativity of cuts, the $\beta$-normal terms are given by the following grammar.
-\begin{syntax*}
-  Normal terms & M,N &
-    \fwd \mid Q^{\plus} \mid \caseL[\ell \in L]{\ell => N_{\ell}}
-  \\
-  Q{ueues} & Q^{\plus} &
-    \selectR{\kay} \mid \spawn{Q^{\plus}}{\selectR{\kay}}
-\end{syntax*}
-By analogy with standard cut elimination, consider the reductions that may occur when two $\beta$-normal terms are joined by a cut.
-There are sixteen different possibilities.
-
-Seven of these possibilities are straightforward identity reductions:
-\begin{gather*}
-  \spawn{\fwd}{N} \reduces N
-  \\
-  \spawn{M}{\fwd} \reduces M
-\end{gather*}
-Two other possibilities are natural as essential reductions:
-\begin{gather*}
-  \spawn{\selectR{\kay}}
-        {\caseL[\ell \in L]{\ell => N_{\ell}}}
-    \reduces
-    N_{\kay}
-  \\
-  \spawn{(\spawn{Q^{\plus}}{\selectR{\kay}})}
-        {\caseL[\ell \in L]{\ell => N_{\ell}}}
-    \reduces
-    \spawn{Q^{\plus}}{N_{\kay}}
-\end{gather*}
-The second of these essential reductions seems redundant if we allow cuts to be reassociated during cut elimination.
-It also seems to conflict with our goal of asynchronous cut reduction.
-Maybe we should drop this as an explicit reduction?
-
-The remaining possibilities are covered by commutative cut reductions:
-\begin{gather*}
-  \spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
-        {N}
-    \reduces
-    \caseL[\ell \in L]{\ell => \spawn{M_{\ell}}{N}}
-  \\
-  \spawn{M}{(\spawn{Q^{\plus}}{\selectR{\kay}})}
-    \reduces
-    \spawn{(\spawn{M}{Q^{\plus}})}{\selectR{\kay}}
-\end{gather*}
-The second of these reductions makes (a specific instance of) associativity into a directional reduction.
-Is this okay, do you think?
-
-\subsection{External choice}
-
-We could try to revise the grammar of $\beta$-normal terms as follows.
-\begin{syntax*}
-  Normal terms & M,N &
-    \fwd \mid Q^{\plus} \mid Q^{\with}
-  \\
-  Q{ueues} & Q^{\plus} &
-    \selectR{\kay} \mid \caseR[\ell \in L]{\ell => N_{\ell}} \mid \spawn{Q^{\plus}}{\selectR{\kay}}
-  \\
-  & Q^{\with} &
-    \selectL{\kay} \mid \caseL[\ell \in L]{\ell => N_{\ell}} \mid \spawn{\selectL{\kay}}{Q^{\with}}
-\end{syntax*}
-Missing are terms like $\spawn{\selectL{\kay}_0}{\selectR{\kay}_1}$.
-Unfortunately, we cannot simply add $\spawn{Q^{\with}}{Q^{\plus}}$ as a production because terms like $\spawn{(\spawn{\selectL{\kay}_0}{\caseL[\ell \in L]{\ell => N_{\ell}}})}{\selectR{\kay}_1}$ would be incorrectly allowed -- incorrectly, that is, if we want to retain the commutative cut reductions as reductions and also allow associativity of cuts.
-
-Notice that revising the grammars of queues as follows is \emph{not} a solution.
-\begin{syntax*}
-  Q{ueues} & Q^{\plus} &
-    \selectR{\kay} \mid \caseR[\ell \in L]{\ell => N_{\ell}} \mid Q^{\with} \mid \spawn{Q^{\plus}}{\selectR{\kay}}
-  \\
-  & Q^{\with} &
-    \selectL{\kay} \mid \caseL[\ell \in L]{\ell => N_{\ell}} \mid Q^{\plus} \mid \spawn{\selectL{\kay}}{Q^{\with}}
-\end{syntax*}
-These grammars also incorrectly allow terms like $\spawn{(\spawn{\selectL{\kay}_0}{\caseL[\ell \in L]{\ell => N_{\ell}}})}{\selectR{\kay}_1}$.
-
-One grammar that does work is:
-\begin{syntax*}
-  Normal terms & M,N &
-    \fwd \mid Q^{\plus} \mid Q^{\with} \mid R \mid L
-  \\
-  Q{ueues} & Q^{\plus} &
-    \selectR{\kay} \mid \spawn{Q^{\plus}}{\selectR{\kay}}
-  \\
-  & Q^{\with} &
-    \selectL{\kay} \mid \spawn{\selectL{\kay}}{Q^{\with}}
-  \\
-  Right terms & R &
-    \caseR[\ell \in L]{\ell => N_{\ell}} \mid Q^{\with} \mid \spawn{R}{\selectR{\kay}}
-  \\
-  Left terms & L &
-    \caseL[\ell \in L]{\ell => N_{\ell}} \mid Q^{\plus} \mid \spawn{\selectL{\kay}}{L}
-\end{syntax*}
-
 
 \begin{gather*}
-  \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}
-        {\selectL{\kay}}
-    \reduces
-    M_{\kay}
-  \\
-  \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}
-        {(\spawn{\selectL{\kay}}{Q^{\with}})}
-    \reduces
-    \spawn{M_{\kay}}{Q^{\with}}
-  \\
-  \spawn{M}
-        {\caseR[\ell \in L]{\ell => N_{\ell}}}
-    \reduces
-    \caseR[\ell \in L]{\ell => \spawn{M}{N_{\ell}}}
-  \\
-  \spawn{(\spawn{\selectL{\kay}}{Q^{\with}})}
-        {N}
-    \reduces
-    \spawn{\selectL{\kay}}{(\spawn{Q^{\with}}{N})}
+  \infer-[\jrule{CUT}^B]{\slof{A |- \nspawn{(\spawn{M_0}{(\spawn{Q^{\plus}}{\selectR{\kay}})})}{\caseL[\ell \in L]{\ell => N_{\ell}}} : C}}{
+    \infer[]{\slof{A |- \spawn{M_0}{(\spawn{Q^{\plus}}{\selectR{\kay}})} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+      \slof{A |- M_0 : A'} &
+      \infer[\rrule{\plus}]{\slofp{A' ||- \spawn{Q^{\plus}}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+        \text{($\kay \in L$)} & \slofp{A' ||- Q^{\plus} : B_{\kay}}}} &
+    \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \caseL[\ell \in L]{\ell => N_{\ell}} : C}}{
+      \multipremise{\ell \in L}{\slof{B_{\ell} |- N_{\ell} : C}}}}
+  \\=\\
+  \infer-[\jrule{CUT}^{B_{\kay}}]{\slof{A |- \nspawn{(\spawn{M_0}{Q^{\plus}})}{N_{\kay}} : C}}{
+    \infer[]{\slof{A |- \spawn{M_0}{Q^{\plus}} : B_{\kay}}}{
+      \slof{A |- M_0 : A'} & \slofp{A' ||- Q^{\plus} : B_{\kay}}} &
+    \slof{B_{\kay} |- N_{\kay} : C}}
 \end{gather*}
 
+\begin{gather*}
+  \infer-[\jrule{CUT}^{\n{B}}]{\slof{A |- \nspawn{(\spawn{M_0}{\fwd})}{N} : C}}{
+    \infer[]{\slof{A |- \spawn{M}{\fwd} : \n{B}}}{
+      \slof{A |- M_0 : \n{B}} &
+      \infer[\n{\jrule{ID}}]{\slofp{\n{B} ||- \fwd : \n{B}}}{}} &
+    \slof{\n{B} |- N : C}}
+  \\=\\
+  \infer-[\jrule{CUT}^{\n{B}}]{\slof{A |- \nspawn{M_0}{N} : C}}{
+    \slof{A |- M_0 : \n{B}} & \slof{\n{B} |- N : C}}
+\end{gather*}
 
-\section{Circularity}
+\begin{gather*}
+  \infer-[\jrule{CUT}^B]{\slof{A |- \nspawn{(\spawn{Q^{\with}}{M_0})}{N} : C}}{
+    \infer[]{\slof{A |- \spawn{Q^{\with}}{M_0} : B}}{
+      \slofn{A ||- Q^{\with} : B_0} & \slof{B_0 |- M_0 : B}} &
+    \slof{B |- N : C}}
+  \\=\\
+  \infer[]{\slof{A |- \spawn{Q^{\with}}{(\nspawn{M_0}{N})} : C}}{
+    \slofn{A ||- Q^{\with} : B_0} &
+    \infer-[\jrule{CUT}^B]{\slof{B_0 |- \nspawn{M_0}{N} : B}}{
+      \slof{B_0 |- M_0 : B} & \slof{B |- N : C}}}
+\end{gather*}
 
+\begin{gather*}
+  \infer-[\jrule{CUT}^B]{\slof{A |- \nspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}{(\spawn{Q^{\with}}{N_0})} : C}}{
+    \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => M_{\ell}} : B}}{
+      \multipremise{\ell \in L}{\slof{A_{\ell} |- M_{\ell} : B}}} &
+    \infer[]{\slof{B |- \spawn{Q^{\with}}{N_0} : C}}{
+      \slofn{B ||- Q^{\with} : B_0} & \slof{B_0 |- N_0 : C}}}
+  \\=\\
+  \infer-[\jrule{CUT}^B]{\slof{A |- \nspawn{\caseL[\ell \in L]{\ell => \nspawn{M_{\ell}}{(\spawn{Q^{\with}}{\fwd})}}}{N_0} : C}}{
+    \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => \nspawn{M_{\ell}}{(\spawn{Q^{\with}}{\fwd})}} : B}}{
+      \multipremise{\ell \in L}{
+        \infer-[\jrule{CUT}^B]{\slof{A_{\ell} |- \nspawn{M_{\ell}}{(\spawn{Q^{\with}}{\fwd})} : B_0}}{
+          \slof{A_{\ell} |- M_{\ell} : B} &
+          \infer[]{\slof{B |- \spawn{Q^{\with}}{\fwd} : B_0}}{
+            \slofn{B ||- Q^{\with} : B_0} &
+            \infer[\jrule{ID}]{\slof{B_0 |- \fwd : B_0}}{}}}}} &
+    \slof{B_0 |- N_0 : C}}
+\end{gather*}
+
+\subsection{}
+
+We would like to prove a normalization theorem for the asynchronous sequent calculus.
+Unlike the usual, synchronous sequent calculus normalization will not be a process of cut elimination.
+For example, the provable sequent $\slseq{\alpha |- \plus*{a:\plus*{b:\alpha}}}$ has no cut-free proof.
+
+Proof terms form a monoid under the $\spawn{}{}$ constructor, with $\fwd$ as the unit element.
+Associativity and unit laws hold:
+\begin{gather*}
+  \infer[\jrule{CUT}^{B_2}]{\slof{A |- \spawn{(\spawn{P}{Q})}{R} : C}}{
+    \infer[\jrule{CUT}^{B_1}]{\slof{A |- \spawn{P}{Q} : B_2}}{
+      \slof{A |- P : B_1} & \slof{B_1 |- Q : B_2}} &
+    \slof{B_2 |- R : C}}
+  \equiv
+  \infer[\jrule{CUT}^{B_1}]{\slof{A |- \spawn{P}{(\spawn{Q}{R})} : C}}{
+    \slof{A |- P : B_1} &
+    \infer[\jrule{CUT}^{B_2}]{\slof{B_1 |- \spawn{Q}{R} : C}}{
+      \slof{B_1 |- Q : B_2} & \slof{B_2 |- R : C}}}
+  \\
+  \infer[\jrule{CUT}^A]{\slof{A |- \spawn{\fwd}{P} : C}}{
+    \infer[\jrule{ID}^A]{\slof{A |- \fwd : A}}{} &
+    \slof{A |- P : C}}
+  \equiv
+  \slof{A |- P : C}
+  \equiv
+  \infer[\jrule{CUT}^C]{\slof{A |- \spawn{P}{\fwd} : C}}{
+    \slof{A |- P : C} &
+    \infer[\jrule{ID}^C]{\slof{C |- \fwd : C}}{}}
+\end{gather*}
+In this way, the $\jrule{CUT}$ rule can be seen as a form of composition for proof terms.
+
+Modulo these associativity and unit laws, normal proof terms are those given by the following grammar.
 \begin{syntax*}
-  Weak-head normal terms & E &
-    \lambda x.e \mid x\,e_1 \dotsm\mkern1mu e_n
-\end{syntax*}
-
-
-\begin{syntax*}
-  Weak-head normal terms & N &
-    \begin{array}[t]{@{}l@{}}
-      \fwd \mid \selectR{\kay} \mid \selectL{\kay} \\
-      \mathllap{\mid {}} \caseL[\ell \in L]{\ell => P_{\ell}} \mid \caseR[\ell \in L]{\ell => P_{\ell}} \\
-      \mathllap{\mid {}} \spawn{P}{\selectR{\kay}} \mid \spawn{\selectL{\kay}}{P}
-    \end{array}
-\end{syntax*}
-
-\section{Normal-form processes}
-
-The following is a revised spine-like grammar for normal forms.
-\begin{syntax*}
-  Normal-form processes & N &
-    \fwd
-    \begin{array}[t]{@{{} \mid {}}l@{}}
-      Q^{\with} \mid Q^{\plus}
-      \begin{array}[t]{@{{} \mid {}}l@{}}
-        \caseR[\ell \in L]{\ell => N_{\ell}} \\
-        \caseL[\ell \in L]{\ell => N_{\ell}}
-      \end{array}
-    \\
+  Normal terms & N &
     \spawn{Q^{\with}}{Q^{\plus}}
       \begin{array}[t]{@{{} \mid {}}l@{}}
-        \spawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{Q^{\plus}} \\
-        \spawn{Q^{\with}}{\caseL[\ell \in L]{\ell => N_{\ell}}}
+        \spawn{Q^{\with}}{\caseL[\ell \in L]{\ell => N_{\ell}}} \\
+        \spawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{Q^{\plus}}
       \end{array}
-    \end{array}
   \\
-  Right q{}ueues & Q^{\plus} &
-    \spawn{Q^{\plus}}{\selectR{\kay}} \mid \selectR{\kay}
+  Q{ueues} & Q^{\plus} &
+    \fwd \mid \spawn{Q^{\plus}_1}{Q^{\plus}_2} \mid \selectR{\kay}
   \\
-  Left q{}ueues & Q^{\with} &
-    \spawn{\selectL{\kay}}{Q^{\with}} \mid \selectL{\kay}
+           & Q^{\with} &
+    \fwd \mid \spawn{Q^{\with}_1}{Q^{\with}_2} \mid \selectL{\kay}
 \end{syntax*}
-By reasoning similar to that used earlier, I would expect the following results.
-\begin{theorem}
-  If $\slof{A |- P : C}$, then $P \equiv\reduces P'$ for some $P'$, or $P \equiv\mathrel{\mathsf{normal}}$.
-  Also, if $N \;\mathsf{normal}$, then $N \longarrownot\reduces$.
+We will adopt the following as reductions.
+\begin{gather*}
+  \spawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => N_{\ell}}}
+    \reduces N_{\kay}
+  \\
+  \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{\selectL{\kay}}
+    \reduces M_{\kay}
+  \\
+  \spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}{N}
+    \reduces \caseL[\ell \in L]{\ell => \spawn{M_{\ell}}{N}}
+  \\
+  \spawn{M}{\caseR[\ell \in L]{\ell => N_{\ell}}}
+    \reduces \caseR[\ell \in L]{\ell => \spawn{M}{N_{\ell}}}
+\end{gather*}
+
+\begin{lemma}
+  For all $\plus$-queues $Q^{\plus}$, either $Q^{\plus} \equiv \fwd$ or $Q^{\plus} \equiv \spawn{Q^{\plus}_0}{\selectR{\kay}}$ for some $\plus$-queue $Q^{\plus}_0$.
+  Similarly, for all $\with$-queues $Q^{\with}$, either $Q^{\with} \equiv \fwd$ or $Q^{\with} \equiv \spawn{\selectL{\kay}}{Q^{\with}_0}$ for some $\with$-queue $Q^{\with}_0$.
+\end{lemma}
+
+\begin{theorem}[Weak normalization]
+  If $\slof{A |- M : B}$ and $\slof{B |- N : C}$ are normal terms, then $\spawn{M}{N} \Reduces N'$ for some normal term $N'$.
 \end{theorem}
+%
+\begin{proof}
+  We follow the example of standard cut elimination, using lexicographic induction, first on the principal type and then simultaneously on the given derivations.
+  The several cases are organized into identity reductions, principal reductions, and left and right commutative reductions.
+  We frequently appeal to the preceding lemma.
+  \begin{description}
+  \item[Identity cut reductions]
+    One case has $M = \spawn{Q^{\with}_1}{Q^{\plus}_1}$ and $N = \spawn{Q^{\with}_2}{Q^{\plus}_2}$.
+    More specifically:
+    \begin{equation*}
+      \infer-[\jrule{CUT}^C]{\slof{A |- \spawn{(\spawn{Q^{\with}_1}{Q^{\plus}_1})}{(\spawn{Q^{\with}_2}{Q^{\plus}_2})} : E}}{
+        \infer[\jrule{CUT}^B]{\slof{A |- \spawn{Q^{\with}_1}{Q^{\plus}_1} : C}}{
+          \slof{A |- Q^{\with}_1 : B} &
+          \slof{B |- Q^{\plus}_1 : C}} &
+        \infer[\jrule{CUT}^D]{\slof{C |- \spawn{Q^{\with}_2}{Q^{\plus}_2} : E}}{
+          \slof{C |- Q^{\with}_2 : D} &
+          \slof{D |- Q^{\plus}_2 : E}}}
+    \end{equation*}
 
-Consider the following two transducer processes over the alphabet $\ialph = \{a\}$ that map $a^n \mapsto a^{n+1}$.
-\begin{equation*}
-  \begin{lgathered}
-    \finwds{\ialph} \defd \plus*{a:\finwds{\ialph}, \emp:\varepsilon}
-    \\
-    \slof{\finwds{\ialph} |- q : \finwds{\ialph}}
-      \defd \spawn{\caseL{a => q
-                        | \emp => \selectR{\emp}}}{\selectR{a}}
-    \\
-    \slof{\finwds{\ialph} |- s : \finwds{\ialph}}
-      \defd \caseL{a => \spawn{s}{\selectR{a}}
-                 | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}
-  \end{lgathered}
-\end{equation*}
-The process $q$ can be reduced to $s$ by an infinite sequence of reductions:
-\begin{equation*}
-  \slof{\finwds{\ialph} |- q : \finwds{\ialph}}
-    \defd \begin{aligned}[t]
-            \MoveEqLeft[0.5]
-            \spawn{\caseL{a => q | \emp => \selectR{\emp}}}{\selectR{a}}
-            \\
-              &\reduces \caseL{a => \spawn{q}{\selectR{a}} | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}
-            \\
-              &\reduces^\omega \caseL{a => \spawn{s}{\selectR{a}}
-                                   | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}
-      \defd \slof{\finwds{\ialph} |- s : \finwds{\ialph}}
-  \end{aligned}
-\end{equation*}
-In this sense, $s$ is ``more normal'' than $q$.
-But if we interpret the definition of $s$ equirecursively, then is $s$ really normal?
-For instance, we have the reduction
-\begin{align*}
-  s &= \caseL{a => \spawn{\caseL{a => \spawn{s}{\selectR{a}}
-                               | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}}
-                         {\selectR{a}}
-            | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}
-    \\
-    &\reduces \caseL{a => \caseL{a => \spawn{(\spawn{s}{\selectR{a}})}{\selectR{a}}
-                               | \emp => \spawn{(\spawn{\selectR{\emp}}{\selectR{a}})}{\selectR{a}}}
-            | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}
-\end{align*}
+    There are two subcases according to the shape of $Q^{\plus}_1$: either $Q^{\plus}_1 \equiv \fwd$ or $Q^{\plus}_1 \equiv \spawn{Q^{\plus}_0}{\selectR{\kay}_1}$ for some $\plus$-queue $Q^{\plus}_0$.
+    \begin{itemize}
+    \item Consider the subcase in which $Q^{\plus}_1 \equiv \fwd$.
+      Using associativity, we have
+      \begin{gather*}
+        \slof{A |- \spawn{(\spawn{Q^{\with}_1}{Q^{\plus}_1})}{(\spawn{Q^{\with}_2}{Q^{\plus}_2})} : E}
+        \\\equiv\\
+        \infer[\jrule{CUT}^D]{\slof{A |- \spawn{(\spawn{Q^{\with}_1}{Q^{\with}_2})}{Q^{\plus}_2} : E}}{
+          \infer[\jrule{CUT}^C]{\slof{A |- \spawn{Q^{\with}_1}{Q^{\with}_2} : D}}{
+            \slof{A |- Q^{\with}_1 : C} &
+            \slof{C |- Q^{\with}_2 : D}} &
+          \slof{D |- Q^{\plus}_2 : E}}
+      \end{gather*}
+      which is normal.
 
-Notice that the left commutative cut reduction
-\begin{gather*}
-  \infer[\jrule{CUT}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \spawn{\caseL[\ell \in L]{\ell => P_{\ell}}}{\selectR{\kay}} : \plus*[sub=_{i \in I}]{i:C_i}}}{
-    \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C_{\kay}}}{
-      \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C_{\kay}}}} &
-    \infer[\rrule{\plus}]{\slof{C_k |- \selectR{\kay} : \plus*[sub=_{i \in I}]{i:C_i}}}{
-      \text{($\kay \in I$)}}}
-  \\\reduces\\
-  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => \spawn{P_{\ell}}{\selectR{\kay}}} : \plus*[sub=_{i \in I}]{i:C_i}}}{
-    \multipremise{\ell \in L}{
-      \infer[\jrule{CUT}]{\slof{A_{\ell} |- \spawn{P_{\ell}}{\selectR{\kay}} : \plus*[sub=_{i \in I}]{i:C_i}}}{
-        \slof{A_{\ell} |- P_{\ell} : C_{\kay}} &
-        \infer[\rrule{\plus}]{\slof{C_{\kay} |- \selectR{\kay} : \plus*[sub=_{i \in I}]{i:C_i}}}{
-        \text{($\kay \in I$)}}}}}
-\end{gather*}
-is effectively the commuting conversion between the $\rrule{\plus}$ and $\lrule{\plus}$ rules:
-\begin{gather*}
-  \infer[\rrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectR{\kay}[{\caseL[\ell \in L]{\ell => P_{\ell}}}] : \plus*[sub=_{i \in I}]{i:C_i}}}{
-    \text{($\kay \in I$)} &
-    \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C_{\kay}}}{
-      \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C_{\kay}}}}}
-  \\\equiv\\
-  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => \selectR{\kay}[P_{\ell}]} : \plus*[sub=_{i \in I}]{i:C_i}}}{
-    \multipremise{\ell \in L}{
-      \infer[\rrule{\plus}]{\slof{A_{\ell} |- \selectR{\kay}[P_{\ell}] : \plus*[sub=_{i \in I}]{i:C_i}}}{
-        \text{($\kay \in I$)} &
-        \slof{A_{\ell} |- P_{\ell} : C_{\kay}}}}}
-\end{gather*}
-So, should that left commutative cut reduction even be considered a reduction?
+    \item Consider the subcase in which $Q^{\plus}_1 \equiv \spawn{Q^{\plus}_0}{\selectR{\kay}_1}$ for some $\plus$-queue $Q^{\plus}_0$.
+      In this subcase, we must also have $Q^{\with}_2 \equiv \fwd$, otherwise this term is ill-typed.
+      Because $Q^{\with}_2 \equiv \fwd$, this subcase is symmetric to the previous one.
+    \end{itemize}
+
+  \item[Principal cut reductions]
+    One case has $M = \spawn{Q^{\with}_1}{Q^{\plus}}$ and $N = \spawn{Q^{\with}_2}{\caseL[\ell \in L]{\ell => N_{\ell}}}$.
+    More specifically:
+    \begin{equation*}
+      \infer-[\jrule{CUT}^B]{\slof{A |- \spawn{(\spawn{Q^{\with}_1}{Q^{\plus}})}{(\spawn{Q^{\with}_2}{\caseL[\ell \in L]{\ell => N_{\ell}}})} : D}}{
+        \slof{A |- \spawn{Q^{\with}_1}{Q^{\plus}} : B} &
+        \infer[\jrule{CUT}^C]{\slof{B |- \spawn{Q^{\with}_2}{\caseL[\ell \in L]{\ell => N_{\ell}}} : D}}{
+          \slof{B |- Q^{\with}_2 : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}} &
+          \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \caseL[\ell \in L]{\ell => N_{\ell}} : D}}{
+            \multipremise{\ell \in L}{\slof{C_{\ell} |- N_{\ell} : D}}}}}
+    \end{equation*}
+
+    There are two subcases according to the shape of $Q^{\plus}$: either $Q^{\plus} \equiv \fwd$ or $Q^{\plus} \equiv \spawn{Q^{\plus}_0}{\selectR{\kay}}$ for some $\plus$-queue $Q^{\plus}_0$.
+    \begin{itemize}
+    \item Consider the subcase in which $Q^{\plus} \equiv \fwd$.
+      In this subcase, $\slof{A |- Q^{\with}_1 : B}$.
+      Using associativity, we have:
+      \begin{gather*}
+        % \infer-[\jrule{CUT}^B]{\slof{A |- \spawn{(\spawn{Q^{\with}_1}{Q^{\plus}})}{(\spawn{Q^{\with}_2}{\caseL[\ell \in L]{\ell => N_{\ell}}})} : D}}{
+        % \slof{A |- \spawn{Q^{\with}_1}{Q^{\plus}} : B} &
+        % \infer[\jrule{CUT}^C]{\slof{B |- \spawn{Q^{\with}_2}{\caseL[\ell \in L]{\ell => N_{\ell}}} : D}}{
+        % \slof{B |- Q^{\with}_2 : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}} &
+        % \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \caseL[\ell \in L]{\ell => N_{\ell}} : D}}{
+        % \multipremise{\ell \in L}{\slof{C_{\ell} |- N_{\ell} : D}}}}}
+        \slof{A |- \spawn{(\spawn{Q^{\with}_1}{Q^{\plus}})}{(\spawn{Q^{\with}_2}{\caseL[\ell \in L]{\ell => N_{\ell}}})} : D}
+        \\\equiv\\
+        \slof{A |- \spawn{(\spawn{Q^{\with}_1}{\fwd})}{(\spawn{Q^{\with}_2}{\caseL[\ell \in L]{\ell => N_{\ell}}})} : D}
+        \\\equiv\\
+        \infer[\jrule{CUT}^C]{\slof{A |- \spawn{(\spawn{Q^{\with}_1}{Q^{\with}_2})}{\caseL[\ell \in L]{\ell => N_{\ell}}} : D}}{
+          \infer[\jrule{CUT}^B]{\slof{A |- \spawn{Q^{\with}_1}{Q^{\with}_2} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+            \slof{A |- Q^{\with}_1 : B} &
+            \slof{B |- Q^{\with}_2 : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}} &
+          \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \caseL[\ell \in L]{\ell => N_{\ell}} : D}}{
+            \multipremise{\ell \in L}{\slof{C_{\ell} |- N_{\ell} : D}}}}
+      \end{gather*}
+      which is normal.
+
+    \item Consider the subcase in which $Q^{\plus} \equiv \spawn{Q^{\plus}_0}{\selectR{\kay}}$ for some $\plus$-queue $Q^{\plus}_0$.
+      For this process to be well-typed, we must have $Q^{\with}_2 \equiv \fwd$.
+      Using associativity and a principal reduction, we have:
+      \begin{gather*}
+        % \infer-[\jrule{CUT}^B]{\slof{A |- \spawn{(\spawn{Q^{\with}_1}{Q^{\plus}})}{(\spawn{Q^{\with}_2}{\caseL[\ell \in L]{\ell => N_{\ell}}})} : D}}{
+        % \slof{A |- \spawn{Q^{\with}_1}{Q^{\plus}} : B} &
+        % \infer[\jrule{CUT}^C]{\slof{B |- \spawn{Q^{\with}_2}{\caseL[\ell \in L]{\ell => N_{\ell}}} : D}}{
+        % \slof{B |- Q^{\with}_2 : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}} &
+        % \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \caseL[\ell \in L]{\ell => N_{\ell}} : D}}{
+        % \multipremise{\ell \in L}{\slof{C_{\ell} |- N_{\ell} : D}}}}}
+        \slof{A |- \spawn{(\spawn{Q^{\with}_1}{Q^{\plus}})}{(\spawn{Q^{\with}_2}{\caseL[\ell \in L]{\ell => N_{\ell}}})} : D}
+        \\\equiv\\
+        % \infer-[\jrule{CUT}^C]{\slof{A |- \spawn{(\spawn{Q^{\with}_1}{(\spawn{Q^{\plus}_0}{\selectR{\kay}})})}{\caseL[\ell \in L]{\ell => N_{\ell}}} : D}}{
+        % \infer[\jrule{CUT}^{B'}]{\slof{A |- \spawn{Q^{\with}_1}{(\spawn{Q^{\plus}_0}{\selectR{\kay}})} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+        % \slof{A |- Q^{\with}_1 : B'} &
+        % \infer[\jrule{CUT}^{C_{\kay}}]{\slof{B' |- \spawn{Q^{\plus}_0}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+        % \slof{B' |- Q^{\plus}_0 : C_{\kay}} &
+        % \infer[\rrule{\plus}]{\slof{C_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+        % \text{($\kay \in L$)}}}} &
+        % \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \caseL[\ell \in L]{\ell => N_{\ell}} : D}}{
+        % \multipremise{\ell \in L}{\slof{C_{\ell} |- N_{\ell} : D}}}}
+        \slof{A |- \spawn{(\spawn{Q^{\with}_1}{(\spawn{Q^{\plus}_0}{\selectR{\kay}})})}{\caseL[\ell \in L]{\ell => N_{\ell}}} : D}
+        \\\equiv\reduces\\
+        \infer-[\jrule{CUT}^{C_{\kay}}]{\slof{A |- \spawn{(\spawn{Q^{\with}_1}{Q^{\plus}_0})}{N_{\kay}} : D}}{
+          \infer[\jrule{CUT}^{B'}]{\slof{A |- \spawn{Q^{\with}_1}{Q^{\plus}_0} : C_{\kay}}}{
+            \slof{A |- Q^{\with}_1 : B'} &
+            \slof{B' |- Q^{\plus}_0 : C_{\kay}}} &
+          \slof{C_{\kay} |- N_{\kay} : D}}
+      \end{gather*}
+    \end{itemize}
+    Notice that the appeal to the inductive hypothesis is made at a smaller type, namely $C_{\kay}$.
+
+    Another case has $M = \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{Q^{\plus}_1}$ and $N = \spawn{Q^{\with}}{Q^{\plus}_2}$.
+    This case is symmetric to the previous one.
+
+    Another case has $M = \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{Q^{\plus}}$ and $N = \spawn{Q^{\with}}{\caseL[i \in I]{i => N_i}}$.
+    More specifically: 
+    \begin{equation*}
+      \infer-[\jrule{CUT}^B]{\slof{A |- \spawn{(\spawn{Q^{\with}_1}{Q^{\plus}})}{(\spawn{Q^{\with}_2}{\caseL[\ell \in L]{\ell => N_{\ell}}})} : D}}{
+        \deduce{\slof{A |- \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{Q^{\plus}} : B}}{\vdots} &
+        \infer[\jrule{CUT}^C]{\slof{B |- \spawn{Q^{\with}}{\caseL[i \in I]{i => N_i}} : D}}{
+          \slof{B |- Q^{\with} : \plus*[sub=_{i \in i}]{i:C_i}} &
+          \infer[\lrule{\plus}]{\slof{\plus*[sub=_{i \in I}]{i:C_i} |- \caseL[i \in I]{i => N_i} : D}}{
+            \multipremise{i \in I}{\slof{C_i |- N_i : D}}}}}
+    \end{equation*}
+    
+    There are two subcases according to the shape of $Q^{\plus}$: either $Q^{\plus} \equiv \fwd$ or $Q^{\plus} \equiv \spawn{Q^{\plus}_0}{\selectR{\kay}}$ for some $\plus$-queue $Q^{\plus}_0$.
+    \begin{itemize}
+    \item Consider the subcase in which $Q^{\plus} \equiv \fwd$.
+      In this subcase, we must have $Q^{\with} \equiv \spawn{\selectL{\kay}}{Q^{\with}_0}$ for some $\with$-queue, otherwise the term will be ill-typed.
+      Using associativity and a principal reduction, we have:
+      \begin{gather*}
+        % \infer-[\jrule{CUT}^B]{\slof{A |- \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{(\spawn{(\spawn{\selectL{\kay}}{Q^{\with}_0})}{\caseL[i \in I]{i => N_i}})} : D}}{
+        %   \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => M_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+        %     \multipremise{\ell \in L}{\slof{A |- M_{\ell} : B_{\ell}}}} &
+        %   \infer[\jrule{CUT}^C]{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \spawn{(\spawn{\selectL{\kay}}{Q^{\with}_0})}{\caseL[i \in I]{i => N_i}} : D}}{
+        %     \infer[\jrule{CUT}^{B_{\kay}}]{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \spawn{\selectL{\kay}}{Q^{\with}_0} : \plus*[sub=_{i \in i}]{i:C_i}}}{
+        %       \infer[\lrule{\with}]{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \selectL{\kay} : B_{\kay}}}{
+        %         \text{($\kay \in L$)}} &
+        %       \slof{B_{\kay} |- Q^{\with}_0 : \plus*[sub=_{i \in i}]{i:C_i}}} &
+        %     \infer[\lrule{\plus}]{\slof{\plus*[sub=_{i \in I}]{i:C_i} |- \caseL[i \in I]{i => N_i} : D}}{
+        %       \multipremise{i \in I}{\slof{C_i |- N_i : D}}}}}
+        \slof{A |- \spawn{(\spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{Q^{\plus}})}{(\spawn{Q^{\with}}{\caseL[i \in I]{i => N_i}})} : D}
+        \\\equiv\\
+        \slof{A |- \spawn{(\spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{\fwd})}{(\spawn{(\spawn{\selectL{\kay}}{Q^{\with}_0})}{\caseL[i \in I]{i => N_i}})} : D}
+        \\\equiv\reduces\\
+        \infer-[\jrule{CUT}^{B_{\kay}}]{\slof{A |- \spawn{M_{\kay}}{(\spawn{Q^{\with}_0}{\caseL[i \in I]{i => N_i}})} : D}}{
+          \slof{A |- M_{\kay} : B_{\kay}} &
+          \infer[\jrule{CUT}^C]{\slof{B_{\kay} |- \spawn{Q^{\with}_0}{\caseL[i \in I]{i => N_i}} : D}}{
+            \slof{B_{\kay} |- Q^{\with}_0 : \plus*[sub=_{i \in i}]{i:C_i}} &
+            \infer[\lrule{\plus}]{\slof{\plus*[sub=_{i \in I}]{i:C_i} |- \caseL[i \in I]{i => N_i} : D}}{
+              \multipremise{i \in I}{\slof{C_i |- N_i : D}}}}}
+      \end{gather*}
+    Notice that the appeal to the inductive hypothesis is made at a smaller type, namely $B_{\kay}$.
+
+    \item Consider the subcase in which $Q^{\plus} \equiv \spawn{Q^{\plus}_0}{\selectR{\kay}}$ for some $\plus$-queue.
+      In this subcase, we must have $Q^{\with} \equiv \fwd$, otherwise the term will be ill-typed.
+      This subcase is symmetric to the previous one.
+      % \begin{gather*}
+      %   \slof{A |- \spawn{(\spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{Q^{\plus}})}{(\spawn{Q^{\with}}{\caseL[i \in I]{i => N_i}})} : D}
+      %   \\\equiv\\
+      %   \slof{A |- \spawn{(\spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{(\spawn{Q^{\plus}_0}{\selectR{\kay}})})}{(\spawn{\fwd}{\caseL[i \in I]{i => N_i}})} : D}
+      %   \\\equiv\reduces\\
+      %   \slof{A |- \spawn{(\spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{Q^{\plus}_0})}{N_{\kay}} : D}
+      % \end{gather*}
+    \end{itemize}
+
+  \item[Left commutative cut reductions]
+    One case has $M = \spawn{Q^{\with}}{\caseL[\ell \in L]{\ell => M_{\ell}}}$.
+    More specifically:
+    \begin{equation*}
+      \infer-[\jrule{CUT}^C]{\slof{A |- \spawn{(\spawn{Q^{\with}}{\caseL[\ell \in L]{\ell => M_{\ell}}})}{N} : D}}{
+        \infer[\jrule{CUT}^B]{\slof{A |- \spawn{Q^{\with}}{\caseL[\ell \in L]{\ell => M_{\ell}}} : C}}{
+          \slof{A |- Q^{\with} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}} &
+          \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \caseL[\ell \in L]{\ell => M_{\ell}} : C}}{
+            \multipremise{\ell \in L}{\slof{B_{\ell} |- M_{\ell} : C}}}} &
+        \slof{C |- N : D}}
+    \end{equation*}
+    Using associativity and a left commutative reduction, we have:
+    \begin{gather*}
+      \slof{A |- \spawn{(\spawn{Q^{\with}}{\caseL[\ell \in L]{\ell => M_{\ell}}})}{N} : D}
+      \\\equiv\reduces\\
+      \infer[\jrule{CUT}^B]{\slof{A |- \spawn{Q^{\with}}{\caseL[\ell \in L]{\ell => \spawn{M_{\ell}}{N}}} : D}}{
+        \slof{A |- Q^{\with} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}} &
+        \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \caseL[\ell \in L]{\ell => \spawn{M_{\ell}}{N}} : D}}{
+          \multipremise{\ell \in L}{
+            \infer-[\jrule{CUT}^C]{\slof{B_{\ell} |- \spawn{M_{\ell}}{N} : D}}{
+              \slof{B_{\ell} |- M_{\ell} : C} &
+              \slof{C |- N : D}}}}}
+    \end{gather*}
+    The appeal to the inductive hypothesis for $\spawn{M_{\ell}}{N}$ is justified because the left term is smaller, while the right term is unchanged.
+
+  \item[Right commutative cut reductions]
+    One case has $N = \spawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{Q^{\plus}}$.
+    This case is symmetric to the above left commutative case.
+    \qedhere
+  \end{description}
+\end{proof}
+
+
+Notice the following lemma is also provable. 
+\begin{lemma}
+  If $N$ is a normal term, then either:
+  \begin{itemize}[nosep]
+  \item $N \equiv \fwd$;
+  \item $N \equiv \caseL[\ell \in L]{\ell => N_{\ell}}$ for some normal terms $(N_{\ell})_{\ell \in L}$;
+  \item $N \equiv \caseR[\ell \in L]{\ell => N_{\ell}}$ for some normal terms $(N_{\ell})_{\ell \in L}$;
+  \item $N \equiv \spawn{\selectL{\kay}}{N_0}$ for some normal term $N_0$; or
+  \item $N \equiv \spawn{N_0}{\selectR{\kay}}$ for some normal term $N_0$.
+  \end{itemize}
+\end{lemma}
+
+I was tempted to use this lemma to reorganize the above proof of normalization.
+%
+\begin{theorem}[Weak normalization]
+  If $\slof{A |- M : B}$ and $\slof{B |- N : C}$ are normal terms, then $\spawn{M}{N} \Reduces N'$ for some normal term $N'$.
+\end{theorem}
+%
+\begin{proof}[Failed proof attempt]
+  \begin{description}
+  % \item[Identity cut ``reductions'']
+  %   In the cases in which $M \equiv \fwd$ or $N \equiv \fwd$, we may follow the example of standard cut elimination.
+  %   Here, however, these are not reductions, but equivalent terms.
+  %   \begin{gather*}
+  %     \infer-[\jrule{CUT}^A]{\slof{A |- \spawn{\fwd}{N} : C}}{
+  %       \infer[\jrule{ID}^A]{\slof{A |- \fwd : A}}{} &
+  %       \slof{A |- N : C}}
+  %     \equiv
+  %     \slof{A |- N : C}
+  %     \shortintertext{and}
+  %     \infer-[\jrule{CUT}^B]{\slof{A |- \spawn{M}{\fwd} : B}}{
+  %       \slof{A |- M : B} &
+  %       \infer[\jrule{ID}^B]{\slof{B |- \fwd : B}}{}}
+  %     \equiv
+  %     \slof{A |- M : B}
+  %   \end{gather*}
+
+  % \item[Principal cut reductions]
+  %   Two cases are like the principal cut reductions found in standard cut elimination.
+  %   For these cases, we will adopt the reductions
+  %   \begin{gather*}
+  %     \spawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => N_{\ell}}} \reduces N_{\kay} \\
+  %     \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{\selectL{\kay}} \reduces M_{\kay}
+  %   \end{gather*}
+
+  %   One of the principal cases has $M \equiv \spawn{M_0}{\selectR{\kay}}$ and $N \equiv \caseL[\ell \in L]{\ell => N_{\ell}}$.
+  %   Using associativity and one of the above reductions, we have 
+  %   \begin{gather*}
+  %     \infer-[\jrule{CUT}^B]{\slof{A |- \spawn{(\spawn{M_0}{\selectR{\kay}})}{\caseL[\ell \in L]{\ell => N_{\ell}}} : C}}{
+  %       \infer[\jrule{CUT}^{B_{\kay}}]{\slof{A |- \spawn{M_0}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+  %         \slof{A |- M_0 : B_{\kay}} &
+  %         \infer[\rrule{\plus}]{\slof{B_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+  %           \text{($\kay \in L$)}}} &
+  %       \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \caseL[\ell \in L]{\ell => N_{\ell}} : C}}{
+  %         \multipremise{\ell \in L}{\slof{B_{\ell} |- N_{\ell} : C}}}}
+  %     \\\equiv\reduces\\
+  %     \infer-[\jrule{CUT}^{B_{\kay}}]{\slof{A |- \spawn{M_0}{N_{\kay}} : C}}{
+  %       \slof{A |- M_0 : B_{\kay}} &
+  %       \slof{B_{\kay} |- N_{\kay} : C}}
+  %   \end{gather*}
+
+  %   The other principal case has $M \equiv \caseR[\ell \in L]{\ell => M_{\ell}}$ and $N \equiv \spawn{\selectL{\kay}}{N_0}$.
+  %   Similarly using associativity and the other above reduction, we have 
+  %   \begin{gather*}
+  %     \infer-[\jrule{CUT}^B]{\slof{A |- \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{(\spawn{\selectL{\kay}}{N_0})} : C}}{
+  %       \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => M_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+  %         \multipremise{\ell \in L}{\slof{A |- M_{\ell} : B_{\ell}}}} &
+  %       \infer[\jrule{CUT}^{B_{\kay}}]{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \spawn{\selectL{\kay}}{N_0} : C}}{
+  %         \infer[\lrule{\with}]{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \selectL{\kay} : B_{\kay}}}{
+  %           \text{($\kay \in L$)}} &
+  %         \slof{B_{\kay} |- N_0 : C}}}
+  %     \\\equiv\reduces\\
+  %     \infer-[\jrule{CUT}^{B_{\kay}}]{\slof{A |- \spawn{M_{\kay}}{N_0} : C}}{
+  %       \slof{A |- M_{\kay} : B_{\kay}} &
+  %       \slof{B_{\kay} |- N_0 : C}}
+  %   \end{gather*}
+
+  \item[Left commutative cut reductions]
+    There are two left commutative cut reductions.
+    The first of these arises from the case in which $M \equiv \spawn{\selectL{\kay}}{M_0}$.
+    Using only associativity, we can push the non-analytic cut up:
+    \begin{gather*}
+      \infer-[\jrule{CUT}^B]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \spawn{(\spawn{\selectL{\kay}}{M_0})}{N} : C}}{
+        \infer[\jrule{CUT}^{A_{\kay}}]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \spawn{\selectL{\kay}}{M_0} : B}}{
+          \infer[\lrule{\with}]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectL{\kay} : A_{\kay}}}{
+            \text{($\kay \in L$)}} &
+          \slof{A_{\kay} |- M_0 : B}} &
+        \slof{B |- N : C}}
+      \\\equiv\\
+      \infer[\jrule{CUT}^{A_{\kay}}]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \spawn{\selectL{\kay}}{(\spawn{M_0}{N})} : C}}{
+        \infer[\lrule{\with}]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectL{\kay} : A_{\kay}}}{
+          \text{($\kay \in L$)}} &
+        \infer-[\jrule{CUT}^B]{\slof{A_{\kay} |- \spawn{M_0}{N} : C}}{
+          \slof{A_{\kay} |- M_0 : B} & \slof{B |- N : C}}}
+    \end{gather*}
+    Consider the specific instance in which $M = \spawn{\selectL{\kay}}{\fwd}$ and $N = \caseR[\ell \in L]{\ell => N_{\ell}}$.
+    The above reasoning suggests that $\spawn{\selectL{\kay}}{\caseR[\ell \in L]{\ell => N_{\ell}}}$ is a normal term.
+    But that is not true -- $\spawn{\selectL{\kay}}{\caseR[\ell \in L]{\ell => N_{\ell}}} \reduces \caseR[\ell \in L]{\ell => \spawn{\selectL{\kay}}{N_{\ell}}}$.
+
+    % The other left commutative case occurs when $M \equiv \caseL[\ell \in L]{\ell => M_{\ell}}$.
+    % If we adopt
+    % \begin{equation*}
+    %   \spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}{N} \reduces \caseL[\ell \in L]{\ell => \spawn{M_{\ell}}{N}}
+    % \end{equation*}
+    % as a reduction, then
+    % The non-analytic cut can be pushed up:
+    % \begin{gather*}
+    %   \infer-[\jrule{CUT}^B]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}{N} : C}}{
+    %     \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => M_{\ell}} : B}}{
+    %       \multipremise{\ell \in L}{\slof{A_{\ell} |- M_{\ell} : B}}} &
+    %     \slof{B |- N : C}}
+    %   \\\reduces\\
+    %   \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => \spawn{M_{\ell}}{N}} : B}}{
+    %     \multipremise{\ell \in L}{
+    %       \infer-[\jrule{CUT}^B]{\slof{A_{\ell} |- \spawn{M_{\ell}}{N} : C}}{
+    %         \slof{A_{\ell} |- M_{\ell} : B} &
+    %         \slof{B |- N : C}}}}
+    % \end{gather*}
+
+  % \item[Right commutative cut reductions]
+  %   The two remaining cases are symmetric to the above left commutative cases.
+  %   These right commutative cases are resolved by associativity and a new form of reduction:
+  %   \begin{gather*}
+  %     \spawn{M}{(\spawn{N_0}{\selectR{\kay}})} \equiv \spawn{(\spawn{M}{N_0})}{\selectR{\kay}} \\
+  %     \spawn{M}{\caseR[\ell \in L]{\ell => N_{\ell}}} \reduces \caseR[\ell \in L]{\ell => \spawn{M}{N_{\ell}}}
+  %     \mathrlap{\,.}
+  %     \qedhere
+  %   \end{gather*}
+  \end{description}
+\end{proof}
+
+% What is odd about this proof is that it seems to suggest that normal terms can be generated by the following grammar.
+% \begin{syntax*}
+%   & N & \fwd
+%     \begin{array}[t]{@{{}\mid{}}l@{}}
+%       \spawn{N}{\selectR{\kay}} \mid \caseL[\ell \in L]{\ell => N_{\ell}} \\
+%       \caseR[\ell \in L]{\ell => N_{\ell}} \mid \spawn{\selectL{\kay}}{N}
+%     \end{array}
+% \end{syntax*}
+% But not all such terms are irreducible -- $\spawn{\selectL{\kay}}{\caseR[\ell \in L]{\ell => N_{\ell}}} \reduces \caseR[\ell \in L]{\ell => \spawn{\selectL{\kay}}{N_{\ell}}}$, for example.
+
+
+
+
+% \section{Circular proofs}
+
+
+
+% \section{Isomorphism with transducers}
+
+% \begin{syntax*}
+%   Transducers & T &
+%     q \mid \spawnR{T}{\kay} \mid \caseL[\ell \in L]{\ell => T_{\ell}} \mid \selectR{\kay}
+% \end{syntax*}
+% Transducers are isomorphic to the $\eta$-long circular proofs constructed from the above grammar.
+% Such a proof is $\eta$-long if the axiom for $\selectR{\kay}$ is used only at atomic type:
+% \begin{equation*}
+%   \infer[\rrule{\plus}]{\slof{\alpha |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+%     \text{($\kay \in L$)} & \text{($A_{\kay} = \alpha$)}}
+% \end{equation*}
+% From the perspective of a transducer, this means that the $\rrule{\plus}$ rule may be used only for terminal symbols in the output alphabet.
+
+
+
+% \section{Circularity}
+
+% \begin{syntax*}
+%   Weak-head normal terms & E &
+%     \lambda x.e \mid x\,e_1 \dotsm\mkern1mu e_n
+% \end{syntax*}
+
+
+% \begin{syntax*}
+%   Weak-head normal terms & N &
+%     \begin{array}[t]{@{}l@{}}
+%       \fwd \mid \selectR{\kay} \mid \selectL{\kay} \\
+%       \mathllap{\mid {}} \caseL[\ell \in L]{\ell => P_{\ell}} \mid \caseR[\ell \in L]{\ell => P_{\ell}} \\
+%       \mathllap{\mid {}} \spawn{P}{\selectR{\kay}} \mid \spawn{\selectL{\kay}}{P}
+%     \end{array}
+% \end{syntax*}
+
+% \section{Normal-form processes}
+
+% The following is a revised spine-like grammar for normal forms.
+% \begin{syntax*}
+%   Normal-form processes & N &
+%     \fwd
+%     \begin{array}[t]{@{{} \mid {}}l@{}}
+%       Q^{\with} \mid Q^{\plus}
+%       \begin{array}[t]{@{{} \mid {}}l@{}}
+%         \caseR[\ell \in L]{\ell => N_{\ell}} \\
+%         \caseL[\ell \in L]{\ell => N_{\ell}}
+%       \end{array}
+%     \\
+%     \spawn{Q^{\with}}{Q^{\plus}}
+%       \begin{array}[t]{@{{} \mid {}}l@{}}
+%         \spawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{Q^{\plus}} \\
+%         \spawn{Q^{\with}}{\caseL[\ell \in L]{\ell => N_{\ell}}}
+%       \end{array}
+%     \end{array}
+%   \\
+%   Right q{}ueues & Q^{\plus} &
+%     \spawn{Q^{\plus}}{\selectR{\kay}} \mid \selectR{\kay}
+%   \\
+%   Left q{}ueues & Q^{\with} &
+%     \spawn{\selectL{\kay}}{Q^{\with}} \mid \selectL{\kay}
+% \end{syntax*}
+% By reasoning similar to that used earlier, I would expect the following results.
+% \begin{theorem}
+%   If $\slof{A |- P : C}$, then $P \equiv\reduces P'$ for some $P'$, or $P \equiv\mathrel{\mathsf{normal}}$.
+%   Also, if $N \;\mathsf{normal}$, then $N \longarrownot\reduces$.
+% \end{theorem}
+
+% Consider the following two transducer processes over the alphabet $\ialph = \{a\}$ that map $a^n \mapsto a^{n+1}$.
+% \begin{equation*}
+%   \begin{lgathered}
+%     \finwds{\ialph} \defd \plus*{a:\finwds{\ialph}, \emp:\varepsilon}
+%     \\
+%     \slof{\finwds{\ialph} |- q : \finwds{\ialph}}
+%       \defd \spawn{\caseL{a => q
+%                         | \emp => \selectR{\emp}}}{\selectR{a}}
+%     \\
+%     \slof{\finwds{\ialph} |- s : \finwds{\ialph}}
+%       \defd \caseL{a => \spawn{s}{\selectR{a}}
+%                  | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}
+%   \end{lgathered}
+% \end{equation*}
+% The process $q$ can be reduced to $s$ by an infinite sequence of reductions:
+% \begin{equation*}
+%   \slof{\finwds{\ialph} |- q : \finwds{\ialph}}
+%     \defd \begin{aligned}[t]
+%             \MoveEqLeft[0.5]
+%             \spawn{\caseL{a => q | \emp => \selectR{\emp}}}{\selectR{a}}
+%             \\
+%               &\reduces \caseL{a => \spawn{q}{\selectR{a}} | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}
+%             \\
+%               &\reduces^\omega \caseL{a => \spawn{s}{\selectR{a}}
+%                                    | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}
+%       \defd \slof{\finwds{\ialph} |- s : \finwds{\ialph}}
+%   \end{aligned}
+% \end{equation*}
+% In this sense, $s$ is ``more normal'' than $q$.
+% But if we interpret the definition of $s$ equirecursively, then is $s$ really normal?
+% For instance, we have the reduction
+% \begin{align*}
+%   s &= \caseL{a => \spawn{\caseL{a => \spawn{s}{\selectR{a}}
+%                                | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}}
+%                          {\selectR{a}}
+%             | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}
+%     \\
+%     &\reduces \caseL{a => \caseL{a => \spawn{(\spawn{s}{\selectR{a}})}{\selectR{a}}
+%                                | \emp => \spawn{(\spawn{\selectR{\emp}}{\selectR{a}})}{\selectR{a}}}
+%             | \emp => \spawn{\selectR{\emp}}{\selectR{a}}}
+% \end{align*}
+
+% Notice that the left commutative cut reduction
+% \begin{gather*}
+%   \infer[\jrule{CUT}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \spawn{\caseL[\ell \in L]{\ell => P_{\ell}}}{\selectR{\kay}} : \plus*[sub=_{i \in I}]{i:C_i}}}{
+%     \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C_{\kay}}}{
+%       \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C_{\kay}}}} &
+%     \infer[\rrule{\plus}]{\slof{C_k |- \selectR{\kay} : \plus*[sub=_{i \in I}]{i:C_i}}}{
+%       \text{($\kay \in I$)}}}
+%   \\\reduces\\
+%   \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => \spawn{P_{\ell}}{\selectR{\kay}}} : \plus*[sub=_{i \in I}]{i:C_i}}}{
+%     \multipremise{\ell \in L}{
+%       \infer[\jrule{CUT}]{\slof{A_{\ell} |- \spawn{P_{\ell}}{\selectR{\kay}} : \plus*[sub=_{i \in I}]{i:C_i}}}{
+%         \slof{A_{\ell} |- P_{\ell} : C_{\kay}} &
+%         \infer[\rrule{\plus}]{\slof{C_{\kay} |- \selectR{\kay} : \plus*[sub=_{i \in I}]{i:C_i}}}{
+%         \text{($\kay \in I$)}}}}}
+% \end{gather*}
+% is effectively the commuting conversion between the $\rrule{\plus}$ and $\lrule{\plus}$ rules:
+% \begin{gather*}
+%   \infer[\rrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectR{\kay}[{\caseL[\ell \in L]{\ell => P_{\ell}}}] : \plus*[sub=_{i \in I}]{i:C_i}}}{
+%     \text{($\kay \in I$)} &
+%     \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C_{\kay}}}{
+%       \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C_{\kay}}}}}
+%   \\\equiv\\
+%   \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => \selectR{\kay}[P_{\ell}]} : \plus*[sub=_{i \in I}]{i:C_i}}}{
+%     \multipremise{\ell \in L}{
+%       \infer[\rrule{\plus}]{\slof{A_{\ell} |- \selectR{\kay}[P_{\ell}] : \plus*[sub=_{i \in I}]{i:C_i}}}{
+%         \text{($\kay \in I$)} &
+%         \slof{A_{\ell} |- P_{\ell} : C_{\kay}}}}}
+% \end{gather*}
+% So, should that left commutative cut reduction even be considered a reduction?
+
+% \section{}
+
+% In the APLAS isomorphism, proofs were $\eta$-long so that the $\jrule{ID}$ rule did not appear.
+% With the revised $\rrule{\plus}$ rule, there is a similar problem.
+% Consider the process
+% \begin{equation*}
+%   \infer[\rrule{\plus}]{\slof{\finwds{\ialph} |- \selectR{a} : \finwds{\ialph}}}{}
+% \end{equation*}
+% where $\finwds{\ialph} \defd \plus*[sub=_{a \in \ialph}]{a:\finwds{\ialph}, \emp:\varepsilon}$.
+% This process is certainly irreducible and $\eta$-long, but there is no transducer that directly matches the process.
+% % \begin{equation*}
+% %   \begin{lgathered}
+% %     \finwds{\ialph} \defd \plus*[sub=_{a \in \ialph}]{a:\finwds{\ialph}, \emp:\varepsilon}
+% %     \\
+% %     \slof{\finwds{\ialph} |- n : \finwds{\ialph}}
+% %       \defd \fwd
+% %     \\
+% %     \slof{\finwds{\ialph} |- n : \finwds{\ialph}}
+% %       \defd Q^{\plus}
+% %     \\
+% %     \slof{\finwds{\ialph} |- n : \finwds{\ialph}}
+% %       \defd \caseL[a \in \ialph]{a => n'_a | \emp => Q^{\plus}}
+% %   \end{lgathered}
+% % \end{equation*}
+% % This isn't quite right for an isomorphism.
+% % We shouldn't have $\fwd$, but that is easy to remove by requiring $\eta$-long form.
+% % The main problem is having $Q^{\plus}$ instead of $\spawn{n'}{Q^{\plus}}$.
+% % If we had the usual right rule for $\plus$, then $\eta$-long form would rule out such a normal form.
+% % But
+
+% The problem is that there is an implicit forward in the ``asynchronous'' right rule:
+% \begin{equation*}
+%   \infer{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+%     \text{($\kay \in L$)}}
+%   \qquad\raisebox{0.75\baselineskip}{$\leftrightsquigarrow$}\qquad
+%   \infer{\slof{A_{\kay} |- \selectR{\kay}[\fwd] : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+%     \text{($\kay \in L$)} &
+%     \infer{\slof{A_{\kay} |- \fwd : A_{\kay}}}{}}
+% \end{equation*}
+% Simply demanding that $A_{\kay}$ always be atomic is much too strong of a requirement.
+% What about giving the types a (more prominent) role in normal forms?
+% \begin{inferences}
+%   \infer{\slof{\alpha |- \fwd \Downarrow \alpha}}{}
+%   \and
+%   \infer{\slof{\alpha |- \selectR{\kay} \Downarrow \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+%     \text{($\kay \in L$)} & \text{($A_{\kay} = \alpha$)}}
+%   \and
+%   \infer{\slof{A |- \spawn{P}{\selectR{\kay}} \Downarrow \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+%     \text{($\kay \in L$)} & \slof{A |- P : B_{\kay}}}
+% \end{inferences}
+% But isn't this just $\selectR{\kay}[P]$ in another guise?
+
 
 \section{}
 
-In the APLAS isomorphism, proofs were $\eta$-long so that the $\jrule{ID}$ rule did not appear.
-With the revised $\rrule{\plus}$ rule, there is a similar problem.
-Consider the process
+Terms of the form
 \begin{equation*}
-  \infer[\rrule{\plus}]{\slof{\finwds{\ialph} |- \selectR{a} : \finwds{\ialph}}}{}
+  \spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}{\caseR[\kay \in K]{\kay => N_{\kay}}}
 \end{equation*}
-where $\finwds{\ialph} \defd \plus*[sub=_{a \in \ialph}]{a:\finwds{\ialph}, \emp:\varepsilon}$.
-This process is certainly irreducible and $\eta$-long, but there is no transducer that directly matches the process.
-% \begin{equation*}
-%   \begin{lgathered}
-%     \finwds{\ialph} \defd \plus*[sub=_{a \in \ialph}]{a:\finwds{\ialph}, \emp:\varepsilon}
-%     \\
-%     \slof{\finwds{\ialph} |- n : \finwds{\ialph}}
-%       \defd \fwd
-%     \\
-%     \slof{\finwds{\ialph} |- n : \finwds{\ialph}}
-%       \defd Q^{\plus}
-%     \\
-%     \slof{\finwds{\ialph} |- n : \finwds{\ialph}}
-%       \defd \caseL[a \in \ialph]{a => n'_a | \emp => Q^{\plus}}
-%   \end{lgathered}
-% \end{equation*}
-% This isn't quite right for an isomorphism.
-% We shouldn't have $\fwd$, but that is easy to remove by requiring $\eta$-long form.
-% The main problem is having $Q^{\plus}$ instead of $\spawn{n'}{Q^{\plus}}$.
-% If we had the usual right rule for $\plus$, then $\eta$-long form would rule out such a normal form.
-% But
+should not be considered normal because the commutative reductions would enable potential principal reductions between $M_{\ell}$ and $N_{\kay}$.
+Consider, for example, the following instance in which the commutative reductions enable a principal reduction.
+\begin{align*}
+  \MoveEqLeft[0.5]
+  \spawn{\caseL[\ell \in L]{\ell => \selectR{\ell}}}{\caseR[\kay \in K]{\kay => \caseL[\ell' \in L]{\ell' => \selectR{\kay}}}} \\
+    &\Reduces \caseL[\ell \in L]{\ell => \caseR[\kay \in K]{\kay => \spawn{\selectR{\ell}}{\caseL[\ell' \in L]{\ell' => \selectR{\kay}}}}} \\
+    &\reduces \caseL[\ell \in L]{\ell => \caseR[\kay \in K]{\kay => \selectR{\kay}}}
+\end{align*}
 
-The problem is that there is an implicit forward in the ``asynchronous'' right rule:
+% \begin{syntax*}
+%   Normal terms & N &
+%     \spawn{Q^{\with}}{\spawn{S}{Q^{\plus}}}
+%   \\
+%   Synchronous & S &
+%     \fwd
+%       \begin{array}[t]{@{{} \mid {}}l@{}}
+%         \caseL[\ell \in L]{\ell => N_{\ell}} \\
+%         \caseR[\ell \in L]{\ell => N_{\ell}}
+%       \end{array}
+%   \\
+%   Q{ueues} & Q^{\plus} &
+%     \fwd \mid \spawn{Q^{\plus}_1}{Q^{\plus}_2} \mid \selectR{\kay}
+%   \\
+%            & Q^{\with} &
+%     \fwd \mid \spawn{Q^{\with}_1}{Q^{\with}_2} \mid \selectL{\kay}
+% \end{syntax*}
+
+We will work modulo associativity and unit laws:
+\begin{gather*}
+  \spawn{P_1}{(\spawn{P_2}{P_3})} \equiv \spawn{(\spawn{P_1}{P_2})}{P_3}
+  \\
+  \spawn{P}{\fwd} \equiv P \equiv \spawn{\fwd}{P}
+\end{gather*}
+
+Let the normal terms be those generated by the following grammar, modulo the above associativity and unit laws.
+\begin{syntax*}
+  Normal terms & N &
+    \begin{array}[t]{@{}l@{}}
+      \spawn{Q^{\with}}{N} \mid \spawn{N}{Q^{\plus}} \mid \fwd \\
+        \begin{array}[t]{@{\mathllap{\mid {}}}l@{}}
+          \caseL[\ell \in L]{\ell => N_{\ell}} \\
+          \caseR[\ell \in L]{\ell => N_{\ell}}
+        \end{array}
+    \end{array}
+  \\
+  $\plus$-Q{ueues} & Q^{\plus} &
+    \fwd \mid \spawn{Q^{\plus}_1}{Q^{\plus}_2} \mid \selectR{\kay}
+  \\
+  $\with$-Q{ueues} & Q^{\with} &
+    \fwd \mid \spawn{Q^{\with}_1}{Q^{\with}_2} \mid \selectL{\kay}
+\end{syntax*}
+
+We will also use $Q$ as a metavariable for a queue that may be either a $\plus$- or $\with$-queue.
+Queues themselves may be put into normal form.
+\begin{lemma}
+  For all $\plus$-queues $Q^{\plus}$, either:
+  \begin{enumerate*}[label=\emph{(\roman*)}]
+  \item $Q^{\plus} \equiv \fwd$; or
+  \item $Q^{\plus} \equiv \spawn{Q^{\plus}_0}{\selectR{\kay}}$ for some $\plus$-queue $Q^{\plus}_0$.
+  \end{enumerate*}
+  Similarly, for all $\with$-queues $Q^{\with}$, either:
+  \begin{enumerate*}[label=\emph{(\roman*)}]
+  \item $Q^{\with} \equiv \fwd$; or
+  \item $Q^{\with} \equiv \spawn{\selectL{\kay}}{Q^{\with}_0}$ for some $\with$-queue $Q^{\with}_0$.
+  \end{enumerate*}
+\end{lemma}
+
+% We may define the following measure for queues.
+% %
+% \begin{align*}
+%   \qmeas{\fwd} &= 0 \\
+%   \qmeas{\selectL{\kay}} = \qmeas{\selectR{\kay}} &= 1 \\
+%   % \qmeas{\spawn{Q^{\with}_1}{Q^{\with}_2}} &= \qmeas{Q^{\with}_1} + \qmeas{Q^{\with}_2} \\
+%   % \qmeas{\spawn{Q^{\plus}_1}{Q^{\plus}_2}} &= \qmeas{Q^{\plus}_1} + \qmeas{Q^{\plus}_2}
+%   \qmeas{\spawn{Q_1}{Q_2}} &= \qmeas{Q_1} + \qmeas{Q_2}
+% \end{align*}
+% This measure respects the associativity and unit laws:
+% \begin{proposition}
+%   If $Q \equiv Q'$, then $\qmeas{Q} = \qmeas{Q'}$.
+% \end{proposition}
+% %
+% \begin{proof}[Proof sketch]
+%   Notice that
+%   \begin{gather*}
+%     \qmeas{\spawn{Q}{\fwd}} = \qmeas{Q} + 0 = \qmeas{Q} = 0 + \qmeas{Q} = \qmeas{\spawn{\fwd}{Q}}
+%   \shortintertext{and}
+%     \begin{aligned}[b]
+%       \qmeas{\spawn{Q_1}{(\spawn{Q_2}{Q_3})}}
+%         &= \qmeas{Q_1} + (\qmeas{Q_2} + \qmeas{Q_3}) \\
+%         &= (\qmeas{Q_1} + \qmeas{Q_2}) + \qmeas{Q_3}
+%          = \qmeas{\spawn{(\spawn{Q_1}{Q_2})}{Q_3}}
+%       \mathrlap{\,.}
+%     \end{aligned}
+%     \qedhere
+%   \end{gather*}
+% \end{proof}
+
+We will adopt the following as reductions.
+\begin{gather*}
+  \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{\selectL{\kay}}
+    \reduces M_{\kay}
+  \\
+  \spawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => N_{\ell}}}
+    \reduces N_{\kay}
+  \\
+  \spawn{M}{\caseR[\ell \in L]{\ell => N_{\ell}}}
+    \reduces \caseR[\ell \in L]{\ell => \spawn{M}{N_{\ell}}}
+    \mathrlap{\qquad\text{($M \neq \selectL{\kay}$ and $M \neq \spawn{P_1}{P_2}$ and $M \neq \fwd$)}}
+  \\
+  \spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}{N}
+    \reduces \caseL[\ell \in L]{\ell => \spawn{M_{\ell}}{N}}
+    \mathrlap{\qquad\text{($N \neq \selectR{\kay}$ and $N \neq \spawn{P_1}{P_2}$ and $N \neq \fwd$)}}
+\end{gather*}
+These reductions arise from a proof of weak normalization.
+Before presenting that proof, we need to define a termination measure.
+%
+\DeclarePairedDelimiter{\qmeas}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\meas}{\lvert}{\rvert}
+%
+\begin{align*}
+  \meas{\fwd} &= 1 \\
+  \meas{\spawn{Q^{\with}}{N}} &= 1 + \qmeas{Q^{\with}} + \meas{N} \\
+  \meas{\spawn{N}{Q^{\plus}}} &= 1 + \meas{N} + \qmeas{Q^{\plus}} \\
+  \meas{\caseL[\ell \in L]{\ell => N_{\ell}}} &= 1 + {\textstyle \sum}_{\ell \in L}{\meas{N_{\ell}}} \\
+  \meas{\caseR[\ell \in L]{\ell => N_{\ell}}} &= 1 + {\textstyle \sum}_{\ell \in L}{\meas{N_{\ell}}}
+\end{align*}
+
+
+\begin{theorem}[Weak normalization]
+  If $\slof{A |- M : B}$ and $\slof{B |- N : C}$ are normal terms, then there exists a normal term $\slof{A |- N' : C}$.
+\end{theorem}
+%
+\begin{proof}
+  By lexicographic induction, first on the structure of the principal type, and next on the measure of the composition, $\meas{\spawn{M}{N}}$.
+  The cases are organized in a manner similar to that of the cut elimination proof for the standard sequent calculus.
+  \begin{description}
+  \item[Identity cut eliminations]
+    Several cases act like identity cut eliminations:
+    \begin{itemize}
+    \item If either $M = \fwd$ or $N = \fwd$, then $\spawn{M}{N}$ is already normal modulo the unit laws:
+      \begin{gather*}
+        \spawn{\fwd}{N} \equiv N
+        \\
+        \spawn{M}{\fwd} \equiv M
+      \end{gather*}
+
+    \item If $M = \spawn{M_0}{\fwd}$ or $N = \spawn{\fwd}{N_0}$, then 
+      \begin{gather*}
+        \spawn{(\spawn{M_0}{\fwd})}{N}
+          \equiv \spawn{M_0}{N}
+        \\
+        \spawn{M}{(\spawn{\fwd}{N_0})}
+          \equiv \spawn{M}{N_0}
+      \end{gather*}
+      The principal type stays the same and the measure strictly decreases:
+      \begin{align*}
+        \MoveEqLeft[0.5]
+        \meas{\spawn{(\spawn{M_0}{\fwd})}{N}} \\
+          &= 3 + \meas{M_0} + \meas{N} \\
+          &> 1 + \meas{M_0} + \meas{N} \\
+          &= \meas{\spawn{M_0}{N}}
+      \end{align*}
+      and similarly for the case in which $N = \spawn{\fwd}{N_0}$.
+    \end{itemize}
+
+  \item[Principal cut reductions]
+    Two cases act like principal cut reductions:
+    \begin{itemize}
+    \item If $M = \caseR[\ell \in L]{\ell => M_{\ell}}$ and $N = \spawn{(\spawn{\selectL{\kay}}{Q^{\with}_0})}{N_0}$, then using associativity and a principal cut reduction, we arrive at:
+      \begin{align*}
+        \MoveEqLeft[0.5]
+        \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{(\spawn{(\spawn{\selectL{\kay}}{Q^{\with}_0})}{N_0})} \\
+          &\equiv \spawn{(\spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{\selectL{\kay}})}{(\spawn{Q^{\with}_0}{N_0})} \\
+          &\reduces \spawn{M_{\kay}}{(\spawn{Q^{\with}_0}{N_0})}
+      \end{align*}
+      The outermost, non-analytic cut occurs at a strictly smaller type.
+
+    \item If $M = \spawn{M_0}{(\spawn{Q^{\plus}_0}{\selectR{\kay}})}$ and $N = \caseL[\ell \in L]{\ell => N_{\ell}}$, then using associativity and a principal cut reduction, we arrive at:
+      \begin{align*}
+        \MoveEqLeft[0.5]
+        \spawn{(\spawn{M_0}{(\spawn{Q^{\plus}_0}{\selectR{\kay}})})}{\caseL[\ell \in L]{\ell => N_{\ell}}} \\
+          &\equiv \spawn{(\spawn{M_0}{Q^{\plus}_0})}{(\spawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => N_{\ell}}})} \\
+          &\reduces \spawn{(\spawn{M_0}{Q^{\plus}_0})}{N_{\kay}}      
+      \end{align*}
+      Once again, the outermost, non-analytic cut occurs at a strictly smaller type.
+    \end{itemize}
+
+  \item[Left commutative cut reductions]
+    Several cases act like left commutative cut reductions.
+    \begin{itemize}
+    \item If $M = \spawn{Q^{\with}}{M_0}$, then using associativity, we arrive at:
+      \begin{equation*}
+        \spawn{(\spawn{Q^{\with}}{M_0})}{N}
+          \equiv \spawn{Q^{\with}}{(\spawn{M_0}{N})}      
+      \end{equation*}
+      In the innermost, non-analytic cut, the principal type remains the same and the measure strictly decreases:
+      \begin{align*}
+        \MoveEqLeft[0.5]
+        \meas{\spawn{(\spawn{Q^{\with}}{M_0})}{N}} \\
+          &= 2 + \qmeas{Q^{\with}} + \meas{M_0} + \meas{N} \\
+          &> 1 + \meas{M_0} + \meas{N} \\
+          &= \spawn{M_0}{N}
+        \,.
+      \end{align*}
+
+    \item If $M = \caseL[\ell \in L]{\ell => M_{\ell}}$ and $N = \spawn{(\spawn{\selectL{\kay}}{Q^{\with}_0})}{N_0}$, then using associativity and a left commutative cut reduction, we arrive at:
+      \begin{align*}
+        \MoveEqLeft[0.5]
+        \spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}{(\spawn{(\spawn{\selectL{\kay}}{Q^{\with}_0})}{N_0})} \\
+          &\equiv \spawn{(\spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}{\selectL{\kay}})}{(\spawn{Q^{\with}_0}{N_0})} \\
+          &\reduces \spawn{\caseL[\ell \in L]{\ell => \spawn{M_{\ell}}{\selectL{\kay}}}}{(\spawn{Q^{\with}_0}{N_0})}
+      \end{align*}
+      The outermost, non-analytic cut occurs at a strictly smaller type.
+      The innermost, non-analytic cuts occur at the same type, but the measure strictly decreases:
+      \begin{align*}
+        \MoveEqLeft[0.5]
+        \meas{\spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}{(\spawn{Q^{\with}}{N_0})}} \\
+          &= 3 + \bigl({\textstyle \sum_{\ell \in L}{\meas{M_{\ell}}}}\bigr) + \qmeas{Q^{\with}} + \meas{N_0} \\
+          &> 2 + \meas{M_{\ell}} \\
+          &=\meas{\spawn{M_{\ell}}{\selectL{\kay}}}
+        \mathrlap{\,.}
+      \end{align*}
+
+    \item If $M = \caseL[\ell \in L]{\ell => M_{\ell}}$ and $N = \caseL[\kay \in K]{\kay => N_{\kay}}$, then using a left commutative cut reduction, we arrive at:
+      \begin{align*}
+        \MoveEqLeft[0.5]
+        \spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+              {\caseL[\kay \in K]{\kay => N_{\kay}}} \\
+          &\reduces \caseL[\ell \in L]{\ell => \spawn{M_{\ell}}{\caseL[\kay \in K]{\kay => N_{\kay}}}}
+      \end{align*}
+      The innermost, non-analytic cuts occur at the same type, but the measure strictly decreases:
+      \begin{align*}
+        \MoveEqLeft[0.5]
+        \meas{\spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+                    {\caseL[\kay \in K]{\kay => N_{\kay}}}} \\
+          &= 2 + \bigl({\textstyle \sum_{\ell \in L} \meas{M_{\ell}}}\bigr) + \meas{\caseL[\kay \in K]{\kay => N_{\kay}}} \\
+          &> 1 + \meas{M_{\ell}} + \meas{\caseL[\kay \in K]{\kay => N_{\kay}}} \\
+          &= \meas{\spawn{M_{\ell}}{\caseL[\kay \in K]{\kay => N_{\kay}}}}
+        \,.
+      \end{align*}
+
+    \item The case in which $M = \caseL[\ell \in L]{\ell => M_{\ell}}$ and $N = \caseR[\kay \in K]{\kay => N_{\kay}}$ is similar to the above case:
+      \begin{align*}
+        \MoveEqLeft[0.5]
+        \spawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+              {\caseR[\kay \in K]{\kay => N_{\kay}}} \\
+          &\reduces \caseL[\ell \in L]{\ell => \spawn{M_{\ell}}{\caseR[\kay \in K]{\kay => N_{\kay}}}}        
+      \end{align*}
+    \end{itemize}
+
+  \item[Right commutative cut reductions]
+    Symmetric to the above left commutative reductions are the following right commutative cut reductions.
+    \begin{gather*}
+      \spawn{M}{(\spawn{N_0}{Q^{\plus}})}
+        \equiv \spawn{(\spawn{M}{N_0})}{Q^{\plus}}
+      \\[2\jot]
+      \begin{aligned}
+        \MoveEqLeft[0.5]
+        \spawn{(\spawn{M_0}{(\spawn{Q^{\plus}_0}{\selectR{\kay}})})}{\caseR[\ell \in L]{\ell => N_{\ell}}} \\
+          &\equiv \spawn{(\spawn{M_0}{Q^{\plus}_0})}{(\spawn{\selectR{\kay}}{\caseR[\ell \in L]{\ell => N_{\ell}}})} \\
+          &\reduces \spawn{(\spawn{M_0}{Q^{\plus}_0})}{\caseR[\ell \in L]{\ell => \spawn{\selectR{\kay}}{N_{\ell}}}}
+      \end{aligned}
+      \\[2\jot]
+      \begin{aligned}
+        \MoveEqLeft[0.5]
+        \spawn{\caseR[\kay \in K]{\kay => M_{\kay}}}
+              {\caseR[\ell \in L]{\ell => N_{\ell}}} \\
+          &\reduces \caseR[\ell \in L]{\ell => \spawn{\caseR[\kay \in K]{\kay => M_{\kay}}}{N_{\ell}}}
+      \end{aligned}
+      \\[2\jot]
+      \begin{aligned}
+        \MoveEqLeft[0.5]
+        \spawn{\caseL[\kay \in K]{\kay => M_{\kay}}}
+              {\caseR[\ell \in L]{\ell => N_{\ell}}} \\
+          &\reduces \caseR[\ell \in L]{\ell => \spawn{\caseL[\kay \in K]{\kay => M_{\kay}}}{N_{\ell}}}
+      \end{aligned}
+    \end{gather*}
+  \end{description}
+\end{proof}
+
+
+Consider $\spawn{(\selectL{\kay}[P_0])}{\caseR[\ell \in L]{\ell => Q_{\ell}}}$.
+We don't say that this process is in normal form, even when $P_0$ cannot possibly interact with $Q_{\ell}$.
+We always allow
 \begin{equation*}
-  \infer{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
-    \text{($\kay \in L$)}}
-  \qquad\raisebox{0.75\baselineskip}{$\leftrightsquigarrow$}\qquad
-  \infer{\slof{A_{\kay} |- \selectR{\kay}[\fwd] : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
-    \text{($\kay \in L$)} &
-    \infer{\slof{A_{\kay} |- \fwd : A_{\kay}}}{}}
+  \spawn{(\selectL{\kay}[P_0])}{\caseR[\ell \in L]{\ell => Q_{\ell}}} \reduces \caseR[\ell \in L]{\ell => \spawn{(\selectL{\kay}[P_0])}{Q_{\ell}}}
+  \,.
 \end{equation*}
-Simply demanding that $A_{\kay}$ always be atomic is much too strong of a requirement.
-What about giving the types a (more prominent) role in normal forms?
+Is it that the identity cut reductions are considered interactions?
+
+% \begin{align*}
+%   \MoveEqLeft[0.5]
+%   \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{(\spawn{\fwd}{N})} \\
+%     &\equiv \spawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{N}
+% \end{align*}
+
+
+% \begin{align*}
+%   \MoveEqLeft[0.5]
+%   \spawn{(\spawn{Q^{\with}_1}{\spawn{\fwd}{\fwd}})}
+%         {(\spawn{Q^{\with}_2}{\spawn{S_2}{Q^{\plus}_2}})} \\
+%     &\equiv \spawn{(\spawn{Q^{\with}_1}{Q^{\with}_2})}
+%                   {\spawn{S_2}{Q^{\plus}_2}}
+% \end{align*}
+
+% \begin{align*}
+%   \MoveEqLeft[0.5]
+%   \spawn{(\spawn{Q^{\with}_1}{\spawn{S_1}{(\spawn{Q^{\plus}_0}{\selectR{\kay}})}})}
+%         {(\spawn{\fwd}{\spawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{Q^{\plus}_2}})} \\
+%     &\hphantom{\reduces {}} \mathllap{\equiv}\;
+%        \spawn{(\spawn{Q^{\with}_1}{\spawn{S_1}{Q^{\plus}_0}})}
+%              {(\spawn{(\spawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => N_{\ell}}})}{Q^{\plus}_2})} \\
+%     &\reduces \spawn{(\spawn{Q^{\with}_1}{\spawn{S_1}{Q^{\plus}_0}})}
+%                     {(\spawn{N_{\kay}}{Q^{\plus}_2})}
+% \end{align*}
+
+% \begin{align*}
+%   \MoveEqLeft[0.5]
+%   \spawn{(\spawn{Q^{\with}_1}{(\spawn{Q^{\plus}_0}{\selectR{\kay}})})}
+%         {(\spawn{\fwd}{\caseR[\ell \in L]{\ell => N_{\ell}}})} \\
+%     &\hphantom{\reduces {}} \mathllap{\equiv}\;
+%        \spawn{(\spawn{Q^{\with}_1}{Q^{\plus}_0})}
+%              {(\spawn{\selectR{\kay}}{\caseR[\ell \in L]{\ell => N_{\ell}}})} \\
+%     &\reduces \spawn{(\spawn{Q^{\with}_1}{Q^{\plus}_0})}
+%                     {\caseR[\ell \in L]{\ell => \spawn{\selectR{\kay}}{N_{\ell}}}}
+% \end{align*}
+
+% \begin{align*}
+%   \MoveEqLeft[0.5]
+%   \spawn{(\spawn{Q^{\with}_1}{\caseR[\ell \in L]{\ell => M_{\ell}}})}
+%         {(\spawn{\fwd}{Q^{\plus}})} \\
+%     &\equiv \spawn{(\spawn{Q^{\with}_1}{Q^{\with}_2})}
+%                   {\caseR[\ell \in L]{\ell => N_{\ell}}}
+% \end{align*}
+
+
+\section{Circular proofs}
+
+\subsection{Standard sequent calculus}
+
+\begin{syntax*}
+  Normal terms & N &
+    p \mid \fwd
+    \begin{array}[t]{@{{} \mid {}}l@{}}
+      \selectR{\kay}[N] \mid \caseL[\ell \in L]{\ell => N_{\ell}} \\
+      \caseR[\ell \in L]{\ell => N_{\ell}} \mid \selectL{\kay}[N]
+    \end{array}
+\end{syntax*}
+
+Suppose that we wish to normalize $\spawn{N_1}{N_2}$ for some normal terms $N_1$ and $N_2$.
+Assume that all definitions are normal.
+% 
+% For each pair of definitions $p_i \defd N_i$ and $p_j \defd N_j$, create a definition
+% \begin{equation*}
+%   \spawn{p_i}{p_j} \defd \spawn{N_i}{N_j}
+% \end{equation*}
+% and normalize the body.
+% 
+The potentially troublesome cases are:
+\begin{equation*}
+  \begin{lgathered}
+    \spawn{p_1}{p_2} \:\text{,}\:
+    \begin{array}[t]{@{}l@{}}
+      \spawn{p}{\caseL[\ell \in L]{\ell => N_{\ell}}} \:\text{,}\:
+      \spawn{p}{(\selectL{\kay}[N])} \:\text{,}\: \\
+      \spawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{p} \:\text{, and}\;
+      \spawn{(\selectR{\kay}[N])}{p}
+      \:.
+    \end{array}
+  \end{lgathered}
+\end{equation*}
+When one of these cases is encountered, create a new definition $p' \defd N'$, where $N'$ is the result of normalizing the cut after expanding the remaining process variable(s).
+For example, if $p \defd N$ and $\spawn{p}{\caseL[\ell \in L]{\ell => N_{\ell}}}$ is encountered, then normalize
+\begin{equation*}
+  p' \defd \spawn{N}{\caseL[\ell \in L]{\ell => N_{\ell}}}
+\end{equation*}
+Because there are finitely many definitions and finitely many subterms of a definition's body, this process must eventually terminate.
+
+As an example, consider the transducer that compresses runs of $b$s:
+\begin{equation*}
+  \begin{lgathered}
+    q_0 \defd \caseL{a => \selectR{a}[q_0]
+                   | b => \selectR{b}[q_1]}
+    \\
+    q_1 \defd \caseL{a => \selectR{a}[q_0]
+                   | b => q_1}
+  \end{lgathered}
+\end{equation*}
+We would like to give process definitions for the composition of two such transducers.
+Following the above procedure, we arrive at the definitions
+\begin{equation*}
+  \begin{lgathered}
+    \spawn{q_0}{q_0} \defd \caseL{a => \selectR{a}[(\spawn{q_0}{q_0})]
+                                | b => \selectR{b}[(\spawn{q_1}{q_1})]}
+    \\
+    \spawn{q_1}{q_1} \defd \caseL{a => \selectR{a}[(\spawn{q_0}{q_0})]
+                                | b => \spawn{q_1}{q_1}}
+  \end{lgathered}
+\end{equation*}
+These definitions are equivalent to $q_0$ and $q_1$, so the transducer is idempotent.
+
+\subsection{Asynchronous calculus}
+
+\begin{syntax*}
+  Normal terms & N &
+    \begin{array}[t]{@{}l@{}}
+      p \mid \spawn{Q^{\with}}{N} \mid \spawn{N}{Q^{\plus}} \mid \fwd \\
+        \begin{array}[t]{@{\mathllap{\mid {}}}l@{}}
+          \caseL[\ell \in L]{\ell => N_{\ell}} \\
+          \caseR[\ell \in L]{\ell => N_{\ell}}
+        \end{array}
+    \end{array}
+  \\
+  Q{ueues} & Q^{\plus} &
+    \fwd \mid \spawn{Q^{\plus}_1}{Q^{\plus}_2} \mid \selectR{\kay}
+  \\
+           & Q^{\with} &
+    \fwd \mid \spawn{Q^{\with}_1}{Q^{\with}_2} \mid \selectL{\kay}
+\end{syntax*}
+
+\begin{equation*}
+  \begin{lgathered}
+    \spawn{p_1}{p_2} \\
+    \spawn{p}{(\spawn{(\spawn{\selectL{\kay}}{Q^{\with}})}{N})} \\
+    \spawn{p}{\caseL[\ell \in L]{\ell => N_{\ell}}} \\
+    \spawn{p}{\caseR[\ell \in L]{\ell => N_{\ell}}} \\
+    \spawn{(\spawn{N}{(\spawn{Q^{\with}}{\selectR{\kay}})})}{p} \\
+    \spawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{p} \\
+    \spawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{p}
+  \end{lgathered}
+\end{equation*}
+
+
+\section{$\eta$-long form}
+
+To require terms to be $\eta$-long, we would restrict the identity rule to propositional atoms:
+\begin{equation*}
+  \infer[\jrule{ID}]{\slof{\alpha |- \fwd : \alpha}}{}
+\end{equation*}
+This restriction interacts subtly with the characterization of normal forms.
+
+Consider $\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$.
+Without the $\eta$-long restriction in place, this term is normal because it is equivalent to one of the specified syntatic forms: $\selectR{\kay} \equiv \spawn{\fwd}{\selectR{\kay}}$.
+With the $\eta$-long restriction in place, $\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ is typable, but, in general, $\slof{A_{\kay} \not|- \spawn{\fwd}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$.
+In other words, $\selectR{\kay}$ is no longer normal (in general), and the unit laws now hold only at certain types:
+\begin{equation*}
+  \begin{lgathered}
+    \spawn{\fwd}{P} \equiv P \quad\text{if $\slof{\alpha |- P : A}$} \\
+    \spawn{P}{\fwd} \equiv P \quad\text{if $\slof{A |- P : \alpha}$}
+  \end{lgathered}
+\end{equation*}
+This seems reasonable, right?
+
+It would seem to be difficult to prevent the typing $\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$.
+If several messages are sent, the first ones use a compound type for their continuation, so to prevent the typing $\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$, it looks like we would need to involve the normal forms in the typing rules:
 \begin{inferences}
-  \infer{\slof{\alpha |- \fwd \Downarrow \alpha}}{}
-  \and
-  \infer{\slof{\alpha |- \selectR{\kay} \Downarrow \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+  \infer[\rrule{\plus}]{\slof{\alpha |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
     \text{($\kay \in L$)} & \text{($A_{\kay} = \alpha$)}}
   \and
-  \infer{\slof{A |- \spawn{P}{\selectR{\kay}} \Downarrow \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
-    \text{($\kay \in L$)} & \slof{A |- P : B_{\kay}}}
+  \infer[\jrule{$\plus$-CUT}]{\slof{A |- \spawn{P}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \text{($\kay \in L$)} &
+    \slof{A |- P : C_{\kay}}}
 \end{inferences}
-But isn't this just $\selectR{\kay}[P]$ in another guise?
 
 %%% Local Variables:
 %%% mode: latex

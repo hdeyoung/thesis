@@ -5,6 +5,29 @@
 \RequirePackage { l3keys2e }
 \RequirePackage { xparse }
 
+%% mathabx symbols %%
+
+\RequirePackage { pifont }
+
+\newcommand\Pimathsymbol[3][\mathord]{%
+  #1{\@Pimathsymbol{#2}{#3}}}
+\def\@Pimathsymbol#1#2{\mathchoice
+  {\@Pim@thsymbol{#1}{#2}\tf@size}
+  {\@Pim@thsymbol{#1}{#2}\tf@size}
+  {\@Pim@thsymbol{#1}{#2}\sf@size}
+  {\@Pim@thsymbol{#1}{#2}\ssf@size}}
+\def\@Pim@thsymbol#1#2#3{%
+  \mbox{\fontsize{#3}{#3}\Pisymbol{#1}{#2}}}
+
+\DeclareFontFamily{U}{mathb}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathb}{m}{n}{
+  <-6> mathb5 <6-7> mathb6 <7-8> mathb7
+  <8-9> mathb8 <9-10> mathb9
+  <10-12> mathb10 <12-> mathb12
+  }{}
+
+\newcommand{\blackdiamond}{\Pimathsymbol[\mathbin]{mathb}{"0C}}
+
 %%%%%%%%%%%%%%
 %% Automata %%
 %%%%%%%%%%%%%%
@@ -229,6 +252,9 @@
 
 \cs_new:Npn \__thesis_pred_font:n #1 { \mathit {#1} }
 
+\NewDocumentCommand \nspawn { o m m } { \__thesis_nspawn:nn {#2} {#3} }
+\cs_new:Npn \__thesis_nspawn:nn #1 #2 { #1 \mathbin{\blackdiamond} #2 }
+
 \NewDocumentCommand \proc { m } { \__thesis_proc:n {#1} }
 \cs_new:Npn \__thesis_proc:n #1 { \__thesis_pred_font:n { proc } (#1) }
 
@@ -245,6 +271,20 @@
 \NewDocumentCommand \multipremise { m m }
   { \__thesis_multipremise:nn {#1} {#2} }
 \cs_new:Npn \__thesis_multipremise:nn #1#2 { \forall #1 \colon\enspace #2 }
+
+\NewDocumentCommand \slofp { > { \SplitArgument { 1 } { ||- } } m }
+  { \__thesis_slofp:nn #1 }
+\cs_new:Npn \__thesis_slofp:nn #1#2 { #1 \Vdash #2 }
+
+\NewDocumentCommand \slofn { > { \SplitArgument { 1 } { ||- } } m }
+  { \__thesis_slofn:nn #1 }
+\cs_new:Npn \__thesis_slofn:nn #1#2 { [#1] \Vdash #2 }
+
+\NewDocumentCommand \psusp { m } { \__thesis_psusp:n {#1} }
+\cs_new:Npn \__thesis_psusp:n #1 { \langle #1 \rangle }
+
+\NewDocumentCommand \nsusp { m } { \__thesis_nsusp:n {#1} }
+\cs_new:Npn \__thesis_nsusp:n #1 { \langle #1 \rangle }
 
 \NewDocumentCommand \slcof { > { \SplitArgument { 1 } { |- } } m }
   { \__thesis_slcof:nn #1 }

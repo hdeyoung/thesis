@@ -1,0 +1,980 @@
+\chapter{Weak normalization}
+
+\section{}
+
+\begin{equation*}
+  \infer-[\jrule{N-CUT}]{\slof{A |- \nspawn{M}{N} : C}}{
+    \slof{A |- M : B} & \slof{B |- N : C}}
+\end{equation*}
+
+\subsection{Queues as possibly empty lists}
+
+\begin{syntax*}
+  Normal terms & M,N &
+    \begin{array}[t]{@{}l@{}}
+      \spawn{N}{Q^{\plus}} \mid \caseL[\ell \in L]{\ell => N_{\ell}} \\
+      \mathllap{\mid {}} \caseR[\ell \in L]{\ell => N_{\ell}} \mid \spawn{Q^{\with}}{N} \\
+      \mathllap{\mid {}} \fwd
+    \end{array}
+  \\
+  {Q}ueues & Q^{\plus} &
+    \fwd \mid \spawn{Q^{\plus}}{\selectR{\kay}}
+  \\
+  & Q^{\with} &
+    \fwd \mid \spawn{\selectL{\kay}}{Q^{\with}}
+\end{syntax*}
+
+\begin{description}
+\item[Identity cuts]
+There are several cases involving identity.
+\begin{equation*}
+  \begin{lgathered}
+    \nspawn{\fwd}{N} = N \\
+    \nspawn{M}{\fwd} = M \\
+    \nspawn{(\spawn{M_0}{\fwd})}{N} = \nspawn{M_0}{N} \\
+    \nspawn{M}{(\spawn{\fwd}{N_0})} = \nspawn{M}{N_0}
+  \end{lgathered}
+\end{equation*}
+
+\item[Principal cuts]
+In the principal cuts, the type becomes smaller.
+\begin{equation*}
+  \begin{lgathered}
+    \nspawn{(\spawn{M_0}{(\spawn{Q^{\plus}}{\selectR{\kay}})})}
+           {\caseL[\ell \in L]{\ell => N_{\ell}}}
+      = \nspawn{(\spawn{M_0}{Q^{\plus}})}{N_{\kay}} \\
+    \nspawn{\caseR[\ell \in L]{\ell => M_{\ell}}}
+           {(\spawn{(\spawn{\selectL{\kay}}{Q^{\with}})}{N_0})}
+      = \nspawn{M_{\kay}}{(\spawn{Q^{\with}}{N_0})}
+  \end{lgathered}
+\end{equation*}
+
+\item[Left commutative cuts]
+There are also several left commutative cuts:
+\begin{equation*}
+  \begin{lgathered}
+    \nspawn{(\spawn{Q^{\with}}{M_0})}{N}
+      = \spawn{Q^{\with}}{(\nspawn{M_0}{N})} \\
+    \begin{aligned}[t]
+      \MoveEqLeft[.75]
+      \nspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+             {\caseL[\kay \in K]{\kay => N_{\kay}}} \\[-\jot]
+        &= \caseL[\ell \in L]{\ell =>
+             \nspawn{M_{\ell}}{\caseL[\kay \in K]{\kay => N_{\kay}}}}
+      \\
+      \MoveEqLeft[.75]
+      \nspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+             {\caseR[\kay \in K]{\kay => N_{\kay}}} \\[-\jot]
+        &= \caseL[\ell \in L]{\ell =>
+             \nspawn{M_{\ell}}{\caseR[\kay \in K]{\kay => N_{\kay}}}}
+    \end{aligned}
+    \\
+    \nspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+           {(\spawn{(\spawn{\selectL{\kay}}{Q^{\with}})}{N_0})}
+      = \caseL[\ell \in L]{\ell =>
+          \nspawn{M_{\ell}}{(\spawn{(\spawn{\selectL{\kay}}{Q^{\with}})}{N_0})}}
+  \end{lgathered}
+\end{equation*}
+If we don't care about determinism, the final case could be replaced with
+\begin{equation*}
+  \nspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+         {(\spawn{Q^{\with}}{N_0})}
+    = \caseL[\ell \in L]{\ell =>
+        \nspawn{M_{\ell}}{(\spawn{Q^{\with}}{N_0})}}
+\end{equation*}
+
+\item[Right commutative cuts]
+These cuts are symmetric to the left commutative cuts, so we omit a listing of them.
+\end{description}
+
+Also possible are the following.
+\begin{equation*}
+  \begin{lgathered}
+    \nspawn{(\spawn{\fwd}{M_0})}{N} = \nspawn{M_0}{N} \\
+    \nspawn{M}{(\spawn{N_0}{\fwd})} = \nspawn{M}{N_0}
+  \end{lgathered}
+\end{equation*}
+These overlap with two of the commutative cases.
+
+Notice that temination of this function can be established by a lexicographic induction, first on the structure of the principal type, and then simultaneously on the given proofs.
+
+\NewDocumentCommand \wnorm { m } { \mathit{wn}(#1) }
+
+We may normalize arbitrary proofs as follows.
+\begin{equation*}
+  \begin{lgathered}
+    \wnorm{\spawn{P_1}{P_2}} = \nspawn{\wnorm{P_1}}{\wnorm{P_2}} \\
+    \wnorm{\fwd} = \fwd
+    \\
+    \wnorm{\selectR{\kay}} = \spawn{\fwd}{(\spawn{\fwd}{\selectR{\kay}})} \\
+    \wnorm{\caseL[\ell \in L]{\ell => P_{\ell}}}
+      = \caseL[\ell \in L]{\ell => \wnorm{P_{\ell}}}
+    \\
+    \wnorm{\caseR[\ell \in L]{\ell => P_{\ell}}}
+      = \caseR[\ell \in L]{\ell => \wnorm{P_{\ell}}} \\
+    \wnorm{\selectL{\kay}} = \spawn{(\spawn{\selectL{\kay}}{\fwd})}{\fwd}
+  \end{lgathered}
+\end{equation*}
+This weak normalization occurs by structural induction on the given proof.
+
+\subsection{Queues as strictly nonempty lists}
+
+\begin{syntax*}
+  Normal terms & M,N &
+    \begin{array}[t]{@{}l@{}}
+      \spawn{N}{Q^{\plus}} \mid \caseL[\ell \in L]{\ell => N_{\ell}} \\
+      \mathllap{\mid {}} \caseR[\ell \in L]{\ell => N_{\ell}} \mid \spawn{Q^{\with}}{N} \\
+      \mathllap{\mid {}} \fwd
+    \end{array}
+  \\
+  {Q}ueues & Q^{\plus} &
+    \selectR{\kay} \mid \spawn{Q^{\plus}}{\selectR{\kay}}
+  \\
+  & Q^{\with} &
+    \selectL{\kay} \mid \spawn{\selectL{\kay}}{Q^{\with}}
+\end{syntax*}
+
+Accordingly, two of the identity cuts no longer occur, but two more principal cuts are added.
+\begin{equation*}
+  \begin{lgathered}
+    \nspawn{(\spawn{M_0}{\selectR{\kay}})}
+           {\caseL[\ell \in L]{\ell => N_{\ell}}}
+      = \nspawn{M_0}{N_{\kay}} \\
+    \nspawn{\caseR[\ell \in L]{\ell => M_{\ell}}}
+           {(\spawn{\selectL{\kay}}{N_0})}
+      = \nspawn{M_{\kay}}{N_0}
+  \end{lgathered}
+\end{equation*}
+A left commutative cut is also added, along with its symmetric right commutative counterpart.
+\begin{equation*}
+  \begin{lgathered}
+  \nspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+         {(\spawn{\selectL{\kay}}{N_0})}
+    = \caseL[\ell \in L]{\ell =>
+        \nspawn{M_{\ell}}{(\spawn{\selectL{\kay}}{N_0})}} \\
+  \nspawn{(\spawn{M_0}{\selectR{\kay}})}
+         {\caseR[\ell \in L]{\ell => N_{\ell}}}
+    = \caseR[\ell \in L]{\ell =>
+        \nspawn{(\spawn{M_0}{\selectR{\kay}})}{N_{\ell}}}
+  \end{lgathered}
+\end{equation*}
+
+We normalize proofs as before, with two revisions.
+\begin{equation*}
+  \begin{lgathered}
+    \wnorm{\selectR{\kay}} = \spawn{\fwd}{\selectR{\kay}} \\
+    \wnorm{\selectL{\kay}} = \spawn{\selectL{\kay}}{\fwd}
+  \end{lgathered}
+\end{equation*}
+
+\subsection{Queues as normal terms, directly}
+
+\begin{syntax*}
+  Normal terms & M,N &
+    \begin{array}[t]{@{}l@{}}
+      \spawn{N}{Q^{\plus}} \mid \caseL[\ell \in L]{\ell => N_{\ell}} \\
+      \mathllap{\mid {}} \caseR[\ell \in L]{\ell => N_{\ell}} \mid \spawn{Q^{\with}}{N} \\
+      \mathllap{\mid {}} \fwd \mid Q^{\plus} \mid Q^{\with}
+    \end{array}
+\end{syntax*}
+
+The advantage of this grammar is that weak normalization is slightly simplified:
+\begin{equation*}
+  \begin{lgathered}
+    \wnorm{\selectR{\kay}} = \selectR{\kay} \\
+    \wnorm{\selectL{\kay}} = \selectL{\kay}
+  \end{lgathered}
+\end{equation*}
+The disadvantage is that several more cases must be added to $\nspawn{}{}$.
+
+\section{}
+
+\begin{syntax*}
+  Normal terms & M,N &
+    \begin{array}[t]{@{}l@{}}
+      \spawn{N}{Q^{\plus}} \mid \caseL[\ell \in L]{\ell => N_{\ell}} \\
+      \mathllap{\mid {}} \caseR[\ell \in L]{\ell => N_{\ell}} \mid \spawn{Q^{\with}}{N} \\
+      \mathllap{\mid {}} \fwd
+    \end{array}
+  \\
+  {Q}ueues & Q^{\plus} &
+    \fwd \mid \spawn{Q^{\plus}_2}{Q^{\plus}_1} \mid \selectR{\kay}
+  \\
+  & Q^{\with} &
+    \fwd \mid \spawn{Q^{\with}_1}{Q^{\with}_2} \mid \selectL{\kay}
+\end{syntax*}
+
+\NewDocumentCommand \qpspawn { o m m } { #2 \mathbin{\blacktriangleright} #3 }
+\NewDocumentCommand \qwspawn { o m m } { #2 \mathbin{\blacktriangleleft} #3 }
+
+\begin{inferences}
+  \infer-[\jrule{N-CUT}]{\slof{A |- \nspawn{M}{N} : C}}{
+    \slof{A |- M : B} & \slof{B |- N : C}}
+  \\
+  \infer-[\jrule{Q$^{\plus}$-CUT}]{\slof{A |- \qpspawn{Q^{\plus}}{N} : C}}{
+    \slof{A |- Q^{\plus} : B} & \slof{B |- N : C}}
+  \and
+  \infer-[\jrule{Q$^{\with}$-CUT}]{\slof{A |- \qwspawn{M}{Q^{\with}} : C}}{
+    \slof{A |- M : B} & \slof{B |- Q^{\with} : C}}
+\end{inferences}
+
+The cut between normal terms is defined by:
+\begin{equation*}
+  \begin{lgathered}
+    \nspawn{\fwd}{N} = N \\
+    \nspawn{M}{\fwd} = M \\
+    \nspawn{(\spawn{M_0}{Q^{\plus}})}{N}
+      = \nspawn{M_0}{(\qpspawn{Q^{\plus}}{N})} \\
+    \nspawn{M}{(\spawn{Q^{\with}}{N_0})}
+      = \nspawn{(\qwspawn{M}{Q^{\with}})}{N_0} \\
+    \nspawn{(\spawn{Q^{\with}}{M_0})}{N}
+      = \spawn{Q^{\with}}{(\nspawn{M_0}{N})} \\
+    \nspawn{M}{(\spawn{N_0}{Q^{\plus}})}
+      = \spawn{(\nspawn{M}{N_0})}{Q^{\plus}} \\
+    \nspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+           {\caseL[\kay \in K]{\kay => N_{\kay}}} \\[-.75\jot]\quad
+      = \caseL[\ell \in L]{\ell =>
+          \nspawn{M_{\ell}}{\caseL[\kay \in K]{\kay => N_{\kay}}}} \\
+    \nspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+           {\caseR[\kay \in K]{\kay => N_{\kay}}} \\[-.75\jot]\quad
+      = \caseL[\ell \in L]{\ell =>
+          \nspawn{M_{\ell}}{\caseR[\kay \in K]{\kay => N_{\kay}}}} \\
+    \nspawn{\caseR[\ell \in L]{\ell => M_{\ell}}}
+           {\caseR[\kay \in K]{\kay => N_{\kay}}} \\[-.75\jot]\quad
+      = \caseR[\kay \in K]{\kay =>
+          \nspawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{N_{\kay}}}
+  \end{lgathered}
+\end{equation*}
+We would then define the queue cuts as follows.
+\begin{equation*}
+  \begin{lgathered}
+    \qpspawn{\fwd}{N} = N \\
+    \qpspawn{(\spawn{Q^{\plus}_2}{Q^{\plus}_1})}{N}
+      = \qpspawn{Q^{\plus}_2}{(\qpspawn{Q^{\plus}_1}{N})} \\
+    \qpspawn{Q^{\plus}}{\fwd} = \spawn{\fwd}{Q^{\plus}} \\
+    \qpspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => N_{\ell}}} = N_{\kay} \\
+    \qpspawn{Q^{\plus}}{(\spawn{N_0}{Q^{\plus}_0})}
+      = \spawn{(\qpspawn{Q^{\plus}}{N_0})}{Q^{\plus}_0} \\
+    \qpspawn{Q^{\plus}}{\caseR[\ell \in L]{\ell => N_{\ell}}}
+      = \caseR[\ell \in L]{\ell => \qpspawn{Q^{\plus}}{N_{\ell}}} \\
+  \end{lgathered}
+\end{equation*}
+and
+\begin{equation*}
+  \begin{lgathered}
+    \qwspawn{M}{\fwd} = M \\
+    \qwspawn{M}{(\spawn{Q^{\with}_1}{Q^{\with}_2})}
+      = \qwspawn{(\qwspawn{M}{Q^{\with}_1})}{Q^{\with}_2} \\
+    \qwspawn{\fwd}{Q^{\with}} = \spawn{Q^{\with}}{\fwd} \\
+    \qwspawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{\selectL{\kay}} = M_{\kay} \\
+    \qwspawn{(\spawn{Q^{\with}_0}{M_0})}{Q^{\with}}
+      = \spawn{Q^{\with}_0}{(\qwspawn{M_0}{Q^{\with}})} \\
+    \qwspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}{Q^{\with}}
+      = \caseL[\ell \in L]{\ell => \qwspawn{M_{\ell}}{Q^{\with}}} \\
+  \end{lgathered}
+\end{equation*}
+The problem with this approach comes in proving termination.  
+In the two principal cases for $\nspawn{}{}$, the type does not necessarily get smaller.
+However, if we rule out empty queues, this approach could work. 
+
+$\wnorm{-}$ is defined as above.
+
+\section{}
+
+\begin{syntax*}
+  Normal terms & M,N &
+    \begin{array}[t]{@{}l@{}}
+      \spawn{N}{\selectR{\kay}} \mid \caseL[\ell \in L]{\ell => N_{\ell}} \\
+      \mathllap{\mid {}} \caseR[\ell \in L]{\ell => N_{\ell}} \mid \spawn{\selectL{\kay}}{N} \\
+      \mathllap{\mid {}} \fwd
+    \end{array}
+\end{syntax*}
+
+\begin{inferences}
+  \infer-[\jrule{N-CUT}]{\slof{A |- \nspawn{M}{N} : C}}{
+    \slof{A |- M : B} & \slof{B |- N : C}}
+  \\
+  \infer-[\jrule{$\plus$-CUT}]{\slof{A_{\kay} |- \qpspawn{\selectR{\kay}}{N} : C}}{
+    \slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- N : C} &
+    \text{($\kay \in L$)}}
+  \and
+  \infer-[\jrule{$\with$-CUT}]{\slof{A |- \qwspawn{M}{\selectL{\kay}} : C_{\kay}}}{
+    \slof{A |- M : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}} &
+    \text{($\kay \in L$)}}
+\end{inferences}
+
+The cut between normal terms is defined by:
+\begin{equation*}
+  \begin{lgathered}
+    \nspawn{\fwd}{N} = N \\
+    \nspawn{M}{\fwd} = M \\
+    \nspawn{(\spawn{M_0}{\selectR{\kay}})}{N}
+      = \nspawn{M_0}{(\qpspawn{\selectR{\kay}}{N})} \\
+    \nspawn{M}{(\spawn{\selectL{\kay}}{N_0})}
+      = \nspawn{(\qwspawn{M}{\selectL{\kay}})}{N_0} \\
+    \nspawn{(\spawn{\selectL{\kay}}{M_0})}{N}
+      = \spawn{\selectL{\kay}}{(\nspawn{M_0}{N})} \\
+    \nspawn{M}{(\spawn{N_0}{\selectR{\kay}})}
+      = \spawn{(\nspawn{M}{N_0})}{\selectR{\kay}} \\
+    \nspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+           {\caseL[\kay \in K]{\kay => N_{\kay}}} \\[-.75\jot]\quad
+      = \caseL[\ell \in L]{\ell =>
+          \nspawn{M_{\ell}}{\caseL[\kay \in K]{\kay => N_{\kay}}}} \\
+    \nspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}
+           {\caseR[\kay \in K]{\kay => N_{\kay}}} \\[-.75\jot]\quad
+      = \caseL[\ell \in L]{\ell =>
+          \nspawn{M_{\ell}}{\caseR[\kay \in K]{\kay => N_{\kay}}}} \\
+    \nspawn{\caseR[\ell \in L]{\ell => M_{\ell}}}
+           {\caseR[\kay \in K]{\kay => N_{\kay}}} \\[-.75\jot]\quad
+      = \caseR[\kay \in K]{\kay =>
+          \nspawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{N_{\kay}}}
+  \end{lgathered}
+\end{equation*}
+We would then define the message cuts as follows.
+\begin{equation*}
+  \begin{lgathered}
+    \qpspawn{\selectR{\kay}}{\fwd} = \spawn{\fwd}{\selectR{\kay}} \\
+    \qpspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => N_{\ell}}} = N_{\kay} \\
+    \qpspawn{\selectR{\kay}}{(\spawn{N_0}{\selectR{\kay}_0})}
+      = \spawn{(\qpspawn{\selectR{\kay}}{N_0})}{\selectR{\kay}_0} \\
+    \qpspawn{\selectR{\kay}}{\caseR[\ell \in L]{\ell => N_{\ell}}}
+      = \caseR[\ell \in L]{\ell => \qpspawn{\selectR{\kay}}{N_{\ell}}} \\
+  \end{lgathered}
+\end{equation*}
+and
+\begin{equation*}
+  \begin{lgathered}
+    \qwspawn{\fwd}{\selectL{\kay}} = \spawn{\selectL{\kay}}{\fwd} \\
+    \qwspawn{\caseR[\ell \in L]{\ell => M_{\ell}}}{\selectL{\kay}} = M_{\kay} \\
+    \qwspawn{(\spawn{\selectL{\kay}_0}{M_0})}{\selectL{\kay}}
+      = \spawn{\selectL{\kay}_0}{(\qwspawn{M_0}{\selectL{\kay}})} \\
+    \qwspawn{\caseL[\ell \in L]{\ell => M_{\ell}}}{\selectL{\kay}}
+      = \caseL[\ell \in L]{\ell => \qwspawn{M_{\ell}}{\selectL{\kay}}}
+  \end{lgathered}
+\end{equation*}
+
+$\wnorm{-}$ is defined as above.
+
+
+\section{A pattern-based focused calculus for singleton logic}
+
+\subsection{With atomic suspensions}
+
+\begin{syntax*}
+  % Propositions & A &
+  %   \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid
+  %   \with*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \p{p}
+  % \\
+  Positive propositions & \p{A} &
+    \plus*[sub=_{\ell \in L}]{\ell:\p{A}_{\ell}} \mid \p{p} \mid \dn \n{A}
+  \\
+  Negative propositions & \n{A} &
+    \with*[sub=_{\ell \in L}]{\ell:\n{A}_{\ell}} \mid \up \p{A} \mid \n{p}
+  \\
+  Antecedents & \delta & \n{A} \mid \psusp{\p{p}}
+  \\
+  Conse{q}uents & \gamma & \p{A} \mid \nsusp{\n{p}}
+\end{syntax*}
+
+\ExplSyntaxOn
+\RenewDocumentCommand \slofp { >{ \SplitArgument {1} { ||- } } m } { \use_i:nn #1 \Vdash [ \use_ii:nn #1 ] }
+\ExplSyntaxOff
+
+\paragraph{Pattern judgments}
+The meanings of the logical connectives are given by right- and left-pattern judgments for propositions.
+The right-pattern judgment, $\slofp{\delta ||- \p{A}}$, is a total relation from positive propositions to antecedents.
+\begin{inferences}
+  \infer[\rrule{\plus}]{\slofp{\delta ||- \plus*[sub=_{\ell \in L}]{\ell:\p{A}_{\ell}}}}{
+    \text{($\kay \in L$)} & \slofp{\delta ||- \p{A}_{\kay}}}
+  \and
+  \infer[\rrule{\dn}]{\slofp{\n{A} ||- \dn \n{A}}}{}
+  \and
+  \infer[\p{\jrule{ID}}]{\slofp{\psusp{\p{p}} ||- \p{p}}}{}
+\end{inferences}
+Dually, the left-pattern judgment, $\slofn{\n{A} ||- \gamma}$, is a total relation on negative propositions to consequents.
+\begin{inferences}
+  \infer[\lrule{\with}]{\slofn{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} ||- \gamma}}{
+    \text{($\kay \in L$)} & \slofn{A_{\kay} ||- \gamma}}
+  \and
+  \infer[\lrule{\up}]{\slofn{\up \p{A} ||- \p{A}}}{}
+  \and
+  \infer[\n{\jrule{ID}}]{\slofn{\n{p} ||- \nsusp{\n{p}}}}{}
+\end{inferences}
+
+\paragraph{Stable se{q}uents}
+We use the judgment $\slof{\delta |- \gamma}$ for stable sequents.
+In a stable sequent, we may focus on either the right or left.
+This is accomplished by filling in the holes of an appropriate pattern.
+\begin{inferences}
+  \infer[\rrule{+}]{\slof{\delta |- \p{A}}}{
+    \slof{\delta |- \delta'} & \slofp{\delta' ||- \p{A}}}
+  \and
+  \infer[\lrule{-}]{\slof{\n{A} |- \gamma}}{
+    \slofn{\n{A} ||- \gamma'} & \slof{\gamma' |- \gamma}}
+\end{inferences}
+
+\paragraph{Inversion seq\-uents}
+Inversion may take place on the right and left with the judgments $\slof{\delta |- \delta'}$ and $\slof{\gamma' |- \gamma}$, respectively.
+Invertible propositions may be established by considering all possible patterns; suspensions must be immediate.
+\begin{inferences}
+  \infer[\rrule{-}]{\slof{\delta |- \n{A}}}{
+    \slofn{\n{A} ||- \gamma} \longrightarrow \slof{\delta |- \gamma}}
+  \and
+  \infer[\p{\jrule{SUSP}}]{\slof{\psusp{\p{p}} |- \psusp{\p{p}}}}{}
+  \\
+  \infer[\lrule{+}]{\slof{\p{A} |- \gamma}}{
+    \slofp{\delta ||- \p{A}} \longrightarrow \slof{\delta |- \gamma}}
+  \and
+  \infer[\n{\jrule{SUSP}}]{\slof{\nsusp{\n{p}} |- \nsusp{\n{p}}}}{}
+\end{inferences}
+Notice that negative propositions are not invertible on the left, not even trivially; dually, positive propositions are not even trivially invertible on the right.
+
+\subsection{Weakly focused}
+
+\begin{syntax*}
+  Positive propositions & \p{A} &
+    \plus*[sub=_{\ell \in L}]{\ell:\p{A}_{\ell}} \mid \p{p} \mid \dn \n{A}
+  \\
+  Negative propositions & \n{A} &
+    \with*[sub=_{\ell \in L}]{\ell:\n{A}_{\ell}} \mid \n{p} \mid \up \p{A}
+  \\
+  Negative antecedents & \n{\delta} & \n{A} \mid \psusp{\p{p}}
+  \\
+  Positive conse{q}uents & \p{\gamma} & \p{A} \mid \nsusp{\n{p}}
+  \\
+  Antecedents & \delta & \n{\delta} \mid \p{A}
+  \\
+  Conse{q}uents & \gamma & \p{\gamma} \mid \n{A}
+\end{syntax*}
+
+\ExplSyntaxOn
+\RenewDocumentCommand \slofp { >{ \SplitArgument {1} { ||- } } m } { \use_i:nn #1 \Vdash [ \use_ii:nn #1 ] }
+\ExplSyntaxOff
+
+\paragraph{Pattern judgments}
+The meanings of the logical connectives are given by right- and left-pattern judgments for propositions.
+The right-pattern judgment, $\slofp{\n{\delta} ||- Q^{\plus} : \p{A}}$, is a total relation from positive propositions to negative antecedents.
+\begin{inferences}
+  \infer[\rrule{\plus}]{\slofp{\n{\delta} ||- \spawn{Q^{\plus}}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:\p{A}_{\ell}}}}{
+    \text{($\kay \in L$)} & \slofp{\n{\delta} ||- Q^{\plus} : \p{A}_{\kay}}}
+  \\
+  \infer[\rrule{\dn}]{\slofp{\n{A} ||- \mathsf{dnR} : \dn \n{A}}}{}
+  \and
+  \infer[\p{\jrule{ID}}]{\slofp{\psusp{\p{p}} ||- \closeR : \p{p}}}{}
+\end{inferences}
+Dually, the left-pattern judgment, $\slofn{\n{A} ||- Q^{\with} : \p{\gamma}}$, is a total relation on negative propositions to positive consequents.
+\begin{inferences}
+  \infer[\lrule{\with}]{\slofn{\with*[sub=_{\ell \in L}]{\ell:\n{A}_{\ell}} ||- \spawn{\selectL{\kay}}{Q^{\with}} : \p{\gamma}}}{
+    \text{($\kay \in L$)} & \slofn{\n{A}_{\kay} ||- Q^{\with} : \p{\gamma}}}
+  \\
+  \infer[\lrule{\up}]{\slofn{\up \p{A} ||- \mathsf{upL} : \p{A}}}{}
+  \and
+  \infer[\n{\jrule{ID}}]{\slofn{\n{p} ||- \closeL : \nsusp{\n{p}}}}{}
+\end{inferences}
+
+\paragraph{Stable se{q}uents}
+We use the judgment $\slof{\delta |- N : \gamma}$ for stable sequents.
+In a stable sequent, we may focus on either the right or left.
+This is accomplished by filling in the holes of an appropriate pattern.
+\begin{inferences}
+  \infer[\rrule{+}]{\slof{\delta |- \spawn{R}{Q^{\plus}} : \p{A}}}{
+    \slof{\delta |- R : \n{\delta}_A} & \slofp{\n{\delta}_A ||- Q^{\plus} : \p{A}}}
+  \and
+  \infer[\lrule{-}]{\slof{\n{A} |- \spawn{Q^{\with}}{L} : \gamma}}{
+    \slofn{\n{A} ||- Q^{\with} : \p{\gamma}_A} & \slof{\p{\gamma}_A |- L : \gamma}}
+\end{inferences}
+Because this is a weakly focused calculus, the invertible rules apply to stable sequents.
+\begin{inferences}
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:\p{A}_{\ell}} |- \caseL[\ell \in L]{\ell => N_{\ell}} : \gamma}}{
+    \multipremise{\ell \in L}{\slof{\p{A}_{\ell} |- N_{\ell} : \gamma}}}
+  \\
+  \infer[\p{\eta}]{\slof{\p{p} |- \waitL{N} : \gamma}}{
+    \slof{\psusp{\p{p}} |- N : \gamma}}
+  \and
+  \infer[\lrule{\dn}]{\slof{\dn \n{A} |- \mathsf{dnL}; N : \gamma}}{
+    \slof{\n{A} |- N : \gamma}}
+  \\
+  \infer[\rrule{\with}]{\slof{\delta |- \caseR[\ell \in L]{\ell => N_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:\n{A}_{\ell}}}}{
+    \multipremise{\ell \in L}{\slof{\delta |- N_{\ell} : \n{A}_{\ell}}}}
+  \\
+  \infer[\n{\eta}]{\slof{\delta |- \waitR{N} : \n{p}}}{
+    \slof{\delta |- N : \nsusp{\n{p}}}}
+  \and
+  \infer[\rrule{\up}]{\slof{\delta |- \mathsf{upR}; N : \up \p{A}}}{
+    \slof{\delta |- N : \p{A}}}
+\end{inferences}
+
+\paragraph{Inversion seq\-uents}
+Although this calculus is weakly focused, weak inversion sequents are still needed to ensure that the $\rrule{+}$ and $\lrule{-}$ rules behave correctly.
+The judgments are $\slof{\delta |- R : \n{\delta}}$ and $\slof{\p{\gamma} |- L : \gamma}$, respectively.
+Invertible propositions may be established by a stable sequent; suspensions must be immediate.
+\begin{inferences}
+  \infer[\rrule{-}]{\slof{\delta |- \iota_R(N) : \n{A}}}{
+    \slof{\delta |- N : \n{A}}}
+  \and
+  \infer[\p{\jrule{SUSP}}]{\slof{\psusp{\p{p}} |- \fwd : \psusp{\p{p}}}}{}
+  \\
+  \infer[\lrule{+}]{\slof{\p{A} |- \iota_L(N) : \gamma}}{
+    \slof{\p{A} |- L : \gamma}}
+  \and
+  \infer[\n{\jrule{SUSP}}]{\slof{\nsusp{\n{p}} |- \fwd : \nsusp{\n{p}}}}{}
+\end{inferences}
+
+
+\subsection{Admissibility of cut}
+
+\NewDocumentCommand \nspawn { o m m } { #2 \mathbin{\blacklozenge} \IfValueT{#1}{^{#1}} #3 }
+\NewDocumentCommand \qpspawn { o m m } { #2 \mathbin{\blacktriangleright} \IfValueT{#1}{^{#1}} #3 }
+\NewDocumentCommand \qwspawn { o m m } { #2 \mathbin{\blacktriangleleft} \IfValueT{#1}{^{#1}} #3 }
+\NewDocumentCommand \spawnp { o m m } { \llbracket#2\rrbracket #3 }
+\NewDocumentCommand \spawnn { o m m } { \langle#2\rangle #3 }
+
+\begin{inferences}
+  \infer-[\p{\jrule{CUT}}]{\slof{\n{\delta} |- \qpspawn{Q^{\plus}}{N} : \gamma}}{
+    \slofp{\n{\delta} ||- Q^{\plus} : \p{A}} & \slof{\p{A} |- N : \gamma}}
+  \and
+  \infer-[\n{\jrule{CUT}}]{\slof{\delta |- \qwspawn{N}{Q^{\with}} : \p{\gamma}}}{
+    \slof{\delta |- N : \n{A}} & \slofn{\n{A} ||- Q^{\with} : \p{\gamma}}}
+\end{inferences}
+
+\begin{equation*}
+  \begin{lgathered}
+    \qpspawn{(\spawn{Q^{\plus}}{\selectR{\kay}})}{\caseL[\ell \in L]{\ell => N_{\ell}}}
+      = \qpspawn{Q^{\plus}}{N_{\kay}}
+    \\
+    \qpspawn{\closeR}{(\waitL{N})} = N
+    \\
+    \qpspawn{\mathsf{dnR}}{(\mathsf{dnL}; N)} = N
+    \\
+    \qpspawn{Q^{\plus}}{\caseR[\ell \in L]{\ell => N_{\ell}}}
+      = \caseR[\ell \in L]{\ell => \qpspawn{Q^{\plus}}{N_{\ell}}}
+    \\
+    \qpspawn{Q^{\plus}}{(\waitR{N})}
+      = \waitR{(\qpspawn{Q^{\plus}}{N})}
+    \\
+    \qpspawn{Q^{\plus}}{(\mathsf{upR}; N)}
+      = \mathsf{upR}; (\qpspawn{Q^{\plus}}{N})
+    \\
+    \qpspawn{Q^{\plus}_1}{(\spawn{\iota_R(N)}{Q^{\plus}_2})}
+      = \spawn{\iota_R(\qpspawn{Q^{\plus}_1}{N})}{Q^{\plus}_2}
+  \end{lgathered}
+\end{equation*}
+
+
+
+\begin{inferences}
+  \infer-[\jrule{CUT}]{\slof{\delta |- \nspawn[A]{M}{N} : \gamma}}{
+    \slof{\delta |- M : A} & \slof{A |- N : \gamma}}
+\end{inferences}
+
+
+\begin{equation*}
+  \begin{lgathered}
+    \nspawn{(\spawn{R}{Q^{\plus}})}{N}
+      = \nspawn{R}{(\qpspawn{Q^{\plus}}{N})}
+  \end{lgathered}
+\end{equation*}
+
+% \begin{gather*}
+%   \infer-[\p{\jrule{CUT}}]{\slof{\delta |- \p{C}}}{
+%     \infer[\rrule{+}]{\slof{\delta |- \p{A}}}{
+%       \slof{\delta |- \delta'} & \slofp{\delta' ||- \p{A}}} &
+%     \infer[\lrule{+}]{\slof{\p{A} |- \p{C}}}{
+%       \slofp{\delta'' ||- \p{A}} \longrightarrow \slof{\delta'' |- \p{C}}}}
+%   \\=\\
+%   \infer-[\n{\jrule{CUT}}]{\slof{\delta |- \p{C}}}{
+%     \slof{\delta |- \delta'} &
+%     \infer{\slof{\delta' |- \p{C}}}{
+%       \slofp{\delta' ||- \p{A}} & \slofp{\delta'' ||- \p{A}} \longrightarrow \slof{\delta'' |- \p{C}}}}
+% \end{gather*}
+
+% \begin{gather*}
+%   \infer-[\n{\jrule{CUT}}]{\slof{\delta |- \p{C}}}{
+%     \infer[\rrule{-}]{\slof{\delta |- \n{A}}}{
+%       \slofn{\n{A} ||- \p{B}} \longrightarrow \slof{\delta |- \p{B}}} &
+%     \infer[\lrule{-}]{\slof{\n{A} |- \p{C}}}{
+%       \slofn{\n{A} ||- \p{C}_0} & \slof{\p{C}_0 |- \p{C}}}}
+%   \\=\\
+%   \infer-[\p{\jrule{CUT}}]{\slof{\delta |- \p{C}}}{
+%     \infer{\slof{\delta |- \p{C}_0}}{
+%       \slofn{\n{A} ||- \p{C}_0} & \slofn{\n{A} ||- \p{B}} \longrightarrow \slof{\delta |- \p{B}}} &
+%     \slof{\p{C}_0 |- \p{C}}}
+% \end{gather*}
+
+% \begin{gather*}
+%   \infer-[\n{\jrule{CUT}}]{\slof{\delta |- \p{C}}}{
+%     \infer[\p{\jrule{SUSP}}]{\slof{\psusp{\p{p}} |- \psusp{\p{p}}}}{} &
+%     \slof{\psusp{\p{p}} |- \p{C}}}
+%   \\=\\
+%   \slof{\psusp{\p{p}} |- \p{C}}
+% \end{gather*}
+
+% \begin{gather*}
+%   \infer-[\p{\jrule{CUT}}]{\slof{\n{B} |- \p{C}}}{
+%     \infer[\lrule{-}]{\slof{\n{B} |- \p{A}}}{
+%       \slofn{\n{B} ||- \p{A}_0} & \slof{\p{A}_0 |- \p{A}}} &
+%     \infer[\lrule{+}]{\slof{\p{A} |- \p{C}}}{
+%       \slofp{\delta'' ||- \p{A}} \longrightarrow \slof{\delta'' |- \p{C}}}}
+%   \\=\\
+%   \infer-[\n{\jrule{CUT}}]{\slof{\delta |- \p{C}}}{
+%     \slof{\delta |- \delta'} &
+%     \infer{\slof{\delta' |- \p{C}}}{
+%       \slofp{\delta' ||- \p{A}} & \slofp{\delta'' ||- \p{A}} \longrightarrow \slof{\delta'' |- \p{C}}}}
+% \end{gather*}
+
+\subsection{Substitution}
+
+\begin{equation*}
+  \infer-[\p{\jrule{SUBST}}]{\slof{\n{\delta} |- [Q^{\plus}](\spawn{\fwd}{Q^{\plus}_0}) : \gamma}}{
+    \slofp{\n{\delta} ||- Q^{\plus} : \p{A}} &
+    \infer[\rrule{+}]{\slof{\psusp{\p{A}} |- \spawn{\fwd}{Q^{\plus}_0} : \p{C}}}{
+      \infer[\p{\jrule{SUSP}}]{\slof{\psusp{\p{A}} |- \fwd : \psusp{\p{A}}}}{} &
+      \slofp{\psusp{\p{A}} ||- Q^{\plus}_0 : \p{C}}}}
+  =
+  ?
+\end{equation*}
+
+\subsection{Identity expansion}
+
+\begin{inferences}
+  \infer-[\p{\eta}]{\slof{\p{A} |- \eta^{\p{A}}(N) : \gamma}}{
+    \slof{\psusp{\p{A}} |- N : \gamma}}
+  \and
+  \infer-[\n{\eta}]{\slof{\delta |- \eta^{\n{A}}(N) : \n{A}}}{
+    \slof{\delta |- N : \nsusp{\n{A}}}}
+\end{inferences}
+
+\begin{equation*}
+  \infer-[\p{\eta}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:\p{A}_{\ell}} |- \eta^{\plus}(N) : \gamma}}{
+    \slof{\psusp{\plus*[sub=_{\ell \in L}]{\ell:\p{A}_{\ell}}} |- N : \gamma}}
+  =
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:\p{A}_{\ell}} |- \caseL[\ell \in L]{\ell => \eta^{\p{A}_{\ell}}([\spawn{\closeR}{\selectR{\ell}}]N)} : \gamma}}{
+    \multipremise{\ell \in L}{
+      \infer-[\p{\eta}]{\slof{\p{A}_{\ell} |- \eta^{\p{A}_{\ell}}([\spawn{\closeR}{\selectR{\ell}}]N) : \gamma}}{
+        \infer-[\p{\jrule{SUBST}}]{\slof{\psusp{\p{A}_{\ell}} |- [\spawn{\closeR}{\selectR{\ell}}]N : \gamma}}{
+          \infer[\rrule{\plus}]{\slofp{\psusp{\p{A}_{\ell}} ||- \spawn{\closeR}{\selectR{\ell}} : \plus*[sub=_{\ell' \in L}]{\ell':\p{A}_{\ell'}}}}{
+            \text{($\ell \in L$)} &
+            \infer[\p{\jrule{ID}}]{\slofp{\psusp{\p{A}_{\ell}} ||- \closeR : \p{A}_{\ell}}}{}} &
+          \slof{\psusp{\plus*[sub=_{\ell' \in L}]{\ell':\p{A}_{\ell'}}} |- N : \gamma}}}}}
+\end{equation*}
+
+\begin{equation*}
+  \infer-[\p{\eta}]{\slof{\p{p} |- \eta^{\p{p}}(N) : \gamma}}{
+    \slof{\psusp{\p{p}} |- N : \gamma}}
+  =
+  \infer[\p{\eta}]{\slof{\p{p} |- \waitL{N} : \gamma}}{
+    \slof{\psusp{\p{p}} |- N : \gamma}}
+\end{equation*}
+
+\begin{equation*}
+  \infer-[\p{\eta}]{\slof{\dn \n{A} |- \eta^{\dn \n{A}}(N) : \gamma}}{
+    \slof{\psusp{\dn \n{A}} |- N : \gamma}}
+  =
+  \infer[\lrule{\dn}]{\slof{\dn \n{A} |- \mathsf{dnL}; [\mathsf{dnR}]N : \gamma}}{
+    \infer-[\p{\jrule{SUBST}}]{\slof{\n{A} |- [\mathsf{dnR}]N : \gamma}}{
+      \infer[\rrule{\dn}]{\slofp{\n{A} ||- \mathsf{dnR} : \dn \n{A}}}{} &
+      \slof{\psusp{\dn \n{A}} |- N : \gamma}}}
+\end{equation*}
+
+\section{}
+
+\subsection{Toward weak normalization: Completeness of focusing}
+
+\begin{equation*}
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
+    \multipremise{\ell \in L}{\slof{A_{\ell} |- P : C}}}
+\end{equation*}
+
+\begin{equation*}
+  \infer[\rrule{\plus}]{\slof{A |- \selectR{\kay}[P] : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \text{($\kay \in L$)} & \slof{A |- P : C_{\kay}}}
+\end{equation*}
+
+\begin{equation*}
+  \infer-{\slof{A |- W(\selectR{\kay}[P]) : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \infer[\rrule{\plus}]{\slof{A |- \selectR{\kay}[P] : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+      \text{($\kay \in L$)} & \slof{A |- P : C_{\kay}}}}
+  =
+  \infer[\rrule{\plus}]{\slof{A |- \selectR{\kay}[P] : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \text{($\kay \in L$)} &
+    \infer-{\slof{A |- W(P) : C_{\kay}}}{
+      \slof{A |- P : C_{\kay}}}}
+\end{equation*}
+
+
+
+\section{}
+
+\subsection{Weakly focused, with atomic suspensions}
+
+\begin{syntax*}
+  Propositions & A &
+    \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid
+    \with*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \p{p}
+  \\
+  Positive propositions & \p{A} &
+    \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \p{p}
+  \\
+  Negative propositions & \n{A} &
+    \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
+  \\
+  Antecedents & \n{\delta} & \n{A} \mid \psusp{\p{p}}
+  \\
+  Weak antecedents & \delta & A \mid \psusp{\p{p}}
+\end{syntax*}
+
+\ExplSyntaxOn
+\RenewDocumentCommand \slofp { >{ \SplitArgument {1} { ||- } } m } { \use_i:nn #1 \Vdash [ \use_ii:nn #1 ] }
+\ExplSyntaxOff
+
+\paragraph{Pattern judgments}
+The meanings of the logical connectives are given by right- and left-pattern judgments for propositions.
+The right-pattern judgment for propositions, $\slofp{\n{\delta} ||- A}$, is a total relation from propositions to antecedents.
+\begin{inferences}
+  \infer[\rrule{\plus}]{\slofp{\n{\delta} ||- \spawn{Q^{\plus}}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \text{($\kay \in L$)} & \slofp{\n{\delta} ||- Q^{\plus} : A_{\kay}}}
+  \\
+  \infer[\jrule{R-BLUR}]{\slofp{\n{A} ||- \fwd : \n{A}}}{}
+  \and
+  \infer[\p{\jrule{ID}}]{\slofp{\psusp{\p{p}} ||- \closeR : \p{p}}}{}
+\end{inferences}
+Dually, the left-pattern judgment for propositions, $\slofn{A ||- \p{C}}$, is a total binary relation on propositions.
+\begin{inferences}
+  \infer[\lrule{\with}]{\slofn{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} ||- \spawn{\selectL{\kay}}{Q^{\with}} : \p{C}}}{
+    \text{($\kay \in L$)} & \slofn{A_{\kay} ||- Q^{\with} : \p{C}}}
+  \and
+  \infer[\jrule{L-BLUR}]{\slofn{\p{A} ||- \fwd : \p{A}}}{}
+\end{inferences}
+
+\paragraph{Stable se{q}uents}
+We use the judgment $\slof{\delta |- N : A}$ for stable sequents.
+In a stable sequent, we may focus on either the right or left.
+This is accomplished by filling in the holes of an appropriate pattern.
+\begin{inferences}
+  \infer[\rrule{+}]{\slof{\delta |- \spawn{I}{Q^{\plus}} : \p{A}}}{
+    \slof{\delta |- I : \n{\delta}} & \slofp{\n{\delta} ||- Q^{\plus} : \p{A}}}
+  \and
+  \infer[\lrule{-}]{\slof{\n{A} |- \spawn{Q^{\with}}{N} : C}}{
+    \slofn{\n{A} ||- Q^{\with} : \p{B}} & \slof{\p{B} |- N : C}}
+  \\
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => N_{\ell}} : C}}{
+    \multipremise{\ell \in L}{\slof{A_{\ell} |- N_{\ell} : C}}}
+  \and
+  \infer[\p{\eta}]{\slof{\p{p} |- \waitL{N} : C}}{
+    \slof{\psusp{\p{p}} |- N : C}}
+  \\
+  \infer[\rrule{\with}]{\slof{\delta |- \caseR[\ell \in L]{\ell => N_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \multipremise{\ell \in L}{\slof{\delta |- N_{\ell} : A_{\ell}}}}
+\end{inferences}
+
+\paragraph{Inversion seq\-uents}
+Although this is a weakly focused calculus, we still need a so-called right-inversion judgment, $\slof{\delta |- I : \n{\delta}}$.
+Otherwise, focusing on $\p{p}$ would incorrectly (?) allow invertible rules to be moved inside the focusing phase.
+\begin{inferences}
+  \infer[\rrule{-}]{\slof{\delta |- \iota(N) : \n{A}}}{
+    \slof{\delta |- N : \n{A}}}
+  \and
+  \infer[\psusp{}]{\slof{\psusp{\p{p}} |- \fwd : \psusp{\p{p}}}}{}
+\end{inferences}
+
+
+\subsection{Weakly focused, with general suspensions}
+
+Except for atomic propositions, our propositions are left unpolarized.
+\begin{syntax*}
+  Propositions & A &
+    \begin{array}[t]{@{}l@{}}
+      \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \p{p} \\
+      \mathllap{\mid {}}
+        \with*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \n{p}
+    \end{array}
+\end{syntax*}
+We may identify the positive and negative propositions as those with a positive or negative connective, respectively, at the top level.
+\begin{syntax*}
+  Positive propositions & \p{A} &
+    \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \p{p}
+  \\
+  Negative propositions & \n{A} &
+    \with*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \n{p}
+\end{syntax*}
+Notice that polarity is shallow and not inherited by the immediate subformulas.
+
+Building on propositions, we also have antecedents and consequents.
+\begin{syntax*}
+  Antecedents & \n{\delta} & \n{A} \mid \psusp{\p{A}}
+  \\
+  Consequents & \p{\gamma} & \p{A} \mid \nsusp{\n{A}}
+  \\
+  Weak antecedents & \delta & A \mid \psusp{\p{A}}
+  \\
+  Weak consequents & \gamma & A \mid \nsusp{\n{A}}
+\end{syntax*}
+
+\paragraph{Pattern judgments}
+The meanings of the logical connectives are given by right- and left-pattern judgments for propositions.
+The right-pattern judgment for propositions, $\slofp{\n{\delta} ||- Q^{\plus} : A}$, is a total relation from propositions to antecedents.
+\begin{inferences}
+  \infer[\rrule{\plus}]{\slofp{\n{\delta} ||- \spawn{Q^{\plus}}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \text{($\kay \in L$)} & \slofp{\n{\delta} ||- Q^{\plus} : A_{\kay}}}
+  \\
+  \infer[\jrule{R-BLUR}]{\slofp{\n{A} ||- \fwd : \n{A}}}{}
+  \and
+  \infer[\p{\jrule{ID}}]{\slofp{\psusp{\p{A}} ||- \closeR : \p{A}}}{}
+\end{inferences}
+Dually, the left-pattern judgment for propositions, $\slofn{A ||- Q^{\with} : \p{\gamma}}$, is a total binary relation on propositions.
+\begin{inferences}
+  \infer[\lrule{\with}]{\slofn{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} ||- \spawn{\selectL{\kay}}{Q^{\with}} : \p{\gamma}}}{
+    \text{($\kay \in L$)} & \slofn{A_{\kay} ||- Q^{\with} : \p{\gamma}}}
+  \\
+  \infer[\jrule{L-BLUR}]{\slofn{\p{A} ||- \fwd : \p{A}}}{}
+  \and
+  \infer[\n{\jrule{ID}}]{\slofn{\n{A} ||- \closeL : \nsusp{\n{A}}}}{}
+\end{inferences}
+
+\paragraph{Stable se{q}uents}
+We use the judgment $\slof{\delta |- N : \gamma}$ for stable sequents.
+In a stable sequent, we may focus on either the right or left.
+This is accomplished by filling in the holes of an appropriate pattern.
+\begin{inferences}
+  \infer[\rrule{+}]{\slof{\delta |- \spawn{R}{Q^{\plus}} : \p{A}}}{
+    \slof{\delta |- R : \n{\delta}} & \slofp{\n{\delta} ||- Q^{\plus} : \p{A}}}
+  \and
+  \infer[\lrule{-}]{\slof{\n{A} |- \spawn{Q^{\with}}{L} : \gamma}}{
+    \slofn{\n{A} ||- Q^{\with} : \p{\gamma}} & \slof{\p{\gamma} |- L : \gamma}}
+  \\
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => N_{\ell}} : \gamma}}{
+    \multipremise{\ell \in L}{\slof{A_{\ell} |- N_{\ell} : \gamma}}}
+  \and
+  \infer[\p{\eta}]{\slof{\p{p} |- \waitL{N} : \gamma}}{
+    \slof{\psusp{\p{p}} |- N : \gamma}}
+  \\
+  \infer[\rrule{\with}]{\slof{\delta |- \caseR[\ell \in L]{\ell => N_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \multipremise{\ell \in L}{\slof{\delta |- N_{\ell} : A_{\ell}}}}
+  \and
+  \infer[\n{\eta}]{\slof{\delta |- \waitR{N} : \n{p}}}{
+    \slof{\delta |- N : \nsusp{\n{p}}}}
+\end{inferences}
+
+\paragraph{Inversion seq\-uents}
+Although this is a weakly focused calculus, we still need so-called right- and left-inversion judgments, $\slof{\delta |- R : \n{\delta}}$ and $\slof{\p{\gamma} |- L : \gamma}$.
+Otherwise, focusing on $\p{p}$ would incorrectly (?) allow invertible rules to be moved inside the focusing phase.
+\begin{inferences}
+  \infer[\rrule{-}]{\slof{\delta |- \rho(N) : \n{A}}}{
+    \slof{\delta |- N : \n{A}}}
+  \and
+  \infer[\p{\jrule{SUSP}}]{\slof{\psusp{\p{A}} |- \fwd : \psusp{\p{A}}}}{}
+  \\
+  \infer[\lrule{+}]{\slof{\p{A} |- \lambda(N) : \gamma}}{
+    \slof{\p{A} |- N : \gamma}}
+  \and
+  \infer[\n{\jrule{SUSP}}]{\slof{\nsusp{\n{A}} |- \fwd : \nsusp{\n{A}}}}{}
+\end{inferences}
+
+\subsection{Admissibility of cut}
+
+\NewDocumentCommand \nspawn { o m m } { #2 \mathbin{\blacktriangleright} #3 }
+\NewDocumentCommand \rsubst { o m m } { [#2] #3 }
+
+\begin{equation*}
+  \infer-[\jrule{CUT}]{\slof{\delta |- \nspawn{M}{N} : \gamma}}{
+    \slof{\delta |- M : A} & \slof{A |- N : \gamma}}
+\end{equation*}
+
+\begin{equation*}
+  \infer-[\jrule{R-SUBST}]{\slof{\n{\delta} |- \rsubst{M}{N} : \gamma}}{
+    \slofp{\n{\delta} ||- Q^{\plus} : A} & \slof{A |- N : \gamma}}
+\end{equation*}
+
+\begin{equation*}
+  \infer-[\jrule{CUT}]{\slof{\delta |- \nspawn{(\spawn{R}{Q^{\plus}})}{N} : \gamma}}{
+    \infer[\rrule{+}]{\slof{\delta |- \spawn{R}{Q^{\plus}} : \p{A}}}{
+      \slof{\delta |- R : \n{\delta}} & \slofp{\n{\delta} ||- Q^{\plus} : \p{A}}} &
+    \slof{\p{A} |- N : \gamma}}
+\end{equation*}
+
+
+
+\subsection{Queue substitution}
+
+We have the following substitution principle for suspensions of positive propositions.
+\begin{inferences}
+  \infer-{\slof{\n{\delta}_{\p{A}} |- [Q^{\plus}]N : \gamma}}{
+    \slofp{\n{\delta}_{\p{A}} ||- Q^{\plus} : \p{A}} & \slof{\psusp{\p{A}} |- N : \gamma}}
+\end{inferences}
+
+We may attempt to prove the admissibility of this principle by structural induction on the normal term $N$.
+There are three possible cases -- one for each of the $\rrule{+}$, $\rrule{\with}$, and $\n{\eta}$ rules.
+For the case involving $\rrule{\with}$, the queue substitution commutes with the $\mathsf{caseR}$:
+\begin{gather*}
+  \infer-{\slof{\n{\delta}_{\p{A}} |- [Q^{\plus}]\caseR[\ell \in L]{\ell => N_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \slofp{\n{\delta}_{\p{A}} ||- Q^{\plus} : \p{A}} &
+    \infer[\rrule{\with}]{\slof{\psusp{\p{A}} |- \caseR[\ell \in L]{\ell => N_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+      \multipremise{\ell \in L}{\slof{\psusp{\p{A}} |- N_{\ell} : C_{\ell}}}}}
+  \\=\\
+  \infer[\rrule{\with}]{\slof{\n{\delta}_{\p{A}} |- \caseR[\ell \in L]{\ell => [Q^{\plus}]N_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \multipremise{\ell \in L}{
+      \infer-{\slof{\n{\delta}_{\p{A}} |- [Q^{\plus}]N_{\ell} : C_{\ell}}}{
+        \slofp{\n{\delta}_{\p{A}} ||- Q^{\plus} : \p{A}} & \slof{\psusp{\p{A}} |- N_{\ell} : C_{\ell}}}}}
+\end{gather*}
+The case involving $\n{\eta}$ is similar.
+Which leaves the case involving $\rrule{+}$.
+\begin{gather*}
+  \infer-{\slof{\n{\delta}_{\p{A}} |- [Q^{\plus}](\spawn{R}{Q^{\plus}_{\p{C}}}) : \p{C}}}{
+    \slofp{\n{\delta}_{\p{A}} ||- Q^{\plus} : \p{A}} &
+    \infer[\rrule{+}]{\slof{\psusp{\p{A}} |- \spawn{R}{Q^{\plus}_{\p{C}}} : \p{C}}}{
+      \slof{\psusp{\p{A}} |- R : \n{\delta}_{\p{C}}} &
+      \slofp{\n{\delta}_{\p{C}} ||- Q^{\plus}_{\p{C}} : \p{C}}}}
+  \\=\\
+\end{gather*}
+
+\begin{gather*}
+  \infer-{\slof{\n{\delta}_{\p{A}} |- [Q^{\plus}](\spawn{R}{Q^{\plus}_{\p{C}}}) : \p{C}}}{
+    \slofp{\n{\delta}_{\p{A}} ||- Q^{\plus} : \p{A}} &
+    \infer[\rrule{+}]{\slof{\psusp{\p{A}} |- \spawn{R}{Q^{\plus}_{\p{C}}} : \p{C}}}{
+      \infer[\rrule{-}]{\slof{\psusp{\p{A}} |- R : \n{\delta}_{\p{C}}}}{
+        } &
+      \slofp{\n{\delta}_{\p{C}} ||- Q^{\plus}_{\p{C}} : \p{C}}}}
+  \\=\\
+\end{gather*}
+
+\begin{gather*}
+  \infer-{\slof{\n{\delta}_{\p{A}} |- [Q^{\plus}](\spawn{\fwd}{Q^{\plus}_{\p{C}}}) : \p{C}}}{
+    \slofp{\n{\delta}_{\p{A}} ||- Q^{\plus} : \p{A}} &
+    \infer[\rrule{+}]{\slof{\psusp{\p{A}} |- \spawn{\fwd}{Q^{\plus}_{\p{C}}} : \p{C}}}{
+      \infer[\p{\jrule{SUSP}}]{\slof{\psusp{\p{A}} |- \fwd : \psusp{\p{A}}}}{} &
+      \slofp{\psusp{\p{A}} ||- Q^{\plus}_{\p{C}} : \p{C}}}}
+  \\=\\
+  ?
+\end{gather*}
+
+\subsection{Weak normalization}
+
+\begin{gather*}
+  \infer-[\jrule{WN}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- n\bigl(\caseL[\ell \in L]{\ell => P_{\ell}}\bigr) : C}}{
+    \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
+      \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C}}}}
+  \\=\\
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => n(P_{\ell})} : C}}{
+    \multipremise{\ell \in L}{
+      \infer-[\jrule{WN}]{\slof{A_{\ell} |- n(P_{\ell}) : C}}{
+        \slof{A_{\ell} |- P_{\ell} : C}}}}
+\end{gather*}
+
+\begin{gather*}
+  \infer-[\jrule{WN}]{\slof{A |- n(\selectR{\kay}[P]) : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \infer[\rrule{\plus}]{\slof{A |- \selectR{\kay}[P] : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+      \text{($\kay \in L$)} & \slof{A |- P : C_{\kay}}}}
+  \\=\\
+  \infer[\rrule{+}]{\slof{A |- \spawn{\rho\bigl(n(P)\bigr)}{(\spawn{\fwd}{\selectR{\kay}})} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \infer[\rrule{-}]{\slof{A |- \rho\bigl(n(P)\bigr) : \n{C}_{\kay}}}{
+      \infer-[\jrule{WN}]{\slof{A |- n(P) : \n{C}_{\kay}}}{
+        \slof{A |- P : \n{C}_{\kay}}}} &
+    \infer[\rrule{\plus}]{\slofp{\n{C}_{\kay} ||- \spawn{\fwd}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+      \text{($\kay \in L$)} &
+      \infer[\jrule{R-BLUR}]{\slofp{\n{C}_{\kay} ||- \fwd : \n{C}_{\kay}}}{}}}
+\end{gather*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End:
