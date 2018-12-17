@@ -1,5 +1,40 @@
 \chapter{Singleton logic}\label{ch:singleton-logic}
 
+Intuitionistic sequents are typically asymmetric.
+In an intuitionistic sequent $\Gamma \vdash A$, there are finitely many antecedents, all collected into the context $\Gamma$, yet there is only a single consequent, $A$.%
+\footnote{Or, at most one consequent if multiplicative falsehood is included\parencref[see, for example,]{sec:ordered-logic:mult-falsehood}.}
+We might naturally wonder if a greater degree of symmetry can be brought to sequents.
+Of course, classical sequents in calculi such as Gentzen's LK\autocite{Gentzen:??} enjoy a pleasant symmetry, but does there exist an \emph{intuitionistic} logic whose sequent calculus presentation uses symmetric sequents?
+
+One approach might be to permit finitely many consequents, as in multiple-conclusion sequent calculi for intuitionistic logic\autocite{??}, but \textcite{Steinberger:JPL11} raises troubling concerns about meaning-theoretic explanations of such calculi.
+So in this \lcnamecref{ch:singleton-logic}, we will instead follow a dual path to symmetry and examine a restriction in which sequents have exactly one antecedent -- no more and no less.
+We call this requirement the \emph{single-antecedent restriction} and the logic to which it leads \emph{singleton logic}.
+That such a drastic restriction on the structure of sequents yields a well-defined, computationally useful logic is rather surprising.
+
+\newthought{Aside from} motivations of symmetry, the single-antecedent restriction is sensible within each branch of the computational trinity\autocite{Harper:??} -- proof theory, category theory, and type theory -- as we discuss in \cref{sec:singleton-logic:restriction}.
+This \lcnamecref{ch:singleton-logic} is primarily devoted to the proof-theoretic consequences of the single-antecedent restriction, so the operational aspects are mostly postponed to \cref{ch:singleton-processes}.
+
+\Cref{sec:singleton-logic:seq-calc} derives a sequent calculus presentation of singleton logic by a systematic application of the single-antecedent restriction to intuitionistic ordered logic's sequent calculus.
+\Cref{sec:singleton-logic:seq-calc:metatheory} then establishes the basic metatheory of singleton logic's sequent calculus: identity expansion and, more importantly to our purposes, admissibility of cut.
+
+But there are other presentations of logics besides sequent calculi, such as natural deduction and Hilbert systems.
+So in \cref{sec:singleton-logic:hilbert}, a Hilbert system for singleton logic is considered.
+The single-antecedent restriction necessarily precludes a true Hilbert system, but we ... a Hilbert-like system that may also be viewed as a variant of the sequent calculus.
+\Cref{sec:singleton-logic:hilbert:metatheory} establishes the admissibility of a modus ponens-like rule, and contrasts the proof with that of admissibility of cut from \cref{sec:singleton-logic:metatheory}.
+
+Finally, \cref{sec:singleton-logic:subsingleton} briefly overviews several possible extensions to singleton logic.
+
+
+
+Intuitionistic sequents often contain
+\begin{description}
+\item[Proof-theoretical]
+  Under the single-antecedent restriction, sequents enjoy an elegant symmetry -- exactly one consequent and now exactly one antecedent -- $\slseq{A |- B}$ rather than $\oseq{\octx |- B}$.
+\item[Categorical]
+\item[Operational] 
+\end{description}
+That such a drastic restriction on the structure of sequents yields a well-defined, computationally useful logic is rather surprising.
+
 Recall from \cref{ch:ordered-logic} that the sequents of intuitionistic ordered logic are inherently asymmetric.
 In an ordered sequent such as $\oseq{\octx |- A}$, there are finitely many antecedents, all collected into the context $\octx$, yet there is only a single consequent.%
 \footnote{Or, at most one consequent if multiplicative falsehood is included\parencref[see]{sec:ordered-logic:mult-falsehood}.}
@@ -35,6 +70,28 @@ In this \lcnamecref{ch:singleton-logic}, we confine our attention to the proof-t
 % A discussion of singleton logic's isomorphic\alertnote{Is it really isomorphic?} computational model is postponed to the following \lcnamecref{ch:singleton-processes}.
 % In this \lcnamecref{ch:singleton-logic}, we confine our attention to the proof-theoretic aspects of singleton logic.
 
+
+\section{The single-antecedent restriction}\label{sec:singleton-logic:restriction}
+
+As sketched above, the \emph{single-antecedent restriction} demands that each sequent contain exactly one antecedent, so that sequents are $\slseq{A |- B}$ instead of $\Gamma \vdash B$.
+
+In addition to providing sequents with this elegant symmetry, the single-antecedent restriction is quite natural when independently viewed from the perspective of the computational trinity's\autocite{Harper:??} branches -- proof theory, category theory, and type theory.
+%
+\begin{description}
+\item[Proof theory]
+  In intuitionistic sequent calculi, antecedents are subject, either implicitly or explicitly, to structural properties, such as weakening, contraction, and exchange.
+  For instance, antecedents in linear logic are subject to exchange, but neither weakening nor contraction; linear contexts thus form a commutative monoid.
+  Ordered logic goes further and rejects exchange; ordered contexts thus form a (noncommutative) monoid.
+
+  The single-antecedent restriction goes still further and rejects even the idea that contexts have structure.
+  With only one antecedent, there can be no binary operation to concatenate contexts; singleton contexts form only a set, a degenerate algebraic structure.
+
+\item[Category theory]
+  Category without binary operation
+
+\item[Type theory]
+\end{description}
+
 \section{Bringing symmetry to intuitionistic sequents}\label{sec:singleton-logic:derive}
 
 The single-antecedent restriction described above
@@ -45,6 +102,10 @@ In a category, each morphism $f\colon X \rightarrow Y$ has exactly one object --
 Because sequents should represent a kind of function, single antecedents are just as natural as single object domains.
 
 Once we impose the single-antecedent restriction upon sequents, all of the rules from the sequent calculus for intuitionistic ordered logic must be reconsidered.
+
+
+Having sketched a three-pronged justification for the naturality of a single-antecedent restriction, we now ...
+One approach is to take the intuitionistic ordered sequent calculus of \cref{??}
 
 Take the cut principle, for instance.
 \begin{equation*}
