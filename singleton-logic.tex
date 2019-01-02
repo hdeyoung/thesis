@@ -1,25 +1,41 @@
 \chapter{Singleton logic}\label{ch:singleton-logic}
 
-Intuitionistic sequents are typically asymmetric.
-In an intuitionistic sequent $\Gamma \vdash A$, there are finitely many antecedents, all collected into the context $\Gamma$, yet there is only a single consequent, $A$.%
+Intuitionistic sequents are typically asymmetric:
+in an intuitionistic sequent $\Gamma \vdash A$, there are finitely many antecedents, all collected into the context $\Gamma$, yet there is only a single consequent, $A$.%
 \footnote{Or, at most one consequent if multiplicative falsehood is included\parencref[see, for example,]{sec:ordered-logic:mult-falsehood}.}
 We might naturally wonder if a greater degree of symmetry can be brought to sequents.
-Of course, classical sequents in calculi such as Gentzen's LK\autocite{Gentzen:??} enjoy a pleasant symmetry, but does there exist an \emph{intuitionistic} logic whose sequent calculus presentation uses symmetric sequents?
+Of course, classical sequents in calculi such as Gentzen's LK\autocite{Gentzen:??} do enjoy a pleasant symmetry, but does there exist an \emph{intuitionistic} logic whose sequent calculus presentation uses symmetric sequents?
 
-One approach might be to permit finitely many consequents, as in multiple-conclusion sequent calculi for intuitionistic logic\autocite{??}, but \textcite{Steinberger:JPL11} raises troubling concerns about meaning-theoretic explanations of such calculi.
+One approach might be to permit finitely many consequents, as in multiple-conclusion sequent calculi for intuitionistic logic\autocite{??}, but \citeauthor{Steinberger:JPL11}\autocite{Steinberger:JPL11} raises troubling concerns about meaning-theoretic explanations of such calculi.
 So in this \lcnamecref{ch:singleton-logic}, we will instead follow a dual path to symmetry and examine a restriction in which sequents have exactly one antecedent -- no more and no less.
-We call this requirement the \emph{single-antecedent restriction} and the logic to which it leads \emph{singleton logic}.
-That such a drastic restriction on the structure of sequents yields a well-defined, computationally useful logic is rather surprising.
+We call this requirement the \emph{single-antecedent restriction}; the sequent calculus to which it leads, the \emph{singleton sequent calculus}; and the underlying logic, \emph{singleton logic}.
+That such a severe restriction on the structure of sequents yields a well-defined, computationally useful logic is quite surprising.
 
 \newthought{Aside from} motivations of symmetry, the single-antecedent restriction is sensible within each branch of the computational trinity\autocite{Harper:??} -- proof theory, category theory, and type theory -- as we discuss in \cref{sec:singleton-logic:restriction}.
-This \lcnamecref{ch:singleton-logic} is primarily devoted to the proof-theoretic consequences of the single-antecedent restriction, so the operational aspects are mostly postponed to \cref{ch:singleton-processes}.
+[This \lcnamecref{ch:singleton-logic} is primarily devoted to the proof-theoretic consequences of the single-antecedent restriction, so the operational aspects are mostly postponed to \cref{ch:singleton-processes}.]
+
+Having fully motivated the single-antecedent restriction, we proceed to \cref{sec:singleton-logic:seq-calc} where we derive the singleton sequent calculus by systematically applying the restriction to the [intuitionistic] ordered sequent calculus of \cref{??}.
+[Not all of the ordered logical connectives will be able to survive the restriction, however.
+As we will explain, it is precisely the multiplicative connectives that are absent from singleton logic.]
+
+
+In \cref{sec:singleton-logic:seq-calc}, we derive the singleton sequent calculus by systematically applying the single-antecedent restriction to the [intuitionistic] ordered sequent calculus of \cref{??}.
+[Not all of the ordered logical connectives will be able to survive the restriction, however.
+As we will explain, it is precisely the multiplicative connectives that are absent from singleton logic.]
+
+To ensure that the resulting calculus is indeed a sequent calculus with the characteristic verificationist meaning-explanation, \cref{sec:singleton-logic:seq-calc:metatheory} then establishes its basic metatheory.
+Together, the cut elimination and identity expansion metatheorems identify the cut-free, $\eta$-long proofs as analytic verifications that exhibit a subformula property.
+
 
 \Cref{sec:singleton-logic:seq-calc} derives a sequent calculus presentation of singleton logic by a systematic application of the single-antecedent restriction to intuitionistic ordered logic's sequent calculus.
 \Cref{sec:singleton-logic:seq-calc:metatheory} then establishes the basic metatheory of singleton logic's sequent calculus: identity expansion and, more importantly to our purposes, admissibility of cut.
 
-But there are other presentations of logics besides sequent calculi, such as natural deduction and Hilbert systems.
-So in \cref{sec:singleton-logic:hilbert}, a Hilbert system for singleton logic is considered.
-The single-antecedent restriction necessarily precludes a true Hilbert system, but we ... a Hilbert-like system that may also be viewed as a variant of the sequent calculus.
+There are certainly other presentations of logics.
+% besides sequent calculi, such as natural deduction and Hilbert systems.
+So in \cref{sec:singleton-logic:hilbert}, we consider a Hilbert system for singleton logic.
+Although the single-antecedent restriction precludes a true Hilbert system, we are able to consruct a Hilbert-like system that can also be viewed as a variant of the singleton sequent calculus.
+
+
 \Cref{sec:singleton-logic:hilbert:metatheory} establishes the admissibility of a modus ponens-like rule, and contrasts the proof with that of admissibility of cut from \cref{sec:singleton-logic:metatheory}.
 
 Finally, \cref{sec:singleton-logic:subsingleton} briefly overviews several possible extensions to singleton logic.
@@ -75,125 +91,169 @@ In this \lcnamecref{ch:singleton-logic}, we confine our attention to the proof-t
 
 As sketched above, the \emph{single-antecedent restriction} demands that each sequent contain exactly one antecedent, so that sequents are $\slseq{A |- B}$ instead of $\Gamma \vdash B$.
 
-In addition to providing sequents with this elegant symmetry, the single-antecedent restriction is quite natural when independently viewed from the perspective of the computational trinity's\autocite{Harper:??} branches -- proof theory, category theory, and type theory.
+In addition to providing sequents with an elegant symmetry between antecedents and consequents, the single-antecedent restriction is a worthwhile object of investigation when viewed from the perspective of each of the computational trinity's\autocite{Harper:??} branches -- proof theory, category theory, and type theory.
 %
 \begin{description}
 \item[Proof theory]
-  In intuitionistic sequent calculi, antecedents are subject, either implicitly or explicitly, to structural properties, such as weakening, contraction, and exchange.
-  For instance, antecedents in linear logic are subject to exchange, but neither weakening nor contraction; linear contexts thus form a commutative monoid.
-  Ordered logic goes further and rejects exchange; ordered contexts thus form a (noncommutative) monoid.
+  In sequent calculi, antecedents are subject, either implicitly or explicitly, to structural properties, such as weakening, contraction, and exchange.
+  For instance, antecedents in linear logic are subject to exchange, but neither weakening nor contraction; linear contexts thus form a commutative monoid over antecedents.
+  Ordered logic goes further and rejects exchange; ordered contexts thus form a noncommutative monoid.
 
-  The single-antecedent restriction goes still further and rejects even the idea that contexts have structure.
-  With only one antecedent, there can be no binary operation to concatenate contexts; singleton contexts form only a set, a degenerate algebraic structure.
+  The single-antecedent restriction goes still further and rejects the very idea that contexts have any structure at all.
+  Under this restriction, there can be no binary operation to catenate contexts, so singleton contexts form only the degenerate algebraic structure of a set.
 
 \item[Category theory]
-  Category without binary operation
+  Each morphism in a category, $f\colon X \rightarrow Y$, has exactly one object -- no more and no less -- as its domain.
+  Because sequents represent a kind of function, single antecedents are just as natural as single-object domains.
+
+  More specifically, in categorical semantics of sequent calculi, proofs are represented by the morphisms of a monoidal category, and so contexts of several antecedents are packaged into a single domain object using the monoidal product:
+  % Because proofs sequents should represent a kind of function, categorical semantics for sequent calculi package contexts of several antecedents into a single domain object using a categorical product
+  \begin{equation*}
+    \ulcorner \DD :: (A_1, A_2, \dotsc, A_n \vdash B) \urcorner :
+      \ulcorner\mkern-1mu A_1 \mkern-\thinmuskip\urcorner \otimes \ulcorner\mkern-1mu A_2 \mkern-\thinmuskip\urcorner \otimes \dotsb \otimes \ulcorner\mkern-1mu A_n \mkern-\thinmuskip\urcorner \to \ulcorner B \urcorner
+  \end{equation*}
+  Because working in a monoidal category complicates matters, it is worthwhile to consider whether there exists a sequent calculus whose categorical semantics uses no monoidal product.
+  % Because the tensor product complicates the category, it is worthwhile to consider whether there exists a sequent calculus whose categorical semantics uses no tensor product.
+  The single-antecedent restriction is exactly what results from these considerations, and the singleton sequent calculus will have a cleaner, more direct categorical semantics because of it.
 
 \item[Type theory]
+  \begin{tikzpicture}
+    \graph [nodes={draw}, math nodes,->=o-] {
+      { / [coordinate] , / [coordinate] }
+       --
+      P [circle]
+       ->
+      / [coordinate];
+    };
+  \end{tikzpicture}
+
+  \begin{tikzpicture}
+    \graph [nodes={draw}, math nodes] {
+      / [coordinate] -- P [circle] -> / [coordinate];
+    };
+  \end{tikzpicture}
+
 \end{description}
 
 \section{Bringing symmetry to intuitionistic sequents}\label{sec:singleton-logic:derive}
 
-The single-antecedent restriction described above
-The sequents of singleton logic have exactly one consequent and, more characteristically, exactly one antecedent: $\slseq{A |- B}$ instead of $\oseq{\octx |- B}$.
+% The single-antecedent restriction described above
+% The sequents of singleton logic have exactly one consequent and, more characteristically, exactly one antecedent: $\slseq{A |- B}$ instead of $\oseq{\octx |- B}$.
 
-In addition to providing sequents with this elegant symmetry, the single-antecedent restriction is also natural from a category-theoretic perspective.
-In a category, each morphism $f\colon X \rightarrow Y$ has exactly one object -- no more and no less -- as its domain.
-Because sequents should represent a kind of function, single antecedents are just as natural as single object domains.
+% In addition to providing sequents with this elegant symmetry, the single-antecedent restriction is also natural from a category-theoretic perspective.
+% In a category, each morphism $f\colon X \rightarrow Y$ has exactly one object -- no more and no less -- as its domain.
+% Because sequents should represent a kind of function, single antecedents are just as natural as single object domains.
 
-Once we impose the single-antecedent restriction upon sequents, all of the rules from the sequent calculus for intuitionistic ordered logic must be reconsidered.
+% Once we impose the single-antecedent restriction upon sequents, all of the rules from the sequent calculus for intuitionistic ordered logic must be reconsidered.
 
 
-Having sketched a three-pronged justification for the naturality of a single-antecedent restriction, we now ...
-One approach is to take the intuitionistic ordered sequent calculus of \cref{??}
+Having sketched proof-theoretic, category-theoretic, and type-theoretic reasons to investigate the single-antecedent restriction, we turn to identifying a sequent calculus that satisfies the restriction.
+One approach is to take the intuitionistic ordered sequent calculus of \cref{??} and solve the constraints that the single-antecedent restriction imposes upon the ordered sequent calculus's rules.
 
-Take the cut principle, for instance.
+Take the ordered cut principle, for instance.
 \begin{equation*}
   \infer[\jrule{CUT}^B]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}}{
     \oseq{\octx |- B} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
 \end{equation*}
 Because the second premise already contains the antecedent $B$, the contexts $\octx'_L$ and $\octx'_R$ must be empty if the premise is to satisfy the single-antecedent restriction.
-Under this constraint, the cut principle becomes:
-\begin{equation*}
-  \infer[\jrule{CUT}^B]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}}{
-    \oseq{\octx |- B} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
-  \rightsquigarrow
-  \infer{\oseq{\octx |- C}}{
-    \oseq{\octx |- B} & \oseq{B |- C}}
-\end{equation*}
+% Under this constraint, the cut principle becomes:
+% \begin{equation*}
+%   \infer[\jrule{CUT}^B]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}}{
+%     \oseq{\octx |- B} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+%   \rightsquigarrow
+%   \infer{\oseq{\octx |- C}}{
+%     \oseq{\octx |- B} & \oseq{B |- C}}
+% \end{equation*}
 We then replace the finitary context $\octx$ with a single antecedent, $A$, so that the rule's first premise and conclusion also satisfy the characteristic restriction:
 \begin{equation*}
-  \infer[\jrule{CUT}^B]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}}{
-    \oseq{\octx |- B} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
-  \rightsquigarrow
-  \infer{\oseq{\octx |- C}}{
-    \oseq{\octx |- B} & \oseq{B |- C}}
-  \rightsquigarrow
-  \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
-    \slseq{A |- B} & \slseq{B |- C}}
+  \begin{array}{@{}ccl@{}}
+    \text{\scshape ordered logic} && \text{\scshape singleton logic}
+    \\[3\jot]
+    \infer[\jrule{CUT}^B]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}}{
+      \oseq{\octx |- B} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+  % \rightsquigarrow
+  % \infer{\oseq{\octx |- C}}{
+  %   \oseq{\octx |- B} & \oseq{B |- C}}
+    & \rightsquigarrow &
+    \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
+      \slseq{A |- B} & \slseq{B |- C}}
+  \end{array}
 \end{equation*}
-We could equally well justify this cut rule for singleton logic by first principles, as it expresses the composition of two well-formed sequents\alertinline{proofs?} in singleton logic.
+% We could equally well justify this cut rule for singleton logic by first principles, as it expresses the composition of two well-formed sequents\alertinline{proofs?} in singleton logic.
 
-We could equally well justify this cut rule for singleton logic by first principles, as it expresses the composition of two well-formed sequents\alertinline{proofs?} in singleton logic.
-But the above method of considering  ...  the constraints imposed by the single-antecedent restriction  ...  gives us a way forward
+\begin{figure*}
+  \begin{tabular}{ccc}
 \begin{equation*}
+  \begin{array}{@{}ccc@{}}
+    \text{\scshape ordered logic} && \text{\scshape singleton logic}
+    \\[3\jot]
   \!\begin{gathered}
     \infer[\rrule{\plus}_1]{\oseq{\octx |- B_1 \plus B_2}}{
       \oseq{\octx |- B_1}}
     \quad
-    \infer[\rrule{\plus}_2]{\oseq{\octx |- B_1 \plus B_2}}{
+    \infer[\mathrlap{\rrule{\plus}_2}]{\oseq{\octx |- B_1 \plus B_2}}{
       \oseq{\octx |- B_2}}
     \\[3\jot]
-    \infer[\lrule{\plus}]{\oseq{\octx'_L \oc (B_1 \plus B_2) \oc \octx'_R |- C}}{
+    \infer[\mathrlap{\lrule{\plus}}]{\oseq{\octx'_L \oc (B_1 \plus B_2) \oc \octx'_R |- C}}{
       \oseq{\octx'_L \oc B_1 \oc \octx'_R |- C} & \oseq{\octx'_L \oc B_2 \oc \octx'_R |- C}}
   \end{gathered}
-  \rightsquigarrow
+  &\mathrel{\phantom{\rrule{\plus}_2}\mathord{\rightsquigarrow}}&
   \!\begin{gathered}
     \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
       \slseq{A |- B_1}}
     \quad
-    \infer[\rrule{\plus}_2]{\slseq{A |- B_1 \plus B_2}}{
+    \infer[\mathrlap{\rrule{\plus}_2}]{\slseq{A |- B_1 \plus B_2}}{
       \slseq{A |- B_2}}
     \\[3\jot]
-    \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
+    \infer[\mathrlap{\lrule{\plus}}]{\slseq{B_1 \plus B_2 |- C}}{
       \slseq{B_1 |- C} & \slseq{B_2 |- C}}
   \end{gathered}
+  \end{array}
 \end{equation*}
 
-Not all connectives fare as well under the single-antecedent restriction as additive disjunction does.
+
+We could equally well justify this cut rule for singleton logic by first principles, as it expresses the composition of two well-formed sequents\alertinline{proofs?} in singleton logic.
+But the above method of considering the constraints imposed by the single-antecedent restriction is a straightforward way ahead for the other inference rules.
+For example, we may similarly derive right and left rules for additive disjunction in the singleton sequent calculus\parencref[see]{}
+Similarly, the other additive connectives ($\with$, $\top$, and $\zero$) can be given singleton sequent calculus rules.
+
+However, not all ordered logical connectives fare as well under the single-antecedent restriction as the additive connectives do.
+In particular, the multiplicative connectives do not have analogues in singleton logic, precisely because their multiplicative nature involves splitting antecedents among premises and extending the context with additional antecedents.
+
 Consider, for example, left-handed implication and its right rule.
-\begin{equation*}
-  \infer[\rrule{\limp}]{\oseq{\octx |- B_1 \limp B_2}}{
-    \oseq{B_1 \oc \octx |- B_2}}
-\end{equation*}
-Beginning with the $\rrule{\limp}$ rule's conclusion, we must replace the finitary context $\octx$ with a single antecedent, $A$.
+% \begin{equation*}
+%   \infer[\rrule{\limp}]{\oseq{\octx |- B_1 \limp B_2}}{
+%     \oseq{B_1 \oc \octx |- B_2}}
+% \end{equation*}
+We must replace the finitary context $\octx$ with a single antecedent, $A$, if the rule's conclusion is to be a well-formed singleton sequent.
 \begin{equation*}
   \infer[\rrule{\limp}]{\oseq{\octx |- B_1 \limp B_2}}{
     \oseq{B_1 \oc \octx |- B_2}}
   \rightsquigarrow
-  \infer{\oseq{A |- B_1 \limp B_2}}{
+  \infer[\rrule{\limp}?]{\oseq{A |- B_1 \limp B_2}}{
     \oseq{B_1 \oc A |- B_2}}
 \end{equation*}
-Although the revised rule's conclusion is now a well-formed singleton logic sequent, 
+The revised rule's conclusion is now well-formed, but the premise is not.
+From a category-theoretic perspective, it would be quite natural to rewrite the premise using ordered conjunction so that the two antecedents are packaged as one:
 \begin{equation*}
-  \infer[\rrule{\limp}]{\oseq{\octx |- B_1 \limp B_2}}{
-    \oseq{B_1 \oc \octx |- B_2}}
-  \rightsquigarrow
-  \infer{\oseq{A |- B_1 \limp B_2}}{
-    \oseq{B_1 \oc A |- B_2}}
-  \rightsquigarrow
   \infer[\rrule{\limp}?]{\slseq{A |- B_1 \limp B_2}}{
     \slseq{B_1 \fuse A |- B_2}}
 \end{equation*}
-Viewed through a category-theoretic lens, this rule is quite innocuous, even natural.
-But from a proof-theoretic perspective, the meaning of a logical connective should be independent of other connectives, and this rule creates an objectionable dependence of left-handed implication upon ordered conjunction.
-As a practical consequence, the subformula property would fail to hold under this rule.
+% Viewed through a category-theoretic lens, this rule is quite innocuous, even natural.
+From a proof-theoretic perspective, however, the meaning of a logical connective should be independent of other connectives, and this rule creates an objectionable dependence of left-handed implication upon ordered conjunction.
+As a practical consequence, the subformula property would fail to hold and we would be unable to prove a cut elimination theorem if the singleton sequent calculus adopted this rule.
+% The left rule for left-handed implication is equally problematic:
+% \begin{equation*}
+%   \infer[\lrule{\limp}]{\oseq{\octx_L \oc \octx \oc (B_1 \limp B_2) \oc  \octx_R |- C}}{
+%     \oseq{\octx |- B_1} & \oseq{\octx_L \oc B_2 \oc \octx_R |- C}}
+%   \rightsquigarrow
+%   \infer[\lrule{\limp}?]{\slseq{A \oc (B_1 \limp B_2) |- C}}{
+%     \slseq{A |- B_1} & \slseq{B_2 |- C}}
+% \end{equation*}
+
+Attempting to give singleton calculus rules for the other multiplicative connectives fails similarly.
 
 
-\begin{equation*}
-  \infer[\lrule{\limp}?]{\slseq{A \fuse (B_1 \limp B_2) |- C}}{
-    \slseq{A |- B_1} & \slseq{B_2 |- C}}
-\end{equation*}
 
 
 Take the first right rule for additive disjunction, for instance.
@@ -252,9 +312,9 @@ Additive disjunction's left rule in singleton logic can be derived similarly fro
     \slseq{B_1 |- C} & \slseq{B_2 |- C}}
 \end{inferences}
 
-\section{A sequent calculus for singleton logic}\label{sec:singleton-logic:seq-calc}
+\section{A sequent calculus for propositional singleton logic}\label{sec:singleton-logic:seq-calc}
 
-\Cref{fig:singleton-logic:seq-calc} presents propositional singleton logic in full.
+\Cref{fig:singleton-logic:seq-calc} presents a sequent calculus for propositional singleton logic.
 %
 \begin{figure}[t]
   \begin{syntax*}
@@ -296,101 +356,195 @@ Additive disjunction's left rule in singleton logic can be derived similarly fro
   \caption{A sequent calculus for propositional singleton logic\label{fig:singleton-logic:seq-calc}}
 \end{figure}
 %
-The well-formed propositions are exactly the additive propositions of ordered logic, and the complete set of inference rules has been derived from the ordered sequent calculus by 
+The well-formed propositions are exactly the additive propositions of ordered logic, and the complete set of inference rules has been derived from those of the ordered sequent calculus by 
 
-Although the propositions of singleton logic are exactly the additive propositions of ordered logic, notice that singleton logic is \emph{not} the additive fragment of ordered logic.
-For instance, the sequent $\oseq{A \oc B |- \top}$ is provable in the additive fragment of ordered logic, but $\slseq{A \oc B |- \top}$ is not even a well-formed sequent in singleton logic, for the simple reason that it violates the single-antecedent restriction.
+There are two observations to be made.
+% 
+First, although the propositions of singleton logic are exactly the additive propositions of ordered logic, singleton logic is \emph{not} the additive fragment of ordered logic.
+For instance, the sequent $\oseq{A \oc B |- \top}$ is provable in the additive fragment of ordered logic, but it
+% $\slseq{A \oc B |- \top}$
+is not even a well-formed sequent in the singleton sequent calculus, for the simple reason that it violates the single-antecedent restriction.
 
-\subsection{Metatheory: Cut elimination and identity expansion}
+Second, it seems quite odd to contemplate a logic without an implication connective that embodies the logic's underlying hypothetical judgment.
+But as the metatheoretic results of the following \lcnamecref{sec:singleton-logic:seq-calc:metatheory} verify, singleton logic is one such well-defined logic.
 
-\begin{theorem}[Admissibility of cut]\label{thm:sync-cut-admissible}
+\subsection{Metatheory: Cut elimination and identity expansion}\label{sec:singleton-logic:seq-calc:metatheory}
+
+To show that the sequent calculus of singleton logic is well-defined, with each connective's right and left rules existing in harmony, 
+
+In this sense, the usual cut elimination metatheorem states a weak normalization result.
+%
+\begin{theorem}[Cut elimination]\label{thm:singleton-logic:seq-calc:cut-elimination}
+  If a proof of $\slseq{A |- C}$ exists, then there exists a cut-free proof of $\slseq{A |- C}$.
+\end{theorem}
+%
+As usual, this \lcnamecref{thm:singleton-logic:seq-calc:cut-elimination} may be proved by a straightforward induction on the structure of the given proof, provided that a cut principle for cut-free proofs is admissible:
+% 
+\begin{lemma}[Admissibility of cut]\label{lem:singleton-logic:seq-calc:cut-admissibility}
   If cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ exist, then there exists a cut-free proof of $\slseq{A |- C}$.
+\end{lemma}
+
+Before proceeding to this \lcnamecref{lem:singleton-logic:seq-calc:cut-admissibility}'s proof, it is worth emphasizing a subtle distinction between the singleton sequent calculus's primitive $\jrule{CUT}$ rule and the admissible cut principle that this \lcnamecref{lem:singleton-logic:seq-calc:cut-admissibility} establishes.
+
+To be completely formal, we could treat cut-freeness as an extrinsic, Curry-style property of proofs%
+\footnote{Contrast this with a separate, intrinsically cut-free sequent calculus in the style of Church.}
+and indicate cut-freeness by decorating the turnstile: $\cfslseq{A |- C}$ is a cut-free proof of $\slseq{A |- C}$.
+The admissible cut principle stated in \cref{lem:singleton-logic:seq-calc:cut-admissibility} could then be expressed as
+\begin{equation*}
+  \infer-[\jrule{A-CUT}^B]{\cfslseq{A |- C}}{
+    \cfslseq{A |- B} & \cfslseq{B |- C}}
+  ,
+\end{equation*}
+with the dotted line indicating that it is an admissible, not primitive, rule.
+Writing it in this way emphasizes that the proof of \cref{lem:singleton-logic:seq-calc:cut-admissibility} will define a meta-level function that takes cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ and produces a cut-free proof of $\slseq{A |- C}$.
+% Moreover, the decorated turnstile makes it clear that all three proofs are cut-free by construction.
+% 
+Contrast this with the primitive $\jrule{CUT}$ rule of the singleton sequent calculus,
+\begin{equation*}
+  \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
+    \slseq{A |- B} & \slseq{B |- C}}
+  % \qquad\text{and}\qquad
+  % \infer-[\jrule{A-CUT}^B]{\cfslseq{A |- C}}{
+  %   \cfslseq{A |- B} & \cfslseq{B |- C}}
+  ,
+\end{equation*}
+which forms a (cut-full) proof of $\slseq{A |- C}$ from proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$%
+\footnote{Which are not necessarily cut-free.}.
+
+From here on, we won't often bother to be quite so pedantic, instead
+ omitting the turnstile decoration on cut-free proofs with the understanding that the admissible $\jrule{A-CUT}$ rule may be applied only to cut-free proofs.
+
+%  writing the admissible cut principle as
+% \begin{equation*}
+%   \infer-[\jrule{A-CUT}^B]{\slseq{A |- C}}{
+%     \slseq{A |- B} & \slseq{B |- C}}
+% \end{equation*}
+% with the understanding that this admissible rule may only be applied to cut-free proofs.
+
+
+\begin{lemma}[Admissibility of cut]
+  ...
+\end{lemma}
+%
+\begin{proof}
+  We follow a standard technique for proving the admissibility of a cut principle\autocite{Pfenning:CUT} -- a lexicographic induction, first on the structure of the principal cut formula, and then on the structures of the given proofs.
+
+  As usual, the cases can be classified into four categories: principal cases, identity cases, left commutative cases, and right commutative cases.
+  % We show a few sample cases.
+  \begin{description}
+  \item[Principal cases]
+    The principal cases pair a proof ending in a right rule together with a proof ending in a corresponding left rule.
+    For example,
+    one of the principal cases pairs a proof ending in the $\rrule{\plus}_1$ rule with one ending in the $\lrule{\plus}$ rule; it is resolved as follows.
+    \begin{gather*}
+      \infer-[\mathrlap{\jrule{A-CUT}^{B_1 \plus B_2}}]{\slseq{A |- C}}{
+        \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+          \deduce{\slseq{A |- B_1}}{\DD_1}} &
+        \infer[\mathrlap{\lrule{\plus}}]{\slseq{B_1 \plus B_2 |- C}}{
+          \deduce{\slseq{B_1 |- C}}{\EE_1} &
+          \deduce{\slseq{B_2 |- C}}{\EE_2}}}
+      % 
+      \\=\quad\\\quad
+      % 
+      \infer-[\mathrlap{\jrule{A-CUT}^{B_1}}]{\slseq{A |- C}}{
+        \deduce{\slseq{A |- B_1}}{\DD_1} &
+        \deduce{\slseq{B_1 |- C}}{\EE_1}}
+      \qquad
+    \end{gather*}
+    Here the interaction between proofs is synchronous -- the case is resolved by appealing to the inductive hypothesis at a smaller principal type.
+
+  
+  \item[Identity cases]
+    In the identity cases, one of the proofs is just the $\jrule{ID}$ rule.
+    For example, 
+    % One of the identity cases pairs the $\jrule{ID}$ rule with a proof of $\slseq{A |- C}$:
+    \begin{equation*}
+      \infer-[\jrule{CUT}^A]{\slseq{A |- C}}{
+        \infer[\jrule{ID}^A]{\slseq{A |- A}}{} &
+        \deduce{\slseq{A |- C}}{\EE}}
+      % 
+      \quad=\quad
+      % 
+      \deduce{\slseq{A |- C}}{\EE}
+      \,.
+    \end{equation*}
+
+    
+  \item[Left commutative cases]
+    The left commutative cases pair a proof of $\slseq{A |- B}$ ending in a left rule together with a proof of $\slseq{B |- C}$.
+    For example, one such case
+    % of the left commutative cases
+    pairs a proof ending in the $\lrule{\plus}$ rule together with a proof of $\slseq{B |- C}$:
+    \begin{gather*}
+      \infer-[\mathrlap{\jrule{CUT}^B}]{\slseq{A_1 \plus A_2 |- C}}{
+        \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- B}}{
+          \deduce{\slseq{A_1 |- B}}{\DD_1} &
+          \deduce{\slseq{A_2 |- B}}{\DD_2}} &
+        \deduce{\slseq{B |- C}}{\EE}}
+      % 
+      \\=\\
+      % 
+      \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
+        \infer-[\jrule{CUT}^B]{\slseq{A_1 |- C}}{
+          \deduce{\slseq{A_1 |- B}}{\DD_1} &
+          \deduce{\slseq{B |- C}}{\EE}} &
+        \infer-[\mathrlap{\jrule{CUT}^B}]{\slseq{A_2 |- C}}{
+          \deduce{\slseq{A_2 |- B}}{\DD_2} &
+          \deduce{\slseq{B |- C}}{\EE}}}
+    \end{gather*}
+    Notice that there are no left commutative cases involving right rules.
+
+  \item[Right commutative cases]
+    The right commutative cases pair a proof of $\slseq{A |- B}$ together with a proof of $\slseq{B |- C}$ ending in a right rule.
+    For example, one such case
+    % of the right commutative cases
+    pairs a proof of $\slseq{A |- B}$ with a proof of $\slseq{B |- C_1 \plus C_2}$ ending in the $\rrule{\plus}_1$ rule:
+    % ; it is resolved as follows.
+    \begin{equation*}
+      \infer-[\jrule{A-CUT}^B]{\slseq{A |- C_1 \plus C_2}}{
+        \deduce{\slseq{A |- B}}{\DD} &
+        \infer[\rrule{\plus}_1]{\slseq{B |- C_1 \plus C_2}}{
+          \deduce{\slseq{B |- C_1}}{\EE_1}}}
+      % 
+      \quad=\quad
+      % 
+      \infer[\rrule{\plus}_1]{\slseq{A |- C_1 \plus C_2}}{
+        \infer-[\jrule{A-CUT}^B]{\slseq{A |- C_1}}{
+          \deduce{\slseq{A |- B}}{\DD} &
+          \deduce{\slseq{B |- C_1}}{\EE_1}}}
+    \end{equation*}
+    Notice that there are no right commutative cases involving left rules because the sequent $\slseq{B |- C}$ contains only the principal antecedent.
+    In this way, the proof of admissibility of cut for singleton logic is more symmetric than that of ordered logic.
+    There, several right commutative cases involved left rules acting on non-principal antecedents.
+    \qedhere
+  \end{description}
+\end{proof}
+
+
+With the admissibility of cut established, we can finally prove cut elimination for the singleton sequent calculus.
+%
+\begin{theorem}[Cut elimination]
+  If a proof of $\slseq{A |- C}$ exists, then a cut-free proof of $\slseq{A |- C}$ exists.
 \end{theorem}
 %
 \begin{proof}
-  We use the standard technique for proving the admissibility of a cut principle\autocite{Pfenning:CUT} -- a lexicographic induction, first on the structure of the principal type, and then on the structures of the given proofs.
+  By structural induction on the proof of $\slseq{A |- C}$, appealing to the admissibility of cut\parencref{lem:singleton-logic:seq-calc:cut-admissibility} when encountering a $\jrule{CUT}$ rule.
 
-  We would especially like to draw a distinction between the primitive $\jrule{CUT}$ rule and the admissible $\jrule{CUT-N}$ rule:
+  If we display the inductive hypothesis as an admissible rule, then the crucial case in the proof of cut elimination is resolved as follows.
   \begin{equation*}
-    \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
-      \slseq{A |- B} & \slseq{B |- C}}
-    \qquad\text{and}\qquad
-    \infer-[\jrule{CUT-N}^B]{A \Vdash C}{
-      A \Vdash B & B \Vdash C}
-  \end{equation*}
-  From here on, we won't bother to be quite so pedantic, instead writing the admissible $\jrule{CUT-N}$ rule as
-  \begin{equation*}
-    \infer-[\jrule{CUT-N}^B]{\slseq{A |- C}}{
-      \slseq{A |- B} & \slseq{B |- C}}
-  \end{equation*}
-  with the understanding that this admissible rule may only be applied to cut-free proofs.
-
-  One of the principal cases in this induction pairs the $\rrule{\plus}_1$ rule with the $\lrule{\plus}$ rule.
-  If we represent the admissible $\jrule{CUT}$ rule with a dotted line, then that case is resolved as follows.
-  \begin{equation*}
-    \infer-[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
-      \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
-        \deduce{\slseq{A |- B_1}}{\DD_1}} &
-      \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
-        \deduce{\slseq{B_1 |- C}}{\EE_1} &
-        \deduce{\slseq{B_2 |- C}}{\EE_2}}}
-    % 
+    \infer-[\jrule{CE}]{\cfslseq{A |- C}}{
+      \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
+        \deduce{\slseq{A |- B}}{\DD_1} & \deduce{\slseq{B |- C}}{\DD_2}}}
     \quad=\quad
-    % 
-    \infer-[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
-      \deduce{\slseq{A |- B_1}}{\DD_1} &
-      \deduce{\slseq{B_1 |- C}}{\EE_1}}
+    \infer-[\jrule{A-CUT}^B]{\cfslseq{A |- C}}{
+      \infer-[\jrule{CE}]{\cfslseq{A |- B}}{
+        \deduce{\slseq{A |- B}}{\DD_1}} &
+      \infer-[\jrule{CE}]{\cfslseq{B |- C}}{
+        \deduce{\slseq{B |- C}}{\DD_2}}}
   \end{equation*}
+  All other cases are handled compositionally.
 
-  \begin{equation*}
-    \infer-[\jrule{CUT}^A]{\slseq{A |- C}}{
-      \infer[\jrule{ID}^A]{\slseq{A |- A}}{} &
-        \deduce{\slseq{A |- C}}{\EE}}
-    % 
-    \quad=\quad
-    % 
-    \deduce{\slseq{A |- C}}{\EE}
-  \end{equation*}
-
-  \begin{equation*}
-    \infer-[\jrule{CUT}^B]{\slseq{A_1 \plus A_2 |- C}}{
-      \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- B}}{
-        \deduce{\slseq{A_1 |- B}}{\DD_1} &
-        \deduce{\slseq{A_2 |- B}}{\DD_2}} &
-      \deduce{\slseq{B |- C}}{\EE}}
-    % 
-    \quad=\quad
-    % 
-    \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
-      \infer-[\jrule{CUT}^B]{\slseq{A_1 |- C}}{
-        \deduce{\slseq{A_1 |- B}}{\DD_1} &
-        \deduce{\slseq{B |- C}}{\EE}} &
-      \infer-[\jrule{CUT}^B]{\slseq{A_2 |- C}}{
-        \deduce{\slseq{A_2 |- B}}{\DD_2} &
-        \deduce{\slseq{B |- C}}{\EE}}}
-  \end{equation*}
-
-  \begin{equation*}
-    \infer-[\jrule{CUT}^B]{\slseq{A |- C_1 \plus C_2}}{
-      \deduce{\slseq{A |- B}}{\DD} &
-      \infer[\rrule{\plus}_1]{\slseq{B |- C_1 \plus C_2}}{
-        \deduce{\slseq{B |- C_1}}{\EE_1}}}
-    % 
-    \quad=\quad
-    % 
-    \infer[\rrule{\plus}_1]{\slseq{A |- C_1 \plus C_2}}{
-      \infer-[\jrule{CUT}^B]{\slseq{A |- C_1}}{
-        \deduce{\slseq{A |- B}}{\DD} &
-        \deduce{\slseq{B |- C_1}}{\EE_1}}}
-  \end{equation*}
-  There are no right commutative cut reductions involving left rules -- more symmetric than ordered logic.
-\end{proof}
-
-\begin{corollary}[Cut elimination]\label{thm:sync-cut-elim}
-  If a proof of $\slseq{A |- C}$ exists, then a cut-free proof of $\slseq{A |- C}$ exists.
-\end{corollary}
-\begin{proof}
-  By structural induction on the proof of $\slseq{A |- C}$, appealing to the admissibility of cut\parencref{thm:sync-cut-admissible} when encountering a $\jrule{CUT}$ rule.
+  Notice that this proof effectively defines a meta-level function for normalizing proofs to cut-free form.
 \end{proof}
 
 \begin{theorem}[Identity expansion]
@@ -411,235 +565,339 @@ For instance, the sequent $\oseq{A \oc B |- \top}$ is provable in the additive f
 \end{proof}
 
 
-\section{An asynchronous sequent calculus for singleton logic}
+\section{A Hilbert-style axiomatization of singleton logic}\label{sec:singleton-logic:hilbert}
 
-\newcommand*{\approxident}{%
-  \mathrel{\vcenter{\offinterlineskip
-  \hbox{$\sim$}\vskip-.35ex\hbox{$\sim$}\vskip-.35ex\hbox{$\sim$}}}}
+Sequent calculi are not the only way to present logics, so
+% natural deduction calculi and Hilbert systems are also commonly used, for instance.
+in this \lcnamecref{sec:singleton-logic:hilbert} we also consider a Hilbert-style axiomatization of singleton logic.
+Our interest in a Hilbert system for singleton logic is not zoological, however.
+Rather, we shall see that weak normalization of Hilbert-style proofs serves as the basis of a Curry--Howard isomorphism with asynchronously communicating processes.
 
-% For reasons better explained in future \lcnamecrefs{ch:singleton-logic}, we need a Curry--Howard interpretation of singleton logic as a session-type system for asynchronous processes.
+\subsection{A Hilbert-style axiomatization of linear logic}
 
-Notice that there is more than one way to extend a proof of $\slseq{A |- B_1}$ to a proof of $\slseq{A |- B_1 \plus B_2}$.
-Of course, the most obvious way is to simply apply the $\rrule{\plus}_1$ rule to the given proof.
-Another, less direct way is to cut the given proof against an identity embellished with the $\rrule{\plus}_1$ rule.
+In a sequent calculus, the meaning of a connective is given by its right and left rules.
+Hilbert-style axiomatizations, on the other hand, attempt to use as few rules of inference as possible, with the meaning of a connective instead given by a small collection of axioms.
+
+To avoid unnecessarily introducing rules of inference,
+% Most of the time,
+these axioms rely heavily on implication and a \textit{modus ponens} rule to effect ... 
+For example, in a Hilbert-style axiomatization of intuitionistic linear logic\autocite{Avron:??}, multiplicative conjunction is described by the following axioms.
 \begin{equation*}
-  \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
-    \slseq{A |- B_1}}
-  \qquad\text{and}\qquad
-  \infer[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
-    \slseq{A |- B_1} &
-    \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
-      \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}}}
-\end{equation*}
-In fact, these proofs do not merely conclude with the same sequent -- these proofs are related by cut reduction:
-\begin{equation*}
-  \infer[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
-    \slseq{A |- B_1} &
-    \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
-      \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}}}
-  \longrightarrow\longrightarrow\enspace
-  \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
-    \slseq{A |- B_1}}
-\end{equation*}
-This suggests that the $\rrule{\plus}_1$-embellished identity may be worthy of special consideration.
-
-Suppose that we replace the usual $\rrule{\plus}_1$ rule with a new primitive rule that collapses the embellished identity.
-\begin{equation*}
-  \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
-    \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}}
-  \rightsquigarrow
-  \infer[\rrule{\plus}_1']{\slseq{B_1 |- B_1 \plus B_2}}{}
-\end{equation*}
-
-
-\begin{gather*}
-  \infer[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
-    \infer[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
-      \slseq{A |- B_1} &
-      \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
-        \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}}} &
-    \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
-      \slseq{B_1 |- C} & \slseq{B_2 |- C}}}
-  \\\equiv\\
-  \infer[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
-    \slseq{A |- B_1} &
-    \infer[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{B_1 |- C}}{
-      \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
-        \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}} &
-      \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
-        \slseq{B_1 |- C} & \slseq{B_2 |- C}}}}
-  \\\longrightarrow\longrightarrow\\
-  \infer[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
-    \slseq{A |- B_1} & \slseq{B_1 |- C}}
-\end{gather*}
-
-\begin{gather*}
-  \infer[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
-    \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
-      \slseq{A |- B_1}} &
-    \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
-      \slseq{B_1 |- C} & \slseq{B_2 |- C}}}
-  \\\longrightarrow\\
-  \infer[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
-    \slseq{A |- B_1} & \slseq{B_1 |- C}}
-\end{gather*}
-
-
-\begin{equation*}
-  \selectR{\kay}[P]
-  \approxident
-  \spawn{P}{(\selectR{\kay}[\fwd])}
-\end{equation*}
-
-\begin{marginfigure}
-  \begin{gather*}
-    \infer[\rrule{\plus}_1]{\slof{A |- \selectR{\kay}[P] : B_1 \plus B_2}}{
-      \slseq{A |- P : B_1}}
-    \\\approxident\\
-    \infer[\jrule{CUT}^{B_1}]{\slseq{A |- \spawn{P}{(\selectR{\kay}[\fwd])} : B_1 \plus B_2}}{
-      \slseq{A |- P : B_1} &
-      \infer[\rrule{\plus}_1]{\slseq{B_1 |- \selectR{\kay}[\fwd] : B_1 \plus B_2}}{
-        \infer[\jrule{ID}]{\slseq{B_1 |- \fwd : B_1}}{}}}
-  \end{gather*}
-  \caption{}
-\end{marginfigure}
-
-
-  
-\begin{gather*}
   \begin{lgathered}
-    \spawn{(\selectR{\kay}[P])}{\caseL[\ell \in L]{\ell => Q_{\ell}}}
-      \longrightarrow \spawn{P}{Q_{\kay}}
-    \\
-    \begin{aligned}
-      \MoveEqLeft[.5]
-      \spawn{\bigl(\spawn{P}{(\selectR{\kay}[\fwd])}\bigr)}{\caseL[\ell \in L]{\ell => Q_{\ell}}} \\[-.75\jot]
-        &\equiv \spawn{P}{\bigl(\spawn{(\selectR{\kay}[\fwd])}{\caseL[\ell \in L]{\ell => Q_{\ell}}}\bigr)} \\[-.75\jot]
-        % &\longrightarrow \spawn{P}{(\spawn{\fwd}{Q_{\kay}})} \\[-.75\jot]
-        &\longrightarrow\longrightarrow \spawn{P}{Q_{\kay}}
-    \end{aligned}
+    \vdash A \lolli B \lolli A \tensor B \\
+    \vdash (A \lolli B \lolli C) \lolli (A \tensor B \lolli C)
   \end{lgathered}
-\end{gather*}
+\end{equation*}
+The axioms are suggestive of the right and left sequent calculus rules for 
+\begin{equation*}
+  \begin{lgathered}
+    \vdash A \lolli B \lolli A \tensor B \\
+    \vdash (A \lolli B \lolli C) \lolli (A \tensor B \lolli C)
+  \end{lgathered}
+  \quad\rightsquigarrow\quad
+  \begin{gathered}
+    \infer{A , B \vdash A \tensor B}{} \\
+    \infer{A \tensor B \vdash C}{
+      A, B \vdash C}
+  \end{gathered}
+\end{equation*}
+
+
+
+% Whereas sequent calculi use many inference rules but few axioms, Hilbert systems shift the balance far in favor of axioms.
+
+
+% In a Hilbert system, each logical connective is defined by a collection of axioms.
+% For example, in a Hilbert system for intuitionistic ordered logic, additive disjunction would be defined by three axioms:
+\begin{equation*}
+  \begin{lgathered}
+    \infer[\with]{\vdash A \with B}{
+      \vdash A & \vdash B}
+    \\
+    \vdash \bigl((A \limp B_1) \with (A \limp B_2)\bigr) \limp (A \limp B_1 \with B_2)
+  \end{lgathered}
+  \qquad
+  \begin{lgathered}[b]
+    \vdash A_1 \with A_2 \limp A_1 \\
+    \vdash A_1 \with A_2 \limp A_2
+  \end{lgathered}
+\end{equation*}
+
+
+% \newcommand*{\approxident}{%
+%   \mathrel{\vcenter{\offinterlineskip
+%   \hbox{$\sim$}\vskip-.35ex\hbox{$\sim$}\vskip-.35ex\hbox{$\sim$}}}}
+
+% % For reasons better explained in future \lcnamecrefs{ch:singleton-logic}, we need a Curry--Howard interpretation of singleton logic as a session-type system for asynchronous processes.
+
+% Notice that there is more than one way to extend a proof of $\slseq{A |- B_1}$ to a proof of $\slseq{A |- B_1 \plus B_2}$.
+% Of course, the most obvious way is to simply apply the $\rrule{\plus}_1$ rule to the given proof.
+% Another, less direct way is to cut the given proof against an identity embellished with the $\rrule{\plus}_1$ rule.
+% \begin{equation*}
+%   \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+%     \slseq{A |- B_1}}
+%   \qquad\text{and}\qquad
+%   \infer[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
+%     \slseq{A |- B_1} &
+%     \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus }}{
+%       \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}}}
+% \end{equation*}
+% In fact, these proofs do not merely conclude with the same sequent -- these proofs are related by cut reduction:
+% \begin{equation*}
+%   \infer[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
+%     \slseq{A |- B_1} &
+%     \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
+%       \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}}}
+%   \longrightarrow\longrightarrow\enspace
+%   \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+%     \slseq{A |- B_1}}
+% \end{equation*}
+% This suggests that the $\rrule{\plus}_1$-embellished identity may be worthy of special consideration.
+
+% Suppose that we replace the usual $\rrule{\plus}_1$ rule with a new primitive rule that collapses the embellished identity.
+% \begin{equation*}
+%   \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
+%     \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}}
+%   \rightsquigarrow
+%   \infer[\rrule{\plus}_1']{\slseq{B_1 |- B_1 \plus B_2}}{}
+% \end{equation*}
+
 
 % \begin{gather*}
-%   \infer-[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
-%     \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
-%       \slseq{A |- B_1}} &
-%     \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
-%       \slseq{B_1 |- C} & \slseq{B_2 |- C}}}
-%   =
-%   \infer-[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
-%     \slseq{A |- B_1} & \slseq{B_1 |- C}}
-%   \\=\\
-%   \infer-[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
+%   \infer[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
 %     \infer[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
 %       \slseq{A |- B_1} &
 %       \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
 %         \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}}} &
 %     \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
 %       \slseq{B_1 |- C} & \slseq{B_2 |- C}}}
-%   \equiv
-%   \infer-[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
+%   \\\equiv\\
+%   \infer[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
 %     \slseq{A |- B_1} &
-%     \infer-[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{B_1 |- C}}{
+%     \infer[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{B_1 |- C}}{
 %       \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
 %         \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}} &
 %       \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
 %         \slseq{B_1 |- C} & \slseq{B_2 |- C}}}}
-%   \\=\\
-%   \infer-[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
-%     \slseq{A |- B_1} &
-%     \infer-[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{B_1 |- C}}{
-%       \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{} &
-%       \slseq{B_1 |- C}}}
-%   \\=\\
-%   \infer-[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
+%   \\\longrightarrow\longrightarrow\\
+%   \infer[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
+%     \slseq{A |- B_1} & \slseq{B_1 |- C}}
+% \end{gather*}
+
+% \begin{gather*}
+%   \infer[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
+%     \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+%       \slseq{A |- B_1}} &
+%     \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
+%       \slseq{B_1 |- C} & \slseq{B_2 |- C}}}
+%   \\\longrightarrow\\
+%   \infer[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
 %     \slseq{A |- B_1} & \slseq{B_1 |- C}}
 % \end{gather*}
 
 
-\begin{equation*}
-  \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
-    \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}}
-  \leftrightsquigarrow
-  \infer[\rrule{\plus}_1']{\slseq{B_1 |- B_1 \plus B_2}}{}
-\end{equation*}
+% \begin{equation*}
+%   \selectR{\kay}[P]
+%   \approxident
+%   \spawn{P}{(\selectR{\kay}[\fwd])}
+% \end{equation*}
+
+% \begin{marginfigure}
+%   \begin{gather*}
+%     \infer[\rrule{\plus}_1]{\slof{A |- \selectR{\kay}[P] : B_1 \plus B_2}}{
+%       \slseq{A |- P : B_1}}
+%     \\\approxident\\
+%     \infer[\jrule{CUT}^{B_1}]{\slseq{A |- \spawn{P}{(\selectR{\kay}[\fwd])} : B_1 \plus B_2}}{
+%       \slseq{A |- P : B_1} &
+%       \infer[\rrule{\plus}_1]{\slseq{B_1 |- \selectR{\kay}[\fwd] : B_1 \plus B_2}}{
+%         \infer[\jrule{ID}]{\slseq{B_1 |- \fwd : B_1}}{}}}
+%   \end{gather*}
+%   \caption{}
+% \end{marginfigure}
 
 
-\begin{equation*}
-  \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
-    \slseq{A |- B_1}}
-  \leftrightsquigarrow
-  \infer[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
-    \slseq{A |- B_1} &
-    \infer[\rrule{\plus}_1']{\slseq{B_1 |- B_1 \plus B_2}}{}}
-\end{equation*}
+  
+% \begin{gather*}
+%   \begin{lgathered}
+%     \spawn{(\selectR{\kay}[P])}{\caseL[\ell \in L]{\ell => Q_{\ell}}}
+%       \longrightarrow \spawn{P}{Q_{\kay}}
+%     \\
+%     \begin{aligned}
+%       \MoveEqLeft[.5]
+%       \spawn{\bigl(\spawn{P}{(\selectR{\kay}[\fwd])}\bigr)}{\caseL[\ell \in L]{\ell => Q_{\ell}}} \\[-.75\jot]
+%         &\equiv \spawn{P}{\bigl(\spawn{(\selectR{\kay}[\fwd])}{\caseL[\ell \in L]{\ell => Q_{\ell}}}\bigr)} \\[-.75\jot]
+%         % &\longrightarrow \spawn{P}{(\spawn{\fwd}{Q_{\kay}})} \\[-.75\jot]
+%         &\longrightarrow\longrightarrow \spawn{P}{Q_{\kay}}
+%     \end{aligned}
+%   \end{lgathered}
+% \end{gather*}
+
+% % \begin{gather*}
+% %   \infer-[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
+% %     \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+% %       \slseq{A |- B_1}} &
+% %     \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
+% %       \slseq{B_1 |- C} & \slseq{B_2 |- C}}}
+% %   =
+% %   \infer-[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
+% %     \slseq{A |- B_1} & \slseq{B_1 |- C}}
+% %   \\=\\
+% %   \infer-[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{A |- C}}{
+% %     \infer[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
+% %       \slseq{A |- B_1} &
+% %       \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
+% %         \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}}} &
+% %     \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
+% %       \slseq{B_1 |- C} & \slseq{B_2 |- C}}}
+% %   \equiv
+% %   \infer-[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
+% %     \slseq{A |- B_1} &
+% %     \infer-[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{B_1 |- C}}{
+% %       \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
+% %         \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}} &
+% %       \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
+% %         \slseq{B_1 |- C} & \slseq{B_2 |- C}}}}
+% %   \\=\\
+% %   \infer-[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
+% %     \slseq{A |- B_1} &
+% %     \infer-[\jrule{CUT}^{B_1 \plus B_2}]{\slseq{B_1 |- C}}{
+% %       \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{} &
+% %       \slseq{B_1 |- C}}}
+% %   \\=\\
+% %   \infer-[\jrule{CUT}^{B_1}]{\slseq{A |- C}}{
+% %     \slseq{A |- B_1} & \slseq{B_1 |- C}}
+% % \end{gather*}
 
 
-\begin{equation*}
-  \infer-[\jrule{CUT}^{A_1}]{\slseq{A_1 |- C}}{
-    \infer[\rrule{\plus}_1']{\slseq{A_1 |- A_1 \plus A_2}}{} &
-    \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
-      \deduce{\slseq{A_1 |- C}}{\EE_1} &
-      \deduce{\slseq{A_2 |- C}}{\EE_2}}}
-  \rightsquigarrow
-  \deduce{\slseq{A_1 |- C}}{\EE_1}
-\end{equation*}
+% \begin{equation*}
+%   \infer[\rrule{\plus}_1]{\slseq{B_1 |- B_1 \plus B_2}}{
+%     \infer[\jrule{ID}]{\slseq{B_1 |- B_1}}{}}
+%   \leftrightsquigarrow
+%   \infer[\rrule{\plus}_1']{\slseq{B_1 |- B_1 \plus B_2}}{}
+% \end{equation*}
 
 
-\begin{syntax*}
-  Propositions &
-    A & \alpha \mid A \plus B \mid \zero \mid A \with B \mid \top
-\end{syntax*}
+% \begin{equation*}
+%   \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+%     \slseq{A |- B_1}}
+%   \leftrightsquigarrow
+%   \infer[\jrule{CUT}^{B_1}]{\slseq{A |- B_1 \plus B_2}}{
+%     \slseq{A |- B_1} &
+%     \infer[\rrule{\plus}_1']{\slseq{B_1 |- B_1 \plus B_2}}{}}
+% \end{equation*}
+
+
+% \begin{equation*}
+%   \infer-[\jrule{CUT}^{A_1}]{\slseq{A_1 |- C}}{
+%     \infer[\rrule{\plus}_1']{\slseq{A_1 |- A_1 \plus A_2}}{} &
+%     \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
+%       \deduce{\slseq{A_1 |- C}}{\EE_1} &
+%       \deduce{\slseq{A_2 |- C}}{\EE_2}}}
+%   \rightsquigarrow
+%   \deduce{\slseq{A_1 |- C}}{\EE_1}
+% \end{equation*}
+
+
 
 \begin{inferences}
-  \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
-    \slseq{A |- B} & \slseq{B |- C}}
-  \and
-  \infer[\jrule{ID}^A]{\slseq{A |- A}}{}
+  \infer[\jrule{MP}]{\slseq{|- C}}{
+    \slseq{|- B} & \slseq{|- B \limp C}}
   \\
-  \infer[\rrule{\plus}_1']{\slseq{A_1 |- A_1 \plus A_2}}{}
-  \and
-  \infer[\rrule{\plus}_2']{\slseq{A_2 |- A_1 \plus A_2}}{}
-  \and
-  \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
-    \slseq{A_1 |- C} & \slseq{A_2 |- C}}
+  \begin{lgathered}
+  \vdash A \limp A
   \\
-  \text{(no $\rrule{\zero}$ rule)}
-  \and
-  \infer[\lrule{\zero}]{\slseq{\zero |- C}}{}
-  \\
-  \infer[\rrule{\with}]{\slseq{A |- C_1 \with C_2}}{
-    \slseq{A |- C_1} & \slseq{A |- C_2}}
-  \and
-  \infer[\lrule{\with}_1']{\slseq{C_1 \with C_2 |- C_1}}{}
-  \and
-  \infer[\lrule{\with}_2']{\slseq{C_1 \with C_2 |- C_2}}{}
-  \\
-  \infer[\rrule{\top}]{\slseq{A |- \top}}{}
-  \and
-  \text{(no $\lrule{\top}$ rule)}
+  \vdash A_1 \limp A_1 \plus A_2 \\
+  \vdash A_2 \limp A_1 \plus A_2 \\
+  \vdash (A_2 \limp C) \limp (A_1 \limp C) \limp (A_1 \plus A_2 \limp C)
+\end{lgathered}
 \end{inferences}
 
 
+
+
+\begin{figure}
+  \begin{syntax*}
+    Propositions &
+      A & \alpha \mid A \plus B \mid \zero \mid A \with B \mid \top
+  \end{syntax*}
+  \begin{inferences}
+    \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
+      \slseq{A |- B} & \slseq{B |- C}}
+    \and
+    \infer[\jrule{ID}^A]{\slseq{A |- A}}{}
+    \\
+    \infer[\rrule{\plus}_1']{\slseq{A_1 |- A_1 \plus A_2}}{}
+    \and
+    \infer[\rrule{\plus}_2']{\slseq{A_2 |- A_1 \plus A_2}}{}
+    \and
+    \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
+      \slseq{A_1 |- C} & \slseq{A_2 |- C}}
+    \\
+    \text{(no $\rrule{\zero}$ rule)}
+    \and
+    \infer[\lrule{\zero}]{\slseq{\zero |- C}}{}
+    \\
+    \infer[\rrule{\with}]{\slseq{A |- C_1 \with C_2}}{
+      \slseq{A |- C_1} & \slseq{A |- C_2}}
+    \and
+    \infer[\lrule{\with}_1']{\slseq{C_1 \with C_2 |- C_1}}{}
+    \and
+    \infer[\lrule{\with}_2']{\slseq{C_1 \with C_2 |- C_2}}{}
+    \\
+    \infer[\rrule{\top}]{\slseq{A |- \top}}{}
+    \and
+    \text{(no $\lrule{\top}$ rule)}
+  \end{inferences}
+  
+  \caption{A Hilbert system for singleton logic\label{fig:singleton-logic:hilbert}}
+\end{figure}
+
+The Hilbert system of \cref{fig:singleton-logic:hilbert} can also be viewed as a variant of the singleton sequent calculus\parencref{fig:singleton-logic:seq-calc} in which each connective's non-invertible rules have been replaced with zero-premise rules.
+As such, we should seek to prove the usual sequent calculus metatheorems -- cut elimination and identity expansion -- for this Hilbert-style variant.
+
+Strictly speaking, cut elimination does not hold for this calculus.
+As a concrete counterexample, there is no cut-free Hilbert-style proof of $\slseq{\alpha_2 |- \alpha_1 \plus (\alpha_2 \plus \alpha_3)}$, even though the same sequent is provable using cut:
+\begin{equation*}
+  \infer[\jrule{CUT}]{\slseq{\alpha_2 |- \alpha_1 \plus (\alpha_2 \plus \alpha_3)}}{
+    \infer[\rrule{\plus}'_1]{\slseq{\alpha_2 |- \alpha_2 \plus \alpha_3}}{} &
+    \infer[\rrule{\plus}'_2]{\slseq{\alpha_2 \plus \alpha_3 |- \alpha_1 \plus (\alpha_2 \plus \alpha_3)}}{}}
+\end{equation*}
+Although cut elimination does not hold, proofs are nevertheless normalizable.
+% , we will still be able to prove a weak normalization result.
+Normal proofs will still contain cuts, but those cuts will be of a particular, analytic form.
+In other words, although full cut elimination does not hold,
+% of all cuts is not possible, but
+\emph{non-analytic} cut elimination does.
+
+Before presenting a proof of non-analytic cut elimination, we will take a moment to introduce proof terms for the Hilbert system.
+These proof terms will be a convenient, succinct notation with which to describe the elimination procedure.
+
+To keep the proof terms compact, we will also take this opportunity to replace the binary forms of additive disjunction and conjunction with labeled, $n$-ary forms.
+
+This way, normal proofs are analytic that admits a subformula property and therefore count as verifications.
+
+\begin{figure}[t]
 \begin{syntax*}
+  Propositions &
+    A & \alpha \mid \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}
+               \mid \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
+  \\
   Proof terms &
-    P & \begin{array}[t]{@{}l@{}}
-          \spawn{P_1}{P_2} \mid \fwd \\
-          \begin{array}[t]{@{\mathllap{\mid {}}}l@{}}
+    P & % \begin{array}[t]{@{}l@{}}
+          \spawn{P_1}{P_2} \mid \fwd
+          \begin{array}[t]{@{{} \mid {}}l@{}}
             \selectR{\kay} \mid \caseL[\ell \in L]{\ell => P_{\ell}} \\
             \caseR[\ell \in L]{\ell => P_{\ell}} \mid \selectL{\kay}
           \end{array}
-        \end{array}
+        % \end{array}
 \end{syntax*}
-
 \begin{inferences}
   \infer[\jrule{CUT}^B]{\slseq{A |- \spawn{P_1}{P_2} : C}}{
     \slseq{A |- P_1 : B} & \slseq{B |- P_2 : C}}
   \and
   \infer[\jrule{ID}^A]{\slseq{A |- \fwd : A}}{}
   \\
-  \infer[\rrule{\plus}]{\slseq{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+  \infer[\rrule{\plus}']{\slseq{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
     \text{($\kay \in L$)}}
   \and
   \infer[\lrule{\plus}]{\slseq{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
@@ -648,21 +906,39 @@ Suppose that we replace the usual $\rrule{\plus}_1$ rule with a new primitive ru
   \infer[\rrule{\with}]{\slseq{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
     \multipremise{\ell \in L}{\slseq{A |- P_{\ell} : C_{\ell}}}}
   \and
-  \infer[\lrule{\with}]{\slseq{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
+  \infer[\lrule{\with}']{\slseq{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
     \text{($\kay \in L$)}}
 \end{inferences}
+  \caption{Proof terms for a labeled variant of the Hilbert system of \cref{fig:singleton-logic:hilbert}}%
+  \label{fig:singleton-logic:hilbert-terms}
+\end{figure}
 
 
-\subsection{An analogue of cut elimination}
+\subsection{Non-analytic cut elimination for the singleton Hilbert system}
 
-\begin{equation*}
-  \infer-[\jrule{CUT-N}^B]{\slof{A |- \nspawn{N}{M} : C}}{
-    \slof{A |- N : B} & \slof{B |- M : C}}
-\end{equation*}
+With proof terms in hand, we can now return to our goal of establishing a \emph{non-analytic} cut elimination result for the singleton Hilbert system.
 
-While the above approach does establish admissibility, the principal cases do not suggest an asynchronous operational semantics quite as strongly as they might.
-Here is a different approach that gives a better match with the eventual operational semantics.
-The grammar of normal terms changes slightly:
+\begin{marginfigure}
+  \begin{gather*}
+    \infer[\jrule{CUT}^{A_{\kay}}]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \spawn{\selectL{\kay}}{P} : C}}{
+      \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectL{\kay} : A_{\kay}}}{
+        \text{($\kay \in L$)}} &
+      \slof{A_{\kay} |- P : C}}
+    \\[2\jot]
+    \infer[\jrule{CUT}^{C_{\kay}}]{\slof{A |- \spawn{P}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+      \slof{A |- P : C_{\kay}} &
+      \infer[\rrule{\plus}']{\slof{C_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+        \text{($\kay \in L$)}}}
+  \end{gather*}
+  \caption{Analytic forms of cut}\label{fig:singleton-logic:hilbert:analytic-cuts}
+\end{marginfigure}
+%
+The elimination procedure will normalize a Hilbert-style proof so that any remaining cuts are of the form $\spawn{\selectL{\kay}}{P}$ or $\spawn{P}{\selectR{\kay}}$.
+As shown in \cref{fig:singleton-logic:hilbert:analytic-cuts}, cuts of these forms are analytic because the principal formula is a subformula
+%
+
+
+
 \begin{syntax*}
   Normal terms &
     N,M & \begin{array}[t]{@{}l@{}}
@@ -674,46 +950,94 @@ The grammar of normal terms changes slightly:
           \end{array}
 \end{syntax*}
 
-\begin{gather*}
-  \infer-[\jrule{CUT-N}^B]{\slof{A |- \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} : C}}{
-    \infer[\jrule{CUT}^{B_{\kay}}]{\slof{A |- \spawn{N_0}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
-      \slof{A |- N_0 : B_{\kay}} &
-      \infer[\rrule{\plus}]{\slof{B_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
-        \text{($\kay \in L$)}}} &
-    \slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- M : C}}
-  \\=\\
-  \infer-[\jrule{CUT-N}^{B_{\kay}}]{\slof{A |- \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} : C}}{
-    \slof{A |- N_0 : B_{\kay}} &
-    \infer-[\jrule{CUT-N}^B]{\slof{B_{\kay} |- \nspawn{\selectR{\kay}}{M} : C}}{
-      \infer[\rrule{\plus}]{\slof{B_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
-        \text{($\kay \in L$)}} &
-    \slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- M : C}}}
-\end{gather*}
+
+\begin{theorem}[Non-analytic cut elimination]
+  If $\slof{A |- P : C}$, then $\slof{A |- N : C}$ for some normal term $N$.
+\end{theorem}
 
 
-\begin{description}
-\item[Identity cuts]
+
+\begin{lemma}[Admissibility of non-analytic cut]\label{lem:singleton-logic:hilbert:cut-admissibility}
+  If $\slof{A |- N : B}$ and $\slof{B |- M : C}$, then $\slof{A |- N' : C}$ for some normal term $N'$.
+\end{lemma}
+%
+\begin{proof}
+  As with \cref{lem:singleton-logic:seq-calc:cut-admissibility} for the sequent calculus, this \lcnamecref{lem:singleton-logic:hilbert:cut-admissibility} states the admissibility of a cut principle, and its proof amounts to the definition of a meta-level function on proofs.
+  However, with proof terms, we can now make the function definition more apparent.
+
+  Let $\nspawn{}{}$ be a binary function on normal terms such that, given normal terms $N$ and $M$ of compatible types, $\nspawn{N}{M}$ is a normal term of the corresponding type:
+  % We will define $\nspawn{}{}$ as a meta-level function from pairs of normal terms of compatible types to normal terms of the corresponding type.
+  \begin{equation*}
+    \infer-[\jrule{A-CUT}^B]{\slof{A |- \nspawn{N}{M} : C}}{
+      \slof{A |- N : B} & \slof{B |- M : C}}
+  \end{equation*}
+
+  Once again, the cut principle can be proved by a lexicographic induction, first on the principal type, $B$, and then on the structures of the given terms, $N$ and $M$.
+  However, because the Hilbert system uses different rules than the sequent calculus, the proof's cases are organized a bit differently.
+  In addition to the usual classes of principal, identity, left commutative, and right commutative cases, a new class of associative cases is introduced.
+  \begin{description}[listparindent=\parindent, parsep=0pt]
+  \item[Associative cases]
+    Consider, for example, the case $\nspawn{(\spawn{N_0}{\selectR{\kay}})}{M}$.
+    Because the term $\selectR{\kay}$ is itself normal, the above term can be reassociated, suggesting that we adopt 
+    \begin{equation*}
+      \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M}
+        = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}
+    \end{equation*}
+    as a clause in the definition of $\nspawn{}{}$.
+    But is this clause terminating?
+
+    Yes, indeed it is.
+    In $\nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}$, the inner $\nspawn{\selectR{\kay}}{M}$ terminates because the terms have become smaller -- $\selectR{\kay}$ is a proper subterm of $\spawn{N_0}{\selectR{\kay}}$ -- while the principal type remains unchanged.
+    The outer $\nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}$ also terminates, despite $\nspawn{\selectR{\kay}}{M}$ possibly being larger than $M$, because the principal type has become smaller.%
+    \footnote{To aid the reader in tracking the types, \cref{fig:singleton-logic:hilbert:associative-cut} shows the full typing derivations.}
+    \begin{figure*}
+      \begin{gather*}
+        \infer-[\jrule{A-CUT}^B]{\slof{A |- \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} : C}}{
+          \infer[\jrule{CUT}^{B_{\kay}}]{\slof{A |- \spawn{N_0}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+            \slof{A |- N_0 : B_{\kay}} &
+            \infer[\rrule{\plus}']{\slof{B_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+              \text{($\kay \in L$)}}} &
+          \slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- M : C}}
+        \\=\\
+        \infer-[\jrule{A-CUT}^{B_{\kay}}]{\slof{A |- \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} : C}}{
+          \slof{A |- N_0 : B_{\kay}} &
+          \infer-[\jrule{A-CUT}^B]{\slof{B_{\kay} |- \nspawn{\selectR{\kay}}{M} : C}}{
+            \infer[\rrule{\plus}']{\slof{B_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+              \text{($\kay \in L$)}} &
+            \slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- M : C}}}
+      \end{gather*}
+      \caption{One of the associative cases in the proof of non-analytic cut admissibility\parencref{lem:singleton-logic:hilbert:associative-cut}}\label{fig:singleton-logic:hilbert:associative-cut}
+    \end{figure*}
+
+    The symmetric case, $\nspawn{N}{(\spawn{\selectL{\kay}}{M_0})}$, is also an associative case and is handled similarly.
+    The complete set of associative clauses is therefore:
+    \begin{gather*}
+      \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} \\
+      \nspawn{N}{(\spawn{\selectL{\kay}}{M_0})} = \nspawn{(\nspawn{N}{\selectL{\kay}})}{M_0}
+    \end{gather*}
+
+\item[Principal cases]
+  Because the above associative cases decompose the analytic cuts $\spawn{N_0}{\selectR{\kay}}$ and $\spawn{\selectL{\kay}}{M_0}$, the principal cases need only cover those pairings of the $\rrule{\plus}'$ rule with a proof ending in the $\lrule{\plus}$ rule and the symmetric pairings involving the $\rrule{\with}$ and $\lrule{\with}'$ rules:
+  \begin{gather*}
+    \nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}} = M_{\kay} \\
+    \nspawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{\selectL{\kay}} = N_{\kay}
+  \end{gather*}
+  If $\selectR{\kay}$ and $\selectL{\kay}$ are viewed as directed messages, then these principal clauses in $\nspawn{}{}$'s definition look much like rules for asynchronous message-passing communication.
+  This observation is at the heart of the Curry--Howard interpretation of the singleton Hilbert system that we develop in the following \lcnamecref{ch:singleton-procs}.
+
+\item[Identity cases]
+  As in the proof of admissibility of cut for the sequent calculus\parencref{lem:singleton-logic:seq-calc:cut-admissibility}, the identity cases cover pairings involving the $\jrule{ID}$ rule and yield the following clauses.
   \begin{gather*}
     \nspawn{\fwd}{M} = M \\
     \nspawn{N}{\fwd} = N
   \end{gather*}
 
-\item[Associative cuts]
-  \begin{gather*}
-    \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} \\
-    \nspawn{N}{(\spawn{\selectL{\kay}}{M_0})} = \nspawn{(\nspawn{N}{\selectL{\kay}})}{M_0}
-  \end{gather*}
 
-\item[Principal cuts]
+\item[Left commutative cases]
+  
   \begin{gather*}
-    \nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}} = M_{\kay} \\
-    \nspawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{\selectL{\kay}} = N_{\kay}
-  \end{gather*}
-
-\item[Left commutative cuts]
-  \begin{gather*}
-    \nspawn{\selectL{\kay}}{M} = \spawn{\selectL{\kay}}{M} \\
     \nspawn{(\spawn{\selectL{\kay}}{N_0})}{M} = \spawn{\selectL{\kay}}{(\nspawn{N_0}{M})} \\
+    \nspawn{\selectL{\kay}}{M} = \spawn{\selectL{\kay}}{M} \\
     \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{M} =
       \begin{array}[t]{@{}l@{}}
         \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M}} \mathrlap{\,,} \\
@@ -722,32 +1046,60 @@ The grammar of normal terms changes slightly:
   \end{gather*}
   Without this side condition, the grammar of normal terms would include reducible terms like $\spawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{\selectR{\kay}}$.
 
-\item[Right commutative cuts]
+\item[Right commutative cases]
+  There are several right commutative cases that are symmetric to the preceding left commutative cases.
   \begin{gather*}
-    \nspawn{N}{\selectR{\kay}} = \spawn{N}{\selectR{\kay}} \\
     \nspawn{N}{(\spawn{M_0}{\selectR{\kay}})} = \spawn{(\nspawn{N}{M_0})}{\selectR{\kay}} \\
+    \nspawn{N}{\selectR{\kay}} = \spawn{N}{\selectR{\kay}} \\
     \nspawn{N}{\caseR[\ell \in L]{\ell => M_{\ell}}} =
       \begin{array}[t]{@{}l@{}}
         \caseR[\ell \in L]{\ell => \nspawn{N}{M_{\ell}}} \mathrlap{\,,} \\
         \mathrlap{\quad\text{if $N \neq \selectL{\kay}$ and $N \neq \spawn{\selectL{\kay}}{N_0}$ for all $N_0$}}
       \end{array}
   \end{gather*}
-\end{description}
-Proving termination of this second procedure is slightly more involved than that of the first approach.
-We still use a lexicographic induction, but instead of using the structure of the type and then the structures of the proofs, we may need to introduce an explicit metric.
-Consider
-\begin{equation*}
-  \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M}
-    = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} \,.
-\end{equation*}
-The inner cut uses thie same type with smaller proofs; the outer cut uses a smaller type.
-In case $\selectR{\kay}$ is not considered a structural component of $\spawn{N_0}{\selectR{\kay}}$, then we can use a metric that sets
-\begin{align*}
-  \lvert \spawn{N_0}{\selectR{\kay}} \rvert &= 2 + \lvert N_0 \rvert \\
-\shortintertext{and}
-  \lvert \selectR{\kay} \rvert &= 1 \,.
-\end{align*}
 
+\end{description}
+
+\end{proof}
+
+\begin{theorem}
+  If $\slof{A |- P : C}$, then $\slof{A |- N : C}$ for some normal term $N$.
+\end{theorem}
+\begin{proof}
+  \begin{equation*}
+    \infer-[\jrule{CE}]{\slof{A |- \wn{P} : C}}{
+      \slof{A |- P : C}}
+  \end{equation*}
+
+  \begin{equation*}
+    \infer-[\jrule{CE}]{\slof{A |- \wn{\spawn{P_1}{P_2}} : C}}{
+      \infer[\jrule{CUT}^B]{\slof{A |- \spawn{P_1}{P_2} : C}}{
+        \slof{A |- P_1 : B} & \slof{B |- P_2 : C}}}
+    =
+    \infer-[\jrule{A-CUT}^B]{\slof{A |- \nspawn{\wn{P_1}}{\wn{P_2}} : C}}{
+      \infer-[\jrule{CE}]{\slof{A |- \wn{P_1} : C}}{
+        \slof{A |- P_1 : B}} &
+      \infer-[\jrule{CE}]{\slof{B |- \wn{P_2} : C}}{
+        \slof{B |- P_2 : C}}}
+  \end{equation*}
+
+  \begin{equation*}
+    \begin{lgathered}
+      \wn{\spawn{P_1}{P_2}} = \nspawn{\wn{P_1}}{\wn{P_2}} \\
+      \wn{\fwd} = \fwd \\
+      \wn{\selectR{\kay}} = \selectR{\kay} \\
+      \wn{\caseL[\ell \in L]{\ell => P_{\ell}}} = \caseL[\ell \in L]{\ell => \wn{P_{\ell}}} \\
+      \wn{\caseR[\ell \in L]{\ell => P_{\ell}}} = \caseR[\ell \in L]{\ell => \wn{P_{\ell}}} \\
+      \wn{\selectL{\kay}} = \selectL{\kay}
+    \end{lgathered}
+  \end{equation*}
+\end{proof}
+
+
+
+
+\begin{description}
+\end{description}
 
 % \subsection{Operational semantics}
 
@@ -855,6 +1207,51 @@ In case $\selectR{\kay}$ is not considered a structural component of $\spawn{N_0
 
 
 \section{Hilbert}
+
+\subsection{Hypothetical Hilbert system}
+
+\NewDocumentCommand{\hil}{}{\:\mathit{hil}}
+
+\begin{inferences}
+  \infer[\jrule{MP}]{\Gamma \vdash B \hil}{
+    \Gamma \vdash A \to B \hil & \Gamma \vdash A \hil}
+  \and
+  \infer[\jrule{HYP}]{\Gamma, A \hil \vdash A \hil}{}
+  \\
+  \begin{array}{l}
+    \Gamma \vdash A \to A \hil \\
+    \Gamma \vdash A \to (B \to A) \hil \\
+    \Gamma \vdash (A \to B \to C) \to (A \to B) \to (A \to C) \hil
+  \end{array}
+\end{inferences}
+
+\begin{theorem}
+  If $\Gamma \vdash A$, then $\hat{\Gamma} \vdash A \hil$.
+\end{theorem}
+\begin{proof}
+  \begin{equation*}
+    \infer[\rrule{\to}]{\Gamma \vdash A \to B}{
+      \Gamma, A \vdash B}
+  \end{equation*}
+  We need a deduction theorem.
+
+  \begin{equation*}
+    \infer[\lrule{\to}]{\Gamma, A \to B \vdash C}{
+      \Gamma, A \to B \vdash A & \Gamma, A \to B, B \vdash C}
+  \end{equation*}
+  We have $\Gamma, A \to B \vdash A \hil$ by induction.
+  We also have $\Gamma, A \to B \vdash B \to C \hil$ by induction and the deduction theorem.
+  Prove $\Gamma, A \to B \vdash B \hil$ by $\jrule{HYP}$ and $\jrule{MP}$.
+  Conclude $\Gamma, A \to B \vdash C \hil$ by $\jrule{MP}$.
+
+  \begin{equation*}
+    \infer[\jrule{CUT}]{\Gamma \vdash C}{
+      \Gamma \vdash A & \Gamma, A \vdash C}
+  \end{equation*}
+  Apply the inductive hypothesis and deduction theorem, then $\jrule{MP}$.
+\end{proof}
+
+\subsection{}
 
 \NewDocumentCommand{\sem}{m}{\llbracket#1\rrbracket}
 

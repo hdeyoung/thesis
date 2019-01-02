@@ -250,6 +250,10 @@
   { \__thesis_slseq:nn #1 }
 \cs_new:Npn \__thesis_slseq:nn #1#2 { #1 \vdash #2 }
 
+\NewDocumentCommand \cfslseq { > { \SplitArgument { 1 } { |- } } m }
+  { \__thesis_cfslseq:nn #1 }
+\cs_new:Npn \__thesis_cfslseq:nn #1#2 { #1 \vdash^{\mathrm{cf}} #2 }
+
 \cs_new:Npn \__thesis_pred_font:n #1 { \mathit {#1} }
 
 \NewDocumentCommand \nspawn { o m m } { \__thesis_nspawn:nn {#2} {#3} }
@@ -280,11 +284,8 @@
   { \__thesis_slofn:nn #1 }
 \cs_new:Npn \__thesis_slofn:nn #1#2 { [#1] \Vdash #2 }
 
-\NewDocumentCommand \psusp { m } { \__thesis_psusp:n {#1} }
-\cs_new:Npn \__thesis_psusp:n #1 { \langle #1 \rangle }
-
-\NewDocumentCommand \nsusp { m } { \__thesis_nsusp:n {#1} }
-\cs_new:Npn \__thesis_nsusp:n #1 { \langle #1 \rangle }
+\NewDocumentCommand \wn { m } { \__thesis_wn:n {#1} }
+\cs_new:Npn \__thesis_wn:n #1 { \mathit{wn}(#1) }
 
 \NewDocumentCommand \slcof { > { \SplitArgument { 1 } { |- } } m }
   { \__thesis_slcof:nn #1 }
