@@ -28,6 +28,13 @@
 
 \newcommand{\blackdiamond}{\Pimathsymbol[\mathbin]{mathb}{"0C}}
 
+%%%%%%%%%%%%%%%%%%%
+%% Ordered logic %%
+%%%%%%%%%%%%%%%%%%%
+
+\NewDocumentCommmand \ord { } { \postfixjudgment{ord} }
+\NewDocumentCommmand \ant { } { \postfixjudgment{ant} }
+
 %%%%%%%%%%%%%%
 %% Automata %%
 %%%%%%%%%%%%%%
@@ -291,6 +298,15 @@
   { \__thesis_slcof:nn #1 }
 \cs_new:Npn \__thesis_slcof:nn #1#2 { #1 \Vdash #2 }
 
+\NewDocumentCommand \pf { s m }
+  {
+    \IfBooleanTF {#1}
+      { \__thesis_pf_star:n {#2} }
+      { \__thesis_pf:n {#2} }
+  }
+\cs_new:Npn \__thesis_pf:n #1 { #1^{\sharp} }
+\cs_new:Npn \__thesis_pf_star:n #1 { \pf{(#1)} }
+
 \NewDocumentCommand \dnf { } { \__thesis_dnf: }
 \cs_new:Npn \__thesis_dnf: { \mathcal { D } }
 
@@ -303,6 +319,13 @@
 %%%%%%%%%%%
 %% Other %%
 %%%%%%%%%%%
+
+\NewDocumentCommand \downsquigarrow { } { \__thesis_downsquigarrow: }
+\cs_new:Npn \__thesis_downsquigarrow:
+  { \mathrel { \mathpalette \__thesis_rotate_squig:nn \relax } }
+\cs_new:Npn \__thesis_rotate_squig:nn #1 #2
+  { \rotatebox[origin=c]{270}{$\m@th#1\rightsquigarrow$} }
+
 
 \NewDocumentCommand \cutreduces { } { \__thesis_cutreduces: }
 \cs_new:Npn \__thesis_cutreduces: { \rightsquigarrow }

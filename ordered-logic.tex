@@ -1,23 +1,55 @@
-\chapter{Preliminaries: Ordered logic}\label{ch:ordered-logic}
+\chapter{Preliminaries: Intuitionistic ordered logic}\label{ch:ordered-logic}
 
-\section{Propositional ordered logic}
+% In \citeyear{Lambek:??}, \citeauthor{Lambek:??} published a seminal paper developing a formal system for describing sentence structure.
+% The Lambek calculus, when viewed from a logical perspective, forms the core of \emph{intuitionistic ordered logic}%
+% \footnote{Also known as intuitionistic noncommutative linear logic.}%
+% .
+
+
+This \lcnamecref{ch:ordered-logic} serves to review a sequent calculus presentation of
+% the propositional fragment of
+intuitionistic ordered logic.
+As a substructural logic with the Lambek calculus\autocite{Lambek:??} at its core, intuitionistic ordered logic eschews the usual structural properties of weakening, contraction, and exchange.
+As in \citeauthor{Girard:TCS??}'s linear logic\autocite{Girard:TCS??}, the lack of weakening and contraction properties means that each antecedent must be used exactly once within a proof.
+In ordered logic, the additional lack of an exchange property means that antecedents must also remain in order within a proof.
+
+\Citeauthor{Lambek:??} leveraged this noncommutativity to give a formal description of sentence structure.
+
+
+
+[Outline paragraph]
+
+
+\section{The propositional, purely ordered fragment of intuitionistic ordered logic}
 
 \begin{itemize}
 \item Lambek calculus, given a judgmental reconstruction by Polakow and Pfenning
 \item Propositional fragment only, omitting first-order universal and existential quantifiers
 \end{itemize}
 
+\subsection{Judgments, sequents, and contexts}
+
+\begin{itemize}
+\item Following \citeauthor{Martin-Lof:??}\autocite{Martin-Lof:??}, we maintain a separation of [ordered] propositions, $A$, from judgments about those propositions.
+  The categorical judgment $A \ord$ ... 
+
+\item To allow hypothetical reasoning, we introduce a new form of categorical judgment, $A \ant$, for antecedents and generalize $A \ord$ to sequents
+  \begin{equation*}
+    \oseq{(A_1 \ant) \dotsm (A_i \ant) \dotsm (A_n \ant) |- A \ord}
+  \end{equation*}
+\end{itemize}
 
 \subsection{Propositions and contexts}
 
+The propositional, purely ordered fragment of intuitionistic ordered logic has propositions given by the following grammar.
 \begin{syntax*}
   Propositions &
-    A & \begin{array}[t]{@{}l@{}}
-          p \mid A \limp B \mid B \pmir A \mid \bot
-            \mid A \fuse B \mid \one \\
-          \mathllap{\mid {}} A \with B \mid \top
-            \mid A \plus B \mid \zero
-        \end{array}
+    A,B,C & \begin{array}[t]{@{}l@{}}
+              \alpha \mid A \limp B \mid B \pmir A
+                \mid A \fuse B \mid \one \\
+              \mathllap{\mid {}} A \with B \mid \top
+                \mid A \plus B \mid \zero
+            \end{array}
   \\
   Ordered contexts &
     \octx & \octxe \mid \octx_1 \oc \octx_2 \mid A

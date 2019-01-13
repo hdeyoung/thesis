@@ -182,6 +182,12 @@
       { \__singleton_keyword:n { close #1 } }
   }
 
+\NewDocumentCommand \chn { } { \__singleton_chn: }
+\cs_new_protected:Npn \__singleton_chn: { \mathcal { C } }
+
+\NewDocumentCommand \chne { } { \__singleton_chne: }
+\cs_new_protected:Npn \__singleton_chne: { \cdot }
+
 \NewDocumentCommand \cnf { } { \__singleton_cnf: }
 \cs_new_protected:Npn \__singleton_cnf: { \mathcal { C } }
 

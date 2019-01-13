@@ -1,57 +1,318 @@
-\chapter{Session-typed processes}\label{ch:singleton-processes}
+\chapter{A Curry--Howard correspondence between singleton logic and asynchronous process chains}\label{ch:singleton-processes}
 
 \begin{itemize}
 \item Connections to SILL
 \end{itemize}
 
-\section{Session-typed processes: A Curry--Howard interpretation of singleton logic}
+In the previous \lcnamecref{ch:singleton-logic}, we took a purely proof-theoretic view of singleton logic, its sequent calculus, and Hilbert-style axiomatization.
+The proof terms assigned to Hilbert-style proofs were simply syntactic objects, and the proof that non-analytic cuts are admissible\parencref{lem:singleton-logic:hilbert:cut-admissible} described a meta-level function for manipulating these syntactic objects.
 
-\begin{syntax*}
-  Session types &
-    A & \alpha \mid \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
-  \\
-  Process terms &
-    P,Q & \spawn{P}{Q} \mid \fwd
-            \begin{array}[t]{@{{} \mid {}}l@{}}
-              \selectR{\kay} \mid \caseL[\ell \in L]{\ell => Q_{\ell}} \\
-              \caseR[\ell \in L]{\ell => P_{\ell}} \mid \selectL{\kay}
-            \end{array}
-\end{syntax*}
+Even in a ... setting, the computational suggestions of these syntactic manipulations were too strong to ignore:
+% In proving the admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:?},
+We saw that the principal cases are reminiscent of asynchronous message-passing communication.
+\begin{marginfigure}
+  \begin{align*}
+    \nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}}
+      &= M_{\kay}
+    \\
+    \nspawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{\selectL{\kay}}
+      &= N_{\kay}
+  \end{align*}
+\end{marginfigure}
 
-\begin{inferences}
-  \infer[\jrule{CUT}^B]{\slof{A |- \spawn{P}{Q} : C}}{
-    \slof{A |- P : B} & \slof{B |- Q : C}}
-  \and
-  \infer[\jrule{ID}^A]{\slof{A |- \fwd : A}}{}
-  \\
-  \infer[\rrule{\plus}]{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
-    \text{($\kay \in L$)}}
-  \and
-  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => Q_{\ell}} : C}}{
-    \multipremise{\ell \in L}{\slof{A_{\ell} |- Q_{\ell} : C}}}
-  \\
-  \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
-    \multipremise{\ell \in L}{\slof{A |- P_{\ell} : B_{\ell}}}}
-  \and
-  \infer[\lrule{\with}]{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \selectL{\kay} : B_{\kay}}}{
-    \text{($\kay \in L$)}}
-\end{inferences}
+Following the rich tradition of Curry--Howard isomorphisms, this \lcnamecref{ch:singleton-processes} therefore pursues a computational framework [model?] that corresponds to singleton logic.
+This ... develops a notion of asynchronous process chains and a session-type system to describe the behavior
 
-\subsection{Cut reduction}
+Following the rich tradition of Curry--Howard isomorphisms, this \lcnamecref{ch:singleton-processes} develops a 
 
+
+\section{Session-typed asynchronous process chains}
+
+We envision a process chain as a collection of processes $(P_i)_{i=1}^{n}$, each with their own independent thread of control, arranged in a linear topology.
+As depicted in the adjacent \lcnamecref{fig:singleton-processes:chain-topology}, each process $P_i$ shares a unique channel with its left-hand neighbor and a unique channel with its right-hand neighbor.
+%
+\begin{marginfigure}
+  \begin{tikzpicture}
+    \graph [math nodes, nodes={circle, draw}] {
+      / [coordinate] -- P_1 -- / \dotsb [draw=none] -- P_i -- / \dotsb [draw=none] -- P_n -- / [coordinate];
+    };
+  \end{tikzpicture}
+  \caption{A process chain}\label{fig:singleton-processes:chain-topology}
+\end{marginfigure}
+%
+Because the channels are unique, they need not be named.
+
+Formally, then, process chains $\chn$ form a free monoid over processes $P$.
+We write $\chne$ for the empty chain and $\cc$ for the monoid operation, which is subject to the usual associativity and unit laws:
 \begin{gather*}
-  \infer[\jrule{CUT}]{\slof{A_{\kay} |- \spawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => Q_{\ell}}} : C}}{
-  \infer[\rrule{\plus}]{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
-    \text{($\kay \in L$)}} &
-  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => Q_{\ell}} : C}}{
-    \multipremise{\ell \in L}{\slof{A_{\ell} |- Q_{\ell} : C}}}}
-  \\
-  \cutreduces
-  \\
-  \slof{A_{\kay} |- Q_{\kay} : C}
+  (\chn_1 \cc \chn_2) \cc \chn_3 = \chn_1 \cc (\chn_2 \cc \chn_3) \\
+  \chne \cc \chn = \chn = \chn \cc \chne
 \end{gather*}
 
-Discussion of cut reduction vs.\ admissibility
+
+This definition is intentionally
+
+
+\begin{figure}[tbp]
+  \begin{syntax*}
+    Session types &
+      A & \alpha \mid \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
+    \\
+    Process terms &
+      P & \spawn{P_1}{P_2} \mid \fwd
+        \begin{array}[t]{@{{} \mid {}}l@{}}
+          \selectR{\kay} \mid \caseL[\ell \in L]{\ell => P_{\ell}} \\
+          \caseR[\ell \in L]{\ell => P_{\ell}} \mid \selectL{\kay}
+        \end{array}
+  \end{syntax*}
+
+  \begin{inferences}
+    \infer[\jrule{CUT}^B]{\slof{A |- \spawn{P_1}{P_2} : C}}{
+      \slof{A |- P_1 : B} & \slof{B |- P_2 : C}}
+    \and
+    \infer[\jrule{ID}^A]{\slof{A |- \fwd : A}}{}
+    \\
+    \infer[\rrule{\plus}']{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+      \text{($\kay \in L$)}}
+    \and
+    \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
+      \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C}}}
+    \\
+    \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+      \multipremise{\ell \in L}{\slof{A |- P_{\ell} : C_{\ell}}}}
+    \and
+    \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
+      \text{($\kay \in L$)}}
+  \end{inferences}
+  \caption{Asynchronous process chains and their session-type system}\label{fig:singleton-processes:typing-rules}
+\end{figure}
+
+\Cref{fig:singleton-processes:typing-rules} presents asynchronous process chains and their session-type system.
+Formally, the session types are identical to the propositions of singleton logic; the process terms, identical to the Hilbert-style proof terms; and the session-typing rules, identical to the Hilbert-style inference rules.
+In fact, the whole of this \lcnamecref{fig:singleton-processes:typing-rules} is identical to \cref{fig:singleton-logic:hilbert}, save for the difference in terminology.
+
+But this small difference belies its significance.
+
+\begin{itemize}
+\item The proof term $\spawn{P_1}{P_2}$ is now reinterpreted as the expression for a process that will spawn, to the immediate left, a new thread of control for $P_1$, while the original thread of control continues with $P_2$.
+
+\item The proof terms $\selectL{\kay}$ and $\selectR{\kay}$ are now viewed as messages carrying the label $\kay$ as their payloads.
+  The direction of the underlying arrow
+  % that decorates the label
+  indicates the message's intended recipient: $\selectL{\kay}$ is being sent to the left-hand neighbor; $\selectR{\kay}$, to the right-hand neighbor.
+
+\item The proof term $\selectR{\kay}$ is reinterpreted as a right-directed message carrying the label $\kay$ as its payload, with the right-hand neighbor as the intended recipient.
+  Symmetrically, the proof term $\selectL{\kay}$ should now be viewed as a left-directed message carrying label $\kay$.
+
+\item The proof term $\caseL[\ell \in L]{\ell => P_{\ell}}$ is reinterpreted as the expression for a process that waits to receive a message from its left-hand neighbor
+\end{itemize}
+
+
+Process chains $\chn$ can be session-typed, too.
+The judgment $\slcof{A |- \chn : B}$ indicates that the process chain $\chn$ ...
+\begin{figure}[tbp]
+  \begin{syntax*}
+    Process chains &
+      \chn & \chne \mid \chn_1 \cc \chn_2 \mid P
+  \end{syntax*}
+
+  \begin{gather*}
+    (\chn_1 \cc \chn_2) \cc \chn_3 = \chn_1 \cc (\chn_2 \cc \chn_3) \\
+    \chne \cc \chn = \chn = \chn \cc \chne
+  \end{gather*}
+
+  \begin{inferences}
+    \infer[\jrule{CUT}^B]{\slcof{A |- \chn_1 \cc \chn_2 : C}}{
+      \slcof{A |- \chn_1 : B} & \slcof{B |- \chn_2 : C}}
+    \and
+    \infer[\jrule{ID}^A]{\slcof{A |- \chne : A}}{}
+    \and
+    \infer[\jrule{PROC}]{\slcof{A |- P : C}}{
+      \slof{A |- P : C}}
+  \end{inferences}
+  \caption{A caption}
+\end{figure}
+
+Chains can be reified as process expressions.
+Let $\pf*{-}$ be a function from chains to process expressions given by 
+\begin{align*}
+    \pf*{\chne} &= \fwd \\
+    \pf*{\chn_1 \cc \chn_2} &= \spawn{\pf{\chn_1}}{\pf{\chn_2}} \\
+    \pf{P} &= P
+\end{align*}
+
+\begin{theorem}
+  If $\slcof{A |- \chn : B}$, then $\slof{A |- \pf{\chn} : B}$.
+\end{theorem}
+
+\subsection{From admissibility of non-analytic cuts to an operational semantics}
+
+Recall 
+\begin{gather*}
+  \begin{aligned}
+    \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M}
+      &= \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}
+    \\
+    \nspawn{N}{(\spawn{\selectL{\kay}}{M_0})}
+      &= \nspawn{(\nspawn{N}{\selectL{\kay}})}{M_0}
+  \end{aligned}
+  \\[2\jot]
+  \begin{aligned}
+    \nspawn{\fwd}{M}
+      &= M
+    \\
+    \nspawn{N}{\fwd}
+      &= N
+  \end{aligned}
+  \\[2\jot]
+  \begin{aligned}
+    \nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}}
+      &= M_{\kay}
+    \\
+    \nspawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{\selectL{\kay}}
+      &= N_{\kay}
+  \end{aligned}
+  \\[2\jot]
+  \begin{aligned}
+    \nspawn{(\spawn{\selectL{\kay}}{N_0})}{M}
+      &= \spawn{\selectL{\kay}}{(\nspawn{N_0}{M})}
+    \\
+    \nspawn{N}{(\spawn{M_0}{\selectR{\kay}})}
+      &= \spawn{(\nspawn{N}{M_0})}{\selectR{\kay}}
+    \\
+    \nspawn{\selectL{\kay}}{M}
+      &= \spawn{\selectL{\kay}}{M}
+    \\
+    \nspawn{N}{\selectR{\kay}}
+      &= \spawn{N}{\selectR{\kay}}
+    \\
+    \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{M}
+      &= \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M}}
+    \\
+    \nspawn{N}{\caseR[\ell \in L]{\ell => M_{\ell}}}
+      &= \caseR[\ell \in L]{\ell => \nspawn{N}{M_{\ell}}}
+  \end{aligned}
+\end{gather*}
+etc.
+
+\begin{itemize}
+\item Introduce configurations as forming a free monoid over well-typed processes, with the binary operation $\cc$ subject to the usual monoid laws:
+  \begin{gather*}
+    (\cnf_1 \cc \cnf_2) \cc \cnf_3 = \cnf_1 \cc (\cnf_2 \cc \cnf_3) \\
+    \cnfe \cc \cnf = \cnf = \cnf \cc \cnfe
+  \end{gather*}
+
+  The typing rules for configurations are:
+  \begin{inferences}
+    \infer[\jrule{CUT}^B]{\slcof{A |- \cnf_1 \cc \cnf_2 : C}}{
+      \slcof{A |- \cnf_1 : B} & \slcof{B |- \cnf_2 : C}}
+    \and
+    \infer[\jrule{ID}^A]{\slcof{A |- \cnfe : A}}{}
+    \and
+    \infer[\jrule{PROC}]{\slcof{A |- P : B}}{
+      \slof{A |- P : B}}
+  \end{inferences}
+
+  Define $\cnf^\sharp$ as:
+  \begin{align*}
+    (\cnfe)^\sharp &= \fwd \\
+    (\cnf_1 \cc \cnf_2)^\sharp &= \spawn{\cnf_1^\sharp}{\cnf_2^\sharp} \\
+    P^\sharp &= P
+  \end{align*}
+
+
+
+\item The operational semantics uses a particular strategy: $\reduces$ is the least compatible relation that satisfies the following.
+  \begin{gather*}
+    \spawn{P_1}{P_2} \reduces P_1 \cc P_2 \\
+    \fwd \reduces \cnfe \\
+    \selectR{\kay} \cc \caseL[\ell \in L]{\ell => P_{\ell}} \reduces P_{\kay} \\
+    \caseR[\ell \in L]{\ell => P_{\ell}} \cc \selectL{\kay} \reduces P_{\kay}
+  \end{gather*}
+
+  \begin{theorem}
+    $\cnf^\sharp \Reduces \cnf$ for all $\cnf$.
+  \end{theorem}
+  \begin{proof}
+    By structural induction on the given configuration.
+  \end{proof}
+
+  \begin{conjecture}
+    If $\cnf_0 \Reduces \cnf \longarrownot\reduces$, then $\wn{\cnf_0^\sharp} = \cnf^\sharp$.
+    \begin{itemize}
+    \item If $\cnf_0 \longarrownot\reduces$, then $\wn{\cnf_0^\sharp} = \cnf_0^\sharp$.
+    \item If $\cnf_0 \reduces \cnf_1$ and $\wn{\cnf_1^\sharp} = P$, then $\wn{\cnf_0^\sharp} = P$, 
+    \end{itemize}
+  \end{conjecture}
+
+  \begin{corollary}
+    If $P \Reduces \cnf \longarrownot\reduces$, then $\wn{P} = \cnf^\sharp$.
+  \end{corollary}
+\end{itemize}
+
+
+
+
+\begin{example}
+  An expression for a process that will wait for an $a$- or $b$-message to arrive from its left-hand neighbor and then send to its right-hand neighbor either two consecutive $a$-messages or a single $b$-message, respectively, is:
+  \begin{equation*}
+    \slof{
+      \plus*{a:\epsilon, b:\epsilon}
+      |-
+      \caseL{a => \spawn{\selectR{a}}{\selectR{a}}
+           | b => \selectR{b}}
+      :
+      \plus*{a:\plus*{a:\epsilon}, b:\epsilon}
+    }
+    \mathrlap{\,.}
+  \end{equation*}
+  Indeed, the process chain in which that process is sent an $a$-message computes as follows.
+  \begin{equation*}
+    \selectR{a} \cc \caseL{a => \spawn{\selectR{a}}{\selectR{a}}
+                         | b => \selectR{b}}
+      \reduces \spawn{\selectR{a}}{\selectR{a}}
+      \reduces \selectR{a} \cc \selectR{a}
+  \end{equation*}
+\end{example}
+
+\section{Recursive process definitions}
+
+There are many computational processes that can't be described.
+
+Our solution is to introduce general recursive process definitions, in a manner reminiscent of the recursively defined ordered propositions of \cref{??}.
+
+Instead of general recursive definitions, inductive and coinductive definitions could be considered.
+Treatments of inductive and coinductive types in linear logic\autocite{Baelde:?,Toninho+:TGC14} could be adapted to a singleton logic setting, or a Curry--Howard extrapolation of \citeauthor{Fortier-Santocanale:CSL?}'s work on circular proofs\autocite{Fortier-Santocanale:CSL?} should be possible.
+
+\begin{equation*}
+  \slof{A |- p : C} \defd P
+  \mathrlap{\,,}
+\end{equation*}
+where $p$ is a process variable that may appear in $P$.
+
+\begin{example*}
+  We may now adapt the previous example into a collection of process definitions
+  \begin{align*}
+    \slof{\sigma |- q_0 : \sigma} &\defd
+      \caseL{a => \spawn{q_0}{\selectR{a}}
+           | b => \spawn{q_1}{\selectR{b}}}
+    \\
+    \slof{\sigma |- q_1 : \sigma} &\defd
+      \caseL{a => \spawn{q_1}{\selectR{a}}
+           | b => q_1}
+  \end{align*}
+\end{example*}
+
+
+\section{Automata and transducers}
+
+\begin{equation*}
+  \slof{\infinwds{\Sigma} |- q : \finwds{\Gamma}}
+  \defd
+  \caseL[a \in \Sigma]{a => \spawn{q'_a}{\selectR{w}_{q,a}}}
+\end{equation*}
+
+\section{Garbage}
 
 \subsection{An inductive characterization of irreducible cuts}
 
@@ -61,7 +322,7 @@ Discussion of cut reduction vs.\ admissibility
 %     \infer[\rrule{\plus}]{\slof{C_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
 %       \text{($\kay \in L$)}}}
 % \end{equation*}
-% Here $P$ cannot have left input or internal transitions, otherwise $\spawn{P}{\selectR{\kay}}$ will reduce.
+% Here $P$ cannot have left input or internal transitions, otherwise $\spawn{P}{\selectR{\kay}}$ inwill reduce.
 
 % \begin{equation*}
 %   \infer[\jrule{CUT}^{\plus*[sub=_{\ell \in L}]{\scriptstyle\ell:B_{\ell}}}]{\slof{A |- \spawn{P}{\caseL[\ell \in L]{\ell => Q_{\ell}}} : C}}{

@@ -295,16 +295,50 @@
 \setlist [ thmdescription ] { nosep , leftmargin=1.25em ,  , font=\emph }
 
 
+%%%%%%%%%%%
+% Figures %
+%%%%%%%%%%%
+
+% Remove \FloatBarrier from marginfigure definition
+% to prevent unwanted spaces.
+\makeatletter
+\renewenvironment{@tufte@margin@float}[2][-1.2ex]{%
+  %\FloatBarrier% removed because it adds unwanted white space
+  \begin{lrbox}{\@tufte@margin@floatbox}%
+  \begin{minipage}{\marginparwidth}%
+    \@tufte@caption@font
+    \def\@captype{#2}%
+    \hbox{}\vspace*{#1}%
+    \@tufte@caption@justification
+    \@tufte@margin@par
+    \noindent
+}{%
+  \end{minipage}%
+  \end{lrbox}%
+  \marginpar{\usebox{\@tufte@margin@floatbox}}%
+}
+\makeatother
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Labels and references %
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage { cleveref }
 
-\NewDocumentCommand \parencref { O{} m }
-  { \__thesis_parencref:nn {#1} {#2} }
-\cs_new:Npn \__thesis_parencref:nn #1 #2
-  { \nobreakspace ( \tl_if_empty:nF {#1} { #1 ~ } \cref{#2} ) }
+\crefname{lemma}{lem.}{lems.}
+\Crefname{lemma}{Lemma}{Lemmas}
+
+\NewDocumentCommand \parencref { O{} m O{} }
+  { \__thesis_parencref:nnn {#1} {#2} {#3} }
+\cs_new:Npn \__thesis_parencref:nnn #1 #2 #3
+  {
+    \nobreakspace (
+    \tl_if_empty:nF {#1} { #1 ~ }
+    \cref{#2}
+    \tl_if_empty:nF {#3} {#3}
+    )
+  }
 
 
 %%%%%%%%%%%%%%%%
