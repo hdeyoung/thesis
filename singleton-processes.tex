@@ -1,16 +1,16 @@
-\chapter{A Curry--Howard correspondence between singleton logic and asynchronous process chains}\label{ch:singleton-processes}
+\chapter{A computational interpretation of the singleton Hilbert\\system as session-typed communicating chains}\label{ch:process-chains}
 
-\begin{itemize}
-\item Connections to SILL
-\end{itemize}
+In the previous \lcnamecref{ch:singleton-logic}, we took a purely proof-theoretic view of singleton logic and its sequent calculus and Hilbert-style axiomatization.
+The proof terms assigned to Hilbert-style proofs were simply syntactic objects,
+% and the proof of the admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:cut-admissible} described a meta-level function for manipulating these syntactic objects.
+and the proof of non-analytic cut elimination\parencref{thm:singleton-logic:hilbert:cut-elimination} described a meta-level function for normalizing these syntactic objects.
 
-In the previous \lcnamecref{ch:singleton-logic}, we took a purely proof-theoretic view of singleton logic, its sequent calculus, and Hilbert-style axiomatization.
-The proof terms assigned to Hilbert-style proofs were simply syntactic objects, and the proof that non-analytic cuts are admissible\parencref{lem:singleton-logic:hilbert:cut-admissible} described a meta-level function for manipulating these syntactic objects.
-
-Even in a ... setting, the computational suggestions of these syntactic manipulations were too strong to ignore:
-% In proving the admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:?},
-We saw that the principal cases are reminiscent of asynchronous message-passing communication.
-\begin{marginfigure}
+Even in a purely proof-theoretic setting, however, the computational suggestions of these syntactic manipulations were too strong to ignore:
+In proving the admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:cut-admissible},
+we saw that the principal cases
+% [of the proof of admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:cut-admissible}]%
+\marginnote{%
+  \vspace*{-\abovedisplayskip}
   \begin{align*}
     \nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}}
       &= M_{\kay}
@@ -18,47 +18,469 @@ We saw that the principal cases are reminiscent of asynchronous message-passing 
     \nspawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{\selectL{\kay}}
       &= N_{\kay}
   \end{align*}
-\end{marginfigure}
-
-Following the rich tradition of Curry--Howard isomorphisms, this \lcnamecref{ch:singleton-processes} therefore pursues a computational framework [model?] that corresponds to singleton logic.
-This ... develops a notion of asynchronous process chains and a session-type system to describe the behavior
-
-Following the rich tradition of Curry--Howard isomorphisms, this \lcnamecref{ch:singleton-processes} develops a 
+% \end{marginfigure}
+}
+are reminiscent of asynchronous message-passing communication.
+Following the rich tradition of Curry--Howard isomorphisms between logic and computation, this \lcnamecref{ch:process-chains} therefore pursues a concurrent computational interpretation of the Hilbert-style axiomatization of singleton logic.
 
 
-\section{Session-typed asynchronous process chains}
+In particular, this parallels a recent line of research into a Curry--Howard isomorphism between the intuitionistic linear sequent calculus and session-typed concurrent computation\autocites{Caires+:MSCS13}{Caires+:TLDI12}.
+In that work, linear propositions are interpreted as session types that describe patterns of communication; sequent proofs, as session-typed processes; and cut reduction, as synchronous communication.
+For instance, a proof of $A \lolli B$ corresponds to a process that inputs a channel
 
-We envision a process chain as a collection of processes $(P_i)_{i=1}^{n}$, each with their own independent thread of control, arranged in a linear topology.
-As depicted in the adjacent \lcnamecref{fig:singleton-processes:chain-topology}, each process $P_i$ shares a unique channel with its left-hand neighbor and a unique channel with its right-hand neighbor.
+
+We will see that 
+propositions can be interpreted as session types that specify patterns of communication; Hilbert-style proofs, as chains of session-typed processes; and cut reduction, as asynchronous message-passing communication.
+
+Alternatively, Hilbert-style proofs can be seen as well-behaved versions of the chains of communicating automata from \cref{??}.
+
+
+\newthought{We begin}, in \cref{sec:process-chains:?}, by introducing process chains as ...
+
+
+\section{}
+
+\subsection{Process chains}
+
+% A computational process represents a single thread of control that interacts with its environment.
+%
+% Then,
+By analogy with chains of communicating automata, we envision a process chain, $\chn$, as a (possibly empty) finite sequence of processes $(P_i)_{i=1}^{n}$, each with its own independent thread of control and arranged in a linear topology.
+As depicted in the adjacent \lcnamecref{fig:singleton-processes:chain-topology},%
 %
 \begin{marginfigure}
+  \centering
   \begin{tikzpicture}
     \graph [math nodes, nodes={circle, draw}] {
-      / [coordinate] -- P_1 -- / \dotsb [draw=none] -- P_i -- / \dotsb [draw=none] -- P_n -- / [coordinate];
+      P_0 / [coordinate]
+       --
+      P_1
+       --
+      / \dotsb [rectangle, text height=1ex, draw=none]
+       --
+      P_i
+       --
+      / \dotsb [rectangle, text height=1ex, draw=none]
+       --
+      P_n
+       --
+      / [coordinate];
     };
+    \node [fit=(P_1) (P_i) (P_n), inner xsep=.5em,
+           draw,
+           label distance=2em, label=$\chn$] {};
   \end{tikzpicture}
-  \caption{A process chain}\label{fig:singleton-processes:chain-topology}
+  \caption{A prototypical process chain, $\chn$}\label{fig:singleton-processes:chain-topology}
 \end{marginfigure}
 %
-Because the channels are unique, they need not be named.
+% each process $P_i$ shares a unique channel with its left-hand neighbor and a unique channel with its right-hand neighbor.
+each process $P_i$ shares unique channels with its left- and right-hand neighbors. %, along which it communicates with those neighbors.
+Along these channels, neighboring processes may interact -- and react, changing their internal state.
+Because process chains always maintain a linear topology, 
+% these
+channels need not be named -- they can instead be referred to as simply the left- and right-hand channels of $P_i$.
 
-Formally, then, process chains $\chn$ form a free monoid over processes $P$.
-We write $\chne$ for the empty chain and $\cc$ for the monoid operation, which is subject to the usual associativity and unit laws:
+A chain $\chn$ does not compute in isolation, however.
+The left-hand channel of $P_1$ and the right-hand channel of $P_n$ enable the chain to interact with its surroundings.
+Because these two channels are the only ones exposed to the external envronment [surroundings], they may be referred to as the left- and right-hand channels of the chain.
+
+Chains may be composed end to end by conjoining the right-hand channel of one chain with the left-hand channel of another chain.
+
+\paragraph{Chains as a free monoid}
+% \newthought
+{Moving from} this informal intuition to a more formal characterization, process chains $\chn$ form a free monoid over processes $P$:
+\begin{equation*}
+  \chn \Coloneqq \chne \mid (\chn_1 \cc \chn_2) \mid P
+  \,,
+\end{equation*}
+where $\chne$ denotes the empty chain and $\cc$ denotes the monoid operation, chain composition.
+As the monoid operation, composition is subject to the usual associativity and unit laws%
+\footnote{Unlike composition in most process calculi, chain composition is not commutative.}%
+:
 \begin{gather*}
   (\chn_1 \cc \chn_2) \cc \chn_3 = \chn_1 \cc (\chn_2 \cc \chn_3) \\
   \chne \cc \chn = \chn = \chn \cc \chne
 \end{gather*}
+Because these laws may be freely applied, we switch between two alternative views of process chains whenever convenient: the view that a chain $\chn$ is either empty ($\chn = \chne$), a composition ($\chn = \chn_1 \cc \chn_2$), or a single process ($\chn = P$); and 
+% has one of the forms $\chne$, $\chn_1 \cc \chn_2$, or $P$; or
+the view that a chain $\chn$ is a finite sequence of processes ($\chn = P_1 \cc \dotsb \cc P_n$).
+
+\newthought{To ...}, a session-type system for process chains can be developed.
+to describe how the process chain $\chn$ interacts with its environment, we use a judgment
+\begin{equation*}
+  \slcof{A |- \chn : B}
+  \,,
+\end{equation*}
+meaning that the chain $\chn$ offers service $B$ along its right-hand channel, while concurrently using service $A$ along its left-hand channel.
+
+For a chain composition $\chn_1 \cc \chn_2$ to be well-typed, the service offered by $\chn_1$ along its right-hand channel must be the same service that $\chn_2$ expects to use along its left-hand channel:
+\begin{equation*}
+  \infer[\jrule{C-CUT}^B]{\slcof{A |- \chn_1 \cc \chn_2 : C}}{
+    \slcof{A |- \chn_1 : B} & \slcof{B |- \chn_2 : C}}
+\end{equation*}
+
+The empty chain, $\chne$, offers a service $A$ to its right by directly using the same service from its left:
+\begin{equation*}
+  \infer[\jrule{C-ID}^A]{\slcof{A |- \chne : A}}{}
+\end{equation*}
+
+Lastly, a chain that consists of a single process $P$ is well-typed if its process expression $P$ is well-typed:
+\begin{equation*}
+  \infer[\jrule{C-PROC}]{\slcof{A |- P : C}}{
+    \slof{A |- P : C}}
+\end{equation*}
+
+\begin{figure}[tbp]
+  \begin{inferences}
+  \infer[\jrule{C-CUT}^B]{\slcof{A |- \chn_1 \cc \chn_2 : C}}{
+    \slcof{A |- \chn_1 : B} & \slcof{B |- \chn_2 : C}}
+  \and
+  \infer[\jrule{C-ID}^A]{\slcof{A |- \chne : A}}{}
+  \and
+  \infer[\jrule{C-PROC}]{\slcof{A |- P : C}}{
+      \slof{A |- P : C}}  
+  \end{inferences}
+  \caption{Process chains and their session-type system}%
+  \label{fig:process-chains:chains}
+\end{figure}
+
+Offers/uses distinction: retained for consistency with the hypothetical judgement asymmetry and SILL.
+Judgmental asymmetry between antecedents and consequents of a sequent.
 
 
-This definition is intentionally
+A chain $\chn$ does not compute in isolation, but instead interacts with its environment along two channels:
+% A chain $\chn$ may interact with its environment along two channels:
+to its left along the left-hand channel of $P_1$, and to its right along the right-hand channel of $P_n$.
+Chains can be composed end to end by
+%
+The left-hand channel of $P_1$ and the right-hand channel of 
+
+More formally, as ordered lists of processes, process chains form a free monoid.
+
+Alternatively, process chains may be characterized algebraically as forming a free monoid over processes.
+
+
+Process chains form a free monoid...
+
+Process chains communicate with their environment...
+
+The judgment $\slcof{A |- \chn : B}$ describes the pattern of communication...
+
+Chain composition
+\begin{equation*}
+  \infer[\jrule{C-CUT}^B]{\slcof{A |- \chn_1 \cc \chn_2 : C}}{
+    \slcof{A |- \chn_1 : B} & \slcof{B |- \chn_2 : C}}
+\end{equation*}
+
+Empty chain
+\begin{equation*}
+  \infer[\jrule{C-ID}^A]{\slcof{A |- \chne : A}}{}
+\end{equation*}
+
+Monoid laws applies silently  ...
+
+Chain consisting of one process
+\begin{equation*}
+  \infer[\jrule{C-PROC}]{\slcof{A |- P : B}}{
+    \slof{A |- P : B}}
+\end{equation*}
+
+\subsection{Process expressions}
+
+Thus far, we have diligently avoided describing the specific internals of processes.
+
+Process expressions, $P$, and their session-typing rules are isomorphic to the Hilbert-style proof terms of \cref{??}.
+
+
+The proof term $\spawn{P_1}{P_2}$ for composition of proofs is now reinterpreted as the expression for a process that will spawn new, neighboring threads of control for $P_1$ and $P_2$ and then terminate the original thread of control.
+In effect, $\spawn{P_1}{P_2}$ now composes process [behaviors].
+\begin{equation*}
+  \infer[\jrule{CUT}^B]{\slof{A |- \spawn{P_1}{P_2} : C}}{
+    \slof{A |- P_1 : B} & \slof{B |- P_2 : C}}
+\end{equation*}
+For $\spawn{P_1}{P_2}$ to be a well-typed composition, the communication protocol
+
+% Reflecting the intuition 
+% \begin{equation*}
+%   \infer{\spawn{P_1}{P_2} \reduces P_1 \cc P_2}{}
+% \end{equation*}
+
+Proof-theoretically, the identity and cut rules are inverses, so we should expect their process interpretations to be similarly inverse.
+The process expression $\spawn{P_1}{P_2}$ spawns threads of control, so $\fwd$, as its inverse, terminates the thread of control.
+\begin{equation*}
+  \infer[\jrule{ID}^A]{\slof{A |- \fwd : A}}{}
+\end{equation*}
+% \begin{equation*}
+%   \infer{\fwd \reduces \chne}{}
+% \end{equation*}
+
+Additive disjunction, $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$, is interpreted as internal choice, the type of a process that sends a label.
+\begin{inferences}
+  \infer[\rrule{\plus}']{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \text{($\kay \in L$)}}
+  \and
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
+    \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C}}}
+\end{inferences}
+The proof term $\selectR{\kay}$ is now viewed as a message, sent to the right-hand neighbor (as the arrow suggests), that carries the label $\kay$ as its payload.
+% \begin{equation*}
+%   \infer{\selectR{\kay} \cc \caseL[\ell \in L]{\ell => P_{\ell}} \reduces P_{\kay}}{
+%     \text{($\kay \in L$)}}
+% \end{equation*}
+% Clearly reminiscent of the principal cut reduction $\nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => N_{\ell}}} = N_{\kay}$.
+
+Additive conjunction, $\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}$, is interpreted dually as external choice.
+\begin{inferences}
+  \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+    \multipremise{\ell \in L}{\slof{A |- P_{\ell} : C_{\ell}}}}
+  \and
+  \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
+    \text{($\kay \in L$)}}
+\end{inferences}
+% \begin{equation*}
+%   \infer{\caseR[\ell \in L]{\ell => P_{\ell}} \cc \selectL{\kay} \reduces P_{\kay}}{
+%     \text{($\kay \in L$)}}
+% \end{equation*}
+
+
+
+% Discussion of operational semantics here?
+
+% Interpret additive disjunction as internal choice, and $\selectR{\kay}$ as a message, and $\caseL[\ell \in L]{\ell => P_{\ell}}$ as a process that waits for a message...
+
+% Interpret additive conjunction dually...
+
+\subsection{From admissibility of non-analytic cuts to an operational semantics}
+
+In the previous \lcnamecref{ch:singleton-logic}, we presented a procedure for normalizing Hilbert-style [singleton?] proofs.
+Full proof normalization was important to ...
+
+In this \lcnamecref{ch:process-chains}, however, our perspective has shifted from proof theory to concurrent computation, from proofs to processes.
+And so full normalization is no longer appropriate -- we now want to expose the concurrent computational behavior, not just ...
+The situation is analogous to that of intuitionistic natural deduction and simply-typed functional computation:
+
+In fact, the difference is even starker here because, once recursive process definitions are introduced\parencref{sec:??}, many useful processes will be nonterminating.
+Thus, there is no clear notion of value, as exists in functional computation.
+Nevertheless, in good Curry--Howard fashion, the principal cases of Hilbert-style proof normalization will still directly inform the operational semantics of processes.
+
+\begin{itemize}
+\item Operational semantics does not observe processes, observes only messages
+\end{itemize}
+
+\newthought{In the previous \lcnamecref{sec:??},} the description of how proof terms are reinterpreted as process expressions already hinted at a computational strategy.
+Here we present that operational semantics in its full detail.
+
+
+At the heart of the operational semantics for process chains is \emph{reduction}, a binary relation on chains which we write as $\reduces$.
+Reductions may occur among any of the chain's processes, and thus the relation is compatible with the monoid operation, $\cc$:
+\begin{inferences}
+  \infer{\chn_1 \cc \chn_2 \reduces \chn'_1 \cc \chn_2}{
+    \chn_1 \reduces \chn'_1}
+  \and
+  \infer{\chn_1 \cc \chn_2 \reduces \chn_1 \cc \chn'_2}{
+    \chn_2 \reduces \chn'_2}
+\end{inferences}
+
+As suggested earlier, a process $\spawn{P_1}{P_2}$ spawns, in place, new, neighboring threads of control for $P_1$ and $P_2$, respectively, while the original thread of control terminates; and a process $\fwd$ ...
+The operational semantics formalizes this notion in a rule that decomposes $\spawn{P_1}{P_2}$:
+% into $P_1 \cc P_2$.
+\begin{inferences}
+  \infer{\spawn{P_1}{P_2} \reduces P_1 \cc P_2}{}
+  \and
+  \infer{\fwd \reduces \chne}{}
+\end{inferences}
+Because process chains are always considered up to associativity and unit laws, these reduction rules (along with the above $\cc$-compatibility rules) reflect the associative cases and identity cases in the proof of the admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:?}.
+For example:
+\begin{align*}
+  (\spawn{P_0}{\selectR{\kay}}) \cc P_1 \reduces= P_0 \cc (\selectR{\kay} \cc P_1)
+  &\quad\text{just as}\quad
+  \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}
+\shortintertext{and}
+  \fwd \cc P \reduces= % \chne \cc P
+    P
+  &\quad\text{just as}\quad
+  \nspawn{\fwd}{M} = M
+    \,.
+\end{align*}
+
+Recall 
+\begin{gather*}
+  \begin{aligned}
+    \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M}
+      &= \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}
+    \\
+    \nspawn{N}{(\spawn{\selectL{\kay}}{M_0})}
+      &= \nspawn{(\nspawn{N}{\selectL{\kay}})}{M_0}
+  \end{aligned}
+  \\[2\jot]
+  \begin{aligned}
+    \nspawn{\fwd}{M}
+      &= M
+    \\
+    \nspawn{N}{\fwd}
+      &= N
+  \end{aligned}
+  \\[2\jot]
+  \begin{aligned}
+    \nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}}
+      &= M_{\kay}
+    \\
+    \nspawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{\selectL{\kay}}
+      &= N_{\kay}
+  \end{aligned}
+  \\[2\jot]
+  \begin{aligned}
+    \nspawn{(\spawn{\selectL{\kay}}{N_0})}{M}
+      &= \spawn{\selectL{\kay}}{(\nspawn{N_0}{M})}
+    \\
+    \nspawn{N}{(\spawn{M_0}{\selectR{\kay}})}
+      &= \spawn{(\nspawn{N}{M_0})}{\selectR{\kay}}
+    \\
+    \nspawn{\selectL{\kay}}{M}
+      &= \spawn{\selectL{\kay}}{M}
+    \\
+    \nspawn{N}{\selectR{\kay}}
+      &= \spawn{N}{\selectR{\kay}}
+    \\
+    \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{M}
+      &= \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M}}
+    \\
+    \nspawn{N}{\caseR[\ell \in L]{\ell => M_{\ell}}}
+      &= \caseR[\ell \in L]{\ell => \nspawn{N}{M_{\ell}}}
+  \end{aligned}
+\end{gather*}
+etc.
+
+Explain why the commutative reductions are not needed...
+
+
+\section{Session-typed asynchronous process chains}
+
+\begin{itemize}
+\item Foreshadow theorem about relationship with communicating automata
+\end{itemize}
+
+By analogy with chains of communicating automata, we envision a process chain, $\chn$, as a finite sequence of processes $(P_i)_{i=1}^{n}$, each with its own independent thread of control and arranged in a linear topology.
+As depicted in the adjacent \lcnamecref{fig:singleton-processes:chain-topology},%
+%
+\begin{marginfigure}
+  \centering
+  \begin{tikzpicture}
+    \graph [math nodes, nodes={circle, draw}] {
+      P_0 / [coordinate]
+       --
+      P_1
+       --
+      / \dotsb [rectangle, text height=1ex, draw=none]
+       --
+      P_i
+       --
+      / \dotsb [rectangle, text height=1ex, draw=none]
+       --
+      P_n
+       --
+      / [coordinate];
+    };
+    \node [fit=(P_1) (P_i) (P_n), inner xsep=.5em,
+           draw,
+           label distance=2em, label=$\chn$] {};
+  \end{tikzpicture}
+  \caption{A process chain, $\chn$}\label{fig:singleton-processes:chain-topology}
+\end{marginfigure}
+%
+each process $P_i$ shares a unique channel with its left-hand neighbor and a unique channel with its right-hand neighbor.
+% Because process chains always have a linear topology, 
+These channels need not be named -- they can instead be referred to as simply the left- and right-hand channels of $P_i$.
+
+Process chains are never isolated from the surrounding environment.
+Both the left-hand channel of $P_1$ and the right-hand channel of $P_n$ continue to allow external communication, even as communication among neighboring processes changes the chain's internal state.
+
+
+As a string of processes, 
+
+Formally, then, process chains $\chn$ form a free monoid over processes $P$:
+% As a free monoidSyntactically, chains are generated by the following grammar.
+\begin{equation*}
+  \chn \Coloneqq \chne \mid (\chn_1 \cc \chn_2) \mid P
+  \,,
+\end{equation*}
+where we write $\chne$ for the empty chain and $\cc$ for the monoid operation, which is subject to the usual associativity and unit laws:
+\begin{gather*}
+  (\chn_1 \cc \chn_2) \cc \chn_3 = \chn_1 \cc (\chn_2 \cc \chn_3) \\
+  \chne \cc \chn = \chn = \chn \cc \chne
+\end{gather*}
+\Cref{fig:process-chains:chain-shapes} gives a graphical depiction of the three basic shapes that chains may take.
+%
+\begin{figure}[tbp]
+  \centering
+  \begin{tikzpicture}
+    \graph [math nodes, nodes={circle}] {
+      / [coordinate]
+       --
+      P_1 / \phantom{P}
+       --
+      / [coordinate];
+      (P_1.west) -- (P_1.east);
+    };
+    \node [fit=(P_1), inner xsep=.5em, draw,
+           label distance=2em, label={$\chn = \chne$}] {};
+  \end{tikzpicture}
+  \qquad
+  \begin{tikzpicture}
+    \graph [math nodes, nodes={circle, draw}] {
+      / [coordinate]
+       --
+      P_1 / P
+       --
+      / [coordinate];
+    };
+    \node [fit=(P_1), inner xsep=.5em, draw,
+           label distance=2em, label={$\chn = P$}] {};
+  \end{tikzpicture}
+
+  \begin{tikzpicture}
+    \graph [math nodes, nodes={circle, draw}] {
+      / [coordinate]
+       --
+      P_1 /
+       --
+      / \dotsb [rectangle, text height=1ex, draw=none]
+       --
+      P_n /
+       --
+      P_{n+1} /
+       --
+      / \dotsb [rectangle, text height=1ex, draw=none]
+       --
+      P_{n+m} /
+       --
+      / [coordinate];
+    };
+    \node (C1)
+          [fit=(P_1) (P_n), inner xsep=.5em, draw, dashed,
+           label distance=2em, label=$\chn_1$]
+          {};
+    \node (C2)
+          [fit=(P_{n+1}) (P_{n+m}), inner xsep=.5em, draw, dashed,
+           label distance=2em, label=$\chn_2$]
+          {};
+    \node [fit=(C1) (C2), inner xsep=.5em, draw,
+           label distance=2em, label={$\chn = \chn_1 \cc \chn_2$}] {};
+  \end{tikzpicture}
+  \caption{A graphical depiction of process chain constructors}%
+  \label{fig:process-chains:chain-shapes}
+\end{figure}
+
+\newthought{So far,} this definition of process chains has intentionally abstracted from what exactly a process is, and how exactly communication occurs over channels.
 
 
 \begin{figure}[tbp]
+  \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
   \begin{syntax*}
     Session types &
       A & \alpha \mid \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} \mid \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
     \\
-    Process terms &
+    Process expressions &
       P & \spawn{P_1}{P_2} \mid \fwd
         \begin{array}[t]{@{{} \mid {}}l@{}}
           \selectR{\kay} \mid \caseL[\ell \in L]{\ell => P_{\ell}} \\
@@ -84,42 +506,54 @@ This definition is intentionally
     \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
       \text{($\kay \in L$)}}
   \end{inferences}
+  \vspace*{-\belowdisplayskip}
   \caption{Asynchronous process chains and their session-type system}\label{fig:singleton-processes:typing-rules}
 \end{figure}
-
-\Cref{fig:singleton-processes:typing-rules} presents asynchronous process chains and their session-type system.
+%
+\Cref{fig:singleton-processes:typing-rules} presents the syntax of process chains and their session-type system.
 Formally, the session types are identical to the propositions of singleton logic; the process terms, identical to the Hilbert-style proof terms; and the session-typing rules, identical to the Hilbert-style inference rules.
-In fact, the whole of this \lcnamecref{fig:singleton-processes:typing-rules} is identical to \cref{fig:singleton-logic:hilbert}, save for the difference in terminology.
+In fact, the whole of this \lcnamecref{fig:singleton-processes:typing-rules} is identical to \cref{fig:singleton-logic:hilbert}, save for the small difference in terminology.
 
-But this small difference belies its significance.
-
+This size of this difference, however, belies its significance.
 \begin{itemize}
-\item The proof term $\spawn{P_1}{P_2}$ is now reinterpreted as the expression for a process that will spawn, to the immediate left, a new thread of control for $P_1$, while the original thread of control continues with $P_2$.
+\item The proof term $\spawn{P_1}{P_2}$ for composition of proofs is now reinterpreted as the expression for a process that will spawn, to the immediate left, a new thread of control for $P_1$, while the original thread of control continues with $P_2$.
+  In effect, $\spawn{P_1}{P_2}$ now composes process behaviors.
+
+\item The proof term $\fwd$ is reinterpreted as the expression for a process that terminates its thread of control, excising the process from the chain.
 
 \item The proof terms $\selectL{\kay}$ and $\selectR{\kay}$ are now viewed as messages carrying the label $\kay$ as their payloads.
-  The direction of the underlying arrow
-  % that decorates the label
-  indicates the message's intended recipient: $\selectL{\kay}$ is being sent to the left-hand neighbor; $\selectR{\kay}$, to the right-hand neighbor.
+  The direction of the underlying arrow indicates the message's intended recipient: $\selectL{\kay}$ is being sent to the left-hand neighbor; $\selectR{\kay}$, to the right-hand neighbor.
 
-\item The proof term $\selectR{\kay}$ is reinterpreted as a right-directed message carrying the label $\kay$ as its payload, with the right-hand neighbor as the intended recipient.
-  Symmetrically, the proof term $\selectL{\kay}$ should now be viewed as a left-directed message carrying label $\kay$.
-
-\item The proof term $\caseL[\ell \in L]{\ell => P_{\ell}}$ is reinterpreted as the expression for a process that waits to receive a message from its left-hand neighbor
+\item The proof term $\caseL[\ell \in L]{\ell => P_{\ell}}$ is reinterpreted as the expression for a process that waits to receive a message $\selectR{\kay}$ from its left-hand neighbor and then branches on the received label, so that the thread of control continues with $P_{\kay}$.
+  The proof term $\caseR[\ell \in L]{\ell => P_{\ell}}$ is interpreted dually as the expression for a process that branches on a message from its right-hand neighbor.
 \end{itemize}
 
+Just as session types characterize the communication behavior of individual process expressions, the same types can be used to describe the behavior of entire process chains.
+The judgment $\slcof{A |- \chn : B}$ indicates that the process chain $\chn$ is well-typed, with the left-hand channel of $\chn$ having type $A$ and the right-hand channel having type $B$.
+% Using the session-type system for process expressions, process chains can also be typed.
+% The judgment $\slcof{A |- \chn : C}$ indicates that the left-hand channel of chain $\chn$ has type $A$ and the right-hand channel of $\chn$ has type $C$.
 
-Process chains $\chn$ can be session-typed, too.
-The judgment $\slcof{A |- \chn : B}$ indicates that the process chain $\chn$ ...
+The simplest chain is the one that consists of a single process $P$; the chain inherits the process's type:
+\begin{equation*}
+  \infer[\jrule{C-PROC}]{\slcof{A |- P : C}}{
+    \slof{A |- P : C}}
+\end{equation*}
+
+The composition $\chn_1 \cc \chn_2$ is typable if the two chains assign the same type to their shared channel.
+\begin{equation*}
+  \infer[\jrule{C-CUT}^B]{\slcof{A |- \chn_1 \cc \chn_2 : C}}{
+    \slcof{A |- \chn_1 : B} & \slcof{B |- \chn_2 : C}}
+\end{equation*}
+\begin{equation*}
+  \infer[\jrule{C-ID}^A]{\slcof{A |- \chne : A}}{}
+\end{equation*}
+
 \begin{figure}[tbp]
+  \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
   \begin{syntax*}
     Process chains &
-      \chn & \chne \mid \chn_1 \cc \chn_2 \mid P
+      \chn & \chne \mid (\chn_1 \cc \chn_2) \mid P
   \end{syntax*}
-
-  \begin{gather*}
-    (\chn_1 \cc \chn_2) \cc \chn_3 = \chn_1 \cc (\chn_2 \cc \chn_3) \\
-    \chne \cc \chn = \chn = \chn \cc \chne
-  \end{gather*}
 
   \begin{inferences}
     \infer[\jrule{CUT}^B]{\slcof{A |- \chn_1 \cc \chn_2 : C}}{
@@ -130,7 +564,14 @@ The judgment $\slcof{A |- \chn : B}$ indicates that the process chain $\chn$ ...
     \infer[\jrule{PROC}]{\slcof{A |- P : C}}{
       \slof{A |- P : C}}
   \end{inferences}
-  \caption{A caption}
+
+  \begin{gather*}
+    (\chn_1 \cc \chn_2) \cc \chn_3 = \chn_1 \cc (\chn_2 \cc \chn_3) \\
+    \chne \cc \chn = \chn = \chn \cc \chne
+  \end{gather*}
+  \vspace*{-\abovedisplayskip}
+  \caption{Syntax and session-typing rules for process chains}%
+  \label{fig:process-chains:session-types}
 \end{figure}
 
 Chains can be reified as process expressions.
@@ -146,6 +587,41 @@ Let $\pf*{-}$ be a function from chains to process expressions given by
 \end{theorem}
 
 \subsection{From admissibility of non-analytic cuts to an operational semantics}
+
+In the previous \lcnamecref{ch:singleton-logic}, we presented a procedure for normalizing Hilbert-style [singleton?] proofs.
+Full proof normalization was important to ...
+
+In this \lcnamecref{ch:process-chains}, however, our perspective has shifted from proof theory to concurrent computation, from proofs to processes.
+And so full normalization is no longer appropriate -- we now want to expose the concurrent computational behavior, not just ...
+The situation is analogous to that of intuitionistic natural deduction and simply-typed functional computation:
+
+In fact, the difference is even starker here because, once recursive process definitions are introduced\parencref{sec:??}, many useful processes will be nonterminating.
+Thus, there is no clear notion of value, as exists in functional computation.
+Nevertheless, in good Curry--Howard fashion, the principal cases of Hilbert-style proof normalization will still directly inform the operational semantics of processes.
+
+\begin{itemize}
+\item Operational semantics does not observe processes, observes only messages
+\end{itemize}
+
+\newthought{In the previous \lcnamecref{sec:??},} the description of how proof terms are reinterpreted as process expressions already hinted at a computational strategy.
+Here we present that operational semantics in its full detail.
+
+
+At the heart of the operational semantics for process chains is \emph{reduction}, a binary relation on chains which we write as $\reduces$.
+Reductions may occur among any of the chain's processes, and thus the relation is compatible with the monoid operation, $\cc$:
+\begin{inferences}
+  \infer{\chn_1 \cc \chn_2 \reduces \chn'_1 \cc \chn_2}{
+    \chn_1 \reduces \chn'_1}
+  \and
+  \infer{\chn_1 \cc \chn_2 \reduces \chn_1 \cc \chn'_2}{
+    \chn_2 \reduces \chn'_2}
+\end{inferences}
+
+A process $\spawn{P_1}{P_2}$ spawns, to its immediate left, a new thread of control for $P_1$, while the original thread of control continues with $P_2$.
+\begin{equation*}
+  \infer{\spawn{P_1}{P_2} \reduces P_1 \cc P_2}{}
+\end{equation*}
+Because process chains are always ... up to associativity and unit laws, these reductions 
 
 Recall 
 \begin{gather*}
@@ -196,32 +672,6 @@ Recall
 etc.
 
 \begin{itemize}
-\item Introduce configurations as forming a free monoid over well-typed processes, with the binary operation $\cc$ subject to the usual monoid laws:
-  \begin{gather*}
-    (\cnf_1 \cc \cnf_2) \cc \cnf_3 = \cnf_1 \cc (\cnf_2 \cc \cnf_3) \\
-    \cnfe \cc \cnf = \cnf = \cnf \cc \cnfe
-  \end{gather*}
-
-  The typing rules for configurations are:
-  \begin{inferences}
-    \infer[\jrule{CUT}^B]{\slcof{A |- \cnf_1 \cc \cnf_2 : C}}{
-      \slcof{A |- \cnf_1 : B} & \slcof{B |- \cnf_2 : C}}
-    \and
-    \infer[\jrule{ID}^A]{\slcof{A |- \cnfe : A}}{}
-    \and
-    \infer[\jrule{PROC}]{\slcof{A |- P : B}}{
-      \slof{A |- P : B}}
-  \end{inferences}
-
-  Define $\cnf^\sharp$ as:
-  \begin{align*}
-    (\cnfe)^\sharp &= \fwd \\
-    (\cnf_1 \cc \cnf_2)^\sharp &= \spawn{\cnf_1^\sharp}{\cnf_2^\sharp} \\
-    P^\sharp &= P
-  \end{align*}
-
-
-
 \item The operational semantics uses a particular strategy: $\reduces$ is the least compatible relation that satisfies the following.
   \begin{gather*}
     \spawn{P_1}{P_2} \reduces P_1 \cc P_2 \\
@@ -229,25 +679,53 @@ etc.
     \selectR{\kay} \cc \caseL[\ell \in L]{\ell => P_{\ell}} \reduces P_{\kay} \\
     \caseR[\ell \in L]{\ell => P_{\ell}} \cc \selectL{\kay} \reduces P_{\kay}
   \end{gather*}
+  We denote the reflexive, transitive closure of $\reduces$ by $\Reduces$.
 
-  \begin{theorem}
-    $\cnf^\sharp \Reduces \cnf$ for all $\cnf$.
+  \begin{theorem}[Type preservation]
+    If $\slcof{A |- \chn : B}$ and $\chn \reduces \chn'$, then $\slcof{A |- \chn' : B}$.
   \end{theorem}
+  %
   \begin{proof}
-    By structural induction on the given configuration.
+    By structural induction on the given chain.
   \end{proof}
 
-  \begin{conjecture}
-    If $\cnf_0 \Reduces \cnf \longarrownot\reduces$, then $\wn{\cnf_0^\sharp} = \cnf^\sharp$.
-    \begin{itemize}
-    \item If $\cnf_0 \longarrownot\reduces$, then $\wn{\cnf_0^\sharp} = \cnf_0^\sharp$.
-    \item If $\cnf_0 \reduces \cnf_1$ and $\wn{\cnf_1^\sharp} = P$, then $\wn{\cnf_0^\sharp} = P$, 
-    \end{itemize}
-  \end{conjecture}
 
-  \begin{corollary}
-    If $P \Reduces \cnf \longarrownot\reduces$, then $\wn{P} = \cnf^\sharp$.
-  \end{corollary}
+  \begin{lemma}
+    If $\slcof{A |- \chn : B}$ and $\chn = \chn'$, then $\slcof{A |- \chn' : B}$.
+  \end{lemma}
+
+  \begin{theorem}[Progress]
+    If $\slcof{A |- \chn : B}$, then either:
+    \begin{itemize}
+    \item $\chn \reduces \chn'$ for some $\chn'$;
+    \item $\chn$ is empty: $\chn = \chne$;
+    \item $\chn$ is ready to communicate along its left-hand channel: $\chn = \selectL{\kay} \cc \chn_0$ or $\chn = \caseL[\ell \in L]{\ell => P_{\ell}} \cc \chn_0$ for some $\chn_0$; or
+    \item $\chn$ is ready to communicate along its right-hand channel: $\chn = \chn_0 \cc \selectR{\kay}$ or $\chn = \chn_0 \cc \caseR[\ell \in L]{\ell => P_{\ell}}$ for some $\chn_0$.
+    \end{itemize}
+  \end{theorem}
+  %
+  \begin{proof}
+    By structural induction on the given process chain.
+  \end{proof}
+
+  \begin{theorem}
+    $\chn^\sharp \Reduces \chn$ for all $\chn$.
+  \end{theorem}
+  \begin{proof}
+    By structural induction on the given chain.
+  \end{proof}
+
+  % \begin{conjecture}
+  %   If $\cnf_0 \Reduces \cnf \longarrownot\reduces$, then $\wn{\cnf_0^\sharp} = \cnf^\sharp$.
+  %   \begin{itemize}
+  %   \item If $\cnf_0 \longarrownot\reduces$, then $\wn{\cnf_0^\sharp} = \cnf_0^\sharp$.
+  %   \item If $\cnf_0 \reduces \cnf_1$ and $\wn{\cnf_1^\sharp} = P$, then $\wn{\cnf_0^\sharp} = P$, 
+  %   \end{itemize}
+  % \end{conjecture}
+
+  % \begin{corollary}
+  %   If $P \Reduces \cnf \longarrownot\reduces$, then $\wn{P} = \cnf^\sharp$.
+  % \end{corollary}
 \end{itemize}
 
 
@@ -275,20 +753,57 @@ etc.
   \end{equation*}
 \end{example}
 
-\section{Recursive process definitions}
+\section{Recursive type and process definitions}
 
-There are many computational processes that can't be described.
+\begin{itemize}
+\item coinductively defined types; productivity = contractivity
+\end{itemize}
 
-Our solution is to introduce general recursive process definitions, in a manner reminiscent of the recursively defined ordered propositions of \cref{??}.
+Unfortunately, there are many relatively simple patterns of communication [computational behaviors?] that cannot be described by the finitary types thus far.
+For instance, a transducer process that receives, one-by-one, a stream of input symbols and forms an output stream by replacing each $b$ with an $a$ cannot be represented.
 
-Instead of general recursive definitions, inductive and coinductive definitions could be considered.
-Treatments of inductive and coinductive types in linear logic\autocite{Baelde:?,Toninho+:TGC14} could be adapted to a singleton logic setting, or a Curry--Howard extrapolation of \citeauthor{Fortier-Santocanale:CSL?}'s work on circular proofs\autocite{Fortier-Santocanale:CSL?} should be possible.
+coinductive behavior.
+For instance, a transducer process that transforms a stream of input symbols into a stream of output symbols cannot be represented.
 
+The solution is to introduce mutually recursive type definitions, in a manner reminiscent of the recursively defined ordered propositions, $\alpha \defd A$, seen in \cref{??}.
+However, recursively defined types are not particularly useful if process expressions remain finitary, so we also introduce mutually recursive processes: $\slof{A |- p : C} \defd P$.
+In both cases, the recursion is defined using general fixed points, not least or greatest fixed points.%
+\footnote{Treatments of inductive and coinductive types in linear logic\autocite{Baelde:?,Toninho+:TGC14} should be adaptable to a singleton logic setting, and work on a Curry--Howard extrapolation of \citeauthor{Fortier-Santocanale:CSL?}'s work on circular proofs\autocite{Fortier-Santocanale:CSL?} is underway.}
+
+
+We require that recursive type definitions be \emph{contractive}\autocite{??} -- that the body of each recursive type definition begin with a type constructor ($\plus$ or $\with$) at the top level.
+This rules out problematic definitions like $\alpha \defd \alpha$.
+Moreover, it justifies an \emph{equi}\-recursive treatment of types in which type definitions may be silently unfolded (or folded) at will.
+In other words, a type $\alpha \defd A$ is equal to its unfolding, $[A/\alpha]A$.
+
+This stands in contrast with an \emph{iso}\-recursive treatment of types in which recursive types are constructed by a fixed point operator $\mu \alpha.A$.
+
+
+We require contractivity of process definitions as well, ruling out definitions like $\slof{A |- p : C} \defd p$.
+Like type definitions, process expressions are treated equi\-recursively and may be freely and silently unfolded (or folded).
 \begin{equation*}
-  \slof{A |- p : C} \defd P
-  \mathrlap{\,,}
+  \infer[\lrule{\plus}]{\slof{}}{}
 \end{equation*}
-where $p$ is a process variable that may appear in $P$.
+
+\begin{syntax*}
+  Process expressions&
+    P,Q & \dotsb \mid p
+\end{syntax*}
+
+
+At this point, we must also choose whether to treat recursive type and process definitions \emph{equi}\-recursively or \emph{iso}\-recursively.
+
+
+Once recursive type and process definitions are added, there is, strictly speaking, no longer a Curry--Howard isomorphism between session-typed process chains and the Hilbert-style proofs of singleton logic.
+% Extending the session-type system for process chains with recursive type and process definitions means that, strictly speaking, there is no longer a Curry--Howard isomorphism with singleton logic's Hilbert system.
+Importantly, however, the core system remains unchanged and still enjoys the isomorphism because the recursion is added modularly.
+The situation is once again analogous to the Curry--Howard isomorphism between intuitionistic natural deduction and the simply-typed $\lambda$-calculus:
+When the $\lambda$-calculus is extended with recursive types and functions, the meaning of the type constuctor for simple function types remains unchanged and still isomorphic with intuitionistic implication.
+
+These types are defined using general fixed points, not least or greatest fixed points -- the types are recursive but not inductive nor coinductive.
+% Instead of general recursive definitions, inductive and coinductive type definitions could be considered.
+
+
 
 \begin{example*}
   We may now adapt the previous example into a collection of process definitions

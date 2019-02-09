@@ -5,7 +5,7 @@ in an intuitionistic sequent $\Gamma \vdash A$, there are finitely many antecede
 \footnote{Or, at most one consequent if multiplicative falsehood is included\parencref[see, for example,]{sec:ordered-logic:mult-falsehood}.}
 We might naturally wonder if a greater degree of symmetry can be brought to sequents.
 % Of course, classical sequents in calculi such as Gentzen's LK\autocite{Gentzen:??} do enjoy a pleasant symmetry, but does there exist an \emph{intuitionistic} logic whose sequent calculus presentation uses symmetric sequents?
-Of course, classical sequents in calculi such as Gentzen's LK\autocite{Gentzen:??} are symmetric, but does there exist an \emph{intuitionistic} logic whose sequent calculus presentation enjoys a similarly pleasant symmetry?
+Of course, classical sequents in calculi such as Gentzen's LK\autocite{Gentzen:} are symmetric, but does there exist an \emph{intuitionistic} logic whose sequent calculus presentation enjoys a similarly pleasant symmetry?
 
 One approach might be to permit finitely many consequents, as in multiple-conclusion sequent calculi for intuitionistic logic\autocite{??}, but \citeauthor{Steinberger:JPL11}\autocite{Steinberger:JPL11} raises troubling concerns about the validity of meaning-theoretic explanations of such calculi.
 
@@ -22,14 +22,15 @@ Having fully motivated the single-antecedent restriction, we then proceed to \cr
 As we will explain, it is precisely the multiplicative connectives that are absent from singleton logic.]
 
 To ensure that the resulting calculus properly defines the meaning of each connective by its inference rules, \cref{sec:singleton-logic:seq-calc:metatheory} establishes the calculus's basic metatheory.
-Together, the cut elimination and identity elimination metatheorems identify the cut-free, $\eta$-long proofs as analytic verifications that exhibit a subformula property.
+Together, the cut elimination and identity elimination metatheorems identify the cut-free, $\eta$-long proofs as verifications that [form the foundation] exhibit a subformula property.
 
-To ensure that the resulting calculus is indeed a sequent calculus with the characteristic verificationist meaning-explanation, \cref{sec:singleton-logic:seq-calc:metatheory} then establishes its basic metatheory.
-Together, the cut elimination and identity expansion metatheorems identify the cut-free, $\eta$-long proofs as analytic verifications that exhibit a subformula property.
+% To ensure that the resulting calculus is indeed a sequent calculus with the characteristic verificationist meaning-explanation, \cref{sec:singleton-logic:seq-calc:metatheory} then establishes its basic metatheory.
+% Together, the cut elimination and identity expansion metatheorems identify the cut-free, $\eta$-long proofs as analytic verifications that exhibit a subformula property.
 
-There are certainly other presentations of logics besides sequent calculi.
-So, in \cref{sec:singleton-logic:hilbert}, we consider a Hilbert-style axiomatization of singleton logic that can also be viewed as a variant of the sequent calculus.
-Our interest in a Hilbert system is not, however, zoological; an analysis of the Hilbert system's basic metatheory\parencref{sec:singleton-logic:hilbert:metatheory} begins to suggest the basis of a Curry--Howard interpretation of Hilbert-style proofs as asynchronously communicating processes.
+There are certainly other presentations of logics besides sequent calculi, so, in \cref{sec:singleton-logic:hilbert}, we develop a Hilbert-style axiomatization of singleton logic.
+This Hilbert system can also be viewed as a variant of the sequent calculus.
+% Our interest in a Hilbert system is not, however, zoological;
+An analysis of the its basic metatheory\parencref{sec:singleton-logic:hilbert:metatheory} begins to suggest the basis of a Curry--Howard interpretation of Hilbert-style proofs as chains of well-typed, asynchronously communicating processes.
 \Cref{ch:singleton-processes} will be devoted to developing that observation more fully.
 
 % Although the single-antecedent restriction precludes a true Hilbert system, we are able to consruct a Hilbert-like system that can also be viewed as a variant of the singleton sequent calculus.
@@ -37,7 +38,7 @@ Our interest in a Hilbert system is not, however, zoological; an analysis of the
 
 % \Cref{sec:singleton-logic:hilbert:metatheory} establishes the admissibility of a modus ponens-like rule, and contrasts the proof with that of admissibility of cut from \cref{sec:singleton-logic:metatheory}.
 
-Finally, \cref{sec:singleton-logic:subsingleton} briefly overviews several possible extensions to singleton logic.
+Finally, \cref{sec:singleton-logic:subsingleton} briefly overviews several possible extensions to singleton logic, including a \emph{sub}\-singleton extension that relaxes the single-antecedent restriction and permits an empty context.
 
 
 
@@ -90,16 +91,19 @@ Finally, \cref{sec:singleton-logic:subsingleton} briefly overviews several possi
 
 As sketched above, the \emph{single-antecedent restriction} demands that each sequent contain exactly one antecedent, so that sequents are $\slseq{A |- B}$ instead of $\Gamma \vdash B$.
 
-In addition to providing sequents with an elegant symmetry between antecedents and consequents, the single-antecedent restriction is a worthwhile object of investigation when viewed from the perspective of each of the computational trinity's\autocite{Harper:??} branches -- proof theory, category theory, and type theory.
+In addition to providing sequents with an elegant symmetry between antecedents and consequents, the single-antecedent restriction is a worthwhile object of investigation when viewed from the perspective of each branch of the computational trinity\autocite{Harper:??} -- proof theory, category theory, and type theory:
 %
-\begin{description}
+\begin{description}[parsep=0pt, listparindent=\parindent]
 \item[Proof theory]
   In sequent calculi, antecedents are subject, either implicitly or explicitly, to structural properties, such as weakening, contraction, and exchange.
   For instance, antecedents in linear logic are subject to exchange, but neither weakening nor contraction; linear contexts thus form a commutative monoid over antecedents.
-  Ordered logic goes further and rejects exchange; ordered contexts thus form a noncommutative monoid.
+  Ordered logic goes further and rejects exchange; ordered contexts thus form a \emph{non}\-commutative monoid.
 
-  The single-antecedent restriction goes still further and rejects the very idea that contexts have any structure at all.
-  Under this restriction, there can be no binary operation to catenate contexts, so singleton contexts form only the degenerate algebraic structure of a set.
+  % The single-antecedent restriction goes still further and rejects the very idea that contexts have any structure whatsoever.
+  % Under this restriction, there can be no binary operation to join contexts, so singleton contexts form only the degenerate algebraic structure of a set.
+
+  Singleton logic is a natural object of investigation, precisely because it takes the idea of rejecting structural properties to its extreme.
+  In adopting the single-antecedent restriction, singleton logic rejects the very idea that contexts have any structure whatsoever; there can be no binary operation to join contexts, so singleton contexts form only the degenerate algebraic structure of a set.
 
 \item[Category theory]
   Each morphism in a category, $f\colon X \rightarrow Y$, has exactly one object -- no more and no less -- as its domain.
@@ -111,33 +115,41 @@ In addition to providing sequents with an elegant symmetry between antecedents a
     \ulcorner \DD :: (A_1, A_2, \dotsc, A_n \vdash B) \urcorner :
       \ulcorner\mkern-1mu A_1 \mkern-\thinmuskip\urcorner \otimes \ulcorner\mkern-1mu A_2 \mkern-\thinmuskip\urcorner \otimes \dotsb \otimes \ulcorner\mkern-1mu A_n \mkern-\thinmuskip\urcorner \to \ulcorner B \urcorner
   \end{equation*}
-  Because working in a monoidal category complicates matters, it is worthwhile to consider whether there exists a sequent calculus whose categorical semantics uses no monoidal product.
+  Because working in a monoidal category complicates matters, it is worthwhile to investigate whether there exists a sequent calculus whose categorical semantics uses no monoidal product.
   % Because the tensor product complicates the category, it is worthwhile to consider whether there exists a sequent calculus whose categorical semantics uses no tensor product.
   The single-antecedent restriction is exactly what results from these considerations, and the singleton sequent calculus will have a cleaner, more direct categorical semantics because of it.
 
 \item[Type theory]
-  \begin{tikzpicture}
-    \graph [nodes={draw}, math nodes,->=o-] {
-      { / [coordinate] , / [coordinate] }
-       --
-      P [circle]
-       ->
-      / [coordinate];
-    };
-  \end{tikzpicture}
+  In \citeauthor{??}'s SILL type theory based on intuitionistic linear logic, each well-typed process $P$ acts as a client of multiple services $(A_i)_{i=1}^n$ along channels $(x_i)_{i=1}^n$, while simultaneously offering a service $A$ of its own along a single channel $x$.
+  Thus, networks of well-typed processes have a tree topology, as depicted in the neighboring display.%
+  \marginnote{\centering
+    \begin{tikzpicture}
+      \graph [nodes={draw}, math nodes,->=o-] {
+        { / [coordinate, > "$x_1{:}A_1$"] , / [coordinate] }
+        --
+        P [circle]
+        -> ["$x{:}A$"]
+        / [coordinate];
+      };
+    \end{tikzpicture}
 
-  \begin{tikzpicture}
-    \graph [nodes={draw}, math nodes] {
-      / [coordinate] -- P [circle] -> / [coordinate];
-    };
-  \end{tikzpicture}
+    $\downsquigarrow$
 
+    \begin{tikzpicture}
+      \graph [nodes={draw}, math nodes] {
+        / [coordinate] -- P [circle] -> / [coordinate];
+      };
+    \end{tikzpicture}
+  }
+
+  In data pipelines, the computational processes are arranged in a linear topology, with each process having exactly one upstream provider -- no more and no less.
+  To study pipelines, a \enquote{single-provider restriction} is needed -- a type-theoretic analogue of the single-antecedent restriction.
 \end{description}
 
 
 \section{A sequent calculus for propositional singleton logic}\label{sec:singleton-logic:seq-calc}
 
-Having sketched proof-theoretic, category-theoretic, and type-theoretic reasons to investigate the single-antecedent restriction, we turn to identifying a sequent calculus that satisfies that restriction.
+Having sketched proof-theoretic, category-theoretic, and type-theoretic reasons to investigate the single-antecedent restriction, we now turn to identifying a sequent calculus that satisfies that restriction.
 
 % \subsection{Deriving the sequent calculus rules}\label{sec:singleton-logic:seq-calc:derive}
 
@@ -153,10 +165,11 @@ Having sketched proof-theoretic, category-theoretic, and type-theoretic reasons 
 \newthought{One approach} to constructing a singleton sequent calculus is to take the intuitionistic ordered sequent calculus of \cref{??}, apply the single-antecedent restriction to each rule's sequents, and solve the constraints that that restriction imposes.
 % upon the ordered sequent calculus's rules.
 
-For instance, consider the ordered cut rule (see neighboring \lcnamecref{fig:singleton-logic:seq-calc:derive-cut}).
+For instance, consider the ordered cut rule (see neighboring display).
 %
-\begin{marginfigure}[7.5\baselineskip]
+\begin{marginfigure}[8.5\baselineskip]
   \normalsize
+  \vspace*{-\abovedisplayskip}
   \begin{gather*}
     \infer[\jrule{CUT}^B]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}}{
       \oseq{\octx |- B} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
@@ -207,11 +220,15 @@ After these revisions, the rule contains only well-formed singleton sequents and
 % % \end{equation*}
 % % We could equally well justify this cut rule for singleton logic by first principles, as it expresses the composition of two well-formed sequents\alertinline{proofs?} in singleton logic.
 
+We could equally well justify this new cut rule by first principles, as it expresses the composition of two well-formed singleton sequents [proofs?].
+But the above method of considering the constraints imposed by the single-antecedent restriction is a straightforward, mechanical way ahead for the other inference rules.
+For example, singleton sequent calculus rules for additive disjunction may also be constructed in this way\parencref[see]{fig:singleton-logic:seq-calc:derive-plus}.
+%
 \begin{figure*}[tbp]
   \captionsetup{captionskip=0pt,farskip=0pt,nearskip=0pt}
   \vspace*{-\abovecaptionskip}
   
-  \begin{array}{@{}l@{}ccc@{}}
+  $\begin{array}{@{}l@{}ccc@{}}
     & \text{\itshape Ordered sequent calculus} && \text{\itshape Singleton sequent calculus}
     \\
 %    \subfloat[\label{fig:singleton-logic:seq-calc:derive-cut}]{\quad}
@@ -250,20 +267,17 @@ After these revisions, the rule contains only well-formed singleton sequents and
       \infer[\mathrlap{\lrule{\plus}}]{\slseq{B_1 \plus B_2 |- C}}{
         \slseq{B_1 |- C} & \slseq{B_2 |- C}}
     \end{gathered}
-  \end{array}
+  \end{array}$
   \caption{Deriving the singleton sequent calculus rules for \protect\subref{fig:singleton-logic:seq-calc:derive-cut}~cut and \protect\subref{fig:singleton-logic:seq-calc:derive-plus}~additive disjunction from the corresponding ordered sequent calculus rules}\label{fig:singleton-logic:seq-calc:derive}
 \end{figure*}
-
-We could equally well justify this new cut rule by first principles, as it expresses the composition of two well-formed singleton sequents [proofs?].
-But the above method of considering the constraints imposed by the single-antecedent restriction is a straightforward, mechanical way ahead for the other inference rules.
-For example, singleton sequent calculus rules for additive disjunction may also be constructed in this way\parencref[see]{fig:singleton-logic:seq-calc:derive-plus}.
+%
 Rules for the other additive connectives ($\with$, $\top$, and $\zero$) can be constructed, too, but we will momentarily postpone displaying them.
 % Similarly, the other additive connectives ($\with$, $\top$, and $\zero$) can be given singleton sequent calculus rules.
 
 \newthought{%
 However, not all} ordered logical connectives fare as well under the single-antecedent restriction as the additive connectives do.
 In particular, the multiplicative connectives do not have analogues in singleton logic.
-[In particular, the multiplicative connectives do not have analogues in singleton logic, precisely because their multiplicative nature involves splitting antecedents among several premises and, in other rules, extending the context with additional antecedents.]
+[, precisely because their multiplicative nature involves splitting antecedents among several premises and, in other rules, extending the context with additional antecedents.]
 
 \begin{marginfigure}[12\baselineskip]
   \normalsize
@@ -297,21 +311,21 @@ The finitary context $\octx$ must be replaced with a single antecedent, $A$, if 
 %   \infer[\rrule{\limp}?]{\oseq{A |- B_1 \limp B_2}}{
 %     \oseq{B_1 \oc A |- B_2}}
 % \end{equation*}
-The revised rule's conclusion is now well-formed, but its premise is not.
+Now the revised rule's conclusion is well-formed, but its premise is not.
 
-From a category-theoretic perspective, it would be quite natural to rewrite the premise using ordered conjunction so that the two antecedents are packaged as a single one.
+From a category-theoretic perspective, it would be quite natural to rewrite the premise using ordered conjunction so that the two antecedents are packaged together as one.
 % \begin{equation*}
 %   \infer[\rrule{\limp}?]{\slseq{A |- B_1 \limp B_2}}{
 %     \slseq{B_1 \fuse A |- B_2}}
 % \end{equation*}
 % 
 % Viewed through a category-theoretic lens, this rule is quite innocuous, even natural.
-From a proof-theoretic perspective, however, the meaning of a logical connective should be independent from other connectives, and this rule creates an objectionable dependence of left-handed implication upon ordered conjunction.
-As a practical consequence, the subformula property would fail to hold and we would be unable to prove a cut elimination theorem if the singleton sequent calculus adopted this rule.
+However, from a proof-theoretic perspective, this rule is not suitable -- with this rule, the meaning of left-handed implication depends on the meaning of another connective, namely multiplicative conjunction.
+% From a proof-theoretic perspective, however, the meaning of a logical connective should be independent from other connectives, and this rule creates an objectionable dependence of left-handed implication upon ordered conjunction.
+As a practical consequence, the subformula property and related cut elimination theorem would fail to hold if the singleton sequent calculus adopted this rule.
 
-In trying to construct singleton sequent calculus rules for left-handed implication, the fundamental problem is that left-handed implication's right rule introduces an additional antecedent to a context that is, and must remain, a singleton.
-Changing the size of the context by introducing, or sometimes removing, antecedents is an essential characteristic of multiplicative connectives.
-So the multiplicative connectives, by their very nature, cannot appear in singleton logic.
+In trying to construct singleton sequent calculus rules for left-handed implication, the fundamental problem is that the $\rrule{\limp}$ rule introduces an additional antecedent to a context that is, and must remain, a singleton.
+Changing the size of the context by introducing, or sometimes removing, antecedents is an essential characteristic of multiplicative connectives, and so the multiplicative connectives, by their very nature, cannot appear in singleton logic.
 
 % The left rule for left-handed implication is equally problematic:
 % \begin{equation*}
@@ -330,14 +344,14 @@ So the multiplicative connectives, by their very nature, cannot appear in single
 
 
 
-\begin{marginfigure}
-  \normalsize
-  \begin{inferences}
-    \infer[\lrule{\limp}?]{\slseq{A \oc (B_1 \limp B_2) |- C}}{
-      \slseq{A |- B_1} & \slseq{B_2 |- C}}
-  \end{inferences}
-  \caption{A left rule for left-handed implication is equally problematic.}
-\end{marginfigure}
+% \begin{marginfigure}
+%   \normalsize
+%   \begin{inferences}
+%     \infer[\lrule{\limp}?]{\slseq{A \oc (B_1 \limp B_2) |- C}}{
+%       \slseq{A |- B_1} & \slseq{B_2 |- C}}
+%   \end{inferences}
+%   \caption{A left rule for left-handed implication is equally problematic.}
+% \end{marginfigure}
 
 % \begin{inferences}
 %   \infer[\rrule{\fuse}?]{\slseq{A_1 \fuse A_2 |- B_1 \fuse B_2}}{
@@ -353,8 +367,7 @@ So the multiplicative connectives, by their very nature, cannot appear in single
 \Cref{fig:singleton-logic:seq-calc}} presents the complete set of rules for propositional singleton logic's sequent calculus.
 %
 \begin{figure}[tbp]
-  \vspace*{-\abovedisplayskip}
-  \vspace*{-\abovecaptionskip}
+  \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
   \begin{syntax*}
     Propositions &
       A,B,C & \alpha \mid A \plus B \mid \zero \mid A \with B \mid \top
@@ -391,19 +404,19 @@ So the multiplicative connectives, by their very nature, cannot appear in single
     \and
     \text{(no $\lrule{\top}$ rule)}
   \end{inferences}
+  \vspace*{-\belowdisplayskip}
   \caption{A sequent calculus for propositional singleton logic\label{fig:singleton-logic:seq-calc}}
 \end{figure}
 %
 % The well-formed propositions are exactly the additive propositions of ordered logic, and the complete set of inference rules has been derived from those of the ordered sequent calculus by 
 
-There are two observations to be made.
-% 
-First, although the propositions of singleton logic are exactly the additive propositions of ordered logic, singleton logic is \emph{not} the additive fragment of ordered logic.
+% There is an important observation to be made here.
+Although the propositions of singleton logic are exactly the additive propositions of ordered logic, singleton logic is \emph{not} the additive fragment of ordered logic.
 For instance, the sequent $\oseq{A \oc B |- \top}$ is provable in the additive fragment of ordered logic, but it
 % $\slseq{A \oc B |- \top}$
-is not even a well-formed sequent in the singleton sequent calculus, for the simple reason that it violates the single-antecedent restriction.
+is not even a well-formed sequent in the singleton sequent calculus [, for the simple reason that it violates the single-antecedent restriction].
 
-That said, singleton logic only differs from the additive fragment of ordered logic in its treatment of $\zero$ and $\top$ -- the $\zero$,$\top$-free fragment of singleton logic coincides exactly with the $\zero$,$\top$-free additive fragment (that is, the $\plus$,$\with$-fragment) of ordered logic.
+That said, singleton logic only differs from the additive fragment of ordered logic in its treatment of $\zero$ and $\top$ -- the $\zero$,$\top$-free fragment of singleton logic coincides exactly with the $\zero$,$\top$-free, additive fragment (that is, the $\plus$,$\with$-fragment) of ordered logic.
 % 
 % That said, the two logics are related once $\zero$ and $\top$ are excluded -- the $\zero,\top$-free fragment of singleton logic is exactly the $\zero,\top$-free additive fragment of ordered logic.
 % Stated differently, the $\plus,\with$-fragment of singleton sequent calculus coincides with the $\plus,
@@ -411,27 +424,43 @@ That said, singleton logic only differs from the additive fragment of ordered lo
 % That said, if $\top$ and $\zero$ are removed, the remainder of singleton logic is indeed exactly the $\plus,\with$-fragment of ordered logic.
 A simple structural induction proves this:
 \begin{theorem}
-  If $\oseq{\octx |- B}$ in the $\plus,\with$-fragment of the ordered sequent calculus, then there exists a proposition $A$ such that $\octx = A$ and $\slseq{A |- B}$ in the $\plus,\with$-fragment of the singleton sequent calculus.
+  If\/ $\oseq{\octx |- B}$ in the $\plus$,$\with$-fragment of the ordered sequent calculus, then there exists a proposition $A$ such that $\slseq{\octx = A |- B}$ in the $\plus$,$\with$-frag\-ment of the singleton sequent calculus.
 \end{theorem}
 
-[Should I mention problems with $\top$ and how singleton logic sanitizes them?]
+[Should I mention problems with $\top$ and $\zero$ and how singleton logic sanitizes them?]
 
-Second, as mentioned previously, singleton logic contains no multipicative connectives and, most peculiarly, no form of implication.
-It is odd to contemplate that a logic without an implication connective to embody the logic's underlying hypothetical judgment could possibly be well-defined.
-But as the metatheoretic results of the following \lcnamecref{sec:singleton-logic:seq-calc:metatheory} verify, singleton sequent caluculus is indeed well-defined, resting on the solid foundation of a verificationist meaning-theory.
+% Second, it is worth reiterating that singleton logic, peculiarly, has no form of implication.
+% % as mentioned previously, singleton logic contains no multipicative connectives and, most peculiarly, no form of implication.
+% It is odd to contemplate that a logic without an implication connective to internalize the logic's underlying hypothetical judgment could possibly be well-defined.
+% But as the metatheoretic results of the following \lcnamecref{sec:singleton-logic:seq-calc:metatheory} verify, singleton sequent caluculus is indeed well-defined, resting on the solid foundation of a verificationist meaning-theory.
 
 \subsection{Metatheory: Cut elimination and identity expansion}\label{sec:singleton-logic:seq-calc:metatheory}
 
 The rules shown in \cref{fig:singleton-logic:seq-calc} certainly have the appearance of sequent calculus rules, but do they truly constitute a well-defined sequent calculus?
+Most peculiarly, the singleton sequent calculus has no implication connective that internalizes the underlying hypothetical judgment.
+Can such a calculus possibly be well-defined?
 
-In the tradition of \citeauthor{Gentzen:??}, \citeauthor{Dummett:??}, and \citeauthor{Martin-Lof:??}\autocites{Gentzen:??}{Dummett:??}{Martin-Lof:??}, a sequent calculus is well-defined if it rests on the solid foundation of a verificationist meaning-explanation.
-The meaning of each logical connective must be given entirely by its right and left inference rules, and those rules must exist in harmony.
+Because it coincides exactly with a fragment of the ordered sequent calculus, the singleton sequent calculus is indeed well-defined.
+However, for our subsequent development, it will prove useful to examine the singleton sequent calculus's metatheory, especially cut elimination, natively.
 
-A \emph{verification}, then, is a proof that relies only on the right and left inference rules, not on the $\jrule{CUT}$ or $\jrule{ID}$ rules.
+\newthought{In the tradition} of \citeauthor{Gentzen:MZ35}, \citeauthor{Dummett:HUP91}, and \citeauthor{Martin-Lof:NJPL96}\autocites{Gentzen:MZ35}{Dummett:HUP91}{Martin-Lof:NJPL96}, a sequent calculus is well-defined if it rests on the solid foundation of a verificationist meaning-explanation.
+That is, the meaning of each logical connective must be given entirely by its right [and left inference] rules, and those rules must exist in harmony [with the left rules].%
+\alertnote{Right rules only, because it is verificationist?}
 
-If every proof has a corresponding verification, then we can be sure that neither cut nor identity play any role in 
+A \emph{verification}, then, is a proof that relies only on the right and left inference rules and the $\jrule{ID}^{\alpha}$ rule for propositional variables $\alpha$ -- stated differently, verifications may not contain instances of the $\jrule{CUT}$ or general $\jrule{ID}^A$ rules.
 
-To show that the sequent calculus of singleton logic is well-defined, with each connective's right and left rules existing in harmony, 
+If every proof has a corresponding verification, then we can be sure that neither the $\jrule{CUT}$ nor $\jrule{ID}$ rules play any role in defining the logical connectives.
+
+
+In the tradition of \citeauthor{Gentzen:??}, \citeauthor{Dummett:??}, and \citeauthor{Martin-Lof:??}\autocites{Gentzen:??}{Dummett:??}{Martin-Lof:??}, a sequent calculus is well-defined if it rests on the solid foundation of a verificationist meaning-theory.
+That is, the meaning of each logical connective must be given entirely by its right [and left inference] rules, and those rules must exist in harmony [with the left rules].%
+\alertnote{Right rules only, because it is verificationist?}
+
+In \citeauthor{Martin-Lof:??}'s words, the meaning of a logical connective must be given by what counts as a verification of it.
+A \emph{verification}, then, is a proof that relies only on the right and left inference rules and the $\jrule{ID}^{\alpha}$ rule for propositional variables $\alpha$ -- stated differently, verifications may not contain instances of the $\jrule{CUT}$ or general $\jrule{ID}^A$ rules.
+
+
+For this program to succeed, we need to be sure that for every proof there is a corresponding verification -- we need a weak 
 
 In this sense, the usual cut elimination metatheorem states a weak normalization result.
 %
@@ -439,7 +468,7 @@ In this sense, the usual cut elimination metatheorem states a weak normalization
   If a proof of $\slseq{A |- C}$ exists, then there exists a cut-free proof of $\slseq{A |- C}$.
 \end{theorem}
 %
-As usual, this \lcnamecref{thm:singleton-logic:seq-calc:cut-elimination} may be proved by a straightforward induction on the structure of the given proof, provided that a cut principle for cut-free proofs is admissible:
+As usual, the cut elimination \lcnamecref{thm:singleton-logic:seq-calc:cut-elimination} may be proved by a straightforward induction on the structure of the given proof, provided that a cut principle for cut-free proofs is admissible:
 % 
 \begin{lemma}[Admissibility of cut]\label{lem:singleton-logic:seq-calc:cut-admissibility}
   If cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ exist, then there exists a cut-free proof of $\slseq{A |- C}$.
@@ -448,30 +477,26 @@ As usual, this \lcnamecref{thm:singleton-logic:seq-calc:cut-elimination} may be 
 \newthought{Before proceeding} to this \lcnamecref{lem:singleton-logic:seq-calc:cut-admissibility}'s proof, it is worth emphasizing a subtle distinction between the singleton sequent calculus's primitive $\jrule{CUT}$ rule and the admissible cut principle that this \lcnamecref{lem:singleton-logic:seq-calc:cut-admissibility} establishes.
 
 To be completely formal, we could treat cut-freeness as an extrinsic, Curry-style property of proofs%
-\footnote{Contrast this with a separate, intrinsically cut-free sequent calculus in the style of Church.\autocite{Pfenning:Andrews??}}
+\footnote{Contrast this with a separate, intrinsically cut-free sequent calculus in the style of Church \parencite{Pfenning:Andrews??}.}
 and indicate cut-freeness by decorating the turnstile: $\cfslseq{A |- C}$ is a cut-free proof of $\slseq{A |- C}$.
-The admissible cut principle stated in \cref{lem:singleton-logic:seq-calc:cut-admissibility} could then be expressed as
+The admissible cut principle stated in \cref{lem:singleton-logic:seq-calc:cut-admissibility} could then be expressed as the rule
 \begin{equation*}
   \infer-[\jrule{A-CUT}^B]{\cfslseq{A |- C}}{
     \cfslseq{A |- B} & \cfslseq{B |- C}}
   ,
 \end{equation*}
 with the dotted line indicating that it is an admissible, not primitive, rule.
-Writing it in this way emphasizes that the proof of \cref{lem:singleton-logic:seq-calc:cut-admissibility} amounts to defining a meta-level function that takes cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ and produces a \emph{cut-free} proof of $\slseq{A |- C}$.
+Writing it in this way emphasizes that proving \cref{lem:singleton-logic:seq-calc:cut-admissibility} amounts to defining a meta-level function that takes cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ and produces a \emph{cut-free} proof of $\slseq{A |- C}$.
 % Moreover, the decorated turnstile makes it clear that all three proofs are cut-free by construction.
 % 
-Contrast this with the primitive $\jrule{CUT}$ rule of the singleton sequent calculus, which forms a (cut-full) proof of $\slseq{A |- C}$ from (potentially cut-full) proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$.
-% \footnote{Which are not necessarily cut-free.}.
-\begin{marginfigure}[-4\baselineskip]
+Contrast this with the primitive $\jrule{CUT}$ rule of the singleton sequent calculus%
+\marginnote[-.5\baselineskip]{
   \normalsize
-  \begin{equation*}
-    \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
-      \slseq{A |- B} & \slseq{B |- C}}
-  % \qquad\text{and}\qquad
-  % \infer-[\jrule{A-CUT}^B]{\cfslseq{A |- C}}{
-  %   \cfslseq{A |- B} & \cfslseq{B |- C}}
-\end{equation*}
-\end{marginfigure}
+  $\infer[\jrule{CUT}^B]{\slseq{A |- C}}{
+     \slseq{A |- B} & \slseq{B |- C}}$%
+}%
+, which forms a (cut-full) proof of $\slseq{A |- C}$ from (potentially cut-full) proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$.
+% \footnote{Which are not necessarily cut-free.}.
 
 From here on, we won't bother to be quite so pedantic, instead often omitting the turnstile decoration on cut-free proofs with the understanding that the admissible $\jrule{A-CUT}$ rule may only be applied to cut-free proofs.
 
@@ -483,18 +508,18 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
 % with the understanding that this admissible rule may only be applied to cut-free proofs.
 
 
-\newthought{With that clarification}, we are finally ready to prove the admissibility of cut.
+\newthought{With that} clarification out of the way, we are finally ready to prove the admissibility of cut \lcnamecref{lem:singleton-logic:cut-admissibility}.
 
 \begin{lemma}[Admissibility of cut]
   ...
 \end{lemma}
 %
 \begin{proof}
-  We follow a standard technique for proving the admissibility of a cut principle\autocite{Pfenning:CUT} -- a lexicographic induction, first on the structure of the principal cut formula, and then on the structures of the given proofs.
+  We follow a standard technique for proving the admissibility of a cut principle\autocite{Pfenning:CUT} -- a lexicographic structural induction, first on the structure of the [principal] cut formula, and then on the structures of the given proofs.
 
   As usual, the cases can be classified into three categories: principal cases, identity cases, and commutative cases.
   % We show a few sample cases.
-  \begin{description}
+  \begin{description}[listparindent=\parindent, parsep=0pt]
   \item[Principal cases]
     The principal cases pair a proof ending in a right rule together with a proof ending in a corresponding left rule, so that the last inference of each proof introduces the cut formula.
     For example, one of the principal cases pairs a proof ending in the $\rrule{\plus}_1$ rule with one ending in the $\lrule{\plus}$ rule; it is resolved as follows.
@@ -513,12 +538,11 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
         \deduce{\slseq{B_1 |- C}}{\EE_1}}
       \qquad
     \end{gather*}
-    Notice that the interaction between proofs is synchronous -- the case is resolved by appealing to the inductive hypothesis at a smaller principal type.
-
+    Notice that the interaction between proofs here is synchronous -- the case is resolved by appealing to the inductive hypothesis at a smaller cut formula.
   
   \item[Identity cases]
     In the identity cases, one of the proofs is the $\jrule{ID}$ rule alone.
-    For example, 
+    For example:
     % One of the identity cases pairs the $\jrule{ID}$ rule with a proof of $\slseq{A |- C}$:
     \begin{equation*}
       \infer-[\jrule{CUT}^A]{\slseq{A |- C}}{
@@ -530,15 +554,17 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
       \deduce{\slseq{A |- C}}{\EE}
       \,.
     \end{equation*}
-    That $\jrule{CUT}$ and $\jrule{ID}$ are inverses here is consistent with the idea that cut and identity express dual principles.
+    That $\jrule{CUT}$ and $\jrule{ID}$ are inverses here is consistent with the idea that the cut and identity principles are dual.
     
   \item[Commutative cases]
-    In the commutative cases, the last inference in one of the proofs
+    In the commutative cases, the last inference in one of the proofs introduces a formula other than the cut formula;
+    the cases are subcategorized as left- or right-commutative according to the proof involved.
+    In both scenarios, the cut and involved inference rule commute, with an appeal to the inductive hypothesis at the same cut formula but smaller proofs.
 
-    The left commutative cases pair a proof of $\slseq{A |- B}$ ending in a left rule together with a proof of $\slseq{B |- C}$.
-    For example, one such case
+    % The left commutative cases pair a proof of $\slseq{A |- B}$ ending in a left rule together with a proof of $\slseq{B |- C}$.
+    For example, one left-commutative case
     % of the left commutative cases
-    pairs a proof ending in the $\lrule{\plus}$ rule together with a proof of $\slseq{B |- C}$:
+    pairs a proof of $\slseq{A_1 \plus A_2 |- B}$ ending in the $\lrule{\plus}$ rule together with a proof of $\slseq{B |- C}$:
     \begin{gather*}
       \infer-[\mathrlap{\jrule{CUT}^B}]{\slseq{A_1 \plus A_2 |- C}}{
         \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- B}}{
@@ -556,11 +582,12 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
           \deduce{\slseq{A_2 |- B}}{\DD_2} &
           \deduce{\slseq{B |- C}}{\EE}}}
     \end{gather*}
-    Notice that there are no left commutative cases involving right rules.
+    Notice that there can be no left-commutative cases involving right rules.
 
-  \item[Right commutative cases]
-    The right commutative cases pair a proof of $\slseq{A |- B}$ together with a proof of $\slseq{B |- C}$ ending in a right rule.
-    For example, one such case
+  % \item[Right commutative cases]
+    % The right commutative cases pair a proof of $\slseq{A |- B}$ together with a proof of $\slseq{B |- C}$ ending in a right rule.
+    % For example, one such case
+    As another example, one right-commutative case
     % of the right commutative cases
     pairs a proof of $\slseq{A |- B}$ with a proof of $\slseq{B |- C_1 \plus C_2}$ ending in the $\rrule{\plus}_1$ rule:
     % ; it is resolved as follows.
@@ -577,15 +604,15 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
           \deduce{\slseq{A |- B}}{\DD} &
           \deduce{\slseq{B |- C_1}}{\EE_1}}}
     \end{equation*}
-    Notice that there are no right commutative cases involving left rules because the sequent $\slseq{B |- C}$ contains only the principal antecedent.
-    In this way, the proof of admissibility of cut for singleton logic is more symmetric than that of ordered logic.
-    There, several right commutative cases involved left rules acting on non-principal antecedents.
+    Notice that there can be no right-commutative cases involving left rules because the cut formula is the only antecedent in $\slseq{B |- C}$.
+    In this way, the proof of admissibility of cut for the singleton sequent calculus is more symmetric than that of the ordered sequent calculus.
+    There, several right-commutative cases involved left rules acting on antecedents other than the cut formula.
     \qedhere
   \end{description}
 \end{proof}
 
 
-With the admissibility of cut established, we can finally prove cut elimination for the singleton sequent calculus.
+\newthought{With the admissibility} of cut established, we can finally prove cut elimination for the singleton sequent calculus.
 %
 \begin{theorem}[Cut elimination]
   If a proof of $\slseq{A |- C}$ exists, then a cut-free proof of $\slseq{A |- C}$ exists.
@@ -608,7 +635,7 @@ With the admissibility of cut established, we can finally prove cut elimination 
   \end{equation*}
   All other cases are handled compositionally.
 
-  Notice that this proof amounts to defining a meta-level function for normalizing proofs to cut-free form.
+  This proof amounts to defining a meta-level function for normalizing proofs to cut-free form.
 \end{proof}
 
 \begin{theorem}[Identity expansion]
@@ -634,69 +661,268 @@ With the admissibility of cut established, we can finally prove cut elimination 
 Sequent calculi are not the only way to present logics, so
 % natural deduction calculi and Hilbert systems are also commonly used, for instance.
 in this \lcnamecref{sec:singleton-logic:hilbert} we also consider a Hilbert-style axiomatization of singleton logic.
-Our interest in a Hilbert system for singleton logic is not zoological, however.
-Rather, over the course of the next \lcnamecref{ch:singleton-processes} and a half, we shall see that weak normalization of Hilbert-style proofs serves as the basis of a Curry--Howard isomorphism with chains of asynchronously communicating processes.
+Our interest in a Hilbert system for singleton logic is not taxonomic, however.
+Rather, over the course of the next \lcnamecref{ch:process-chains} and a half, we shall see that normalization of Hilbert-style proofs serves as the basis of a Curry--Howard isomorphism with chains of asynchronously communicating processes.
 
 % \subsection{A Hilbert-style axiomatization of linear logic}
 
-\newthought{In a se{q}uent calculus}, the meaning of a connective is given by its right and left inference rules.
-Hilbert-style axiomatizations, on the other hand, strive to use as few rules of inference as possible, with the meaning of a connective instead given by a small collection of axioms.
+\newthought{In a sequent calculus}, the meaning of a connective is given by its right and left inference rules.
+Hilbert-style axiomatizations, on the other hand, strive to use as few rules of inference as possible, with the meaning of a connective instead given by a small collection of axiom schemas.
 
-To avoid unnecessarily introducing rules of inference,
-% Most of the time,
-these axioms rely heavily on implication and a \textit{modus ponens} rule to effect ... 
+The term \enquote*{axiom schema} is often interpreted narrowly to mean only categorical judgments like $\vdash A \imp B \imp A \land B$, not hypothetical judgments like $\ctx , A , B \vdash A \land B$ adopted as zero-premise rules of inference.
+Consequently, Hilbert-style axiomatizations usually rely heavily on implication and a \emph{modus ponens} rule
+%
+\begin{marginfigure}
+  \begin{equation*}
+    \infer[\jrule{MP}]{\vdash B}{
+      \vdash A \imp B & \vdash A}
+  \end{equation*}
+  \caption{\emph{Modus ponens} for a Hilbert-style axiomatization of intuitionistic logic}
+\end{marginfigure}%
+%
+to effect the meanings of the logical connectives.
 
-Central to this endeavor is often a deduction theorem which shows that implication embodies the logic's underlying hypothetical judgement as a logical connective.
-For example, a Hilbert-style axiomatization of intuitionistic ordered logic would enjoy a deduction theorem involving left- and right-handed implications:
-\begin{theorem*}
-  $\oseq{A \oc \octx |- B}$ if and only if $\oseq{\octx |- A \limp B}$.
-  Similarly, $\oseq{\octx \oc A |- B}$ if and only if $\oseq{\octx |- B \pmir A}$.
-\end{theorem*}
+However, as explained in \cref{??}, singleton logic does not enjoy the luxury of an implication connective.
+So in a Hilbert-style axiomatization of singleton logic, we will have to content ourselves with a broad interpretation of the term \enquote*{axiom schema} that encompasses zero-premise rules.
 
-To avoid unnecessarily introducing rules of inference,
-% Most of the time,
-these axioms rely heavily on implication and a \textit{modus ponens} rule to effect ... 
-For example, in a Hilbert-style axiomatization of intuitionistic ordered logic\autocite{Avron:??}, ordered conjunction is described by the following axioms.
-\begin{equation*}
-  \begin{lgathered}
-    \vdash B \limp (A \limp A \fuse B) \\
-    \vdash (B \limp (A \limp C)) \limp (A \fuse B \limp C)
-  \end{lgathered}
-\end{equation*}
-The axioms are suggestive of the right and left sequent calculus rules for 
-\begin{equation*}
-  \begin{lgathered}
-    \vdash A \lolli B \lolli A \tensor B \\
-    \vdash (A \lolli B \lolli C) \lolli (A \tensor B \lolli C)
-  \end{lgathered}
-  \quad\rightsquigarrow\quad
-  \begin{gathered}
-    \infer{A , B \vdash A \tensor B}{} \\
-    \infer{A \tensor B \vdash C}{
-      A, B \vdash C}
-  \end{gathered}
-\end{equation*}
+\newthought{To construct} a Hilbert-style axiomatization of singleton logic, we will ask, in turn, whether each sequent calculus rule can be reduced to an axiom schema.
 
-
-
-% Whereas sequent calculi use many inference rules but few axioms, Hilbert systems shift the balance far in favor of axioms.
-
-
-% In a Hilbert system, each logical connective is defined by a collection of axioms.
-% For example, in a Hilbert system for intuitionistic ordered logic, additive disjunction would be defined by three axioms:
-\begin{equation*}
-  \begin{lgathered}
-    \infer[\with]{\vdash A \with B}{
-      \vdash A & \vdash B}
+First, consider the judgmental rules, $\jrule{ID}$ and $\jrule{CUT}$, for the identity and cut principles (see neighboring display).%
+\marginnote{%
+  \begin{inferences}
+    \infer[\mathrlap{\jrule{ID}^A}]{\slseq{A |- A}}{}
+    \hphantom{\jrule{CUT}^B}
     \\
-    \vdash \bigl((A \limp B_1) \with (A \limp B_2)\bigr) \limp (A \limp B_1 \with B_2)
-  \end{lgathered}
-  \qquad
-  \begin{lgathered}[b]
-    \vdash A_1 \with A_2 \limp A_1 \\
-    \vdash A_1 \with A_2 \limp A_2
-  \end{lgathered}
+    \infer[\mathrlap{\jrule{CUT}^B}]{\slseq{A |- C}}{
+      \slseq{A |- B} & \slseq{B |- C}}
+    \hphantom{\jrule{CUT}^B}
+  \end{inferences}
+}
+With zero premises, the $\jrule{ID}$ rule itself is already an axiom schema and can be adopted directly in singleton logic's Hilbert system.
+
+The $\jrule{CUT}$ rule is not quite so accommodating.
+As a rule for composing proofs, the $\jrule{CUT}$ rule serves a similar purpose to the traditional \emph{modus ponens} rule.
+Just as \emph{modus ponens} cannot be reduced to an axiom schema, so must $\jrule{CUT}$ remain a rule of inference [in our Hilbert system].
+Moreover, because singleton logic has no implication connective, the rule's hypothetical judgments cannot even be simplified to categorical judgments.
+Therefore, the $\jrule{CUT}$ rule is adopted wholesale in the Hilbert system.
+
+% Because singleton logic does not have an implication connective to internalize the hypothetical judgment, there is no obvious way to turn this rule into an axiom.
+% Both rules are therefore adopted wholesale in the Hilbert-style axiomatization.
+
+Next, consider the sequent calculus's $\rrule{\plus}_1$ inference rule.
+% ; how much can we push this rule toward an axiom?
+Using the $\jrule{ID}$ axiom schema, we can obtain a zero-premise derived rule from $\rrule{\plus}_1$:
+\begin{equation*}
+  \infer[\rrule{\plus}_1]{\slseq{A_1 |- A_1 \plus A_2}}{
+    \infer[\jrule{ID}]{\slseq{A_1 |- A_1}}{}}
+  %
+  \quad\leftrightsquigarrow\quad
+  %
+  \infer[\rrule{\plus}'_1]{\slseq{A_1 |- A_1 \plus A_2}}{}
 \end{equation*}
+Moreover, by combining this new $\rrule{\plus}'_1$ axiom schema with $\jrule{CUT}$, we can recover the original $\rrule{\plus}_1$ rule as a derived rule:
+\begin{equation*}
+  \infer[\jrule{CUT}]{\slseq{A |- B_1 \plus B_2}}{
+    \slseq{A |- B_1} &
+    \infer[\rrule{\plus}'_1]{\slseq{B_1 |- B_1 \plus B_2}}{}}
+  %
+  \quad\leftrightsquigarrow\quad
+  %
+  \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+    \slseq{A |- B_1}}
+\end{equation*}
+Together, these two observations suggest that $\rrule{\plus}'_1$ be adopted as an axiom schema in the Hilbert-style axiomatization of singleton logic.
+A symmetric $\rrule{\plus}'_2$ axiom schema should be adopted, too.
+
+What about the sequent calculus's $\lrule{\plus}$ rule (see neighboring display)?%
+\marginnote{%
+  \begin{equation*}
+    \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
+      \slseq{B_1 |- C} &
+      \slseq{B_2 |- C}}
+  \end{equation*}%
+}
+Can it also be reduced to an axiom schema?
+Once again, singleton logic's lack of an implication connective prevents us from even simplifying the $\lrule{\plus}$ rule's hypothetical judgments to categorical judgments.
+Like $\jrule{CUT}$, the sequent calculus's $\lrule{\plus}$ rule is thus adopted wholesale in singleton logic's Hilbert system.
+Including the additive $\lrule{\plus}$ rule as a primitive rule of inference is perhaps not unexpected.
+It is consistent with Hilbert-style axiomatizations of linear logic\autocite{Avron:TCS88}, which include an adjunction rule -- essentially the linear sequent calculus's $\rrule{\with}$ rule -- to effect the additive behavior that linear implication and its multiplicative \emph{modus ponens} rule cannot.
+
+% means that we will just
+% Because singleton logic does not have an implication connective to internalize the hypothetical judgment, there is really no way to turn this rule into an axiom.
+% Instead, we will
+% carry the $\lrule{\plus}$ sequent calculus rule over to our Hilbert-style axiomatization [of singleton logic] as a primitive rule of inference.
+
+The axiomatization of additive conjunction is dual to that of $A_1 \plus A_2$:
+The sequent calculus's $\rrule{\with}$ rule will be adopted wholesale, and $\lrule{\with}'_1$ and $\lrule{\with}'_2$ axiom schemas will be derived from the sequent calculus's $\lrule{\with}_1$, $\lrule{\with}_2$, and $\jrule{ID}$ rules.
+%
+\begin{marginfigure}
+  \begin{inferences}
+    \infer[\rrule{\with}]{\slseq{A |- C_1 \with C_2}}{
+      \slseq{A |- C_1} &
+      \slseq{A |- C_2}}
+    \\
+    \infer[\lrule{\with}'_1]{\slseq{C_1 \with C_2 |- C_1}}{}
+    \and
+    \infer[\lrule{\with}'_2]{\slseq{C_1 \with C_2 |- C_2}}{}
+  \end{inferences}
+  \caption{A Hilbert-style axiomatization of additive conjunction from singleton logic}
+\end{marginfigure}%
+%
+And finally, the axiomatizations of $\zero$ and $\top$ are the nullary analogues of those of the binary $\plus$ and $\with$ connectives, respectively.
+
+\Cref{fig:singleton-logic:hilbert} summarizes this Hilbert-style axiomatization of singleton logic.
+%
+\begin{figure}[tbp]
+  \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
+  \begin{syntax*}
+    Propositions &
+      A & \alpha \mid A \plus B \mid \zero \mid A \with B \mid \top
+  \end{syntax*}
+  \begin{inferences}
+    \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
+      \slseq{A |- B} & \slseq{B |- C}}
+    \and
+    \infer[\jrule{ID}^A]{\slseq{A |- A}}{}
+    \\
+    \infer[\rrule{\plus}_1']{\slseq{A_1 |- A_1 \plus A_2}}{}
+    \and
+    \infer[\rrule{\plus}_2']{\slseq{A_2 |- A_1 \plus A_2}}{}
+    \and
+    \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
+      \slseq{A_1 |- C} & \slseq{A_2 |- C}}
+    \\
+    \text{(no $\rrule{\zero}$ rule)}
+    \and
+    \infer[\lrule{\zero}]{\slseq{\zero |- C}}{}
+    \\
+    \infer[\rrule{\with}]{\slseq{A |- C_1 \with C_2}}{
+      \slseq{A |- C_1} & \slseq{A |- C_2}}
+    \and
+    \infer[\lrule{\with}_1']{\slseq{C_1 \with C_2 |- C_1}}{}
+    \and
+    \infer[\lrule{\with}_2']{\slseq{C_1 \with C_2 |- C_2}}{}
+    \\
+    \infer[\rrule{\top}]{\slseq{A |- \top}}{}
+    \and
+    \text{(no $\lrule{\top}$ rule)}
+  \end{inferences}
+  \vspace{-\belowdisplayskip}
+  \caption{A Hilbert system for singleton logic}%
+  \label{fig:singleton-logic:hilbert}
+\end{figure}
+
+% \newthought{In a sequent calculus}, the meaning of a connective is given by its right and left inference rules.
+% Hilbert-style axiomatizations, on the other hand, strive to use as few rules of inference as possible, with the meaning of a connective instead given by a small collection of axioms.
+% % For example, the neighboring display shows a possible axiomatization of intuitionistic conjunction.%
+% % \marginnote{%
+% %   $\begin{lgathered}
+% %     \vdash A \imp B \imp A \land B \\
+% %     \vdash (A \land B \imp A \imp C) \imp (A \land B \imp C) \\
+% %     \vdash (A \land B \imp B \imp C) \imp (A \land B \imp C)
+% %   \end{lgathered}$
+% % }
+
+% The term \enquote*{axiom} is often interpreted narrowly to mean only categorical judgments [logical tautologies?] like $\vdash A \imp B \imp A \land B$, not hypothetical judgments like $\ctx , A , B \vdash A \land B$ adopted as zero-premise rules of inference.
+% Consequently, Hilbert-style axiomatizations rely heavily on implication and a \emph{modus ponens} rule to effect the maximum ...
+
+% Although categorical axioms are usually preferred, they are equivalent to the hypothetical axioms.
+% The deduction theorem, used to bridge ..., captures this equivalence.
+% For example, the following deduction theorem for intuitionistic logic, together with weakening, shows that the categorical axiom $\vdash A \imp B \imp A \land B$ is equivalent to the hypothetical axiom $\ctx , A , B \vdash A \land B$.
+
+
+% As explained in \cref{??}, singleton logic does not have the luxury of an implication connective, so in a Hilbert-style axiomatization, we will have to satisfy ourselves with hypothetical axioms.
+
+
+% Next, take the sequent calculus's $\rrule{\plus}_1$ inference rule; how much can we push this rule toward an axiom?
+% Consider the derived rule obtained from $\rrule{\plus}_1$ and $\jrule{ID}$:
+% \begin{equation*}
+%   \infer[\rrule{\plus}_1]{\slseq{A_1 |- A_1 \plus A_2}}{
+%     \infer[\jrule{ID}]{\slseq{A_1 |- A_1}}{}}
+%   %
+%   \infer[\rrule{\plus}'_1]{\slseq{A_1 |- A_1 \plus A_2}}{}
+% \end{equation*}
+
+% Given a sequent calculus and Hilbert system, we would like to be sure that the sequent- and Hilbert-style meanings of the logical connectives coincide.
+% To bridge the gap between the categorical judgment preferred in a Hilbert-style axiomatization and the hypothetical judgment at the heart of a sequent calculus, a hypothetical Hilbert system and accompanying deduction theorem are used.
+% The deduction theorem captures the idea that implication embodies a hypothetical judgment as a logical connective.
+% For intuitionistic logic, that theorem would be:
+% \begin{theorem*}[Deduction theorem]
+%   $\ctx , A \vdash B$ if and only if\/ $\ctx \vdash A \imp B$.
+% \end{theorem*}
+
+
+% Although categorical judgments are preferred, a hypothetical Hilbert system 
+
+% Central to this endeavor is often a deduction theorem which shows that implication embodies the logic's underlying hypothetical judgment as a logical connective.
+% For example, a Hilbert-style axiomatization of intuitionistic logic would enjoy the following theorem.
+% \begin{theorem*}[Deduction theorem]
+%   $\ctx , A \vdash B$ if and only if $\ctx \vdash A \imp B$.
+% \end{theorem*}
+% On the basis of this theorem, 
+
+
+% As explained in \cref{??}, singleton logic does not have the luxury of an implication connective and consequently no deduction theorem, so the final  in a Hilbert-style axiomatization, we will have to 
+
+
+% Often, the term \enquote*{axiom} is interpreted narrowly to mean only 
+% \begin{equation*}
+%   \begin{lgathered}
+%     \vdash A \imp B \imp A \land B \\
+%     \vdash (A \imp C) \imp (A \land B \imp C) \\
+%     \vdash (B \imp C) \imp (A \land B \imp C)
+%   \end{lgathered}
+% \end{equation*}
+
+
+% To avoid unnecessarily introducing rules of inference,
+% % Most of the time,
+% these axioms rely heavily on implication and a \textit{modus ponens} rule to effect ... 
+
+% To avoid unnecessarily introducing rules of inference,
+% % Most of the time,
+% these axioms rely heavily on implication and a \textit{modus ponens} rule to effect ... 
+% For example, in a Hilbert-style axiomatization of intuitionistic ordered logic\autocite{Avron:??}, ordered conjunction is described by the following axioms.
+% \begin{equation*}
+%   \begin{lgathered}
+%     \vdash B \limp (A \limp A \fuse B) \\
+%     \vdash (B \limp (A \limp C)) \limp (A \fuse B \limp C)
+%   \end{lgathered}
+% \end{equation*}
+% The axioms are suggestive of the right and left sequent calculus rules for 
+% \begin{equation*}
+%   \begin{lgathered}
+%     \vdash A \lolli B \lolli A \tensor B \\
+%     \vdash (A \lolli B \lolli C) \lolli (A \tensor B \lolli C)
+%   \end{lgathered}
+%   \quad\rightsquigarrow\quad
+%   \begin{gathered}
+%     \infer{A , B \vdash A \tensor B}{} \\
+%     \infer{A \tensor B \vdash C}{
+%       A, B \vdash C}
+%   \end{gathered}
+% \end{equation*}
+
+
+
+% % Whereas sequent calculi use many inference rules but few axioms, Hilbert systems shift the balance far in favor of axioms.
+
+
+% % In a Hilbert system, each logical connective is defined by a collection of axioms.
+% % For example, in a Hilbert system for intuitionistic ordered logic, additive disjunction would be defined by three axioms:
+% \begin{equation*}
+%   \begin{lgathered}
+%     \infer[\with]{\vdash A \with B}{
+%       \vdash A & \vdash B}
+%     \\
+%     \vdash \bigl((A \limp B_1) \with (A \limp B_2)\bigr) \limp (A \limp B_1 \with B_2)
+%   \end{lgathered}
+%   \qquad
+%   \begin{lgathered}[b]
+%     \vdash A_1 \with A_2 \limp A_1 \\
+%     \vdash A_1 \with A_2 \limp A_2
+%   \end{lgathered}
+% \end{equation*}
 
 
 % \newcommand*{\approxident}{%
@@ -874,126 +1100,113 @@ The axioms are suggestive of the right and left sequent calculus rules for
 
 
 
-\begin{inferences}
-  \infer[\jrule{MP}]{\slseq{|- C}}{
-    \slseq{|- B} & \slseq{|- B \limp C}}
-  \\
-  \begin{lgathered}
-  \vdash A \limp A
-  \\
-  \vdash A_1 \limp A_1 \plus A_2 \\
-  \vdash A_2 \limp A_1 \plus A_2 \\
-  \vdash (A_2 \limp C) \limp (A_1 \limp C) \limp (A_1 \plus A_2 \limp C)
-\end{lgathered}
-\end{inferences}
+% \begin{inferences}
+%   \infer[\jrule{MP}]{\slseq{|- C}}{
+%     \slseq{|- B} & \slseq{|- B \limp C}}
+%   \\
+%   \begin{lgathered}
+%   \vdash A \limp A
+%   \\
+%   \vdash A_1 \limp A_1 \plus A_2 \\
+%   \vdash A_2 \limp A_1 \plus A_2 \\
+%   \vdash (A_2 \limp C) \limp (A_1 \limp C) \limp (A_1 \plus A_2 \limp C)
+% \end{lgathered}
+% \end{inferences}
 
 
 
 
-\begin{figure}
-  \begin{syntax*}
-    Propositions &
-      A & \alpha \mid A \plus B \mid \zero \mid A \with B \mid \top
-  \end{syntax*}
-  \begin{inferences}
-    \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
-      \slseq{A |- B} & \slseq{B |- C}}
-    \and
-    \infer[\jrule{ID}^A]{\slseq{A |- A}}{}
-    \\
-    \infer[\rrule{\plus}_1']{\slseq{A_1 |- A_1 \plus A_2}}{}
-    \and
-    \infer[\rrule{\plus}_2']{\slseq{A_2 |- A_1 \plus A_2}}{}
-    \and
-    \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
-      \slseq{A_1 |- C} & \slseq{A_2 |- C}}
-    \\
-    \text{(no $\rrule{\zero}$ rule)}
-    \and
-    \infer[\lrule{\zero}]{\slseq{\zero |- C}}{}
-    \\
-    \infer[\rrule{\with}]{\slseq{A |- C_1 \with C_2}}{
-      \slseq{A |- C_1} & \slseq{A |- C_2}}
-    \and
-    \infer[\lrule{\with}_1']{\slseq{C_1 \with C_2 |- C_1}}{}
-    \and
-    \infer[\lrule{\with}_2']{\slseq{C_1 \with C_2 |- C_2}}{}
-    \\
-    \infer[\rrule{\top}]{\slseq{A |- \top}}{}
-    \and
-    \text{(no $\lrule{\top}$ rule)}
-  \end{inferences}
-  
-  \caption{A Hilbert system for singleton logic\label{fig:singleton-logic:hilbert}}
-\end{figure}
 
-The Hilbert system of \cref{fig:singleton-logic:hilbert} can also be viewed as a variant of the singleton sequent calculus\parencref{fig:singleton-logic:seq-calc} in which each connective's non-invertible rules have been replaced with zero-premise rules.
+\newthought{The Hilbert system} of \cref{fig:singleton-logic:hilbert} shares so many rules with the singleton sequent calculus\parencref{fig:singleton-logic:seq-calc} that it can be viewed as a variant in which each connective's non-invertible rules have been replaced with zero-premise rules.
 As such, we should seek to prove the usual sequent calculus metatheorems -- cut elimination and identity expansion -- for this Hilbert-style variant.
 
-Strictly speaking, cut elimination does not hold for this calculus.
-As a concrete counterexample, there is no cut-free Hilbert-style proof of $\slseq{\alpha_2 |- \alpha_1 \plus (\alpha_2 \plus \alpha_3)}$, even though the same sequent is provable using cut:
+Strictly speaking, cut elimination does not hold for the Hilbert system.
+As a concrete [counter]example, there is no cut-free Hilbert-style proof of $\slseq{\alpha_2 |- \alpha_1 \plus (\alpha_2 \plus \alpha_3)}$, even though the same sequent is provable using cut:
+\begin{equation*}
+  \infer[\jrule{CUT}]{\slseq{\alpha |- \top \plus \top}}{
+    \infer[\rrule{\top}]{\slseq{\alpha |- \top}}{} &
+    \infer[\rrule{\plus}'_1]{\slseq{\top |- \top \plus \top}}{}}
+\end{equation*}
 \begin{equation*}
   \infer[\jrule{CUT}]{\slseq{\alpha_2 |- \alpha_1 \plus (\alpha_2 \plus \alpha_3)}}{
     \infer[\rrule{\plus}'_1]{\slseq{\alpha_2 |- \alpha_2 \plus \alpha_3}}{} &
     \infer[\rrule{\plus}'_2]{\slseq{\alpha_2 \plus \alpha_3 |- \alpha_1 \plus (\alpha_2 \plus \alpha_3)}}{}}
 \end{equation*}
-Although cut elimination does not hold, proofs are nevertheless normalizable.
+Although cut elimination does not hold, normal forms nevertheless exist.
 % , we will still be able to prove a weak normalization result.
-Normal proofs will still contain cuts, but those cuts will be of a particular, analytic form.
+Normal Hilbert-style proofs will contain cuts, but those cuts will have a particular, analytic form.
 In other words, although full cut elimination does not hold,
 % of all cuts is not possible, but
-\emph{non-analytic} cut elimination does.
+elimination of \emph{non-analytic} cuts does.
 
-Before presenting a proof of non-analytic cut elimination, we will take a moment to introduce proof terms for the Hilbert system.
+\subsection{A proof term assignment for the Hilbert system}
+
+Before presenting a proof of non-analytic cut elimination, we will take a moment to introduce a proof term assignment for the Hilbert system.
 These proof terms will be a convenient, succinct notation with which to describe the elimination procedure.
+To keep the proof terms compact, we will also take this opportunity to introduce labeled, $n$-ary forms of additive disjunction and conjunction.
 
-To keep the proof terms compact, we will also take this opportunity to replace the binary forms of additive disjunction and conjunction with labeled, $n$-ary forms.
-
-This way, normal proofs are analytic that admits a subformula property and therefore count as verifications.
-
-\begin{figure}[t]
-\begin{syntax*}
-  Propositions &
-    A & \alpha \mid \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}
-               \mid \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
-  \\
-  Proof terms &
-    P & % \begin{array}[t]{@{}l@{}}
-          \spawn{P_1}{P_2} \mid \fwd
+\begin{figure}[tbp]
+  \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
+  \begin{syntax*}
+    Propositions &
+      A & \alpha \mid \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}
+                 \mid \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
+    \\
+    Proof terms &
+      P & \spawn{P_1}{P_2} \mid \fwd
           \begin{array}[t]{@{{} \mid {}}l@{}}
             \selectR{\kay} \mid \caseL[\ell \in L]{\ell => P_{\ell}} \\
             \caseR[\ell \in L]{\ell => P_{\ell}} \mid \selectL{\kay}
           \end{array}
-        % \end{array}
-\end{syntax*}
-\begin{inferences}
-  \infer[\jrule{CUT}^B]{\slseq{A |- \spawn{P_1}{P_2} : C}}{
-    \slseq{A |- P_1 : B} & \slseq{B |- P_2 : C}}
-  \and
-  \infer[\jrule{ID}^A]{\slseq{A |- \fwd : A}}{}
-  \\
-  \infer[\rrule{\plus}']{\slseq{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
-    \text{($\kay \in L$)}}
-  \and
-  \infer[\lrule{\plus}]{\slseq{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
-    \multipremise{\ell \in L}{\slseq{A_{\ell} |- P_{\ell} : C}}}
-  \\
-  \infer[\rrule{\with}]{\slseq{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
-    \multipremise{\ell \in L}{\slseq{A |- P_{\ell} : C_{\ell}}}}
-  \and
-  \infer[\lrule{\with}']{\slseq{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
-    \text{($\kay \in L$)}}
-\end{inferences}
-  \caption{Proof terms for a labeled variant of the Hilbert system of \cref{fig:singleton-logic:hilbert}}%
+  \end{syntax*}
+  \begin{inferences}
+    \infer[\jrule{CUT}^B]{\slseq{A |- \spawn{P_1}{P_2} : C}}{
+      \slseq{A |- P_1 : B} & \slseq{B |- P_2 : C}}
+    \and
+    \infer[\jrule{ID}^A]{\slseq{A |- \fwd : A}}{}
+    \\
+    \infer[\rrule{\plus}']{\slseq{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+      \text{($\kay \in L$)}}
+    \and
+    \infer[\lrule{\plus}]{\slseq{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
+      \multipremise{\ell \in L}{\slseq{A_{\ell} |- P_{\ell} : C}}}
+    \\
+    \infer[\rrule{\with}]{\slseq{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+      \multipremise{\ell \in L}{\slseq{A |- P_{\ell} : C_{\ell}}}}
+    \and
+    \infer[\lrule{\with}']{\slseq{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
+      \text{($\kay \in L$)}}
+  \end{inferences}
+  \vspace{-\belowdisplayskip}%
+  \caption{Proof terms for a labeled, $n$-ary variant of the Hilbert system of \cref{fig:singleton-logic:hilbert}}%
   \label{fig:singleton-logic:hilbert-terms}
 \end{figure}
+%
+\Cref{fig:singleton-logic:hilbert-terms} presents the labeled, $n$-ary generalization of the singleton Hilbert system, equipped with proof terms.
+Individual labels $\ell$ and $\kay$ are drawn from an unspecified universe of labels, and the metavariable $L$ is used for index sets of labels.
+The labeled, $n$-ary proposition $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$ generalizes binary additive disjunction, $A \plus B$, and, because the label set $L$ may even be empty, it also generalizes additive falsehood, $\zero$.
+Likewise, $\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}$ generalizes both $A \with B$ and $\top$.
+
+Because the $\jrule{CUT}$ rule serves to compose two proofs of compatible sequents, the proof term $\spawn{P_1}{P_2}$ was chosen for its suggestion of function compostion, $f_2 \circ f_1$.%
+\footnote{Notice that the order of composition in the $\spawn{P_1}{P_2}$ term matches the order of premises in the $\jrule{CUT}$ rule, but is opposite the order traditionally used for function composition.}
+The proof term $\fwd$ is used for the $\jrule{ID}$ rule.
+%
+Because of their similar structure, the $\rrule{\plus}'$ and $\lrule{\with}'$ rules are assigned the similar proof terms $\selectR{\kay}$ and $\selectL{\kay}$; the direction of the underlying arrow distinguishes them.
+Similarly, the $\lrule{\plus}$ and $\rrule{\with}$ rules are assigned the proof terms $\caseL[\ell \in L]{\ell => P_{\ell}}$ and $\caseR[\ell \in L]{\ell => P_{\ell}}$.
+
+\begin{itemize}
+\item Variable-free combinators
+\end{itemize}
 
 
 \subsection{Non-analytic cut elimination for the singleton Hilbert system}
 
-With proof terms in hand, we can now return to our goal of establishing a \emph{non-analytic} cut elimination result for the singleton Hilbert system.
+With proof terms in hand, we can now return to our goal of establishing a \emph{non-analytic} cut elimination \lcnamecref{thm:singleton-logic:hilbert:cut-elimination} for the singleton Hilbert system.
 
-\begin{marginfigure}
+The cut elimination procedure will normalize a Hilbert-style proof so that any remaining cuts are analytic, specifically of the forms $\spawn{\selectL{\kay}}{P}$ or $\spawn{P}{\selectR{\kay}}$.
+As shown in the neighboring display,%
+%
+\marginnote{
   \begin{gather*}
     \infer[\jrule{CUT}^{A_{\kay}}]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \spawn{\selectL{\kay}}{P} : C}}{
       \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectL{\kay} : A_{\kay}}}{
@@ -1005,15 +1218,12 @@ With proof terms in hand, we can now return to our goal of establishing a \emph{
       \infer[\rrule{\plus}']{\slof{C_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
         \text{($\kay \in L$)}}}
   \end{gather*}
-  \caption{Analytic forms of cut}\label{fig:singleton-logic:hilbert:analytic-cuts}
-\end{marginfigure}
+}
 %
-The elimination procedure will normalize a Hilbert-style proof so that any remaining cuts are of the form $\spawn{\selectL{\kay}}{P}$ or $\spawn{P}{\selectR{\kay}}$.
-As shown in \cref{fig:singleton-logic:hilbert:analytic-cuts}, cuts of these forms are analytic because the principal formula is a subformula
-%
+cuts of these forms are analytic because the cut formula is a subformula of the conclusion sequent.
 
-
-
+We say that a term is \emph{normal} if it contains only cuts of these analytic forms;
+the normal terms are generated by the following grammar.
 \begin{syntax*}
   Normal terms &
     N,M & \begin{array}[t]{@{}l@{}}
@@ -1024,21 +1234,24 @@ As shown in \cref{fig:singleton-logic:hilbert:analytic-cuts}, cuts of these form
             \end{array}
           \end{array}
 \end{syntax*}
+In other words, normality is an extrinsic property of terms that is judged by membership in the above grammar.
 
-
-\begin{theorem}[Non-analytic cut elimination]
+Non-analytic cut elimination then amounts to proof term normalization:
+%
+\begin{theorem}[Non-analytic cut elimination]\label{thm:singleton-logic:seq-calc:cut-elimination}
   If $\slof{A |- P : C}$, then $\slof{A |- N : C}$ for some normal term $N$.
 \end{theorem}
-
-
-
+%
+As for the singleton sequent calculus's cut elimination result\parencref{thm:singleton-logic:seq-calc:cut-elimination}, this \lcnamecref{thm:singleton-logic:hilbert:cut-elimination} can be proved by a straightforward structural induction, this time on the given term, $P$.
+First, however, we need admissibility of non-analytic cut as a \lcnamecref{lem:singleton-logic:hilbert:cut-admissibility}:
+%
 \begin{lemma}[Admissibility of non-analytic cut]\label{lem:singleton-logic:hilbert:cut-admissibility}
   If $\slof{A |- N : B}$ and $\slof{B |- M : C}$, then $\slof{A |- N' : C}$ for some normal term $N'$.
 \end{lemma}
 %
 \begin{proof}
   As with \cref{lem:singleton-logic:seq-calc:cut-admissibility} for the sequent calculus, this \lcnamecref{lem:singleton-logic:hilbert:cut-admissibility} states the admissibility of a cut principle, and its proof amounts to the definition of a meta-level function on proofs.
-  However, with proof terms, we can now make the function definition more apparent.
+  However, with proof terms, we can now make that function definition more apparent.
 
   Let $\nspawn{}{}$ be a binary function on normal terms $N$ and $M$ of compatible types such that $\nspawn{N}{M}$ is a normal term of the corresponding type:
   % We will define $\nspawn{}{}$ as a meta-level function from pairs of normal terms of compatible types to normal terms of the corresponding type.
@@ -1048,9 +1261,11 @@ As shown in \cref{fig:singleton-logic:hilbert:analytic-cuts}, cuts of these form
     \,.
   \end{equation*}
 
+
+    
   Once again, the cut principle can be proved by a lexicographic induction, first on the principal type, $B$, and then on the structures of the given terms, $N$ and $M$.
   However, because the Hilbert system uses different rules than the sequent calculus, the proof's cases are organized a bit differently.
-  In addition to the usual classes of principal, identity, left commutative, and right commutative cases, a new class of associative cases is introduced.
+  In addition to the usual classes of principal, identity, and commutative cases, a new class of associative cases is introduced.
   \begin{description}[listparindent=\parindent, parsep=0pt]
   \item[Associative cases]
     Consider, for example, the case $\nspawn{(\spawn{N_0}{\selectR{\kay}})}{M}$.
@@ -1063,10 +1278,12 @@ As shown in \cref{fig:singleton-logic:hilbert:analytic-cuts}, cuts of these form
     But is this clause terminating?
 
     Yes, indeed it is.
-    In $\nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}$, the inner $\nspawn{\selectR{\kay}}{M}$ terminates because the terms have become smaller -- $\selectR{\kay}$ is a proper subterm of $\spawn{N_0}{\selectR{\kay}}$ -- while the principal type remains unchanged.
-    The outer $\nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}$ also terminates, despite $\nspawn{\selectR{\kay}}{M}$ possibly being larger than $M$, because the principal type has become smaller.%
-    \footnote{To aid the reader in tracking the types, \cref{fig:singleton-logic:hilbert:associative-cut} shows the full typing derivations.}
-    \begin{figure*}[tbp]
+    In $\nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}$, the inner $\nspawn{\selectR{\kay}}{M}$ terminates because the terms have become smaller -- $\selectR{\kay}$ is a proper subterm of $\spawn{N_0}{\selectR{\kay}}$ -- while the cut formula and other term remain unchanged.
+    The outer $\nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}$ also terminates, despite $\nspawn{\selectR{\kay}}{M}$ possibly being larger than $M$, because the cut formula has become smaller.%
+    \footnote{To aid the reader in tracking the types, \cref{fig:singleton-logic:hilbert:associative-cut} shows the full typing derivations.}%
+    %
+    \begin{figure}[tbp]
+      \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
       \begin{gather*}
         \infer-[\jrule{A-CUT}^B]{\slof{A |- \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} : C}}{
           \infer[\jrule{CUT}^{B_{\kay}}]{\slof{A |- \spawn{N_0}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
@@ -1082,8 +1299,10 @@ As shown in \cref{fig:singleton-logic:hilbert:analytic-cuts}, cuts of these form
               \text{($\kay \in L$)}} &
             \slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- M : C}}}
       \end{gather*}
-      \caption{One of the associative cases in the proof of non-analytic cut admissibility\parencref{lem:singleton-logic:hilbert:associative-cut}}\label{fig:singleton-logic:hilbert:associative-cut}
-    \end{figure*}
+      \vspace{-\belowdisplayskip}
+      \caption{One of the associative cases in the proof of non-analytic cut admissibility\parencref{lem:singleton-logic:hilbert:cut-admissibility}}%
+      \label{fig:singleton-logic:hilbert:associative-cut}
+    \end{figure}
 
     The symmetric case, $\nspawn{N}{(\spawn{\selectL{\kay}}{M_0})}$, is also an associative case and is handled similarly.
     The complete set of associative clauses is therefore:
@@ -1093,55 +1312,79 @@ As shown in \cref{fig:singleton-logic:hilbert:analytic-cuts}, cuts of these form
     \end{gather*}
     Both of these associative cases detach a label and group it together with the neighboring term, thereby enabling interactions between the label and term.
 
-\item[Principal cases]
-  Because the above associative cases decompose the analytic cuts $\spawn{N_0}{\selectR{\kay}}$ and $\spawn{\selectL{\kay}}{M_0}$, the principal cases need only cover those pairings of the $\rrule{\plus}'$ rule with a proof ending in the $\lrule{\plus}$ rule and the symmetric pairings involving the $\rrule{\with}$ and $\lrule{\with}'$ rules:
-  \begin{gather*}
-    \nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}} = M_{\kay} \\
-    \nspawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{\selectL{\kay}} = N_{\kay}
-  \end{gather*}
-  If $\selectR{\kay}$ and $\selectL{\kay}$ are viewed as directed messages, then these principal clauses in $\nspawn{}{}$'s definition look much like rules for asynchronous message-passing communication.
-  This observation is at the heart of the Curry--Howard interpretation of the singleton Hilbert system that we develop in the following \lcnamecref{ch:singleton-procs}.
+  \item[Principal cases]
+    Because the above associative cases decompose the analytic cuts $\spawn{N_0}{\selectR{\kay}}$ and $\spawn{\selectL{\kay}}{M_0}$, the principal cases need only cover those pairings of the $\rrule{\plus}'$ rule with a proof ending in the $\lrule{\plus}$ rule and the symmetric pairings involving the $\rrule{\with}$ and $\lrule{\with}'$ rules:
+    \begin{align*}
+      \nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}}
+        &= M_{\kay}
+      \\
+      \nspawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{\selectL{\kay}}
+        &= N_{\kay}
+    \end{align*}
+    If $\selectR{\kay}$ and $\selectL{\kay}$ are viewed as directed messages, then these principal clauses in $\nspawn{}{}$'s definition look much like rules for asynchronous message-passing communication.
+    This observation is at the heart of the Curry--Howard interpretation of the singleton Hilbert system that we develop in the following \lcnamecref{ch:process-chains}.
 
-\item[Identity cases]
-  As in the proof of admissibility of cut for the sequent calculus\parencref{lem:singleton-logic:seq-calc:cut-admissibility}, the identity cases cover pairings involving the $\jrule{ID}$ rule and yield the following clauses.
-  \begin{gather*}
-    \nspawn{\fwd}{M} = M \\
-    \nspawn{N}{\fwd} = N
-  \end{gather*}
+  \item[Identity cases]
+    As in the proof of admissibility of cut for the sequent calculus\parencref{lem:singleton-logic:seq-calc:cut-admissibility}, the identity cases cover pairings involving the $\jrule{ID}$ rule and yield the following clauses.
+    \begin{align*}
+      \nspawn{\fwd}{M} &= M \\
+      \nspawn{N}{\fwd} &= N
+    \end{align*}
 
 
-\item[Left commutative cases]
+\item[Commutative cases]
   
-  \begin{gather*}
-    \nspawn{(\spawn{\selectL{\kay}}{N_0})}{M} = \spawn{\selectL{\kay}}{(\nspawn{N_0}{M})} \\
-    \nspawn{\selectL{\kay}}{M} = \spawn{\selectL{\kay}}{M} \\
-    \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{M} =
-      \begin{array}[t]{@{}l@{}}
-        \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M}} \mathrlap{\,,} \\
-        \mathrlap{\quad\text{if $M \neq \selectR{\kay}$ and $M \neq \spawn{M_0}{\selectR{\kay}}$ for all $M_0$}}
-      \end{array}
-  \end{gather*}
-  Without this side condition, the grammar of normal terms would include reducible terms like $\spawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{\selectR{\kay}}$.
+  \begin{align*}
+    \nspawn{(\spawn{\selectL{\kay}}{N_0})}{M}
+      &= \spawn{\selectL{\kay}}{(\nspawn{N_0}{M})}
+    \\
+    \nspawn{\selectL{\kay}}{M} &= \spawn{\selectL{\kay}}{M}
+    \\
+    \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{M}
+      &= \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M}}
+  \end{align*}
 
-\item[Right commutative cases]
-  There are several right commutative cases that are symmetric to the preceding left commutative cases.
-  \begin{gather*}
-    \nspawn{N}{(\spawn{M_0}{\selectR{\kay}})} = \spawn{(\nspawn{N}{M_0})}{\selectR{\kay}} \\
-    \nspawn{N}{\selectR{\kay}} = \spawn{N}{\selectR{\kay}} \\
-    \nspawn{N}{\caseR[\ell \in L]{\ell => M_{\ell}}} =
-      \begin{array}[t]{@{}l@{}}
-        \caseR[\ell \in L]{\ell => \nspawn{N}{M_{\ell}}} \mathrlap{\,,} \\
-        \mathrlap{\quad\text{if $N \neq \selectL{\kay}$ and $N \neq \spawn{\selectL{\kay}}{N_0}$ for all $N_0$}}
-      \end{array}
-  \end{gather*}
-
+  There are also several right commutative cases that are symmetric to the preceding left commutative cases.
+  \begin{align*}
+    \nspawn{N}{(\spawn{M_0}{\selectR{\kay}})}
+      &= \spawn{(\nspawn{N}{M_0})}{\selectR{\kay}}
+    \\
+    \nspawn{N}{\selectR{\kay}} &= \spawn{N}{\selectR{\kay}}
+    \\
+    \nspawn{N}{\caseR[\ell \in L]{\ell => M_{\ell}}}
+      &= \caseR[\ell \in L]{\ell => \nspawn{N}{M_{\ell}}}
+  \end{align*}
 \end{description}
-
 \end{proof}
 
-\begin{theorem}
+Notice that the function $\nspawn{}{}$ defined by this \lcnamecref{lem:singleton-logic:hilbert:cut-admissibility} is, in fact, nondeterministic.
+Many nontrivial critical pairs exist, due to overlapping clauses in the function's definition.
+For instance, both
+\begin{align*}
+  \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}
+         {\caseR[\kay \in K]{\kay => M_{\kay}}}
+    &= \caseL[\ell \in L]{\ell =>
+         \caseR[\kay \in K]{\kay => \nspawn{N_{\ell}}{M_{\kay}}}}
+%
+\shortintertext{and}
+%
+  \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}
+         {\caseR[\kay \in K]{\kay => M_{\kay}}}
+    &= \caseR[\kay \in K]{\kay =>
+         \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M_{\kay}}}}
+\end{align*}
+hold.
+We conjecture that $\nspawn{}{}$ is deterministic up to commuting conversions, but will not attempt to prove that result here.
+
+Of course, with the addition of enough side conditions, the function $\nspawn{}{}$ could be refined into one that is also deterministic at a purely syntactic level.
+But many of the choices that would be made in breaking ties, such as between the two above terms, seem rather arbitrary, so we prefer to have $\nspawn{}{}$ remain nondeterministic.
+
+\newthought{With this \lcnamecref{lem:sinlgeton-logic:hilbert:cut-admissibility}} in hand, we may finally proceed to proving non-analytic cut elimination.
+%
+\begin{theorem}[Non-analytic cut elimination]
   If $\slof{A |- P : C}$, then $\slof{A |- N : C}$ for some normal term $N$.
 \end{theorem}
+%
 \begin{proof}
   \begin{equation*}
     \infer-[\jrule{CE}]{\slof{A |- \wn{P} : C}}{
@@ -1173,10 +1416,7 @@ As shown in \cref{fig:singleton-logic:hilbert:analytic-cuts}, cuts of these form
 \end{proof}
 
 
-
-
-\begin{description}
-\end{description}
+We posit that normalization is unique up to commuting conversions and identity reductions.
 
 % \subsection{Operational semantics}
 
@@ -1211,15 +1451,26 @@ As shown in \cref{fig:singleton-logic:hilbert:analytic-cuts}, cuts of these form
 
 \subsection{$\eta$-expansion}
 
-\begin{align*}
-  \eta(\alpha) &= \fwd \\
-  \eta(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}) &= \caseL[\ell \in L]{\ell => \selectR{\ell}} \\
-  \eta(\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}) &= \caseR[\ell \in L]{\ell => \selectL{\ell}}
-\end{align*}
+\NewDocumentCommand \idexp { m } { \eta(#1) }
+\NewDocumentCommand \idelim { m } { \mathit{ie}(\slof{#1}) }
 
 \begin{align*}
-  \mathit{ie}(\slof{A |- \spawn{P_1}{P_2} : C}) &= \spawn{\mathit{ie}(\slof{A |- P_1 : B})}{\mathit{ie}(\slof{B |- P_2 : C})} \\
-  \mathit{ie}(\slof{A |- \fwd : A}) &= \eta(A) \\
+  \idexp(\alpha) &= \fwd \\
+  \idexp(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}) &= \caseL[\ell \in L]{\ell => \selectR{\ell}} \\
+  \idexp(\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}) &= \caseR[\ell \in L]{\ell => \selectL{\ell}}
+\end{align*}
+
+\begin{theorem}
+  $\slof{A |- \idexp{A} : A}$ for all propositions $A$.
+\end{theorem}
+
+\begin{align*}
+  \idelim{A |- \spawn{P_1}{P_2} : C} &= \spawn{\idelim{A |- P_1 : B}}{\idelim{B |- P_2 : C}} \\
+  \idelim{A |- \fwd : A} &= \idexp{A} \\
+  \idelim{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}} &= \selectR{\kay} \\
+  \idelim{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}} &= \caseR[\ell \in L]{\ell => \idelim{A |- P_{\ell} : C_{\ell}}} \\
+  \idelim{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectL{\kay} : A_{\kay}} &= \selectL{\kay} \\
+  \idelim{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C} &= \caseL[\ell \in L]{\ell => \idelim{A_{\ell} |- P_{\ell} : C}} \\
 \end{align*}
 
 
@@ -1227,40 +1478,32 @@ As shown in \cref{fig:singleton-logic:hilbert:analytic-cuts}, cuts of these form
 
 The singleton sequent calculus and singleton Hilbert system support various extensions.
 One simple but useful extension is to introduce universal and existential quantifiers, $\forall x{:}\tau.A$ and $\exists x{:}\tau.A$, over well-sorted data.
-Variables $x$ are not subject to the single-antecedent restriction.
+Variable typing assumptions, $x{:}\tau$, are not subject to the single-antecedent restriction -- the usual weakening, contraction, and exchange properties apply to variable typing assumptions.
 
-\newthought{Another direction} is to slightly relax the single-antecedent restriction.
-instead of demanding that sequents have exactly one antecedent and exactly one consequent, we might allow each sequent to have zero or one antecedents and zero or one consequents.
+\newthought{Another direction} for extension is to slightly relax the single-antecedent restriction.
+Instead of demanding that sequents have exactly one antecedent and exactly one consequent, we could allow each sequent to have zero or one antecedents and zero or one consequents.
 So now, instead of sequents $\slseq{A |- C}$, we have sequents $\slseq{\sctx |- \cseq}$, where $\sctx$ and $\cseq$ adhere to the following grammars.
-
-\begin{itemize}
-\item Multiplicative units (subsingletons)
-\item Exponentials
-\end{itemize}
-
 \begin{syntax*}
-  Propositions & A & \dotsb \mid \one \\
-  Contexts & \sctx & A \mid \sctxe
+  Subsingleton antecedents & \sctx & A \mid \sctxe \\
+  Subsingleton conseq{}uents & \cseq & C \mid \cseqe
 \end{syntax*}
+With this relaxation, we arrive at \emph{sub}singleton logic.
 
+The multiplicative units $\one$ and $\bot$ can now be characterized by right and left rules:
 \begin{inferences}
   \infer[\rrule{\one}]{\slseq{\sctxe |- \one}}{}
   \and
-  \infer[\lrule{\one}]{\slseq{\one |- C}}{
-    \slseq{\sctxe |- C}}
-\end{inferences}
-
-\begin{syntax*}
-  Propositions & A & \dotsb \mid \bot \\
-  Conseq\relax uents & \cseq & C \mid \cseqe
-\end{syntax*}
-
-\begin{inferences}
+  \infer[\lrule{\one}]{\slseq{\one |- \cseq}}{
+    \slseq{\sctxe |- \cseq}}
+  \\
   \infer[\rrule{\bot}]{\slseq{\sctx |- \bot}}{
     \slseq{\sctx |- \cseqe}}
   \and
   \infer[\lrule{\bot}]{\slseq{\bot |- \cseqe}}{}
 \end{inferences}
+These rules apply to both the sequent calculus and Hilbert system presentations of subsingleton logic.
+
+Without the binary multiplicative connectives $\tensor$ and ...
 
 \begin{syntax*}
   Propositions & A & \dotsb \mid \bang A \\

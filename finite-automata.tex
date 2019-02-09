@@ -21,7 +21,7 @@ The augmented alphabet $\augalph{\ialph}{\emp}$ is the most
 
 \subsection{Endmarked alphabets and words}
 
-An endmarked alphabet $\ealph{\ialph}$ is apair $\ealph{\ialph} = (, )$ offinite alphabets $ $ and $ $.
+% An endmarked alphabet $\ealph{\ialph}$ is a pair $\ealph{\ialph} = (, )$ of finite alphabets $ $ and $ $.
 
 \section{\Aclp*{NFA}}
 
@@ -276,7 +276,36 @@ The converse is false.
 \end{definition}
 
 
-\section{\Aclp*{LCA}}
+\section{Chains of communicating automata}
+
+\begin{definition}
+  A \emph{chain of communicating automata} over a finite alphabet $\ialph$ is a tuple $\aut{C} = (Q, (\ialph_q)_{q \in Q}, (\oalph_q)_{q \in Q})$ consisting of:
+  \begin{itemize}
+  \item a finite set of \vocab{states}, $Q$, that is partitioned into: left- and right-reading states, $\rL{Q}$ and $\rR{Q}$; left- and right-writing states, $\wL{Q}$ and $\wR{Q}$; forking states, $\fS{Q}$; and halting states, $\hS{Q}$;
+  \item a state-indexed set of finite \vocab{left-hand alphabets}, $(\ialph_q)_{q \in Q}$, and a state-indexed set of finite \vocab{right-hand alphabets}, $(\oalph_q)_{q \in Q}$;
+  \item $\rL{\delta} \colon \Pi q{:}\rL{Q}. \ialph_q \to Q$, with the condition that $\ialph_q = \ialph_{q'}$ and $\oalph_q = \oalph_{q'}$ for all $q' \in \cod{\rL{\delta}_q}$, and $\rR{\delta} \colon (\exists q{:}\rR{Q}. \oalph_q) \to Q$;
+  \item $\wL{\delta} \colon \wL{Q} \to \exists q'{:}Q. \ialph_{q'}$ and $\wR{\delta} \colon \wR{Q} \to \exists q'{:}Q. \oalph_{q'}$; and
+  \item $\fS{\delta} \colon \fS{Q} \to Q \times Q$.
+  \end{itemize}
+
+  \vocab{Chain configurations}, $c$ and $d$, consist of a finite sequence of states $q_1, q_2, \dotsc, q_n \in Q$ with, for all $1 \leq i < n$, a finite word drawn from $\finwds{\ialph_{q_{i+1}}}$ between neighboring states $q_i$ and $q_{i+1}$.
+  In addition, a finite word drawn from $\finwds{\ialph_{q_1}}$ and a finite word drawn from $\finwds{\oalph_{q_n}}$ bracket the configuration.
+  Formally, then, a chain configuration is a string drawn from the set
+  \begin{equation*}
+    \finwds{\ialph_{q_1}} q_1 \finwds{\ialph_{q_2}} q_2 \dotsm \finwds{\ialph_{q_n}} q_n \finwds{\oalph_{q_n}}
+    \,,
+  \end{equation*}
+  for some finite sequence of states $q_1, q_2, \dotsc, q_n \in Q$.
+  The chain configuration is \vocab{well-formed} if $\oalph_{q_i} = \ialph_{q_{i+1}}$ for all $1 \leq i < n$.
+
+  \begin{itemize}
+  \item $c \wc a \,q\, d \reduces c \,q'\, d$ if $\rL{\delta}_q(a) = q'$, and $c \,q\, a \wc d \reduces c \,q'\, d$ if $\rR{\delta}_q(a) = q'$;
+  \item $c \,q\, d \reduces c \wc a \,q'\, d$ if $\wL{\delta}(q) = (q', a)$, and $c \,q\, d \reduces c \,q'\, a \wc d$ if $\wR{\delta}(q) = (q', a)$;
+
+  \item $c \,q\, d \reduces c \, q' \, q'' \, d$ if $\fS{\delta}(q) = (q', q'')$;
+  \item $c \,q\, d \reduces c \, d$ if $q \in \hS{Q}$ and $\ialph_q = \oalph_q$.
+  \end{itemize}
+\end{definition}
 
 
 %%% Local Variables:

@@ -220,6 +220,14 @@
 \RequirePackage { enumitem }
 
 
+%%%%%%%%%%%%%%
+% Quotations %
+%%%%%%%%%%%%%%
+
+% \PassOptionsToPackage { english } { csquotes }
+\RequirePackage { csquotes }
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 % Theorem environments %
 %%%%%%%%%%%%%%%%%%%%%%%%

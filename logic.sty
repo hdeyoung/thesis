@@ -57,6 +57,16 @@
 \NewDocumentCommand \FF { } { \__logic_FF: }
 \cs_new:Npn \__logic_FF: { \mathcal { F } }
 
+%% Contexts
+
+\NewDocumentCommand \ctx { } { \__logic_ctx: }
+\cs_new:Npn \__logic_ctx: { \Gamma }
+
+%% Implication
+
+\NewDocumentCommand \imp { } { \__logic_imp: }
+\cs_new:Npn \__logic_imp: { \mathbin { \supset } }
+
 %% Reduction
 
 \NewDocumentCommand \reduces { o }
@@ -222,6 +232,9 @@
 
 \NewDocumentCommand \fuse { } { \__logic_fuse: }
 \cs_new:Npn \__logic_fuse: { \mathbin { \bullet } }
+
+\NewDocumentCommand \esuf { } { \__logic_esuf: }
+\cs_new:Npn \__logic_esuf: { \mathbin { \circ } }
 
 \NewDocumentCommand \oimp { } { \__logic_oimp: }
 \cs_new:Npn \__logic_oimp: { \mathbin { \rightarrow } }

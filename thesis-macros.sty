@@ -5,7 +5,13 @@
 \RequirePackage { l3keys2e }
 \RequirePackage { xparse }
 
-%% mathabx symbols %%
+%%%%%%%%%%%%%
+%% General %%
+%%%%%%%%%%%%%
+
+\DeclareMathOperator \cod { cod }
+
+% mathabx symbols %
 
 \RequirePackage { pifont }
 
@@ -32,12 +38,21 @@
 %% Ordered logic %%
 %%%%%%%%%%%%%%%%%%%
 
-\NewDocumentCommmand \ord { } { \postfixjudgment{ord} }
-\NewDocumentCommmand \ant { } { \postfixjudgment{ant} }
+\NewDocumentCommand \postfixjudgment { m }
+  {
+    \relax\ifnum\lastnodetype>0\mskip\medmuskip\fi\mathsf{#1}
+  }
+
+\NewDocumentCommand \ord { } { \postfixjudgment{ord} }
+\NewDocumentCommand \ant { } { \postfixjudgment{ant} }
 
 %%%%%%%%%%%%%%
 %% Automata %%
 %%%%%%%%%%%%%%
+
+% for abbreviations and acronyms
+\tex_let:D \c_minus_one \scan_stop:
+\int_const:Nn \c_minus_one {-1}
 
 \RequirePackage { acro }
 
@@ -174,6 +189,13 @@
 \cs_new:Npn \__thesis_sftreduces:n #1
   { \overset {#1} { \__thesis_sftreduces: } }
 
+
+\NewDocumentCommand \rL { m } { #1^{\mathsf{rL}} }
+\NewDocumentCommand \rR { m } { #1^{\mathsf{rR}} }
+\NewDocumentCommand \wL { m } { #1^{\mathsf{wL}} }
+\NewDocumentCommand \wR { m } { #1^{\mathsf{wR}} }
+\NewDocumentCommand \fS { m } { #1^{\mathsf{f}} }
+\NewDocumentCommand \hS { m } { #1^{\mathsf{h}} }
 
 
 
