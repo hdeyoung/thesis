@@ -1,6 +1,56 @@
 \chapter{Ordered rewriting}\label{ch:ordered-rewriting}
 
+In this \lcnamecref{ch:ordered-rewriting}, we develop a rewriting interpretation of the ordered sequent calculus from the previous \lcnamecref{ch:ordered-logic}.
+
 \section{Propositional ordered rewriting}
+
+In this \lcnamecref{sec:ordered-rewriting:general}, we develop a rewriting interpretation of the ordered sequent calculus from the previous \lcnamecref{ch:ordered-logic}.
+This development closely follows \citeauthor{Cervesato+Scedrov:IC09}'s work on intuitionistic linear logic as a multiset rewriting framework.
+
+Just as their linear logical rewriting framework is more expressive than multiset rewriting, ordered rewriting framework presented in this chapter can be seen as an extension of tranditional notions of string rewriting.
+
+
+\begin{equation*}
+  \infer*{\oseq{\octx |- A}}{
+    \oseq{\octx' |- A'}}
+\end{equation*}
+
+
+Many of the ordered sequent calculus's left rules consist of a single major premise with the same consequent as in the rule's conclusion [sequent], as well as a minor premise in the case of the $\lrule{\limp}$ and $\lrule{\pmir}$ rules.
+
+Because so many rules share this scaffolding, it might be worthwhile to restructure the ordered sequent calculus to expose this shared scaffolding.
+\begin{equation*}
+  \infer{\oseq{\octx |- C}}{
+    \octx \reduces \octx' & \oseq{\octx' |- C}}
+\end{equation*}
+For instance, if $\octx_L \oc (A \fuse B) \oc \octx_R \reduces \octx_L \oc A \oc B \oc \octx_R$ holds, then the usual $\lrule{\fuse}$ rule is a derivable instance of this generalized left rule.
+
+\begin{inferences}
+  \infer{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
+    \octx_1 \reduces \octx'_1}
+  \and
+  \infer{\octx_1 \oc \octx_2 \reduces \octx_1 \oc \octx'_2}{
+    \octx_2 \reduces \octx'_2}
+  \\
+  \infer{\octx \oc (A \limp B) \reduces B}{
+    \oseq{\octx |- A}}
+  \and
+  \infer{(B \pmir A) \oc \octx \reduces B}{
+    \oseq{\octx |- A}}
+  \\
+  \infer{A \fuse B \reduces A \oc B}{}
+  \and
+  \infer{A \esuf B \reduces B \oc A}{}
+  \and
+  \infer{\one \reduces \octxe}{}
+  \\
+  \infer{A \with B \reduces A}{}
+  \and
+  \infer{A \with B \reduces B}{}
+  \and
+  \text{(no rule for $\top$)}
+\end{inferences}
+
 
 \begin{syntax*}
   Propositions &
@@ -14,7 +64,7 @@
 
 \begin{itemize}
 \item Lambek calculus and rewriting; compare to multiset rewriting; compare to string rewriting
-\item Explain why $\plus$, $\zero$, and $\bot$ are undesirable here.
+\item Explain why $\plus$ and $\zero$ (and $\bot$) are undesirable here.
 \item Connections to left rules
 \end{itemize}
 
@@ -40,15 +90,36 @@ We will also refer to this relation as \vocab{reduction}%
 
 $\Reduces$ is the reflexive-transitive closure of $\reduces$
 
-\section{Definitions}
+
+\begin{equation*}
+  \infer[\lrule{\with}_1]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- \gamma}}{
+    \oseq{\octx'_L \oc A \oc \octx'_R |- \gamma}}
+  \leftrightsquigarrow
+  \infer{\octx'_L \oc (A \with B) \oc \octx'_R \reduces \octx'_L \oc A \oc \octx'_R}{
+    \infer{A \with B \reduces A}{}}
+\end{equation*}
+
+\begin{equation*}
+  \infer[\lrule{\limp}]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- \gamma}}{
+    \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- \gamma}}
+  \rightsquigarrow
+  \infer[\lrule{\limp}']{\oseq{\octx'_L \oc A \oc (A \limp B) \oc \octx'_R |- \gamma}}{
+    \oseq{\octx'_L \oc B \oc \octx'_R |- \gamma}}
+  \leftrightsquigarrow
+  \infer{\octx'_L \oc A \oc (A \limp B) \oc \octx'_R \reduces \octx'_L \oc B \oc \octx'_R}{
+    \infer{A \oc (A \limp B) \reduces B}{}}
+\end{equation*}
+
+
+\subsection{Definitions}
 
 \begin{itemize}
 \item not very interesting without recursion
 \end{itemize}
 
-\section{Examples}
+\subsection{Examples}
 
-\subsection{Automata and transducers}
+\subsubsection{Automata and transducers}
 
 \begin{equation*}
   \begin{lgathered}[t]
@@ -81,7 +152,7 @@ $\Reduces$ is the reflexive-transitive closure of $\reduces$
 \end{theorem}
 
 
-\subsection{Binary counter}
+\subsubsection{Binary counter}
 
 \begin{equation*}
   \begin{lgathered}
@@ -112,6 +183,11 @@ $\Reduces$ is the reflexive-transitive closure of $\reduces$
   \end{lgathered}
 \end{equation*}
 \end{itemize}
+
+
+\section{}
+
+
 
 %%% Local Variables:
 %%% mode: latex

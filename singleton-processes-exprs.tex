@@ -49,7 +49,7 @@ The use of Hilbert-style proofs enables a clean and direct interpretation of cut
 \newthought{We begin}, in \cref{sec:process-chains:?}, by introducing process chains as ...
 
 
-\section{}
+\section{Process chains and process expressions}
 
 \subsection{Untyped process chains}
 
@@ -90,12 +90,152 @@ A chain $\chn$ does not compute in isolation, however.
 The left-hand channel of $P_1$ and the right-hand channel of $P_n$ enable the chain to interact with its surroundings.
 Because these two channels are the only ones exposed to the external environment [surroundings], they may be referred to as the left- and right-hand channels of $\chn$.
 
-As finite sequences of processes, chains form a free monoid -- chains may be composed end to end, and chains may even be empty.
-Although this view provides useful intuition, 
+Chains may even be composed end to end by conjoining the right-hand channel of one chain with the left-hand channel of another.
+
+As finite sequences of processes $P_i$, chains form a free monoid:
+\begin{equation*}
+  \chn \Coloneqq (\chn_1 \cc \chn_2) \mid \chne \mid P
+  \,,
+\end{equation*}
+where $\cc$ denotes the monoid operation, end-to-end composition of chains, and $\chne$ denotes the empty chain.
+As a monoid, chains are subject to associativity and unit laws:
+\begin{gather*}
+  (\chn_1 \cc \chn_2) \cc \chn_3 = \chn_1 \cc (\chn_2 \cc \chn_3) \\
+  \chne \cc \chn = \chn = \chn \cc \chne
+\end{gather*}
+We do not distinguish chains that are equivalent up to these laws, instead treating such chains as syntactically identical.
+
+The notation for a composition $\chn_1 \cc \chn_2$ is intended to recall parallel composition of $\pi$-calculus processes, $P_1 \mid P_2$.
+However, unlike $\pi$-calculus composition, parallel composition of chains is \emph{not} commutative because the sequential order of processes within a chain matters.
+
+
+\subsection{Session-typed process expressions}
+
+Thus far, we have considered (untyped) process chains without describing the specific internals of running processes.
+% Thus far, we have diligently avoided describing the specific internals of processes.
+
+Session types, $A$, describe the patterns of communication that neighboring processes adhere to.
+Session types 
+
+To describe the patterns by which a process $P$ communicates with its left- and right-hand neighbors, % we will use a session-typing judgment
+we will reinterpret the proof-term judgment of the singleton Hilbert system as a session-typing judgment
+\begin{equation*}
+  \slof{A |- P : B} \,,
+\end{equation*}
+meaning that the process $P$ offers, along its right-hand channel, the service described by the session type $B$, while concurrent using, along its left-hand channel, the service described by the session type $A$.
+In other words, the left-hand neighbor of process $P$ acts as a provider [of service $A$] to $P$, while the right-hand neighbor acts as a client of [service $B$ from] $P$.
+
+The proof rules of the singleton Hilbert system become session-typing rules for processes.
+
+
+Consider the rules involving additive disjunction, for example.
+From a computational perspective, an additive disjunction, $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$, is interpreted as an internal choice, the type of a process that sends some label $\kay \in L$ to its right-hand client and then behaves like $A_{\kay}$.
+The $\rrule{\plus}'$ and $\lrule{\plus}$ proof rules become session-typing rules for process expressions.
+\begin{inferences}
+  \infer[\rrule{\plus}']{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \text{($\kay \in L$)}}
+  \and
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
+    \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C}}}
+\end{inferences}
+The proof term $\selectR{\kay}$ is reinterpreted as the expression for a message, sent to the right-hand client (as the arrow suggests), that carries the label $\kay$ as its payload.
+The proof term $\caseL[\ell \in L]{\ell => P_{\ell}}$ is reinterpreted as the expression for an input process that awaits a message from its left-hand provider and then continues the thread of control with $P_{\kay}$.
+
+
+Additive conjunction, $\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}$, is interpreted dually as external choice, the type of a process that awaits a label $\kay \in L$ from its client and then behaves like $A_{\kay}$.
+\begin{inferences}
+  \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell: C_{\ell}}}}{
+    \multipremise{\ell \in L}{\slof{A |- P_{\ell} : C_{\ell}}}}
+  \and
+  \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
+    \text{($\kay \in L$)}}
+\end{inferences}
+As might be expected, the proof terms $\caseR[\ell \in L]{\ell => P_{\ell}}$ and $\selectL{\kay}$ are interpreted symmetrically to internal choice's $\selectR{\kay}$ and $\caseL[\ell \in L]{\ell => P_{\ell}}$ expressions: $\selectL{\kay}$ is a message to the left-hand provider, and $\caseR[\ell \in L]{\ell => P_{\ell}}$ is an input process that awaits a message from the right-hand client.
+
+The proof term $\spawn{P_1}{P_2}$ for composition of proofs is now reinterpreted as the expression for a process that will spawn new, neighboring threads of control for $P_1$ and $P_2$ and then terminate the original thread of control.
+In effect, $\spawn{P_1}{P_2}$ now composes process [behaviors].
+\begin{equation*}
+  \infer[\jrule{CUT}^B]{\slof{A |- \spawn{P_1}{P_2} : C}}{
+    \slof{A |- P_1 : B} & \slof{B |- P_2 : C}}
+\end{equation*}
+For $\spawn{P_1}{P_2}$ to be a well-typed composition, the communication protocol
+
+% Reflecting the intuition 
+% \begin{equation*}
+%   \infer{\spawn{P_1}{P_2} \reduces P_1 \cc P_2}{}
+% \end{equation*}
+
+Proof-theoretically, the identity and cut rules are inverses, so we should expect their process interpretations to be similarly inverse.
+The process expression $\spawn{P_1}{P_2}$ spawns threads of control, so $\fwd$, as its inverse, terminates the thread of control.
+\begin{equation*}
+  \infer[\jrule{ID}^A]{\slof{A |- \fwd : A}}{}
+\end{equation*}
+% \begin{equation*}
+%   \infer{\fwd \reduces \chne}{}
+% \end{equation*}
+
+
+% Additive conjunction, $\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}$, is interpreted dually as external choice.
+% \begin{inferences}
+%   \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
+%     \multipremise{\ell \in L}{\slof{A |- P_{\ell} : C_{\ell}}}}
+%   \and
+%   \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
+%     \text{($\kay \in L$)}}
+% \end{inferences}
+% % \begin{equation*}
+% %   \infer{\caseR[\ell \in L]{\ell => P_{\ell}} \cc \selectL{\kay} \reduces P_{\kay}}{
+% %     \text{($\kay \in L$)}}
+% % \end{equation*}
+
+
+
+% Discussion of operational semantics here?
+
+% Interpret additive disjunction as internal choice, and $\selectR{\kay}$ as a message, and $\caseL[\ell \in L]{\ell => P_{\ell}}$ as a process that waits for a message...
+
+% Interpret additive conjunction dually...
+
+
+
+\begin{marginfigure}
+  \begin{tikzpicture}
+    \graph [math nodes, nodes={draw, circle}] {
+      / [coordinate]
+       --
+      k / {\,\smash[b]{\selectR{\kay}}\!}
+       --
+      P / {\caseL[\ell \in L]{\ell => P_{\ell}}} [rounded rectangle]
+       --
+      / [coordinate];
+    };
+  \end{tikzpicture}
+\end{marginfigure}
+
+Process expressions, $P$, and their session-typing rules are isomorphic to the Hilbert-style proof terms and inference rules of \cref{??}.
+[Propositions are reinterpreted as session types.]
+
+
+% Additive disjunction, $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$, is interpreted as internal choice, the type of a process that sends a label.
+% \begin{inferences}
+%   \infer[\rrule{\plus}']{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+%     \text{($\kay \in L$)}}
+%   \and
+%   \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
+%     \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C}}}
+% \end{inferences}
+% The proof term $\selectR{\kay}$ is now viewed as a message, sent to the right-hand neighbor (as the arrow suggests), that carries the label $\kay$ as its payload.
+% % \begin{equation*}
+% %   \infer{\selectR{\kay} \cc \caseL[\ell \in L]{\ell => P_{\ell}} \reduces P_{\kay}}{
+% %     \text{($\kay \in L$)}}
+% % \end{equation*}
+% % Clearly reminiscent of the principal cut reduction $\nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => N_{\ell}}} = N_{\kay}$.
+
 
 \subsection{Session-typed process chains}
 
-To describe how a well-typed process chain $\chn$ may interact with its environment, we use a session-typing judgment
+With the session-typing system for process expressions in hand, session types can be assigned to process chains, too.
+We use a session-typing judgment
 \begin{equation*}
   \slcof{A |- \chn : B} \,,
 \end{equation*}
@@ -106,26 +246,78 @@ To describe how a well-typed process chain $\chn$ may interact with its environm
     \graph [math nodes, nodes={draw}] {
       / [coordinate]
        -- ["$A$"]
-      P_1 / [circle] 
+      P_1 / \phantom{P} [circle] 
        --
       / \dotsb [text height=1ex, text width=1.375em, draw=none]
        --
-      P_n / [circle]
+      P_n / \phantom{P} [circle]
        -- ["$B$"]
       / [coordinate];
     };
 
-    \node [fit=(P_1) (P_n), draw, label=$\chn$] {};
+    \node [fit=(P_1) (P_n), draw=gray, label=$\chn$] {};
   \end{tikzpicture}
   % \caption{A well-typed process chain that offers service $B$ to its right-hand client, while using service $A$ from its left-hand provider}
   \caption{A well-typed process chain that uses service $A$ to offer service $B$}\label{fig:singleton-processes:well-typed-chain}
 \end{marginfigure}%
 %
-meaning that the chain $\chn$ offers, along its right-hand channel, the service described by the session type $B$, while concurrently using, along its left-hand channel, the service described by session type $A$.
-In other words, the left-hand environment acts as a provider [of service $A$] to chain $\chn$, while the right-hand environment acts as a client of [service $B$ from] chain $\chn$.
+meaning that the chain $\chn$ offers, along its right-hand channel, the service $B$, while concurrently using, along its left-hand channel, the service $A$.
+Similar to individual processes, a chain $\chn$ thus enjoys client and provider relationships with its left- and right-hand environments, respectively.
 
-A parallel composition of chains, $\chn_1 \cc \chn_2$, is well-typed only if $\chn_1$ offers the same service that $\chn_2$ uses, otherwise communication between $\chn_1$ and $\chn_2$ would be mismatched.
-This condition is captured by a cut principle for the session-typing judgment:
+The simplest session-typing rule for chains is the one that types a chain consisting of a single running process $P$:
+\begin{equation*}
+  \infer[\jrule{C-PROC}]{\slcof{A |- P : B}}{
+    \slof{A |- P : B}}
+\end{equation*}
+%
+\begin{marginfigure}[-3\baselineskip]
+  \centering
+  \begin{tikzpicture}
+    \graph [math nodes, nodes={draw}] {
+      / [coordinate]
+       -- ["$A$"]
+      P [circle]
+       -- ["$B$"]
+      / [coordinate];
+    };
+ 
+    \node [fit=(P), draw=gray] {};
+  \end{tikzpicture}
+  \caption{A chain made of one well-typed process that uses service $A$ to offer service $B$}\label{fig:singleton-processes:single-process-chain}
+\end{marginfigure}%
+%
+In other words, a running process has the same type as its underlying process expression.
+
+
+The session-typing rule for the empty chain, $\chne$, is also fairly direct.
+The empty chain offers a service $A$ to its right-hand client by using the service of its left-hand provider:
+\begin{equation*}
+  \infer[\jrule{C-ID}\smash{^A}]{\slcof{A |- \chne : A}}{}
+\end{equation*}
+%
+\begin{marginfigure}
+  \centering
+  \begin{tikzpicture}
+    \graph [math nodes, nodes={draw}] {
+      / [coordinate]
+       -- ["$A$"]
+      P_1 / \phantom{P} [circle, draw=none]
+       -- ["$A$"]
+      / [coordinate];
+
+      (P_1.west) -- (P_1.east);
+    };
+ 
+    \node [fit=(P_1), draw=gray] {};
+  \end{tikzpicture}
+  \caption{A well-typed empty chain that uses service $A$ to offer service $A$}\label{fig:singleton-processes:empty-chain}
+\end{marginfigure}%
+%
+Save for the contrasting $\slcof{|-}$ turnstile and the empty chain in place of a forwarding process expression, this mirrors the identity principle ...
+We will see that this is not a coincidence.
+
+Finally, a parallel composition of chains, $\chn_1 \cc \chn_2$, is well-typed only if $\chn_1$ offers the same service that $\chn_2$ uses, otherwise communication between $\chn_1$ and $\chn_2$ would be mismatched.
+This condition is reflected in a cut principle for the session-typing judgment:
 \begin{equation*}
   \infer[\jrule{C-CUT}\smash{^B}]{\slcof{A |- \chn_1 \cc \chn_2 : C}}{
     \slcof{A |- \chn_1 : B} & \slcof{B |- \chn_2 : C}}
@@ -172,58 +364,79 @@ This condition is captured by a cut principle for the session-typing judgment:
   \end{tikzpicture}
   \caption{A well-typed process chain that uses service $A$ to offer service $B$}\label{fig:singleton-processes:well-typed-cut}
 \end{marginfigure}%
-The notation $\chn_1 \cc \chn_2$ is intended to recall parallel composition of processes, $P_1 \mid P_2$, in the $\pi$-calculus.
-However, unlike $\pi$-calculus composition, parallel composition of chains is \emph{not} commutative because the sequential order of processes within a chain matters.
-
-The empty chain, $\chne$, offers a service $A$ to its right-hand client by directly using the service of its left-hand provider.
-This is reflected in an identity principle:
-\begin{equation*}
-  \infer[\jrule{C-ID}\smash{^A}]{\slcof{A |- \chne : A}}{}
-\end{equation*}
 %
-\begin{marginfigure}
-  \centering
-  \begin{tikzpicture}
-    \graph [math nodes, nodes={draw}] {
-      / [coordinate]
-       -- ["$A$"]
-      P_1 / \phantom{P} [circle, draw=none]
-       -- ["$A$"]
-      / [coordinate];
+% The notation $\chn_1 \cc \chn_2$ is intended to recall parallel composition of processes, $P_1 \mid P_2$, in the $\pi$-calculus.
+% However, unlike $\pi$-calculus composition, parallel composition of chains is \emph{not} commutative because the sequential order of processes within a chain matters.
 
-      (P_1.west) -- (P_1.east);
-    };
- 
-    \node [fit=(P_1), draw=gray] {};
-  \end{tikzpicture}
-  \caption{A well-typed empty chain that uses service $A$ to offer service $A$}\label{fig:singleton-processes:empty-chain}
+Once again, there are strong similarities to a process expression, in this case $\spawn{P_1}{P_2}$ and its $\jrule{CUT}^B$ session-typing rule.
+We can make these similarities explicit by defining a homomorphism, $\pf*{-}$, from chains to process expressions:
+\begin{marginfigure}
+  \begin{align*}
+    \pf*{\chn_1 \cc \chn_2} &= \spawn{\pf{\chn_1}}{\pf{\chn_2}} \\
+    \pf*{\chne} &= \fwd \\
+    \pf{P} &= P
+  \end{align*}
+  \caption{A homomorphism from chains to process expressions}
 \end{marginfigure}%
 %
+This function is type-preserving:
+\begin{theorem}
+  If $\slcof{A |- \chn : B}$, then $\slof{A |- \pf{\chn} : B}$.
+\end{theorem}
+\begin{proof}
+  By structural induction on the session-typing derivation.
+\end{proof}
 
-Lastly, a chain consisting of a single process, $P$, offers
-\begin{equation*}
-  \infer[\jrule{C-PROC}]{\slcof{A |- P : B}}{
-    \slof{A |- P : B}}
-\end{equation*}
-%
-\begin{marginfigure}
-  \centering
-  \begin{tikzpicture}
-    \graph [math nodes, nodes={draw}] {
-      / [coordinate]
-       -- ["$A$"]
-      P [circle]
-       -- ["$B$"]
-      / [coordinate];
-    };
+
+% The empty chain, $\chne$, offers a service $A$ to its right-hand client by directly using the service of its left-hand provider.
+% This is reflected in an identity principle:
+% \begin{equation*}
+%   \infer[\jrule{C-ID}\smash{^A}]{\slcof{A |- \chne : A}}{}
+% \end{equation*}
+% %
+% \begin{marginfigure}
+%   \centering
+%   \begin{tikzpicture}
+%     \graph [math nodes, nodes={draw}] {
+%       / [coordinate]
+%        -- ["$A$"]
+%       P_1 / \phantom{P} [circle, draw=none]
+%        -- ["$A$"]
+%       / [coordinate];
+
+%       (P_1.west) -- (P_1.east);
+%     };
  
-    \node [fit=(P), draw=gray] {};
-  \end{tikzpicture}
-  \caption{A chain made of one well-typed process that uses service $A$ to offer service $B$}\label{fig:singleton-processes:single-process-chain}
-\end{marginfigure}%
+%     \node [fit=(P_1), draw=gray] {};
+%   \end{tikzpicture}
+%   \caption{A well-typed empty chain that uses service $A$ to offer service $A$}\label{fig:singleton-processes:empty-chain}
+% \end{marginfigure}%
+% %
+
+% Lastly, a chain consisting of a single process, $P$, offers
+% \begin{equation*}
+%   \infer[\jrule{C-PROC}]{\slcof{A |- P : B}}{
+%     \slof{A |- P : B}}
+% \end{equation*}
+% %
+% \begin{marginfigure}
+%   \centering
+%   \begin{tikzpicture}
+%     \graph [math nodes, nodes={draw}] {
+%       / [coordinate]
+%        -- ["$A$"]
+%       P [circle]
+%        -- ["$B$"]
+%       / [coordinate];
+%     };
+ 
+%     \node [fit=(P), draw=gray] {};
+%   \end{tikzpicture}
+%   \caption{A chain made of one well-typed process that uses service $A$ to offer service $B$}\label{fig:singleton-processes:single-process-chain}
+% \end{marginfigure}%
 
 
-This judgment is similar in structure to the singleton sequent $\slseq{A |- B}$, but the difference in turnstile
+% This judgment is similar in structure to the singleton sequent $\slseq{A |- B}$, but the difference in turnstile
 
 
 % \begin{marginfigure}
@@ -287,95 +500,6 @@ It is this judgmental asymmetry that is reflected in the provider--client, offer
 \end{tikzpicture}
 
 
-\subsection{Process expressions}
-
-Thus far, we have diligently avoided describing the specific internals of processes.
-
-Process expressions, $P$, and their session-typing rules are isomorphic to the Hilbert-style proof terms and inference rules of \cref{??}.
-[Propositions are reinterpreted as session types.]
-
-Take additive disjunction.
-From a computational perspective, additive disjunction, $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$, is interpreted as an internal choice, the type of a process that sends a label drawn from $L$ to its client.
-The $\rrule{\plus}'$ and $\lrule{\plus}$ proof rules become session-typing rules for process expressions.
-\begin{inferences}
-  \infer[\rrule{\plus}']{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
-    \text{($\kay \in L$)}}
-  \and
-  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
-    \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C}}}
-\end{inferences}
-The proof term $\selectR{\kay}$ is now viewed as a message, sent to the right-hand client (as the arrow suggests), that carries the label $\kay$ as its payload.
-The proof term $\caseL[\ell \in L]{\ell => P_{\ell}}$ is reinterpreted as the expression for a process that awaits a message from its left-hand provider and then continues the thread of control with $P_{\kay}$.
-
-Additive conjunction, $\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}$, is interpreted dually as external choice, the type of a process that awaits a label from its client.
-\begin{inferences}
-  \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell: C_{\ell}}}}{
-    \multipremise{\ell \in L}{\slof{A |- P_{\ell} : C_{\ell}}}}
-  \and
-  \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
-    \text{($\kay \in L$)}}
-\end{inferences}
-
-
-% Additive disjunction, $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$, is interpreted as internal choice, the type of a process that sends a label.
-% \begin{inferences}
-%   \infer[\rrule{\plus}']{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
-%     \text{($\kay \in L$)}}
-%   \and
-%   \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}}{
-%     \multipremise{\ell \in L}{\slof{A_{\ell} |- P_{\ell} : C}}}
-% \end{inferences}
-% The proof term $\selectR{\kay}$ is now viewed as a message, sent to the right-hand neighbor (as the arrow suggests), that carries the label $\kay$ as its payload.
-% % \begin{equation*}
-% %   \infer{\selectR{\kay} \cc \caseL[\ell \in L]{\ell => P_{\ell}} \reduces P_{\kay}}{
-% %     \text{($\kay \in L$)}}
-% % \end{equation*}
-% % Clearly reminiscent of the principal cut reduction $\nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => N_{\ell}}} = N_{\kay}$.
-
-
-The proof term $\spawn{P_1}{P_2}$ for composition of proofs is now reinterpreted as the expression for a process that will spawn new, neighboring threads of control for $P_1$ and $P_2$ and then terminate the original thread of control.
-In effect, $\spawn{P_1}{P_2}$ now composes process [behaviors].
-\begin{equation*}
-  \infer[\jrule{CUT}^B]{\slof{A |- \spawn{P_1}{P_2} : C}}{
-    \slof{A |- P_1 : B} & \slof{B |- P_2 : C}}
-\end{equation*}
-For $\spawn{P_1}{P_2}$ to be a well-typed composition, the communication protocol
-
-% Reflecting the intuition 
-% \begin{equation*}
-%   \infer{\spawn{P_1}{P_2} \reduces P_1 \cc P_2}{}
-% \end{equation*}
-
-Proof-theoretically, the identity and cut rules are inverses, so we should expect their process interpretations to be similarly inverse.
-The process expression $\spawn{P_1}{P_2}$ spawns threads of control, so $\fwd$, as its inverse, terminates the thread of control.
-\begin{equation*}
-  \infer[\jrule{ID}^A]{\slof{A |- \fwd : A}}{}
-\end{equation*}
-% \begin{equation*}
-%   \infer{\fwd \reduces \chne}{}
-% \end{equation*}
-
-
-% Additive conjunction, $\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}$, is interpreted dually as external choice.
-% \begin{inferences}
-%   \infer[\rrule{\with}]{\slof{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
-%     \multipremise{\ell \in L}{\slof{A |- P_{\ell} : C_{\ell}}}}
-%   \and
-%   \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:C_{\ell}} |- \selectL{\kay} : C_{\kay}}}{
-%     \text{($\kay \in L$)}}
-% \end{inferences}
-% % \begin{equation*}
-% %   \infer{\caseR[\ell \in L]{\ell => P_{\ell}} \cc \selectL{\kay} \reduces P_{\kay}}{
-% %     \text{($\kay \in L$)}}
-% % \end{equation*}
-
-
-
-% Discussion of operational semantics here?
-
-% Interpret additive disjunction as internal choice, and $\selectR{\kay}$ as a message, and $\caseL[\ell \in L]{\ell => P_{\ell}}$ as a process that waits for a message...
-
-% Interpret additive conjunction dually...
 
 \subsection{From admissibility of non-analytic cuts to an operational semantics}
 
@@ -417,6 +541,58 @@ At the heart of reduction are two symmetric rules that describe how messages are
   \infer{\caseR[\ell \in L]{\ell => P_{\ell}} \cc \selectL{\kay} \reduces P_{\kay}}{
     \text{($\kay \in L$)}}
 \end{inferences}
+%
+\begin{marginfigure}
+  \begin{equation*}
+    \begin{tikzpicture}
+      \graph [math nodes, nodes={draw, circle}] {
+        / [coordinate]
+         --
+        k / \selectR{\kay}
+         --
+        P / {\caseL[\ell  \in L]{\ell => P_{\ell}}} [rounded rectangle, inner ysep=.5em]
+         --
+        / [coordinate];
+      };
+    \end{tikzpicture}
+    \reduces
+    \begin{tikzpicture}
+      \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
+        / [coordinate]
+         --
+        P_{\kay}
+         --
+        / [coordinate];
+      };
+    \end{tikzpicture}
+  \end{equation*}
+
+  \begin{equation*}
+    \begin{tikzpicture}
+      \graph [math nodes, nodes={draw, circle}] {
+        / [coordinate]
+         --
+        P / {\caseR[\ell  \in L]{\ell => P_{\ell}}} [rounded rectangle, inner ysep=.5em]
+         --
+        k / \selectL{\kay}
+         --
+        / [coordinate];
+      };
+    \end{tikzpicture}
+    \reduces
+    \begin{tikzpicture}
+      \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
+        / [coordinate]
+         --
+        P_{\kay}
+         --
+        / [coordinate];
+      };
+    \end{tikzpicture}
+  \end{equation*}
+
+  \caption{Pictorial representations of the principal reductions}
+\end{marginfigure}%
 As suggested earlier, when a process $\caseL[\ell \in L]{\ell => P_{\ell}}$ receives a message from its left-hand provider, it continues the thread of control with the indicated branch, $P_{\kay}$; the rule involving $\caseR[\ell \in L]{\ell => P_{\ell}}$ is symmetric.
 These two reduction rules mimic the principal normalization steps in the proof of admissibility of non-analytic cuts: $\nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}} = M_{\kay}$ and $\nspawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{\selectL{\kay}} = N_{\kay}$.
 
@@ -427,15 +603,69 @@ The operational semantics formalizes these notions in rules that decompose $\spa
   \and
   \infer{\fwd \reduces \chne}{}
 \end{inferences}
+%
+\begin{marginfigure}
+  \begin{equation*}
+    \begin{tikzpicture}
+      \graph [math nodes, nodes={draw, circle}] {
+        / [coordinate]
+         --
+        P / \spawn{P_1}{P_2} [rounded rectangle, inner ysep=.5em]
+         --
+        / [coordinate];
+      };
+    \end{tikzpicture}
+    \reduces
+    \begin{tikzpicture}
+      \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
+        / [coordinate]
+         --
+        P_1
+         --
+        P_2
+         --
+        / [coordinate];
+      };
+    \end{tikzpicture}
+  \end{equation*}
+
+  \begin{equation*}
+    \begin{tikzpicture}
+      \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
+        / [coordinate]
+         --
+        P / \fwd
+         --
+        / [coordinate];
+      };
+    \end{tikzpicture}
+    \reduces
+    \begin{tikzpicture}
+      \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
+        / [coordinate]
+         --
+        P / \phantom{\fwd} [draw=none]
+         --
+        / [coordinate];
+        (P.west) -- (P.east);
+      };
+    \end{tikzpicture}
+  \end{equation*}
+  \caption{Pictorial representations of the reductions for $\spawn{P_1}{P_2}$ and $\fwd$}
+\end{marginfigure}%
 Because process chains are always considered up to associativity and unit laws, these reduction rules (along with the above $\cc$-compatibility rules) reflect the associative and identity normalization steps in the proof of admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:?}.
-For example, just as $\nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}$ is an associative normalization step,
-\begin{equation*}
+For example, just as
+\begin{gather*}
+  \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} \\
+%
+\intertext{is an associative normalization step,}
+%
   (\spawn{P_0}{\selectR{\kay}}) \cc P_1
-    \reduces (P_0 \cc \selectR{\kay}) \cc P_1
+    \reduces % (P_0 \cc \selectR{\kay}) \cc P_1
     = P_0 \cc (\selectR{\kay} \cc P_1)
-\end{equation*}
+\end{gather*}
 is a reduction.
-Similarly, $\fwd \cc P \reduces= P$ is a reduction, just as $\nspawn{\fwd}{M} = M$ is an identity normalization step.
+Similarly, $\fwd \cc P \reduces= P$ is a reduction that reflects the normalization step $\nspawn{\fwd}{M} = M$.
 
 % For example:
 % \begin{align*}
@@ -451,20 +681,20 @@ Similarly, $\fwd \cc P \reduces= P$ is a reduction, just as $\nspawn{\fwd}{M} = 
 % \end{align*}
 
 
-These rules witness the close connection between the operational semantics and non-analytic cut elimination, but 
-one class of normalization steps does not have a direct analogue in the operational semantics: the class of commutative normalizaiton steps.
+These rules witness the close connection between proof normalization and the operational semantics of processes%
+% and non-analytic cut elimination
+, but one class of normalization steps does not have a direct analogue in the operational semantics: the class of commutative normalization steps.
 As a prototypical example, recall the step involving $\caseL{}$:
 \begin{equation*}
   \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{M} = \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M}}
   \,.
 \end{equation*}
-When considering proof normalization, this step is quite natural because it progresses toward a normal form by pushing the admissible cut ($\nspawn{}{}$ constructor) further in and pulling the $\caseL{}$ constructor out.
-However, in an operational semantics, having
+As part of proof normalization, this step is quite natural because it progresses toward a normal form by pushing the admissible cut ($\nspawn{}{}$ constructor) further in and pulling the $\caseL[\ell \in L]{\ell => {-}}$ construction out.
+In the operational semantics, however, it would be wrong to have the corresponding
 \begin{equation*}
   \caseL[\ell \in L]{\ell => P_{\ell}} \cc \chn \reduces \caseL[\ell \in L]{\ell => P_{\ell} \cc \chn}
 \end{equation*}
-as a reduction would be incorrect -- it
-inappropriately brings the chain $\chn$, a dynamic object, within the static context of a process expression, $\caseL[\ell \in L]{\ell => \dotsb}$.
+as a reduction -- it inappropriately brings the chain $\chn$, a dynamic object, within the static context of a process expression, $\caseL[\ell \in L]{\ell => {-}}$.
 
 % Recall 
 % \begin{gather*}
