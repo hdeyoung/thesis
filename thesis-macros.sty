@@ -239,6 +239,22 @@
 %% Ordered logic %%
 %%%%%%%%%%%%%%%%%%%
 
+\NewDocumentCommand \oseq { > { \SplitArgument { 1 } { |- } } m }
+  { \__thesis_oseq:nn #1 }
+\cs_new:Npn \__thesis_oseq:nn #1#2 { #1 \vdash #2 }
+
+\NewDocumentCommand \oseqv { > { \SplitArgument { 1 } { |- } } m }
+  { \__thesis_oseqv:nn #1 }
+\cs_new:Npn \__thesis_oseqv:nn #1#2 { #1 \vdash^{ \mathrm{v} } #2 }
+
+\NewDocumentCommand \oseqel { > { \SplitArgument { 1 } { |- } } m }
+  { \__thesis_oseqel:nn #1 }
+\cs_new:Npn \__thesis_oseqel:nn #1#2 { #1 \vdash^{ \eta } #2 }
+
+\NewDocumentCommand \oseqcf { > { \SplitArgument { 1 } { |- } } m }
+  { \__thesis_oseqcf:nn #1 }
+\cs_new:Npn \__thesis_oseqcf:nn #1#2 { #1 \vdash^{ \mathrm{cf} } #2 }
+
 \NewDocumentCommand \cseq { } { \__thesis_cseq: }
 \cs_new:Npn \__thesis_cseq: { \gamma }
 
@@ -259,10 +275,6 @@
 \NewDocumentCommand \atmL { m } { \__thesis_atmL:n {#1} }
 \cs_new:Npn \__thesis_atmL:n #1
   { \mathrlap { \reflectbox { $ \atmR { \phantom {#1} } $ } } #1 }
-
-\NewDocumentCommand \oseq { > { \SplitArgument { 1 } { |- } } m }
-  { \__thesis_oseq:nn #1 }
-\cs_new:Npn \__thesis_oseq:nn #1#2 { #1 \vdash #2 }
 
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -313,8 +325,8 @@
   { \__thesis_slofn:nn #1 }
 \cs_new:Npn \__thesis_slofn:nn #1#2 { [#1] \Vdash #2 }
 
-\NewDocumentCommand \wn { m } { \__thesis_wn:n {#1} }
-\cs_new:Npn \__thesis_wn:n #1 { \mathit{wn}(#1) }
+\NewDocumentCommand \ce { m } { \__thesis_ce:n {#1} }
+\cs_new:Npn \__thesis_ce:n #1 { \mathit{ce}(#1) }
 
 \NewDocumentCommand \slcof { > { \SplitArgument { 1 } { |- } } m }
   { \__thesis_slcof:nn #1 }

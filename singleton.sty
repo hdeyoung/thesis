@@ -182,8 +182,14 @@
       { \__singleton_keyword:n { close #1 } }
   }
 
-\NewDocumentCommand \chn { } { \__singleton_chn: }
+\NewDocumentCommand \chn { s }
+  {
+    \IfBooleanTF {#1}
+      \__singleton_chnstar:
+      \__singleton_chn:
+  }
 \cs_new_protected:Npn \__singleton_chn: { \mathcal { C } }
+\cs_new_protected:Npn \__singleton_chnstar: { \mathcal { D } }
 
 \NewDocumentCommand \chne { } { \__singleton_chne: }
 \cs_new_protected:Npn \__singleton_chne: { \cdot }

@@ -234,6 +234,8 @@
 
 \RequirePackage { amsthm }
 
+
+
 %% Small caps theorem styles
 \newtheoremstyle { smallcaps-plain }
   { \topsep } { \topsep } % Space above and below

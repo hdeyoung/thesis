@@ -470,9 +470,9 @@ In this sense, the usual cut elimination metatheorem states a weak normalization
 %
 As usual, the cut elimination \lcnamecref{thm:singleton-logic:seq-calc:cut-elimination} may be proved by a straightforward induction on the structure of the given proof, provided that a cut principle for cut-free proofs is admissible:
 % 
-\begin{lemma}[Admissibility of cut]\label{lem:singleton-logic:seq-calc:cut-admissibility}
+\begin{lemma*}[Admissibility of cut]\label{lem*:singleton-logic:seq-calc:cut-admissibility}
   If cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ exist, then there exists a cut-free proof of $\slseq{A |- C}$.
-\end{lemma}
+\end{lemma*}
 
 \newthought{Before proceeding} to this \lcnamecref{lem:singleton-logic:seq-calc:cut-admissibility}'s proof, it is worth emphasizing a subtle distinction between the singleton sequent calculus's primitive $\jrule{CUT}$ rule and the admissible cut principle that this \lcnamecref{lem:singleton-logic:seq-calc:cut-admissibility} establishes.
 
@@ -481,7 +481,7 @@ To be completely formal, we could treat cut-freeness as an extrinsic, Curry-styl
 and indicate cut-freeness by decorating the turnstile: $\cfslseq{A |- C}$ is a cut-free proof of $\slseq{A |- C}$.
 The admissible cut principle stated in \cref{lem:singleton-logic:seq-calc:cut-admissibility} could then be expressed as the rule
 \begin{equation*}
-  \infer-[\jrule{A-CUT}^B]{\cfslseq{A |- C}}{
+  \infer-[\jrule{A-CUT}\smash{^B}]{\cfslseq{A |- C}}{
     \cfslseq{A |- B} & \cfslseq{B |- C}}
   ,
 \end{equation*}
@@ -492,7 +492,7 @@ Writing it in this way emphasizes that proving \cref{lem:singleton-logic:seq-cal
 Contrast this with the primitive $\jrule{CUT}$ rule of the singleton sequent calculus%
 \marginnote[-.5\baselineskip]{
   \normalsize
-  $\infer[\jrule{CUT}^B]{\slseq{A |- C}}{
+  $\infer[\jrule{CUT}\smash{^B}]{\slseq{A |- C}}{
      \slseq{A |- B} & \slseq{B |- C}}$%
 }%
 , which forms a (cut-full) proof of $\slseq{A |- C}$ from (potentially cut-full) proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$.
@@ -510,30 +510,32 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
 
 \newthought{With that} clarification out of the way, we are finally ready to prove the admissibility of cut \lcnamecref{lem:singleton-logic:cut-admissibility}.
 
-\begin{lemma}[Admissibility of cut]
-  ...
+\begin{lemma}[Admissibility of cut]\label{lem:singleton-logic:cut-admissibility}
+  If cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ exist, then there exists a cut-free proof of $\slseq{A |- C}$.
 \end{lemma}
 %
 \begin{proof}
-  We follow a standard technique for proving the admissibility of a cut principle\autocite{Pfenning:CUT} -- a lexicographic structural induction, first on the structure of the [principal] cut formula, and then on the structures of the given proofs.
+  Just as in the proof of admissibility of cut for the ordered sequent calculus\parencref{lem:ordered-logic:cut-admissibility}, we use a standard lexicographic structural induction, first on the structure of the cut formula, and then on the structures of the given proofs.
 
   As usual, the cases can be classified into three categories: principal cases, identity cases, and commutative cases.
   % We show a few sample cases.
   \begin{description}[listparindent=\parindent, parsep=0pt]
   \item[Principal cases]
-    The principal cases pair a proof ending in a right rule together with a proof ending in a corresponding left rule, so that the last inference of each proof introduces the cut formula.
-    For example, one of the principal cases pairs a proof ending in the $\rrule{\plus}_1$ rule with one ending in the $\lrule{\plus}$ rule; it is resolved as follows.
+    As usual, the principal cases pair a proof ending in a right rule together with a proof ending in a corresponding left rule.
+    % , so that the last inference of each proof introduces the cut formula.
+    % For example, one of the principal cases pairs a proof ending in the $\rrule{\plus}_1$ rule with one ending in the $\lrule{\plus}$ rule; it is resolved as follows.
+    One such principal case is:
     \begin{gather*}
-      \infer-[\mathrlap{\jrule{A-CUT}^{B_1 \plus B_2}}]{\slseq{A |- C}}{
+      \infer-[\jrule{A-CUT}\smash{^{B_1 \plus B_2}}]{\slseq{A |- C}}{
         \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
           \deduce{\slseq{A |- B_1}}{\DD_1}} &
-        \infer[\mathrlap{\lrule{\plus}}]{\slseq{B_1 \plus B_2 |- C}}{
+        \infer[\lrule{\plus}]{\slseq{B_1 \plus B_2 |- C}}{
           \deduce{\slseq{B_1 |- C}}{\EE_1} &
           \deduce{\slseq{B_2 |- C}}{\EE_2}}}
       % 
-      \\=\quad\\\quad
+      \\=\\
       % 
-      \infer-[\mathrlap{\jrule{A-CUT}^{B_1}}]{\slseq{A |- C}}{
+      \infer-[\jrule{A-CUT}\smash{^{B_1}}]{\slseq{A |- C}}{
         \deduce{\slseq{A |- B_1}}{\DD_1} &
         \deduce{\slseq{B_1 |- C}}{\EE_1}}
       \qquad
@@ -545,8 +547,8 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
     For example:
     % One of the identity cases pairs the $\jrule{ID}$ rule with a proof of $\slseq{A |- C}$:
     \begin{equation*}
-      \infer-[\jrule{CUT}^A]{\slseq{A |- C}}{
-        \infer[\jrule{ID}^A]{\slseq{A |- A}}{} &
+      \infer-[\jrule{A-CUT}\smash{^A}]{\slseq{A |- C}}{
+        \infer[\jrule{ID}\smash{^A}]{\slseq{A |- A}}{} &
         \deduce{\slseq{A |- C}}{\EE}}
       % 
       \quad=\quad
@@ -554,45 +556,45 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
       \deduce{\slseq{A |- C}}{\EE}
       \,.
     \end{equation*}
-    That $\jrule{CUT}$ and $\jrule{ID}$ are inverses here is consistent with the idea that the cut and identity principles are dual.
+    % That $\jrule{CUT}$ and $\jrule{ID}$ are inverses here is consistent with the idea that the cut and identity principles are dual.
     
   \item[Commutative cases]
-    In the commutative cases, the last inference in one of the proofs introduces a formula other than the cut formula;
-    the cases are subcategorized as left- or right-commutative according to the proof involved.
-    In both scenarios, the cut and involved inference rule commute, with an appeal to the inductive hypothesis at the same cut formula but smaller proofs.
+    As in the proof of ordered logic's admissible cut principle\parencref{lem:ordered-logic:cut-admissibility}, the commutative cases are those in which one of the proofs ends by introducing a side formula.
+    % the last inference in one of the proofs introduces a formula other than the cut formula;
+    % the cases are subcategorized as left- or right-commutative according to the proof involved.
+    % In both scenarios, the cut and involved inference rule commute, with an appeal to the inductive hypothesis at the same cut formula but smaller proofs.
 
-    % The left commutative cases pair a proof of $\slseq{A |- B}$ ending in a left rule together with a proof of $\slseq{B |- C}$.
-    For example, one left-commutative case
-    % of the left commutative cases
-    pairs a proof of $\slseq{A_1 \plus A_2 |- B}$ ending in the $\lrule{\plus}$ rule together with a proof of $\slseq{B |- C}$:
-    \begin{gather*}
-      \infer-[\mathrlap{\jrule{CUT}^B}]{\slseq{A_1 \plus A_2 |- C}}{
-        \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- B}}{
-          \deduce{\slseq{A_1 |- B}}{\DD_1} &
-          \deduce{\slseq{A_2 |- B}}{\DD_2}} &
-        \deduce{\slseq{B |- C}}{\EE}}
-      % 
-      \\=\\
-      % 
-      \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
-        \infer-[\jrule{CUT}^B]{\slseq{A_1 |- C}}{
-          \deduce{\slseq{A_1 |- B}}{\DD_1} &
-          \deduce{\slseq{B |- C}}{\EE}} &
-        \infer-[\mathrlap{\jrule{CUT}^B}]{\slseq{A_2 |- C}}{
-          \deduce{\slseq{A_2 |- B}}{\DD_2} &
-          \deduce{\slseq{B |- C}}{\EE}}}
-    \end{gather*}
-    Notice that there can be no left-commutative cases involving right rules.
+    % % The left commutative cases pair a proof of $\slseq{A |- B}$ ending in a left rule together with a proof of $\slseq{B |- C}$.
+    % For example, one left-commutative case
+    % % of the left commutative cases
+    % pairs a proof of $\slseq{A_1 \plus A_2 |- B}$ ending in the $\lrule{\plus}$ rule together with a proof of $\slseq{B |- C}$:
+    % \begin{gather*}
+    %   \infer-[\mathrlap{\jrule{A-CUT}\smash{^B}}]{\slseq{A_1 \plus A_2 |- C}}{
+    %     \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- B}}{
+    %       \deduce{\slseq{A_1 |- B}}{\DD_1} &
+    %       \deduce{\slseq{A_2 |- B}}{\DD_2}} &
+    %     \deduce{\slseq{B |- C}}{\EE}}
+    %   % 
+    %   \\=\\
+    %   % 
+    %   \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- C}}{
+    %     \infer-[\jrule{A-CUT}\smash{^B}]{\slseq{A_1 |- C}}{
+    %       \deduce{\slseq{A_1 |- B}}{\DD_1} &
+    %       \deduce{\slseq{B |- C}}{\EE}} &
+    %     \infer-[\mathrlap{\jrule{A-CUT}\smash{^B}}]{\slseq{A_2 |- C}}{
+    %       \deduce{\slseq{A_2 |- B}}{\DD_2} &
+    %       \deduce{\slseq{B |- C}}{\EE}}}
+    % \end{gather*}
 
   % \item[Right commutative cases]
     % The right commutative cases pair a proof of $\slseq{A |- B}$ together with a proof of $\slseq{B |- C}$ ending in a right rule.
     % For example, one such case
-    As another example, one right-commutative case
+    As an example, one right-commutative case
     % of the right commutative cases
     pairs a proof of $\slseq{A |- B}$ with a proof of $\slseq{B |- C_1 \plus C_2}$ ending in the $\rrule{\plus}_1$ rule:
     % ; it is resolved as follows.
     \begin{equation*}
-      \infer-[\jrule{A-CUT}^B]{\slseq{A |- C_1 \plus C_2}}{
+      \infer-[\jrule{A-CUT}\smash{^B}]{\slseq{A |- C_1 \plus C_2}}{
         \deduce{\slseq{A |- B}}{\DD} &
         \infer[\rrule{\plus}_1]{\slseq{B |- C_1 \plus C_2}}{
           \deduce{\slseq{B |- C_1}}{\EE_1}}}
@@ -600,13 +602,13 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
       \quad=\quad
       % 
       \infer[\rrule{\plus}_1]{\slseq{A |- C_1 \plus C_2}}{
-        \infer-[\jrule{A-CUT}^B]{\slseq{A |- C_1}}{
+        \infer-[\jrule{A-CUT}\smash{^B}]{\slseq{A |- C_1}}{
           \deduce{\slseq{A |- B}}{\DD} &
           \deduce{\slseq{B |- C_1}}{\EE_1}}}
     \end{equation*}
-    Notice that there can be no right-commutative cases involving left rules because the cut formula is the only antecedent in $\slseq{B |- C}$.
-    In this way, the proof of admissibility of cut for the singleton sequent calculus is more symmetric than that of the ordered sequent calculus.
-    There, several right-commutative cases involved left rules acting on antecedents other than the cut formula.
+    Unlike in ordered logic, there can be no right-commutative cases involving left rules because the cut formula is the only antecedent in the sequent $\slseq{B |- C}$.
+    % In this way, the proof of admissibility of cut for the singleton sequent calculus is more symmetric than that of the ordered sequent calculus.
+    In this way, the symmetry of singleton sequents is manifest even in proving the admissibility of cut.
     \qedhere
   \end{description}
 \end{proof}
@@ -624,10 +626,10 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
   If we display the inductive hypothesis as an admissible rule, then the crucial case in the proof of cut elimination is resolved as follows.
   \begin{equation*}
     \infer-[\jrule{CE}]{\cfslseq{A |- C}}{
-      \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
+      \infer[\jrule{CUT}\smash{^B}]{\slseq{A |- C}}{
         \deduce{\slseq{A |- B}}{\DD_1} & \deduce{\slseq{B |- C}}{\DD_2}}}
     \quad=\quad
-    \infer-[\jrule{A-CUT}^B]{\cfslseq{A |- C}}{
+    \infer-[\jrule{A-CUT}\smash{^B}]{\cfslseq{A |- C}}{
       \infer-[\jrule{CE}]{\cfslseq{A |- B}}{
         \deduce{\slseq{A |- B}}{\DD_1}} &
       \infer-[\jrule{CE}]{\cfslseq{B |- C}}{
@@ -638,22 +640,6 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
   This proof amounts to defining a meta-level function for normalizing proofs to cut-free form.
 \end{proof}
 
-\begin{theorem}[Identity expansion]
-  $\slseq{A |- A}$ for all propositions $A$.
-\end{theorem}
-%
-\begin{proof}
-  By induction on the structure of the proposition $A$.
-  % \begin{gather*}
-  %   \infer-[\mathrlap{\jrule{ID}^{A_1 \plus A_2}}]{\slseq{A_1 \plus A_2 |- A_1 \plus A_2}}{}
-  %   \\=\\
-  %   \infer[\mathrlap{\lrule{\plus}}]{\slseq{A_1 \plus A_2 |- A_1 \plus A_2}}{
-  %     \infer[\rrule{\plus}_1]{\slseq{A_1 |- A_1 \plus A_2}}{
-  %       \infer-[\jrule{ID}^{A_1}]{\slseq{A_1 |- A_1}}{}} &
-  %     \infer[\mathrlap{\rrule{\plus}_2}]{\slseq{A_2 |- A_1 \plus A_2}}{
-  %       \infer-[\mathrlap{\jrule{ID}^{A_2}}]{\slseq{A_2 |- A_2}}{}}}
-  % \end{gather*}
-\end{proof}
 
 
 \section{A Hilbert-style axiomatization of singleton logic}\label{sec:singleton-logic:hilbert}
@@ -1238,11 +1224,11 @@ In other words, normality is an extrinsic property of terms that is judged by me
 
 Non-analytic cut elimination then amounts to proof term normalization:
 %
-\begin{theorem}[Non-analytic cut elimination]\label{thm:singleton-logic:seq-calc:cut-elimination}
+\begin{theorem*}[Non-analytic cut elimination]
   If $\slof{A |- P : C}$, then $\slof{A |- N : C}$ for some normal term $N$.
-\end{theorem}
+\end{theorem*}
 %
-As for the singleton sequent calculus's cut elimination result\parencref{thm:singleton-logic:seq-calc:cut-elimination}, this \lcnamecref{thm:singleton-logic:hilbert:cut-elimination} can be proved by a straightforward structural induction, this time on the given term, $P$.
+As for the [singleton] sequent calculus's cut elimination result\parencref{thm:singleton-logic:seq-calc:cut-elimination}, this \lcnamecref{thm:singleton-logic:hilbert:cut-elimination} can be proved by a straightforward structural induction, this time on the given term, $P$.
 First, however, we need admissibility of non-analytic cut as a \lcnamecref{lem:singleton-logic:hilbert:cut-admissibility}:
 %
 \begin{lemma}[Admissibility of non-analytic cut]\label{lem:singleton-logic:hilbert:cut-admissibility}
@@ -1253,17 +1239,15 @@ First, however, we need admissibility of non-analytic cut as a \lcnamecref{lem:s
   As with \cref{lem:singleton-logic:seq-calc:cut-admissibility} for the sequent calculus, this \lcnamecref{lem:singleton-logic:hilbert:cut-admissibility} states the admissibility of a cut principle, and its proof amounts to the definition of a meta-level function on proofs.
   However, with proof terms, we can now make that function definition more apparent.
 
-  Let $\nspawn{}{}$ be a binary function on normal terms $N$ and $M$ of compatible types such that $\nspawn{N}{M}$ is a normal term of the corresponding type:
+  Let $\nspawn{}{}$ be a nondeterministic binary function on normal terms $N$ and $M$ of compatible types such that $\nspawn{N}{M}$ is a normal term of the corresponding type:
   % We will define $\nspawn{}{}$ as a meta-level function from pairs of normal terms of compatible types to normal terms of the corresponding type.
   \begin{equation*}
-    \infer-[\jrule{A-CUT}^B]{\slof{A |- \nspawn{N}{M} : C}}{
+    \infer-[\jrule{A-CUT}\smash{^B}]{\slof{A |- \nspawn{N}{M} : C}}{
       \slof{A |- N : B} & \slof{B |- M : C}}
     \,.
   \end{equation*}
 
-
-    
-  Once again, the cut principle can be proved by a lexicographic induction, first on the principal type, $B$, and then on the structures of the given terms, $N$ and $M$.
+  Once again, we will prove the cut principle by a lexicographic induction, first on the cut formula, $B$, and then on the structures of the given terms, $N$ and $M$.
   However, because the Hilbert system uses different rules than the sequent calculus, the proof's cases are organized a bit differently.
   In addition to the usual classes of principal, identity, and commutative cases, a new class of associative cases is introduced.
   \begin{description}[listparindent=\parindent, parsep=0pt]
@@ -1285,16 +1269,16 @@ First, however, we need admissibility of non-analytic cut as a \lcnamecref{lem:s
     \begin{figure}[tbp]
       \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
       \begin{gather*}
-        \infer-[\jrule{A-CUT}^B]{\slof{A |- \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} : C}}{
-          \infer[\jrule{CUT}^{B_{\kay}}]{\slof{A |- \spawn{N_0}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+        \infer-[\jrule{A-CUT}\smash{^B}]{\slof{A |- \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} : C}}{
+          \infer[\jrule{CUT}\smash{^{B_{\kay}}}]{\slof{A |- \spawn{N_0}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
             \slof{A |- N_0 : B_{\kay}} &
             \infer[\rrule{\plus}']{\slof{B_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
               \text{($\kay \in L$)}}} &
           \slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- M : C}}
         \\=\\
-        \infer-[\jrule{A-CUT}^{B_{\kay}}]{\slof{A |- \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} : C}}{
+        \infer-[\jrule{A-CUT}\smash{^{B_{\kay}}}]{\slof{A |- \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} : C}}{
           \slof{A |- N_0 : B_{\kay}} &
-          \infer-[\jrule{A-CUT}^B]{\slof{B_{\kay} |- \nspawn{\selectR{\kay}}{M} : C}}{
+          \infer-[\jrule{A-CUT}\smash{^B}]{\slof{B_{\kay} |- \nspawn{\selectR{\kay}}{M} : C}}{
             \infer[\rrule{\plus}']{\slof{B_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
               \text{($\kay \in L$)}} &
             \slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- M : C}}}
@@ -1306,10 +1290,13 @@ First, however, we need admissibility of non-analytic cut as a \lcnamecref{lem:s
 
     The symmetric case, $\nspawn{N}{(\spawn{\selectL{\kay}}{M_0})}$, is also an associative case and is handled similarly.
     The complete set of associative clauses is therefore:
-    \begin{gather*}
-      \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} \\
-      \nspawn{N}{(\spawn{\selectL{\kay}}{M_0})} = \nspawn{(\nspawn{N}{\selectL{\kay}})}{M_0}
-    \end{gather*}
+    \begin{align*}
+      \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M}
+        &= \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})}
+      \\
+      \nspawn{N}{(\spawn{\selectL{\kay}}{M_0})}
+        &= \nspawn{(\nspawn{N}{\selectL{\kay}})}{M_0}
+    \end{align*}
     Both of these associative cases detach a label and group it together with the neighboring term, thereby enabling interactions between the label and term.
 
   \item[Principal cases]
@@ -1333,7 +1320,9 @@ First, however, we need admissibility of non-analytic cut as a \lcnamecref{lem:s
 
 
 \item[Commutative cases]
-  
+  In the remaining cases, one of the two terms has a top-level constructor that introduces a side formula.
+  For instance, in $\nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{M}$, the constructor $\caseL[\ell \in L]{\ell => \mathord{-}}$ introduces the side formula $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$.
+  The left-commutative cases yield the following clauses for the definition of $\nspawn{}{}$.
   \begin{align*}
     \nspawn{(\spawn{\selectL{\kay}}{N_0})}{M}
       &= \spawn{\selectL{\kay}}{(\nspawn{N_0}{M})}
@@ -1343,8 +1332,9 @@ First, however, we need admissibility of non-analytic cut as a \lcnamecref{lem:s
     \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{M}
       &= \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M}}
   \end{align*}
+  In these clauses, the $\nspawn{}{}$ is permuted with a normal term's top-lovel constructor.
 
-  There are also several right commutative cases that are symmetric to the preceding left commutative cases.
+  There are also several right-commutative cases that are symmetric to the preceding left-commutative cases:
   \begin{align*}
     \nspawn{N}{(\spawn{M_0}{\selectR{\kay}})}
       &= \spawn{(\nspawn{N}{M_0})}{\selectR{\kay}}
@@ -1361,15 +1351,17 @@ Notice that the function $\nspawn{}{}$ defined by this \lcnamecref{lem:singleton
 Many nontrivial critical pairs exist, due to overlapping clauses in the function's definition.
 For instance, both
 \begin{align*}
+  \MoveEqLeft[.75]
   \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}
-         {\caseR[\kay \in K]{\kay => M_{\kay}}}
+         {\caseR[\kay \in K]{\kay => M_{\kay}}} \\
     &= \caseL[\ell \in L]{\ell =>
          \caseR[\kay \in K]{\kay => \nspawn{N_{\ell}}{M_{\kay}}}}
 %
 \shortintertext{and}
 %
+  \MoveEqLeft[.75]
   \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}
-         {\caseR[\kay \in K]{\kay => M_{\kay}}}
+         {\caseR[\kay \in K]{\kay => M_{\kay}}} \\
     &= \caseR[\kay \in K]{\kay =>
          \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M_{\kay}}}}
 \end{align*}
@@ -1387,30 +1379,30 @@ But many of the choices that would be made in breaking ties, such as between the
 %
 \begin{proof}
   \begin{equation*}
-    \infer-[\jrule{CE}]{\slof{A |- \wn{P} : C}}{
+    \infer-[\jrule{CE}]{\slof{A |- \ce{P} : C}}{
       \slof{A |- P : C}}
   \end{equation*}
 
   \begin{equation*}
-    \infer-[\jrule{CE}]{\slof{A |- \wn{\spawn{P_1}{P_2}} : C}}{
+    \infer-[\jrule{CE}]{\slof{A |- \ce{\spawn{P_1}{P_2}} : C}}{
       \infer[\jrule{CUT}^B]{\slof{A |- \spawn{P_1}{P_2} : C}}{
         \slof{A |- P_1 : B} & \slof{B |- P_2 : C}}}
     =
-    \infer-[\jrule{A-CUT}^B]{\slof{A |- \nspawn{\wn{P_1}}{\wn{P_2}} : C}}{
-      \infer-[\jrule{CE}]{\slof{A |- \wn{P_1} : C}}{
+    \infer-[\jrule{A-CUT}^B]{\slof{A |- \nspawn{\ce{P_1}}{\ce{P_2}} : C}}{
+      \infer-[\jrule{CE}]{\slof{A |- \ce{P_1} : C}}{
         \slof{A |- P_1 : B}} &
-      \infer-[\jrule{CE}]{\slof{B |- \wn{P_2} : C}}{
+      \infer-[\jrule{CE}]{\slof{B |- \ce{P_2} : C}}{
         \slof{B |- P_2 : C}}}
   \end{equation*}
 
   \begin{equation*}
     \begin{lgathered}
-      \wn{\spawn{P_1}{P_2}} = \nspawn{\wn{P_1}}{\wn{P_2}} \\
-      \wn{\fwd} = \fwd \\
-      \wn{\selectR{\kay}} = \selectR{\kay} \\
-      \wn{\caseL[\ell \in L]{\ell => P_{\ell}}} = \caseL[\ell \in L]{\ell => \wn{P_{\ell}}} \\
-      \wn{\caseR[\ell \in L]{\ell => P_{\ell}}} = \caseR[\ell \in L]{\ell => \wn{P_{\ell}}} \\
-      \wn{\selectL{\kay}} = \selectL{\kay}
+      \ce{\spawn{P_1}{P_2}} = \nspawn{\ce{P_1}}{\ce{P_2}} \\
+      \ce{\fwd} = \fwd \\
+      \ce{\selectR{\kay}} = \selectR{\kay} \\
+      \ce{\caseL[\ell \in L]{\ell => P_{\ell}}} = \caseL[\ell \in L]{\ell => \ce{P_{\ell}}} \\
+      \ce{\caseR[\ell \in L]{\ell => P_{\ell}}} = \caseR[\ell \in L]{\ell => \ce{P_{\ell}}} \\
+      \ce{\selectL{\kay}} = \selectL{\kay}
     \end{lgathered}
   \end{equation*}
 \end{proof}
@@ -1449,29 +1441,34 @@ We posit that normalization is unique up to commuting conversions and identity r
 % \end{equation*}
 
 
-\subsection{$\eta$-expansion}
+\section{}
 
-\NewDocumentCommand \idexp { m } { \eta(#1) }
-\NewDocumentCommand \idelim { m } { \mathit{ie}(\slof{#1}) }
+\begin{equation*}
+  \begin{lgathered}
+    \eta(\alpha) = \fwd \\
+    \eta(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseL[\ell \in L]{\ell => \selectR{\ell}} \\
+    \eta(\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseR[\ell \in L]{\ell => \selectL{\ell}}
+  \end{lgathered}
+\end{equation*}
 
-\begin{align*}
-  \idexp(\alpha) &= \fwd \\
-  \idexp(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}) &= \caseL[\ell \in L]{\ell => \selectR{\ell}} \\
-  \idexp(\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}) &= \caseR[\ell \in L]{\ell => \selectL{\ell}}
-\end{align*}
+\begin{equation*}
+  \begin{lgathered}
+    \eta(\alpha) = \fwd \\
+    \eta(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseL[\ell \in L]{\ell => \spawn{\eta(A_{\ell})}{\selectR{\ell}}} \\
+    \eta(\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseR[\ell \in L]{\ell => \spawn{\selectL{\ell}}{\eta(A_{\ell})}}
+  \end{lgathered}
+\end{equation*}
 
-\begin{theorem}
-  $\slof{A |- \idexp{A} : A}$ for all propositions $A$.
-\end{theorem}
+\begin{equation*}
+  \begin{lgathered}
+    n(A, \spawn{P}{^B Q}, C) = \nspawn{n(A, P, B)}{n(B, Q, C)} \\
+    n(A, \fwd, A) = \eta(A) \\
+    n(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}, \caseL[\ell \in L]{\ell => P_{\ell}}, C) = \caseL[\ell \in L]{\ell => n(A_{\ell}, P_{\ell}, C)}
+  \end{lgathered}
+\end{equation*}
 
-\begin{align*}
-  \idelim{A |- \spawn{P_1}{P_2} : C} &= \spawn{\idelim{A |- P_1 : B}}{\idelim{B |- P_2 : C}} \\
-  \idelim{A |- \fwd : A} &= \idexp{A} \\
-  \idelim{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}} &= \selectR{\kay} \\
-  \idelim{A |- \caseR[\ell \in L]{\ell => P_{\ell}} : \with*[sub=_{\ell \in L}]{\ell:C_{\ell}}} &= \caseR[\ell \in L]{\ell => \idelim{A |- P_{\ell} : C_{\ell}}} \\
-  \idelim{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectL{\kay} : A_{\kay}} &= \selectL{\kay} \\
-  \idelim{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C} &= \caseL[\ell \in L]{\ell => \idelim{A_{\ell} |- P_{\ell} : C}} \\
-\end{align*}
+
+
 
 
 \section{Extensions of singleton logic}\label{sec:singleton-logic:extensions}
