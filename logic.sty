@@ -230,8 +230,26 @@
     \}
   }
 
+
 \NewDocumentCommand \fuse { } { \__logic_fuse: }
 \cs_new:Npn \__logic_fuse: { \mathbin { \bullet } }
+
+
+\DeclareRobustCommand\bigop[2][1]{%
+  \mathop{\vphantom{\sum}\mathpalette\bigop@{{#1}{#2}}}\slimits@
+}
+\newcommand{\bigop@}[2]{\bigop@@#1#2}
+\newcommand{\bigop@@}[3]{%
+  \vcenter{%
+    \sbox\z@{$#1\sum$}%
+    \hbox{\resizebox{#2\dimexpr\ht\z@+\dp\z@}{!}{$\m@th#3$}}%
+  }%
+}
+
+\NewDocumentCommand \bigfuse { } { \__logic_bigfuse: }
+\cs_new:Npn \__logic_bigfuse: { \DOTSB \bigop [0.8] { \bullet } }
+
+
 
 \NewDocumentCommand \esuf { } { \__logic_esuf: }
 \cs_new:Npn \__logic_esuf: { \mathbin { \circ } }

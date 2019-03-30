@@ -26,7 +26,7 @@ In particular, we will see that singleton propositions can be interpreted as ses
 \footnote{As we will see in \cref{??}, Hilbert-style proofs may also be viewed as well-behaved chains of the communicating automata familiar from \cref{??}.}
 For instance, a proof of $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$ corresponds to a process that sends a message carrying some label $\kay \in L$ and then continues communicating according to pattern $A_{\kay}$.
 
-This roughly parallels a recent line of research into a Curry--Howard isomorphism, dubbed SILL, between the intuitionistic linear sequent calculus and session-typed concurrent computation\autocites{Caires+:MSCS13}{Caires+:TLDI12} -- with two key differences.
+This roughly parallels a recent line of research into a Curry--Howard isomorphism, dubbed SILL, between the intuitionistic linear sequent calculus and session-typed concurrent computation\autocites{Caires+:MSCS16}{Caires+:TLDI12} -- with two key differences.
 First, unlike SILL, we use singleton logic, not intuitionistic linear logic.
 % However, as sketched in \cref{??}, 
 Second and most importantly, we use a Hilbert-style axiomatization, rather than a standard sequent calculus like SILL does.
@@ -35,7 +35,7 @@ The use of Hilbert-style proofs enables a clean and direct interpretation of cut
 \footnote{It is possible to give a rather ad hoc treatment of asynchronous communication using SILL's sequent proofs\textcite{DeYoung+:CSL12}, but, in our view, the treatment of asynchronous communication using Hilbert-style proofs is far more elegant.}
 
 
-% In particular, this parallels a recent line of research into a Curry--Howard isomorphism between the intuitionistic linear sequent calculus and session-typed concurrent computation\autocites{Caires+:MSCS13}{Caires+:TLDI12}.
+% In particular, this parallels a recent line of research into a Curry--Howard isomorphism between the intuitionistic linear sequent calculus and session-typed concurrent computation\autocites{Caires+:MSCS16}{Caires+:TLDI12}.
 % In that work, linear propositions are interpreted as session types that describe patterns of interprocess communication; sequent proofs, as session-typed processes; and cut reduction, as synchronous message-passing communication.
 % For instance, a proof of $A \lolli B$ corresponds to a process that inputs a channel that communicates according to the pattern $A$, and then continues connumicating according to pattern $B$.
 
@@ -833,10 +833,10 @@ For instance, a transducer process that transforms a stream of input symbols int
 The solution is to introduce mutually recursive type definitions, in a manner reminiscent of the recursively defined ordered propositions, $\alpha \defd A$, seen in \cref{??}.
 However, recursively defined types are not particularly useful if process expressions remain finitary, so we also introduce mutually recursive processes: $\slof{A |- p : C} \defd P$.
 In both cases, the recursion is defined using general fixed points, not least or greatest fixed points.%
-\footnote{Treatments of inductive and coinductive types in linear logic\autocite{Baelde:?,Toninho+:TGC14} should be adaptable to a singleton logic setting, and work on a Curry--Howard extrapolation of \citeauthor{Fortier-Santocanale:CSL?}'s work on circular proofs\autocite{Fortier-Santocanale:CSL?} is underway.}
+\footnote{Treatments of inductive and coinductive types in linear logic~\parencite{Baelde:TCL12,Toninho+:TGC14} should be adaptable to a singleton logic setting, and work on a Curry--Howard extrapolation of \citeauthor{Fortier+Santocanale:CSL13}'s work on circular proofs\textcite*{Fortier+Santocanale:CSL13} is underway~\parencite{Derakhshan+Pfenning:CMU19}.}
 
 
-We require that recursive type definitions be \emph{contractive}\autocite{??} -- that the body of each recursive type definition begin with a type constructor ($\plus$ or $\with$) at the top level.
+We require that recursive type definitions be \emph{contractive}\autocite{Gay+Hole:AI05} -- that the body of each recursive type definition begin with a type constructor ($\plus$ or $\with$) at the top level.
 This rules out problematic definitions like $\alpha \defd \alpha$.
 Moreover, it justifies an \emph{equi}\-recursive treatment of types in which type definitions may be silently unfolded (or folded) at will.
 In other words, a type $\alpha \defd A$ is equal to its unfolding, $[A/\alpha]A$.

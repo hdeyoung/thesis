@@ -233,37 +233,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage { amsthm }
-
-
+\RequirePackage { thmtools }
 
 %% Small caps theorem styles
-\newtheoremstyle { smallcaps-plain }
-  { \topsep } { \topsep } % Space above and below
-  { \itshape } % Body font
-  { } % Indent length
-  { } % Theorem head font
-  { } % Punctuation after theorem head
-  { .5em } % Length after theorem head
-  {
-    \textsc { \color { structure } \MakeTextLowercase {
-      \thmname {#1}  \thmnumber {~#2} }
-    }
-    \thmnote {~(#3)}
-  } % Theorem head spec
+\declaretheoremstyle [
+  spaceabove = \topsep , spacebelow = \topsep ,
+  bodyfont = \normalfont \itshape ,
+  headfont = \normalfont \scshape \color { structure } ,
+  notefont = \normalfont \color { black } ,
+  headpunct = { \textcolor { black } { . } } ,
+  postheadspace = .5em
+] { smallcaps-plain }
 
-\newtheoremstyle { smallcaps-definition }
-  { \topsep } { \topsep } % Space above and below
-  { } % Body font
-  { } % Indent length
-  { } % Theorem head font
-  { } % Punctuation after theorem head
-  { .5em } % Length after theorem head
-  {
-    \textsc { \color { structure } \MakeTextLowercase {
-      \thmname {#1}  \thmnumber {~#2} }
-    }
-    \thmnote {~(#3)}
-  } % Theorem head spec
+\declaretheoremstyle [
+  spaceabove = \topsep , spacebelow = \topsep ,
+  bodyfont = \normalfont ,
+  headfont = \normalfont \scshape \color { structure } ,
+  notefont = \normalfont \color { black } ,
+  headpunct = { \textcolor { black } { . } } ,
+  postheadspace = .5em
+] { smallcaps-definition }
 
 %% Proof environment 
 \cs_set_eq:NN \__proof \proof
@@ -274,28 +263,64 @@
   { \__endproof }
 
 %% Some theorem-like environments
-\theoremstyle { smallcaps-plain }
-\newtheorem { theorem } { Theorem }
+\declaretheorem
+  [ numberwithin = chapter ,
+    refname = { theorem , theorems } ,
+    Refname = { Theorem , Theorems } ,
+    style = smallcaps-plain ]
+  { theorem }
+
+\declaretheorem
+  [ sibling = theorem ,
+    refname = { lemma , lemmas } ,
+    Refname = { Lemma , Lemmas } ,
+    style = smallcaps-plain ]
+  { lemma }
+
+\declaretheorem
+  [ sibling = theorem ,
+    refname = { corollary , corollaries } ,
+    Refname = { Corollary , Corollaries } ,
+    style = smallcaps-plain ]
+  { corollary }
+
+\declaretheorem
+  [ sibling = theorem ,
+    name = False~claim ,
+    refname = { false~claim , false~claims } ,
+    Refname = { False~claim , False~claims } ,
+    style = smallcaps-plain ]
+  { falseclaim }
+
 \newtheorem* { theorem* } { Theorem }
-\newtheorem { lemma } [ theorem ] { Lemma }
 \newtheorem* { lemma* } { Lemma }
-\newtheorem { corollary } [ theorem ] { Corollary }
 \newtheorem* { corollary* } { Corollary }
 \newtheorem { fact } [ theorem ] { Fact }
 \newtheorem* { fact* } { Fact }
-\newtheorem { falseclaim } [ theorem ] { False~Claim }
 \newtheorem* { falseclaim* } { False~Claim }
 \newtheorem { conjecture } [ theorem ] { Conjecture }
 \newtheorem* { conjecture* } { Conjecture }
 
-\theoremstyle { smallcaps-definition }
-\newtheorem { definition } { Definition }
+\declaretheorem
+  [ numberwithin = chapter ,
+    refname = { definition , definitions } ,
+    Refname = { Definition , Definitions } ,
+    style = smallcaps-definition ]
+  { definition }
+
+\declaretheorem
+  [ numberwithin = chapter ,
+    refname = { example , examples } ,
+    Refname = { Example , Examples } ,
+    style = smallcaps-definition ,
+    qed = \qedsymbol ]
+  { example }
+
 \newtheorem* { definition* } { Definition }
-\newtheorem { example } { Example }
 \newtheorem* { example* } { Example }
 
 %% QED symbol in structure color
-\cs_set:Npn \qedsymbol { $ \color { structure } \blacksquare $ }
+\cs_set:Npn \qedsymbol { $ \color { structure } \Box $ }
 
 %% Description environment for use in theorems/definitions
 \PassOptionsToPackage { inline } { enumitem }
@@ -330,27 +355,6 @@
 \makeatother
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%
-% Labels and references %
-%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\RequirePackage { cleveref }
-
-\crefname{lemma}{lem.}{lems.}
-\Crefname{lemma}{Lemma}{Lemmas}
-
-\NewDocumentCommand \parencref { O{} m O{} }
-  { \__thesis_parencref:nnn {#1} {#2} {#3} }
-\cs_new:Npn \__thesis_parencref:nnn #1 #2 #3
-  {
-    \nobreakspace (
-    \tl_if_empty:nF {#1} { #1 ~ }
-    \cref{#2}
-    \tl_if_empty:nF {#3} {#3}
-    )
-  }
-
-
 %%%%%%%%%%%%%%%%
 % Bibliography %
 %%%%%%%%%%%%%%%%
@@ -364,3 +368,28 @@
 %%%%%%%%%%%%%
 
 \RequirePackage { import }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Labels and references %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% \PassOptionsToPackage { colorlinks = true , allcolors = red } { hyperref }
+\RequirePackage { hyperref }
+  
+\RequirePackage { cleveref }
+
+% \crefname{lemma}{lem.}{lems.}
+% \Crefname{lemma}{Lemma}{Lemmas}
+
+\NewDocumentCommand \parencref { O{} m O{} }
+  { \__thesis_parencref:nnn {#1} {#2} {#3} }
+\cs_new:Npn \__thesis_parencref:nnn #1 #2 #3
+  {
+    \nobreakspace (
+    \tl_if_empty:nF {#1} { #1 ~ }
+    \cref{#2}
+    \tl_if_empty:nF {#3} {#3}
+    )
+  }

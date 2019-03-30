@@ -2,12 +2,243 @@
 
 In this \lcnamecref{ch:ordered-rewriting}, we develop a rewriting interpretation of the ordered sequent calculus from the previous \lcnamecref{ch:ordered-logic}.
 
+
+\section{Observations}
+
+\subsection{Lambek's syntactic calculus}
+
+\NewDocumentCommand \longrightleftarrows { } { \mathrel{\substack{\textstyle\longrightarrow\\[-.6ex]\textstyle\longleftarrow}} }
+
+Lambek begins with four axioms:
+\begin{enumerate}[label=(\Roman*)]
+\item $A \fuse (A \limp B) \reduces B$ and $(B \pmir A) \fuse A \reduces B$
+\item $(A \limp C) \pmir B \longrightleftarrows A \limp (C \pmir B)$
+\item $(A \limp B) \fuse (B \limp C) \reduces A \limp C$ and $(C \pmir B) \fuse (B \pmir A) \reduces C \pmir A$
+\item $A \reduces (B \pmir A) \limp B$ and $A \reduces B \pmir (A \limp B)$.
+\end{enumerate}
+
+Lambek's original syntactic calculus could be phrased as:
+\begin{inferences}
+  \infer{A \Reduces A}{}
+  \and
+  \infer{A \Reduces C}{
+    A \Reduces B & B \Reduces C}
+  \\
+  \infer{A \fuse (B \fuse C) \Longleftrightarrow (A \fuse B) \fuse C}{}
+  \and
+  \infer={A \Reduces C \pmir B}{
+    A \fuse B \Reduces C}
+  \and
+  \infer={B \Reduces A \limp C}{
+    A \fuse B \Reduces C}
+\end{inferences}
+Using ordered contexts (modulo associativity and unit laws):
+\begin{inferences}
+  \infer{\octx \Reduces \octx}{}
+  \and
+  \infer{\octx \Reduces \octx''}{
+    \octx \Reduces \octx' & \octx' \Reduces \octx''}
+  \\
+  \infer=[\fuse]{\octx \oc (A \fuse B) \oc \octx' \Reduces \octx''}{
+    \octx \oc A \oc B \oc \octx' \Reduces \octx''}
+  \and
+  \infer=[\pmir]{\octx \Reduces C \pmir B}{
+    \octx \oc B \Reduces C}
+  \and
+  \infer=[\limp]{\octx \Reduces A \limp C}{
+    A \oc \octx \Reduces C}
+\end{inferences}
+But I wouldn't call this ordered rewriting for several reasons:
+\begin{itemize}
+\item I don't usually think of rewriting as building up propositions, as in the bottom-to-top reading of the $\fuse$ rule and the top-to-bottom readings of the $\pmir$ and $\limp$ rules.
+\item I don't see a clear trace structure to $\Reduces$.
+\end{itemize}
+
+\begin{inferences}
+  \infer{\octx \Reduces \octx}{}
+  \and
+  \infer{\octx \Reduces \octx''}{
+    \octx \Reduces \octx' & \octx' \Reduces \octx''}
+  \\
+  \infer{\octx_1 \oc \octx_2 \Reduces \octx'_1 \oc \octx'_2}{
+    \octx_1 \Reduces \octx'_1 & \octx_2 \Reduces \octx'_2}
+  \and
+  \infer{\octx \Reduces \octx'}{
+    \octx \reduces \octx'}
+  \\
+  \infer[\fuse]{A \fuse B \longrightleftarrows A \oc B}{}
+  \and
+  \infer[\pmir_2]{(C \pmir B) \oc B \reduces C}{}
+  \and
+  \infer[\limp_2]{A \oc (A \limp C) \reduces C}{}
+  \\
+  \infer[\pmir_1]{\octx \reduces C \pmir B}{
+    \octx \oc B \Reduces C}
+  \and
+  \infer[\limp_1]{\octx \reduces A \limp C}{
+    A \oc \octx \Reduces C}
+\end{inferences}
+
+\begin{theorem}[Soundness]
+  If $\octx \Reduces \octx'$, then $\oseq{\octx |- \mathord{\fuse} \octx'}$.
+\end{theorem}
+
+\begin{theorem}[Completeness]
+  If $\oseq{\octx |- A}$, then $\octx \Reduces A$.
+\end{theorem}
+%
+\begin{proof}
+  This proof would fail if the premises of the $\pmir_1$ and $\limp_1$ rules were restricted to $\reduces$:
+  \begin{equation*}
+    \infer[\pmir_1]{\octx \reduces C \pmir B}{
+      \octx \oc B \reduces C}
+    \qquad
+    \infer[\limp_1]{\octx \reduces A \limp C}{
+      A \oc \octx \reduces C}
+    \qedhere
+  \end{equation*}
+\end{proof}
+
+Since a clear trace structure appears to be incompatible with completeness, we may as well drop the $\pmir_1$ and $\limp_1$ rules altogether.
+Is that a reasonable argument?
+
+
+\subsection{String rewriting}
+
+A string rewriting system consists of an alphabet $\ialph$ and a relation $\mathord{\reduces} \subseteq \finwds{\ialph} \times \finwds{\ialph}$ that is compatible with concatenation.
+
+For instance, $\mathord{\reduces} = \{(s_1 xy s_2, s_1 z s_2) \mid s_1,s_2 \in \finwds{\ialph}\}$ is a valid string rewriting relation when $x,y,z \in \ialph$.
+However, without persistent facts to act as rewriting rules (such as $!(x \limp z \pmir y)$), this relation does not arise from the Lambek calculus.
+
+
+In Lambek's examples, there is a first step of assigning types to words.
+For instance, in \enquote{\itshape John likes Jane}, the types $n$, $n \limp (s \pmir n)$, and $n$ are assigned to the words.
+The computation is then 
+\begin{equation*}
+  n \oc (n \limp (s \pmir n)) \oc n \reduces (s \pmir n) \oc n \reduces s
+\end{equation*}
+This first step amounts to expanding definitions of $\mathit{John} \defd n$ and $\mathit{likes} \defd n \limp (s \pmir n)$ and $\mathit{Jane} \defd n$.
+
+\subsection{Outline}
+
+\begin{itemize}
+\item Informal description of string rewriting
+\item Apply Lambek's syntactic calculus to string rewriting; identify a forward-directed fragment of Lambek's syntactic calculus
+\item Too weak for string rewriting.  Two ways of introducing repetition: persistence and definitions.
+  \begin{itemize}
+  \item To match string rewriting exactly, we would need chaining/focusing.  Without it, rewrites are not atomic like they are in string rewriting.
+    (For definitions, we can't eagerly expand definitions if we want atomicity.)
+  \end{itemize}
+\item We won't concern ourselves with a precise correspondence with string rewriting, but instead adopt \vocab{ordered rewriting}, a forward-directed fragment of Lambek's syntactic calculus with definitions.
+\end{itemize}
+
+
+\clearpage
+
+\begin{itemize}
+\item Throw out all right rules except those for $\fuse$ and $\one$
+\item These remaining right rules can be pushed to the derivation's leaves and combined into an observation rule that subsumes the identity
+\item Then implication's left rule can be replaced with a weaker rule
+\end{itemize}
+
+\begin{inferences}
+  \infer{\octx_1 \oc \octx_2 \Vdash A \fuse B}{
+    \octx_1 \Vdash A & \octx_2 \Vdash B}
+  \and
+  \infer{\octxe \Vdash \one}{}
+  \and
+  \infer{\octx \Vdash A \plus B}{
+    \octx \Vdash A}
+  \and
+  \infer{\octx \Vdash A \plus B}{
+    \octx \Vdash B}
+  \and
+  \infer{A \Vdash A}{}
+\end{inferences}
+
+\begin{inferences}
+  \infer{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
+    \octx_1 \reduces \octx'_1}
+  \and
+  \infer{\octx_1 \oc \octx_2 \reduces \octx_1 \oc \octx'_2}{
+    \octx_2 \reduces \octx'_2}
+  \\
+  \infer{A \fuse B \reduces A \oc B}{}
+  \and
+  \infer{\one \reduces \octxe}{}
+  \\
+  \infer{A \with B \reduces A}{}
+  \and
+  \infer{A \with B \reduces B}{}
+  \and
+  \text{(no $\top$ rule)}
+  \\
+  \infer{\octx \oc (A \limp B) \reduces B}{
+    \octx \Vdash A}
+  \and
+  \infer{(B \pmir A) \oc \octx \reduces B}{
+    \octx \Vdash A}
+\end{inferences}
+
+\clearpage
+
+
+\section{}
+
+In \citeyear{Lambek:AMM58}, \citeauthor{Lambek:AMM58} developed a syntactic calculus, now known as the Lambek calculus, for formally describing the structure of sentences.\autocite{Lambek:AMM58}
+Words are assigned syntactic types, which roughly correspond to grammatical parts of speech.
+From a logical perspective, the Lambek calculus can [also] be viewed as a precursor to (and generalization of) \citeauthor{Girard:TCS87}'s linear logic\autocite{Girard:TCS87}\relax.\autocites{Polakow+Pfenning:MFPS99}{Polakow+Pfenning:TLCA99}
+Implicit in \citeauthor{Lambek:AMM58}'s original article is a third perspective of the calculus: string rewriting.
+
+In this \lcnamecref{ch:ordered-rewriting}, we review the Lambek calculus from a [string] rewriting perspective.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\clearpage
+
+\section{Introduction}
+
+In the previous \lcnamecref{ch:ordered-logic}, we saw that the ordered sequent calculus can be given a resource interpretation in which sequents $\oseq{\octx |- A}$ may be read as \enquote{... achievable ...}.
+The left rules were seen as decomposing resources, such as decomposing $A \fuse B$ into $A \oc B$ in the $\lrule{\fuse}$ rule.
+The right rules, on the other hand, were seen as ...
+
+Replacing the left rules with a single, common rule ... and a new judgment, $\octx \reduces \octx'$, that exposes [makes [more] explicit] the decomposition of resources/state transformation aspect.
+
+This development borrows from \citeauthor{Cervesato+Scedrov:IC09}'s work on intuitionistic linear logic as an expressive rewriting framework that generalizes traditional notions of multiset rewriting.\autocite{Cervesato+Scedrov:IC09}
+The 
+
 \section{Propositional ordered rewriting}
 
 In this \lcnamecref{sec:ordered-rewriting:general}, we develop a rewriting interpretation of the ordered sequent calculus from the previous \lcnamecref{ch:ordered-logic}.
-This development closely follows \citeauthor{Cervesato+Scedrov:IC09}'s work on intuitionistic linear logic as a multiset rewriting framework.
+This development closely follows \citeauthor{Cervesato+Scedrov:IC09}'s work on intuitionistic linear logic as a multiset rewriting framework.\autocite{Cervesato+Scedrov:IC09}
 
-Just as their linear logical rewriting framework is more expressive than multiset rewriting, ordered rewriting framework presented in this chapter can be seen as an extension of tranditional notions of string rewriting.
+Just as their linear logical rewriting framework is more expressive than multiset rewriting, ordered rewriting framework presented in this chapter can be seen as an extension of traditional notions of string rewriting.
 
 
 \begin{equation*}
@@ -17,6 +248,16 @@ Just as their linear logical rewriting framework is more expressive than multise
 
 
 Many of the ordered sequent calculus's left rules consist of a single major premise with the same consequent as in the rule's conclusion [sequent], as well as a minor premise in the case of the $\lrule{\limp}$ and $\lrule{\pmir}$ rules.
+\begin{inferences}
+  \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
+    \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
+  \and
+  \infer[\lrule{\with}_1]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- C}}{
+    \oseq{\octx'_L \oc A \oc \octx'_R |- C}}
+\end{inferences}
+Both rules, at their core, decompose resources -- the resource $A \fuse B$ into the separate resources $A \oc B$; and the resource $A \with B$ into the resource $A$.
+The resource decomposition is somewhat obscured 
+Notice that much of these two rules is devoted to shared scaffolding/boilerplate -- the framing contexts $\octx'_L$ and $\octx'_R$, and goal consequent $C$ that remain unchanged from conclusion to premise.
 
 Because so many rules share this scaffolding, it might be worthwhile to restructure the ordered sequent calculus to expose this shared scaffolding.
 \begin{equation*}
@@ -25,32 +266,103 @@ Because so many rules share this scaffolding, it might be worthwhile to restruct
 \end{equation*}
 For instance, if $\octx_L \oc (A \fuse B) \oc \octx_R \reduces \octx_L \oc A \oc B \oc \octx_R$ holds, then the usual $\lrule{\fuse}$ rule is a derivable instance of this generalized left rule.
 
-\begin{inferences}
-  \infer{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
-    \octx_1 \reduces \octx'_1}
-  \and
-  \infer{\octx_1 \oc \octx_2 \reduces \octx_1 \oc \octx'_2}{
-    \octx_2 \reduces \octx'_2}
-  \\
-  \infer{\octx \oc (A \limp B) \reduces B}{
-    \oseq{\octx |- A}}
-  \and
-  \infer{(B \pmir A) \oc \octx \reduces B}{
-    \oseq{\octx |- A}}
-  \\
-  \infer{A \fuse B \reduces A \oc B}{}
-  \and
-  \infer{A \esuf B \reduces B \oc A}{}
-  \and
-  \infer{\one \reduces \octxe}{}
-  \\
-  \infer{A \with B \reduces A}{}
-  \and
-  \infer{A \with B \reduces B}{}
-  \and
-  \text{(no rule for $\top$)}
-\end{inferences}
+\begin{figure}
+  \begin{inferences}
+    \infer[\jrule{CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}}{
+      \oseq{\octx |- A} & \oseq{\octx'_L \oc A \oc \octx'_R |- C}}
+    \and 
+    \infer[\jrule{ID}\smash{^A}]{\oseq{A |- A}}{}
+    \\
+    \infer[]{\oseq{\octx |- C}}{
+      \octx \reduces \octx' & \oseq{\octx' |- C}}
+    \and
+    \infer{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
+      \octx_1 \reduces \octx'_1}
+    \and
+    \infer{\octx_1 \oc \octx_2 \reduces \octx_1 \oc \octx'_2}{
+      \octx_2 \reduces \octx'_2}
+    \\
+    \infer[\rrule{\fuse}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
+      \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
+    \and
+    \infer[\lrule{\fuse}']{A \fuse B \reduces A \oc B}{}
+    \\
+    \infer[\rrule{\one}]{\oseq{\octxe |- \one}}{}
+    \and
+    \infer[\lrule{\one}']{\one \reduces \octxe}{}
+    \\
+    \infer[\rrule{\with}]{\oseq{\octx |- A \with B}}{
+      \oseq{\octx |- A} & \oseq{\octx |- B}}
+    \and
+    \infer[\lrule{\with}_1']{A \with B \reduces A}{}
+    \and
+    \infer[\lrule{\with}_2']{A \with B \reduces B}{}
+    \\
+    \infer[\rrule{\top}]{\oseq{\octx |- \top}}{}
+    \and
+    \text{(no $\lrule{\top}'$ rule)}
+    \\
+    \infer[\rrule{\limp}]{\oseq{\octx |- A \limp B}}{
+      \oseq{A \oc \octx |- B}}
+    \and
+    \infer[\lrule{\limp}']{\octx \oc (A \limp B) \reduces B}{
+      \oseq{\octx |- A}}
+    \\
+    \infer[\rrule{\pmir}]{\oseq{\octx |- B \pmir A}}{
+      \oseq{\octx \oc A |- B}}
+    \and
+    \infer[\lrule{\pmir}']{(B \pmir A) \oc \octx \reduces B}{
+      \oseq{\octx |- A}}
+    \\
+    \infer[\rrule{\plus}_1]{\oseq{\octx |- A \plus B}}{
+      \oseq{\octx |- A}}
+    \and
+    \infer[\rrule{\plus}_2]{\oseq{\octx |- A \plus B}}{
+      \oseq{\octx |- B}}
+    \and
+    \infer[\lrule{\plus}]{\oseq{\octx'_L \oc (A \plus B) \oc \octx'_R |- C}}{
+      \oseq{\octx'_L \oc A \oc \octx'_R |- C} &
+      \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+    \\
+    \text{(no $\rrule{\zero}$ rule)}
+    \and
+    \infer[\lrule{\zero}]{\oseq{\octx'_L \oc \zero \oc \octx'_R |- C}}{}
+  \end{inferences}
+\end{figure}
 
+\begin{theorem}
+  $\oseq{\octx |- A}$ in ... if and only if $\oseq{\octx |- A}$ in ...
+\end{theorem}
+\begin{proof}
+  The two directions are proved separately, each by induction on the structure of the given derivation.
+  \begin{gather*}
+    \infer[\lrule{\with}_1]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- C}}{
+      \oseq{\octx'_L \oc A \oc \octx'_R |- C}}
+    \\\rightsquigarrow\\
+    \infer[]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- C}}{
+      \infer[]{\octx'_L \oc (A \with B) \oc \octx'_R \reduces \octx'_L \oc A \oc \octx'_R}{
+        \infer[]{(A \with B) \oc \octx'_R \reduces A \oc \octx'_R}{
+        \infer[\lrule{\with}'_1]{A \with B \reduces A}{}}} &
+      \oseq{\octx'_L \oc A \oc \octx'_R |- C}}
+  \end{gather*}
+
+  \begin{equation*}
+    \begin{lgathered}
+      \bigfuse (\octx_1 \oc \octx_2) = (\bigfuse \octx_1) \fuse (\bigfuse \octx_2) \\
+      \bigfuse (\octxe) = \one \\
+      \bigfuse A = A
+    \end{lgathered}
+  \end{equation*}
+
+  \begin{lemma}
+    If\/ $\octx \reduces \octx'$, then $\oseq{\octx |- \bigfuse \octx'}$.
+    $\oseq{\octx' |- \bigfuse \octx'}$ for all $\octx'$.
+  \end{lemma}
+\end{proof}
+
+\begin{theorem}
+  If $\oseq{\octx |- A}$ and $\octx'_L \oc A \oc \octx'_R \reduces \octx'$, then $\oseq{\octx'_L \oc \octx \oc \octx'_R |- \bigfuse \octx'}$.
+\end{theorem}
 
 \begin{syntax*}
   Propositions &

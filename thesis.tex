@@ -2,11 +2,19 @@
 % arara: biber
 % arara: pdflatex
 % arara: pdflatex
-\documentclass[tufte-book,notoc,biblatex={citestyle=authoryear, autocite=footnote}]{tufte-thesis}
+\documentclass[
+  tufte-book,
+  notoc,
+  biblatex={
+    citestyle=authoryear,
+    autocite=footnote,
+    maxcitenames=2,
+    maxbibnames=99,
+    backref=true
+  }
+]{tufte-thesis}
 
 \input{preamble}
-
-\usepackage{lipsum}
 
 \title{Untitled thesis}
 \author{Henry DeYoung}

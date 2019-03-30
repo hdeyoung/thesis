@@ -6,39 +6,75 @@
 % .
 
 
-This \lcnamecref{ch:ordered-logic} serves to review a sequent calculus presentation of [the non-modal fragment of]
-intuitionistic%
-\footnote{Contrast with noncommutative logic}
-ordered logic, also known as the (full) Lambek calculus\autocites{Lambek:AMM58}{Lambek:SLIM61}.
-As a substructural logic, ordered logic eschews the usual structural properties of weakening, contraction, and exchange.
-As in \citeauthor{Girard:TCS??}'s linear logic\autocite{Girard:TCS??}, the lack of weakening and contraction properties means that each antecedent must be used exactly once within a proof.
-In ordered logic, the additional lack of an exchange property means that antecedents must also remain in order within a proof.
+This \lcnamecref{ch:ordered-logic} serves to review a sequent calculus presentation of ordered logic, also known as the (full) Lambek calculus\autocites{Lambek:AMM58}{Lambek:SLIM61}.
 
-\Citeauthor{Lambek:AMM58} leveraged the noncommutativity of antecedents to give a formal description of sentence structure.
-In this work, however, our interest is not mathematical linguistics but the logical foundations of concurrent computation, so the presentation of ordered logic has a more proof-theoretic slant and is derived from a presentation by ...
+In its traditional form, intuitionistic logic\footnote{And classical logic, too.} presumes that hypotheses admit three structural properties
+\begin{description*}[
+  before=\unskip:\ ,
+  font=\normalfont, afterlabel={,\ },
+  itemjoin=;\ , itemjoin*=; and\ %
+]
+\item[weakening] that hypotheses need not be used
+\item[contraction] that hypotheses may be reused indefinitely
+\item[exchange] that hypotheses may be freely permuted
+\end{description*}.
+
+Substructural logics are so called because they reject some or all of these structural properties.
+Most famously, linear logic\autocite{Girard:TCS87} is substructural because it rejects both weakening and contraction.
+The result is a system in which each hypothesis must be used exactly once and may therefore be viewed as 
+
+As a substructural logic, ordered logic eschews the usual structural properties of antecedents -- weakening, contraction, and exchange.
+As in \citeauthor{Girard:TCS87}'s linear logic\autocite{Girard:TCS87}, the lack of weakening and contraction properties means that each antecedent must be used exactly once within a proof.
+Ordered logic's additional lack of an exchange property means that antecedents must also remain in order within a proof.
+
+\Citeauthor{Lambek:AMM58} leveraged this noncommutativity [of antecedents] to give a formal description of sentence structure.
+In this work, however, our interest is not mathematical linguistics but the logical foundations of concurrent computation.
+Accordingly, the description of ordered logic in this \lcnamecref{ch:ordered-logic} has a proof-theoretic emphasis and is derived from presentations by \textcite{Pfenning:CMU16} and \textcite{Polakow+Pfenning:MFPS99}.
+
+\Cref{sec:ordered-logic:sequent-calculus} introduces ordered logic's sequent calculus as a collection of inference rules, informally justifying them with a resource interpretation similar to that of linear logic\autocite{??}.
+To be sure that this collection ...
+Together, cut and identity elimination \lcnamecrefs{thm:ordered-logic:cut-elimination}~\parencref{thm:ordered-logic:cut-elimination,thm:ordered-logic:identity-elimination} serve to establish a proof normalization result: every proof has a corresponding verification.
 
 
-[Outline paragraph]
+The reader who is familiar with ordered logic's sequent calculus and basic metatheory -- particularly the cut elimination result -- should feel free to skip this \lcnamecref{ch:ordered-logic}.
 
 
-\section{A sequent calculus presentation of ordered logic}
+\section{A sequent calculus presentation of ordered logic}\label{sec:ordered-logic:sequent-calculus}
 
-Ordered logic eschews the usual structural properties of weakening, contraction, and exchange.
-Like in linear logic, the absence of weakening and contraction means that antecedents may neither be discarded nor duplicated within a proof.
-But ordered logic's rejection of the exchange property takes things one step further: antecedents may not even be permuted within a proof.
+The full sequent calculus for ordered logic will be summarized in \cref{fig:ordered-logic:sequent-calculus}, but first we will discuss the calculus's judgmental principles and logical connectives one by one.
 
 \subsection{Sequents and contexts}
 
+\paragraph{Sequents}
 In ordered logic's sequent calculus presentation, the basic judgment is a sequent
 \begin{equation*}
   \oseq{A_1 \oc A_2 \dotsb A_n |- A} \,,
 \end{equation*}
 where the propositions $A_1, A_2, \dotsc, A_n$ are assumptions, or \emph{antecedents}, arranged into an ordered list%
-\footnote{Antecedents may be freely reassociated, and so form a list, not a tree.}%
-, not a multiset as in linear logic, nor a set as in persistent logic; the proposition $A$ is termed the \emph{consequent}.
+% \footnote{Antecedents may be freely reassociated, and so form a list, not a tree.}%
+% , not a multiset as in linear logic, nor a set as in intuitionistic logic
+; the proposition $A$ is termed the \emph{consequent}.
 
-To keep [the syntax of] sequents concise, the list of antecedents is usually packaged into an ordered context $\octx = A_1 \oc A_2 \dotsb A_n$, and the sequent written $\oseq{\octx |- A}$.
-Algebraically, ordered contexts $\octx$ form a free (noncommutative) monoid:
+Ordered logic eschews the [usual] structural properties of antecedents -- namely weakening, contraction, and exchange.
+As in linear logic, the absence of weakening and contraction means that
+% the
+antecedents
+% , $A_1 \oc A_2 \dotsb A_n$,
+may neither be discarded nor duplicated within a proof.
+Neither $\oseq{A_2 \dotsb A_n |- A}$ nor $\oseq{A_1 \oc A_1 \oc A_2 \dotsb A_n |- A}$ implies $\oseq{A_1 \oc A_2 \dotsb A_n |- A}$, for example. 
+But ordered logic's rejection of the exchange property takes things one step further: antecedents may not even be permuted within a proof.
+For example, $\oseq{A_2 \oc A_1 \dotsb A_n |- A}$ does not imply $\oseq{A_1 \oc A_2 \dotsb A_n |- A}$.
+
+Like linear sequents\autocite{Girard:TCS87}, ordered sequents can be given a resource interpretation -- but with a slight twist.
+% An ordered sequent $\oseq{A_1 \oc A_2 \dotsb A_n |- A}$ can be read as stating that resource $A$ can be produced from the resources $A_1, A_2, \dotsc, A_n$, and a proof of that sequent is a recipe for
+A proof of an ordered sequent
+$\oseq{A_1 \oc A_2 \dotsb A_n |- A}$
+can be interpreted as a recipe for producing resource $A$ from the resources $A_1 \oc A_2 \dotsb A_n$.
+The small twist is that these resources are inherently ordered and may not be permuted, exactly because ordered logic rejects the exchange property that linear logic admits.
+
+\paragraph{Contexts}
+To keep [the notation for] sequents concise, the list of antecedents is usually packaged into an ordered context $\octx = A_1 \oc A_2 \dotsb A_n$, with the sequent then written $\oseq{\octx |- A}$.
+Algebraically, ordered contexts $\octx$ form a free noncommutative monoid:
 \begin{equation*}
   \octx \Coloneqq \octx_1 \oc \octx_2 \mid \octxe \mid A \,,
 \end{equation*}
@@ -51,13 +87,13 @@ As a monoid, ordered contexts are equivalent up to associativity and unit laws (
   \end{gather*}
   \caption{The monoid laws for ordered contexts}\label{fig:ordered-logic:monoid-laws}
 \end{marginfigure}
-However, 
+We choose to keep this equivalence implicit, however, treating equivalent contexts as syntactically indistinguishable.
+%
+Associativity means that contexts are indeed lists, not trees; and noncommutativity means that those lists are ordered, not multisets as in linear logic.
 
-\newthought{Like linear logic}\autocite{Wadler:??}\fixnote{Is this the right reference?}, ordered logic can be given a resource interpretation -- with a small twist.
-% An ordered sequent $\oseq{A_1 \oc A_2 \dotsb A_n |- A}$ can be read as stating that resource $A$ can be produced from the resources $A_1, A_2, \dotsc, A_n$, and a proof of that sequent is a recipe for
-A proof of an ordered sequent $\oseq{\octx |- A}$ can be interpreted as a recipe for producing resource $A$ from the resources $\octx$.
-The twist is that these resources are inherently ordered and may not be permuted, exactly because ordered logic rejects the exchange property [that linear logic admits].
 
+
+% The full sequent calculus for ordered logic will be summarized in \cref{fig:ordered-logic}, but first we will discuss the calculus's judgmental principles and logical connectives one by one.
 
 % Following the example of linear logic, ordered logic can be given a resource interpretation -- with a small twist.
 % The absence of an exhange property means that resouces are now inherently ordered.
@@ -143,7 +179,7 @@ Its sequent calculus inference rules are:
 The right rule, $\rrule{\fuse}$, says that $A \fuse B$ may be produced by partitioning the available resources into $\octx_1 \oc \octx_2$ and then separately using the resources $\octx_1$ and $\octx_2$ to produce $A$ and $B$, respectively.
 The left rule, $\lrule{\fuse}$, shows how to use resource $A \fuse B$: simply unwrap the package to leave the separate contents, resources $A$ and $B$, side by side.
 
-Just as truth is the nullary analogue of conjunction in intuitionistic logic\fixnote{Is this the right name?}, multiplicative truth, $\one$, is the nullary analogue of ordered conjunction.
+Just as truth is the nullary analogue of conjunction in intuitionistic logic, multiplicative truth, $\one$, is the nullary analogue of ordered conjunction.
 Under the resource interpretation, $\one$ is therefore an empty resource package that contains no resources.
 \begin{inferences}
   \infer[\rrule{\one}]{\oseq{\octxe |- \one}}{}
@@ -151,7 +187,9 @@ Under the resource interpretation, $\one$ is therefore an empty resource package
   \infer[\lrule{\one}]{\oseq{\octx'_L \oc \one \oc \octx'_R |- C}}{
     \oseq{\octx'_L \oc \octx'_R |- C}}
 \end{inferences}
-The sequents $\oseq{\one \fuse A \dashv|- \oseq{A \dashv|- A \fuse \one}}$ are all derivable, so $\one$ is indeed the unit of $\fuse$.%
+The sequents $\oseq{\one \fuse A \dashv|- \oseq{A \dashv|- A \fuse \one}}$ are all derivable%
+\footnote{$\oseq{A \dashv|- B}$ stands for the sequents $\oseq{A |- B}$ and $\oseq{B |- A}$.}%
+, so $\one$ is indeed $\fuse$'s unit.%
 % \begin{marginfigure}
 %   \centering
 %   $\infer[\lrule{\fuse}]{\oseq{\one \fuse A |- A}}{
@@ -191,7 +229,7 @@ Falsehood, $\zero$, can be viewed as the nullary analogue of disjunction:
   \and
   \infer[\lrule{\zero}]{\oseq{\octx'_L \oc \zero \oc \octx'_R |- C}}{}
 \end{inferences}
-The sequents $\oseq{\zero \plus A \dashv|- \oseq{A \dashv|- A \plus \zero}}$ are all derivable, so falsehood is indeed the unit of disjunction.
+The sequents $\oseq{\zero \plus A \dashv|- \oseq{A \dashv|- A \plus \zero}}$ are all derivable, so $\zero$ is indeed $\plus$'s unit.
 
 \paragraph{Alternative conjunction and its unit}
 Alternative conjunction\footnote{Also known as additive conjunction.} is the proposition $A \with B$, read \enquote{$A$ with $B$};
@@ -217,7 +255,7 @@ Additive truth, $\top$, can be viewed as the nullary analogue of alternative con
   \and
   \text{(no $\lrule{\top}$ rule)}
 \end{inferences}
-Once again, the sequents $\oseq{\top \with A \dashv|- \oseq{A \dashv|- A \with \top}}$ are all derivable, so additive truth is indeed the unit of alternative conjunction.
+Once again, the sequents $\oseq{\top \with A \dashv|- \oseq{A \dashv|- A \with \top}}$ are all derivable, so $\top$ is indeed the unit of $\with$.
 
 
 \paragraph*{Left- and right-handed implications}
@@ -247,8 +285,8 @@ Right-handed implication, $B \pmir A$ (read \enquote{$B$ over $A$} or \enquote{$
 The two forms of implication each enjoy their own currying laws: the sequents $\oseq{A \limp (B \limp C) \dashv|- (B \fuse A) \limp C}$ and $\oseq{(C \pmir B) \pmir A \dashv|- C \pmir (A \fuse B)}$ are derivable.
 
 
-\paragraph*{Summary}
-The sequent calculus presented above is summarized in \cref{fig:ordered-logic:sequent-calculus}.
+% \paragraph*{Summary}
+% The sequent calculus presented above is summarized in \cref{fig:ordered-logic:sequent-calculus}.
 
 \begin{figure}[tbp]
   \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
@@ -326,57 +364,92 @@ The sequent calculus presented above is summarized in \cref{fig:ordered-logic:se
     \infer[\lrule{\pmir}]{\oseq{\octx'_L \oc (B \pmir A) \oc \octx \oc \octx'_R |- C}}{
       \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
   \end{inferences}
-  \caption{A sequent calculus presentation of ordered logic}\label{fig:ordered-logic:sequent-calculus}
+  \caption{A summary of  ordered logic's sequent calculus, as presented in \cref{sec:ordered-logic:sequent-calculus}}\label{fig:ordered-logic:sequent-calculus}
 \end{figure}
 
-\section{A verificationist meaning-explanation of the sequent calculus}
+\section{A verificationist meaning-theory of the ordered sequent calculus}\label{sec:ordered-logic:verifications}
 
-The previous \lcnamecref{??} described a resource interpretation of a collection of inference rules, that we purported to be a sequent calculus presentation of ordered logic.
-Although the rules have a seemingly sensible resource interpretation, do they constitute a well-defined \emph{logic}?
+The previous \lcnamecref{sec:ordered-logic:sequent-calculus} presented a collection of inference rules that have a[n apparently] sensible resource interpretation.
+But how can we be sure that the rules constitute a well-defined \emph{logic} and not merely a ...?
 
-In the tradition of \citeauthor{Gentzen:MZ35} [, \citeauthor{Dummett:HUP91},] and \citeauthor{Martin-Lof:NJPL96}, a logic is well-defined if it rests on the solid foundation of a verificationist mean\-ing-\-ex\-pla\-na\-tion.
-That is, the meaning of each logical connective [proposition?] must be given entirely by what counts as a verification of it.
-And a verification is a proof that only decomposes that proposition into its subformulas, without dragging in other, unrelated propositions.
-[In this way, the meaning of each logical connective is defined compositionally.]
+In the tradition of \citeauthor{Gentzen:MZ35}, \citeauthor{Dummett:WJ76}, and \citeauthor{Martin-Lof:Siena83}, a logic is well-defined if it rests on the solid foundation of a verificationist meaning-\-theory.\autocites{Gentzen:MZ35}{Dummett:WJ76}{Martin-Lof:Siena83}
+In \citeauthor{Martin-Lof:Siena83}'s words, \enquote{The meaning of a proposition is determined by \textelp{} what counts as a verification of it.}
+And a verification is a proof that decomposes that proposition into its subformulas, without dragging in other, unrelated\fixnote{lemmas?} propositions.
+[In this way, the meaning of a proposition is compositional.]
 
-For a sequent calculus, a verification is thus a proof that relies only on the right and left inference rules -- that is, a verification is a proof in which all occurrences of the cut and identity rules have been eliminated.
-(Of course, propositional atoms do not have right and left rules, and so the identity rule is permitted for propositional atoms -- and propositional atoms alone.)
-
-For this verificationist program to succeed, we need to be sure that every proof has a corresponding verification -- we need a proof normalization procedure.
-
-We will say that a proof is \vocab{cut-free} if it contains no instances of the $\jrule{CUT}$ rule, and \vocab{long} if all instances of the $\jrule{ID}$ rule occur at propositional atoms, not compound propositions.
+For the ordered sequent calculus, a verification is thus a proof that relies only on the right and left inference rules (and the $\jrule{ID}^{\alpha}$ rule for propositional atoms) -- the $\jrule{CUT}$ rule drags in an unrelated proposition as its cut formula; and, when $A$ is a compound proposition, the $\jrule{ID}^A$ rule fails to decompose $A$ to its subformulas.
+A proof is \vocab{cut-free} if it does not contain any intances of the $\jrule{CUT}$ rule; similarly, a proof is \vocab{long} if all instances of the $\jrule{ID}$ rule occur at propositional atoms.
 Verifications are thus exactly those proofs that are both cut-free and long.
 
-This suggests a strategy for normalizing proofs to verifications: first eliminate all instances of $\jrule{CUT}$, and then eliminate any remaining non-atomic instances of $\jrule{ID}$.
-Provided that the identity elimination step does not introduce any instances of $\jrule{CUT}$, the end result will be a cut-free, long proof -- that is, a verification.
+Because meaning is based on verifications, every proof must have a corresponding verification if proofs are to be meaningful.
+That is, we need to describe a procedure for normalizing arbitrary proofs to verifications, if ...
+The characterization of verifications as cut-free, long proofs suggests a two-step strategy for proof normalization:
+\begin{enumerate}[topsep=.33\baselineskip, noitemsep]
+  \label{list:ordered-logic:normalization}
+\item Eliminate all instances of $\jrule{CUT}$.
+\item Without introducing new instances of $\jrule{CUT}$, eliminate all remaining instances of $\jrule{ID}$ that occur for compound propositions.
+\end{enumerate}
+% Provided that the identity elimination step does not introduce any instances of $\jrule{CUT}$,
+The end result will be a cut-free, long proof -- a verification.
 
-\begin{theorem}[name=Cut elimination, restate=orderedcutelimination]\label{thm*:ordered-logic:cut-elimination}
-  If a proof of\/ $\oseq{\octx |- A}$ exists, then a \emph{cut-free} proof of $\oseq{\octx |- A}$ exists.
-\end{theorem}
+This normalization procedure is described by the constructive content of the following \lcnamecrefs{thm:ordered-logic:cut-elimination}; their proofs amount to defining functions on proofs.%
+% As presented in the following \lcnamecrefs{sec:ordered-logic:cut-elimination}, the proofs of these \lcnamecrefs{thm:ordered-logic:cut-elimination} are all constructive and amount to defining functions on proofs.
+%
+\begin{restatable*}[
+      name=Cut elimination,
+      label=thm:ordered-logic:cut-elimination
+    ]{theorem}{orderedcutelimination}
+      If a proof of\/ $\oseq{\octx |- A}$ exists, then a \emph{cut-free} proof of\/ $\oseq{\octx |- A}$ exists.
+    \end{restatable*}
+%
+\begin{restatable*}[
+      name=Identity elimination,
+      label=thm:ordered-logic:identity-elimination
+    ]{theorem}{orderedidelimination}
+      If a proof of\/ $\oseq{\octx |- A}$ exists, then a \emph{long} proof of\/ $\oseq{\octx |- A}$ exists.
+      % Moreover, cut-freeness is preserved.
+      Moreover, if the given proof is cut-free, so is the long proof.
+    \end{restatable*}
+%
+\begin{restatable*}[
+  name=Proof normalization,
+  label=cor:ordered-logic:proof-normalization
+]{corollary}{orderedproofnormalization}
+  If a proof of\/ $\oseq{\octx |- A}$ exists, then a verification (\ie, a cut-free, long proof) of\/ $\oseq{\octx |- A}$ exists.
+\end{restatable*}
 
-\begin{restatable}[Identity elimination]
-  If a proof of\/ $\oseq{\octx |- A}$, then a \emph{long} proof of\/ $\oseq{\octx |- A}$ exists.
-  Moreover, cut-freeness is preserved.
-\end{restatable}
 
-\begin{corollary*}[Proof normalization]
-  If\/ $\oseq{\octx |- A}$, then a verification of\/ $\oseq{\octx |- A}$ exists.
-\end{corollary*}
+% For a sequent calculus, a verification is thus a proof that relies only on the right and left inference rules -- that is, a verification is a proof in which all occurrences of the cut and identity rules have been eliminated.
+% (Of course, propositional atoms do not have right and left rules, and so the identity rule is permitted for propositional atoms -- and propositional atoms alone.)
 
-As presented in the following \lcnamecrefs{sec:ordered-logic:cut-elimination}, the proofs of these \lcnamecrefs{thm*:ordered-logic:cut-elimination} are all constructive and amount to defining functions on proofs.
+% For this verificationist program to succeed, we need to be sure that every proof has a corresponding verification -- we need a proof normalization procedure.
+
+% We will say that a proof is \vocab{cut-free} if it contains no instances of the $\jrule{CUT}$ rule, and \vocab{long} if all instances of the $\jrule{ID}$ rule occur at propositional atoms, not compound propositions.
+% Verifications are thus exactly those proofs that are both cut-free and long.
+
+% This suggests a strategy for normalizing proofs to verifications: first eliminate all instances of $\jrule{CUT}$, and then eliminate any remaining non-atomic instances of $\jrule{ID}$.
+% Provided that the identity elimination step does not introduce any instances of $\jrule{CUT}$, the end result will be a cut-free, long proof -- that is, a verification.
+
+
+
+
+
 
 \subsection{Cut elimination}\label{sec:ordered-logic:cut-elimination}
 
-To prove the cut elimination \lcnamecref{thm*:ordered-logic:cut-elimination} stated above, we will eventually use a straightforward induction on the structure of the given proof.
+To prove the cut elimination \lcnamecref{thm:ordered-logic:cut-elimination} stated above, we will eventually use a straightforward induction on the structure of the given proof.
 But first, we need to establish a cut principle for cut-free proofs:
 %
-\begin{lemma*}[Admissibility of cut]\label{lem*:ordered-logic:cut-admissibility}
-  If cut-free proofs of\/ $\oseq{\octx |- A}$ and $\oseq{\octx'_L \oc A \oc \octx'_R |- C}$ exist, then a \emph{cut-free} proof of\/ $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}$.
-\end{lemma*}
+\begin{restatable*}[
+  name=Admissibility of cut,
+  label=lem:ordered-logic:cut-admissibility
+]{lemma}{orderedcutadmissibility}
+  If cut-free proofs of\/ $\oseq{\octx |- A}$ and $\oseq{\octx'_L \oc A \oc \octx'_R |- C}$ exist, then a \emph{cut-free} proof of\/ $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}$ exists.
+\end{restatable*}
 
 Before proceeding to this \lcnamecref{lem:ordered-logic:cut-admissibility}'s proof, it is worth emphasizing a subtle distinction between the sequent calculus's primitive $\jrule{CUT}$ rule and the admissible cut principle that this \lcnamecref{lem:ordered-logic:cut-admissibility} establishes.
 
-To be completely formal, we ought to treat cut-freeness as an extrinsic, Curry-style property of proofs and indicate that property by decorating the turnstile: a proof of $\oseqcf{\octx |- A}$ is a cut-free proof of $\oseq{\octx |- A}$.
+To be completely formal, we ought to treat cut-freeness as an extrinsic, Curry-style property of proofs and indicate that property by decorating the turnstile: a proof of $\oseqcf{\octx |- \mkern-2mu A}$ is a cut-free proof of $\oseq{\octx |- A}$.
 The admissible cut principle stated in \cref{lem:ordered-logic:cut-admissibility} could then be expressed as the rule
 \begin{equation*}
   \infer-[\jrule{A-CUT}\smash{^A}]{\oseqcf{\octx'_L \oc \octx \oc \octx'_R |- C}}{
@@ -389,14 +462,15 @@ Contrast this with the primitive $\jrule{CUT}$ rule of the ordered sequent calcu
 
 From here on, we won't bother to be quite so pedantic, instead often omitting the turnstile decoration on cut-free proofs, with the understanding that any proofs to which the admissible $\jrule{A-CUT}$ rule is applied are necessarily cut-free.
 
-\newthought{With that} clarification out of the way, we may proceed to proving the previously stated \lcnamecrefs{lem:ordered-logic:cut-admissibility} and \lcnamecref{thm:ordered-logic:normalization}.
+\newthought{With that} clarification out of the way, we may proceed to proving the previously stated \lcnamecref{lem:ordered-logic:cut-admissibility} and \lcnamecref{thm:ordered-logic:cut-elimination}.
 %
-\begin{lemma}[Admissibility of cut]\label{lem:ordered-logic:cut-admissibility}
-  If cut-free proofs of $\oseq{\octx |- A}$ and $\oseq{\octx'_L \oc A \oc \octx'_R |- C}$ exist, then a \emph{cut-free} proof of $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}$ exists.
-\end{lemma}
+\orderedcutadmissibility
 %
 \begin{proof}
-  We follow a standard technique for proving the admissibility of a cut principle\autocite{Pfenning:LICS95} -- a lexicographic structural induction, first on the structure of the cut formula, $A$, and then on the structures of the given proofs.
+  This \lcnamecref{lem:ordered-logic:cut-admissibility} was proved in a similar setting by \textcite{Polakow+Pfenning:MFPS99} using a standard technique for proving the admissibility of a cut principle\autocite{Pfenning:LICS95} --
+  % We follow a standard technique for proving the admissibility of a cut principle\autocite{Pfenning:LICS95} --
+  a lexicographic structural induction, first on the structure of the cut formula, $A$, and then on the structures of the given proofs.
+  We review their proof here.
 
   As usual, the various cases can be sorted into three classes: identity cut reductions, principal cut reductions, and commutative cut reductions.
   %
@@ -411,10 +485,10 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
       =
       \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}
     \end{equation*}
-    That the cut and identity principles are inverses here
+    That the cut and identity principles are inverses is reflected in these identity cut reductions.
 
   \item[Principal cut reductions]
-    Another class of cases pair proofs that both end by introducing the cut formula -- on the right in the left-hand proof with a right rule, and on the left in the right-hand proof with a left rule.
+    In another class of cases, both proofs end by introducing the cut formula -- on the right in the left-hand proof with a right rule, and on the left in the right-hand proof with a left rule.
     These cases are resolved by reducing the admissible cut to several instances of the admissible cut principle at proper subformulas of the cut formula.
 
     For example, the principal cut reduction for $A_1 \limp A_2$ yields cuts at the proper subformulas $A_1$ and $A_2$:
@@ -434,26 +508,27 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
     \end{gather*}
 
   \item[Commutative cut reductions]
-    In the remaining cases, one of the proofs ends with an inference on a side formula\footnote{A formula other than the cut formula.}.
+    In the remaining cases, at least one of the two proofs ends by introducing a side formula, \ie, a formula other than the cut formula.
     To reduce the admissible cut, it is permuted with the final inference in that proof;
-    the reduced instance of the admissible cut is smaller because it occurs at the same cut formula but with smaller proofs.
+    the reduced instance of the admissible cut is smaller because it occurs with the same cut formula but smaller proofs.
 
-    Commutative cut reductions are subcategorized as left- or right-\-com\-mu\-ta\-tive cut reductions according to the proof into which the admissible cut is permuted.
-    For example, one left-commutative case involves a left branch that ends with the $\lrule{\limp}$ rule:
-    \begin{gather*}
-      \infer-[\jrule{A-CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx_L \oc \octx_1 \oc (B_1 \limp B_2) \oc \octx_R \oc \octx'_R |- C}}{
-        \infer[\lrule{\limp}]{\oseq{\octx_L \oc \octx_1 \oc (B_1 \limp B_2) \oc \octx_R |- A}}{
-          \deduce{\oseq{\octx_1 |- B_1}}{\DD_1} &
-          \deduce{\oseq{\octx_L \oc B_2 \oc \octx_R |- A}}{\DD_2}} &
-        \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}}
-      \\=\\
-      \infer[\lrule{\limp}]{\oseq{\octx'_L \oc \octx_L \oc \octx_1 \oc (B_1 \limp B_2) \oc \octx_R \oc \octx'_R |- C}}{
-        \deduce{\oseq{\octx_1 |- B_1}}{\DD_1} &
-        \infer-[\jrule{A-CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx_L \oc B_2 \oc \octx_R \oc \octx'_R |- C}}{
-          \deduce{\oseq{\octx_L \oc B_2 \oc \octx_R |- A}}{\DD_2} &
-          \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}}}
-    \end{gather*}
-    And one right-commutative case involves a right-hand proof that ends with the $\rrule{\limp}$ rule:
+    Commutative cut reductions are subcategorized as left- or right-\-com\-mu\-ta\-tive cut reductions according to the branch into which the admissible cut is permuted.
+    % For example, one left-commutative case involves a left branch that ends with the $\lrule{\limp}$ rule:
+    % \begin{gather*}
+    %   \infer-[\jrule{A-CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx_L \oc \octx_1 \oc (B_1 \limp B_2) \oc \octx_R \oc \octx'_R |- C}}{
+    %     \infer[\lrule{\limp}]{\oseq{\octx_L \oc \octx_1 \oc (B_1 \limp B_2) \oc \octx_R |- A}}{
+    %       \deduce{\oseq{\octx_1 |- B_1}}{\DD_1} &
+    %       \deduce{\oseq{\octx_L \oc B_2 \oc \octx_R |- A}}{\DD_2}} &
+    %     \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}}
+    %   \\=\\
+    %   \infer[\lrule{\limp}]{\oseq{\octx'_L \oc \octx_L \oc \octx_1 \oc (B_1 \limp B_2) \oc \octx_R \oc \octx'_R |- C}}{
+    %     \deduce{\oseq{\octx_1 |- B_1}}{\DD_1} &
+    %     \infer-[\jrule{A-CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx_L \oc B_2 \oc \octx_R \oc \octx'_R |- C}}{
+    %       \deduce{\oseq{\octx_L \oc B_2 \oc \octx_R |- A}}{\DD_2} &
+    %       \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}}}
+    % \end{gather*}
+    % And
+    For example, one right-commutative case involves a right-hand proof that ends by introducing the consequent with the $\rrule{\limp}$ rule:
     \begin{equation*}
       \infer-[\jrule{A-CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C_1 \limp C_2}}{
         \deduce{\oseq{\octx |- A}}{\DD} &
@@ -465,7 +540,11 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
           \deduce{\oseq{\octx |- A}}{\DD} &
           \deduce{\oseq{C_1 \oc \octx'_L \oc A \oc \octx'_R |- C_2}}{\EE_1}}}
     \end{equation*}
-    And still other right-commutative cases involve a right-hand proof that ends with the $\lrule{\limp}$ rule.
+    % And still
+    Among the other right-commutative cases are several involving a right-hand proof that ends by using a left rule, such as the $\lrule{\limp}$ rule, to introduce a side formula.
+    This contrasts with the left-commutative cases: the left-hand proof can never use a right rule to introduce a side formula because its only consequent is the cut formula.
+    %
+%     Other right-commutative cases involve a right-hand proof that ends with the $\lrule{\limp}$ rule.
     % \begin{gather*}
     %   \infer-[\jrule{A-CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx \oc \octx'_M \oc \octx'_1 \oc (B_1 \limp B_2) \oc \octx'_R |- C}}{
     %     \deduce{\oseq{\octx |- A}}{\DD} &
@@ -485,24 +564,29 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
 
 With the admissibility of a cut principle for cut-free proofs established, we may finally prove a cut elimination result.
 %
-\begin{theorem}[Cut elimination]\label{thm:ordered-logic:cut-elimination}
-  If a proof of\/ $\oseq{\octx |- A}$ exists, then a \emph{cut-free} proof of $\oseq{\octx |- A}$ exists.
-\end{theorem}
+\orderedcutelimination
 %
 \begin{proof}
-  By structural induction on the proof of $\oseq{\octx |- A}$, appealing to the admissibility of cut\parencref{lem:ordered-logic:cut-admissibility} when encountering a $\jrule{CUT}$ rule.
-  This proof amounts to the definition of a meta-level function for normalizing proofs to cut-free form.
+  We follow the proof sketched by \textcite{Polakow+Pfenning:MFPS99}.
+  The proof is by structural induction on the proof of $\oseq{\octx |- A}$, with appeals to the admissibility of cut\parencref{lem:ordered-logic:cut-admissibility} whenever a $\jrule{CUT}$ rule is encountered.
 
-  If we display this \lcnamecref{thm:ordered-logic:cut-elimination} as an admissible rule, $\jrule{CE}$, then the crucial case in this proof is resolved as follows:
+  Like the admissibility of cut \lcnamecref{lem:ordered-logic:cut-admissibility}, this \lcnamecref{thm:ordered-logic:cut-elimination} may be rendered as an admissible rule:
+  \begin{equation*}
+    \infer-[\jrule{CE}]{\oseqcf{\octx |- A}}{
+      \oseq{\octx |- A}}
+  \end{equation*}
+  Writing the \lcnamecref{thm:ordered-logic:cut-elimination} in this way serves to emphasize that its proof amounts to the definition of a meta-level function for normalizing\fixnote{Correct word?} proofs to cut-free form.
+
+  The crucial case is then resolved as follows:
   \begin{equation*}
     \infer-[\jrule{CE}]{\oseqcf{\octx'_L \oc \octx \oc \octx'_R |- C}}{
       \infer[\jrule{CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}}{
         \oseq{\octx |- A} & \oseq{\octx'_L \oc A \oc \octx'_R |- C}}}
     =
     \infer-[\jrule{A-CUT}\smash{^A}]{\oseqcf{\octx'_L \oc \octx \oc \octx'_R |- C}}{
-      \infer[\jrule{CE}]{\oseqcf{\octx |- A}}{
+      \infer-[\jrule{CE}]{\oseqcf{\octx |- A}}{
         \oseq{\octx |- A}} &
-      \infer[\jrule{CE}]{\oseqcf{\octx'_L \oc A \oc \octx'_R |- C}}{
+      \infer-[\jrule{CE}]{\oseqcf{\octx'_L \oc A \oc \octx'_R |- C}}{
         \oseq{\octx'_L \oc A \oc \octx'_R |- C}}}
   \end{equation*}
   All other cases are resolved compositionally.
@@ -511,78 +595,90 @@ With the admissibility of a cut principle for cut-free proofs established, we ma
 
 \subsection{Identity elimination}
 
-In addition to cut elimination, we would like to prove an identity elimination result --
-First, however, we need to prove that the identity principle is admissible for 
-
-\begin{lemma}[Admissibility of identity]\label{lem:ordered-logic:identity-admissibility}
+By this cut elimination \lcnamecref{thm:ordered-logic:cut-elimination}, an arbitrary proof may be put into cut-free form.
+Recall from earlier in this \lcnamecref{sec:ordered-logic:verifications}~(\cpageref{list:ordered-logic:normalization}) that the next step toward proof normalization is to eliminate all remaining instances of the $\jrule{ID}$ rule that occur at compound propositions $A$.
+Before proving the identity elimination \lcnamecref{thm:ordered-logic:id-elimination}, we need to prove that an identity principle is admissible for long proofs.
+%
+\begin{lemma}[
+  name=Admissibility of identity,
+  label=lem:ordered-logic:identity-admissibility
+]
   For all propositions $A$, a \emph{long} proof of $\oseq{A |- A}$ exists.
   Moreover, this proof is cut-free.
 \end{lemma}
 %
 \begin{proof}
-  As usual, by induction on the structure of the proposition $A$.
-
-  In the base case of propositional atoms $\alpha$, the instance of the $\jrule{ID}$ rule at type $\alpha$ is itself already long:
+  As usual\fixnote{Best reference?  Frank's lecture notes?}, by induction on the structure of the proposition $A$.
+  As before, we may represent this \lcnamecref{lem:ordered-logic:identity-admissibility} as an admissible rule:
   \begin{equation*}
-    \infer-[\jrule{A-ID}\smash{^{\alpha}}]{\oseqel{\alpha |- \alpha}}{}
+    \infer-[\jrule{A-ID}\smash{^A}]{\oseql{A |- A}}{}
+  \end{equation*}
+  to suggest that this proof amounts to defining a meta-level function on propositions $A$.
+
+  In the base case of propositional atoms $\alpha$, the instance of the $\jrule{ID}$ rule at $\alpha$ is itself already long:
+  \begin{equation*}
+    \infer-[\jrule{A-ID}\smash{^{\alpha}}]{\oseql{\alpha |- \alpha}}{}
     =
-    \infer[\jrule{ID}\smash{^{\alpha}}]{\oseqel{\alpha |- \alpha}}{}
+    \infer[\jrule{ID}\smash{^{\alpha}}]{\oseql{\alpha |- \alpha}}{}
   \end{equation*}
 
   For compound propositions, the long proof of $\oseq{A |- A}$ is constructed from right and left rules, together with calls to the admissible $\jrule{A-ID}$ rule at subformulas of $A$.
   For example, the identity expansion at $A_1 \limp A_2$ is:
   \begin{equation*}
-    \infer-[\jrule{A-ID}\smash{^{A_1 \limp A_2}}]{\oseqel{A_1 \limp A_2 |- A_1 \limp A_2}}{}
+    \infer-[\jrule{A-ID}\smash{^{A_1 \limp A_2}}]{\oseql{A_1 \limp A_2 |- A_1 \limp A_2}}{}
     =
-    \infer[\rrule{\limp}]{\oseqel{A_1 \limp A_2 |- A_1 \limp A_2}}{
-      \infer[\lrule{\limp}]{\oseqel{A_1 \oc (A_1 \limp A_2) |- A_2}}{
-        \infer-[\jrule{A-ID}\smash{^{A_1}}]{\oseqel{A_1 |- A_1}}{} &
-        \infer-[\jrule{A-ID}\smash{^{A_2}}]{\oseqel{A_2 |- A_2}}{}}}
+    \infer[\rrule{\limp}]{\oseql{A_1 \limp A_2 |- A_1 \limp A_2}}{
+      \infer[\lrule{\limp}]{\oseql{A_1 \oc (A_1 \limp A_2) |- A_2}}{
+        \infer-[\jrule{A-ID}\smash{^{A_1}}]{\oseql{A_1 |- A_1}}{} &
+        \infer-[\jrule{A-ID}\smash{^{A_2}}]{\oseql{A_2 |- A_2}}{}}}
   \end{equation*}
-  The remaining cases are similar.
+  The remaining cases are similarly compositional.
 \end{proof}
 
-\begin{theorem}[Identity elimination]
-  If a proof of\/ $\oseq{\octx |- A}$ exists, then a \emph{long} proof of\/ $\oseq{\octx |- A}$ exists.
-  Moreover, cut-freeness is preserved.
-\end{theorem}
+\orderedidelimination
 %
 \begin{proof}
-  By structural induction on the proof of $\oseq{\octx |- A}$.
-
-  If the given proof is instance of the identity rule, then an appeal to the admissible $\jrule{A-ID}$ rule\parencref{lem:ordered-logic:identity-admissibility} yields a long proof of $\oseq{\octx |- A}$:
+  As usual, by structural induction on the proof of $\oseq{\octx |- A}$.
+  Once again, we may represent this \lcnamecref{thm:ordered-logic:id-elimination} as an admissible rule:
   \begin{equation*}
-    \infer-[\jrule{IE}]{\oseqel{A |- A}}{
+    \infer-[\jrule{IE}]{\oseql{\octx |- A}}{
+      \oseq{\octx |- A}}
+  \end{equation*}
+
+  The crucial case in the definition of this admissible rule comes when  the given proof is instance of the $\jrule{ID}$ rule.
+  An appeal to the admissible $\jrule{A-ID}$ rule\parencref{lem:ordered-logic:identity-admissibility} then yields a long proof of $\oseq{\octx |- A}$:
+  \begin{equation*}
+    \infer-[\jrule{IE}]{\oseql{A |- A}}{
       \infer[\jrule{ID}\smash{^A}]{\oseq{A |- A}}{}}
     =
-    \infer-[\jrule{A-ID}\smash{^A}]{\oseqel{A |- A}}{}
+    \infer-[\jrule{A-ID}\smash{^A}]{\oseql{A |- A}}{}
   \end{equation*}
   As part of \cref{lem:ordered-logic:identity-admissibility}, we know that this proof is also cut-free.
 
   The remaining cases are resolved compositionally.
   For example:
   \begin{equation*}
-    \infer-[\jrule{IE}]{\oseqel{\octx |- A_1 \limp A_2}}{
+    \infer-[\jrule{IE}]{\oseql{\octx |- A_1 \limp A_2}}{
       \infer[\rrule{\limp}]{\oseq{\octx |- A_1 \limp A_2}}{
         \deduce{\oseq{A_1 \oc \octx |- A_2}}{\DD_1}}}
     =
-    \infer[\rrule{\limp}]{\oseqel{\octx |- A_1 \limp A_2}}{
-      \infer-[\jrule{IE}]{\oseqel{A_1 \oc \octx |- A_2}}{
+    \infer[\rrule{\limp}]{\oseql{\octx |- A_1 \limp A_2}}{
+      \infer-[\jrule{IE}]{\oseql{A_1 \oc \octx |- A_2}}{
         \deduce{\oseq{A_1 \oc \octx |- A_2}}{\DD_1}}}
   \end{equation*}
-  Notice that no case introduces any instances of the $\jrule{CUT}$ beyond those that were already present.
+  Notice that no case introduces any instances of the $\jrule{CUT}$ beyond those that were already present in the given proof.
   Thus, identity elimination preserves cut-freeness.
 \end{proof}
 
 \subsection{Proof normalization}
 
-\begin{corollary}[Proof normalization]
-  If a proof of\/ $\oseq{\octx |- A}$ exists, then a \emph{verification} (\ie, a cut-free, long proof) of\/ $\oseq{\octx |- A}$ exists.
-\end{corollary}
+With the cut and identity elimination results\parencref{thm:ordered-logic:cut-elimination,thm:ordered-logic:id-elimination} in hand, normalization of proofs to verification is a straightforward \lcnamecref{cor:ordered-logic:proof-normalization}:
+
+\orderedproofnormalization
 %
 \begin{proof}
-  Given a proof of $\oseq{\octx |- A}$, first apply cut elimination\parencref{thm:ordered-logic:cut-elimination} to get a cut-free proof, $\oseqcf{\octx |- A}$.
-  Then apply identity elimination\parencref{thm:ordered-logic:identity-elimination} to that cut-free proof to get a cut-free, long proof of the same sequent -- in other words, to get a verification $\oseqv{\octx |- A}$.
+  Given a proof of $\oseq{\octx |- A}$, applying cut elimination\parencref{thm:ordered-logic:cut-elimination} and identity elimination\parencref{thm:ordered-logic:id-elimination} in sequence yields a proof that is both cut-free and long -- in other words, a verification $\oseqv{\octx |- A}$.
+  Using an admissible rule, this \lcnamecref{cor:ordered-logic:proof-normalization} may be represented as
   \begin{equation*}
     \infer-[\jrule{NORM}]{\oseqv{\octx |- A}}{
       \deduce{\oseq{\octx |- A}}{\DD}}
@@ -590,8 +686,11 @@ First, however, we need to prove that the identity principle is admissible for
     \infer-[\jrule{IE}]{\oseqv{\octx |- A}}{
       \infer-[\jrule{CE}]{\oseqcf{\octx |- A}}{
         \deduce{\oseq{\octx |- A}}{\DD}}}
+  \qedhere
   \end{equation*}
 \end{proof}
+
+By establishing that every proof has a corresponding verification, we are now assured that the ordered sequent calculus presented in \cref{fig:ordered-logic:sequent-calculus} indeed constitutes a well-defined logic with a verificationist meaning-theory.
 
 
 \section{Extensions}\label{sec:ordered-logic:extensions}
@@ -606,16 +705,16 @@ These extensions are not crucial to the remainder of this dissertation, but are 
 
 \paragraph*{First-order quantification}
 
-The manner in which first-order universal and existential quantifiers, $\forall x{:}\tau.A$ and $\exists x{:}\tau.A$, may be added to the ordered sequent calculus is completely standard.
+Adding first-order universal and existential quantifiers, $\forall x{:}\tau.A$ and $\exists x{:}\tau.A$, to the ordered sequent calculus is completely standard.
 Sequents are extended with a separate context, $\Sigma$, of well-sorted term variables, $x{:}\tau$; this new context is structural, admitting weakening, contraction, and exchange properties.
 
   \begin{inferences}
     \infer[\rrule{\forall}]{\oseq{\Sigma ; \octx |- \forall x{:}\tau.A}}{
       \oseq{\Sigma, a{:}\tau ; \octx |- [a/x]A}}
     \and
-    \infer[\lrule{\forall}]{\oseq{\Sigma ; \octx'_L \oc (\forall x{:}\tau.A) \oc \octx_R |- C}}{
+    \infer[\lrule{\forall}]{\oseq{\Sigma ; \octx'_L \oc (\forall x{:}\tau.A) \oc \octx'_R |- C}}{
       \Sigma \vdash t : \tau &
-      \oseq{\Sigma ; \octx_L \oc ([t/x]A) \oc \octx_R |- C}}
+      \oseq{\Sigma ; \octx'_L \oc ([t/x]A) \oc \octx'_R |- C}}
     \\
     \infer[\rrule{\exists}]{\oseq{\Sigma ; \octx |- \exists x{:}\tau.A}}{
       \Sigma \vdash t : \tau &
@@ -627,6 +726,27 @@ Sequents are extended with a separate context, $\Sigma$, of well-sorted term var
 
 \paragraph*{Multiplicative falsehood}
 
+Along a different dimension, the ordered sequent calculus can be generalized to allow sequents to carry an empty consequent, $\oseq{\octx |- \cdot}$.
+With this new judgment form, the cut principle and left rules must be revised to allow the empty consequent.
+For example, the $\jrule{CUT}$ and $\lrule{\fuse}$ rules are revised to:
+\begin{inferences}
+  \infer[\jrule{CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- \gamma}}{
+    \oseq{\octx |- A} & \oseq{\octx'_L \oc A \oc \octx'_R |- \gamma}}
+  \and
+  \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- \gamma}}{
+    \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- \gamma}}
+\end{inferences}
+where $\gamma$ is a metavariable%
+\marginnote{%
+  $
+    \gamma \Coloneqq \cdot \mid C
+  $
+}
+standing for a consequent, either empty, $\cdot$, or a single proposition, $C$.
+
+This new judgment makes it possible to introduce \emph{multiplicative falsehood}, $\bot$, as a logical constant.
+Multiplicative falsehood is, as its name suggests, dual to multiplicative truth, $\one$.
+Its right and left rules are:
 \begin{inferences}
   \infer[\rrule{\bot}]{\oseq{\octx |- \bot}}{
     \oseq{\octx |- \cdot}}
@@ -634,550 +754,9 @@ Sequents are extended with a separate context, $\Sigma$, of well-sorted term var
   \infer[\lrule{\bot}]{\oseq{\bot |- \cdot}}{}
 \end{inferences}
 
-
 \paragraph*{Mobility and persistence modalities}
+Linear\fixnote{Circular proofs, too!}
 
-
-\clearpage
-
-Ordered logic is a generalization of \citeauthor{Girard:TCS?}'s linear logic\autocite{Girard:TCS?} that further restricts the admitted structural properties.
-In addition to ... the weakening and contraction
-
-Like the intuitionistic linear sequent calculus, the ordered sequent calculus can be given a resource interpretation.
-Because the ordered sequent calculus rejects the exchange property, the resouce interpretation differs slightly from that of linear logic.
-
-\begin{itemize}
-\item \citeauthor{Martin-Lof:NJPL96}: Distinguish propositions from judgments
-
-\item Ordered sequents are hypothetical judgments
-  \begin{equation*}
-    \oseq{A_1 \oc A_2 \dotsb A_n |- A} \,,
-  \end{equation*}
-  meaning that using the (ordered) resources $A_1, A_2, \dotsc, A_n$, the resource $A$ can be produced.
-  A proof of this sequent amounts to a recipe or set of instructions for producing resource $A$ from resources $A_1 \oc A_2 \dotsb A_n$.
-
-\item Contexts as (noncommutative) free monoid over resources -- associative and unit laws
-
-\item $A \fuse B$ as resources $A$ and $B$ side by side, as a single resource package.
-  \begin{equation*}
-    \infer[\rrule{\fuse}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
-      \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
-  \end{equation*}
-  The sequence of resources $\octx$ can be used to produce the resource $A \fuse B$ if the resources $\octx$ can be partitioned into subsequences $\octx_1$ and $\octx_2$ and those subsequences can be used to produce the resources $A$ and $B$, respectively.
-  \begin{equation*}
-    \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
-      \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
-  \end{equation*}
-  To use the resource package $A \fuse B$ to produce $C$, unwrap the package and use the side-by-side resources $A \oc B$ to produce $C$.
-
-\item Harmony:
-  \begin{gather*}
-    \infer[\jrule{CUT}\smash{^{A \fuse B}}]{\oseq{\octx'_L \oc (\octx_1 \oc \octx_2) \oc \octx'_R |- C}}{
-      \infer[\rrule{\fuse}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
-        \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}} &
-      \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
-        \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}}
-    \\\rightsquigarrow\\
-    \infer[\jrule{CUT}\smash{^B}]{\oseq{\octx'_L \oc \octx_1 \oc \octx_2 \oc \octx'_R |- C}}{
-      \oseq{\octx_2 |- B} &
-      \infer[\jrule{CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx_1 \oc B \oc \octx'_R |- C}}{
-        \oseq{\octx_1 |- A} & \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}}
-  \end{gather*}
-
-  \begin{equation*}
-    \infer[\jrule{ID}\smash{^{A \fuse B}}]{\oseq{A \fuse B |- A \fuse B}}{}
-    \leftrightsquigarrow
-    \infer[\lrule{\fuse}]{\oseq{A \fuse B |- A \fuse B}}{
-      \infer[\rrule{\fuse}]{\oseq{A \oc B |- A \fuse B}}{
-        \infer[\jrule{ID}\smash{^A}]{\oseq{A |- A}}{} &
-        \infer[\jrule{ID}\smash{^B}]{\oseq{B |- B}}{}}}
-  \end{equation*}
-
-\item How do we know that these rules constitute the beginnings of a logic?
-  Either \citeauthor{Dummett:HUP91} (harmony of the logical rules) or \citeauthor{Martin-Lof:NJPL96} (verifications).
-  \begin{itemize}
-  \item These are not unrelated, but we will adopt verifications as our basis. 
-  \item Verifications use only the logical rules, not the judgmental $\jrule{CUT}$ and $\jrule{ID}$.
-    This way, the meaning of a proposition depends only on its internal structure, not on other propositions or connectives.
-  \end{itemize}
-
-\end{itemize}
-
-
-
-\begin{align*}
-  n(\slof{A |- \spawn{P_1}{^B P_2} : C}) &= \nspawn{n(\slof{A |- P_1 : B})}{n(\slof{B |- P_2 : C})} \\
-  n(\slof{A |- \fwd : A}) &= \eta(A) \\
-  n(\selectR{\kay}) &= \selectR{\kay} \\
-  n(\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}) &= \caseL[\ell \in L]{\ell => n(\slof{A_{\ell} |- P_{\ell} : C})}
-\end{align*}
-
-\begin{align*}
-  \nspawn{\fwd}{M} &= M \\
-  \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} &= \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} \\
-  \nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}} &= M_{\kay} \\
-  \nspawn{N}{\selectR{\kay}} &= \spawn{N}{\selectR{\kay}} \\
-  \nspawn{N}{(\spawn{M_0}{\selectR{\kay}})} &= \spawn{(\nspawn{N}{M_0})}{\selectR{\kay}} \\
-  \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{M} &= \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M}}
-\end{align*}
-
-
-\clearpage
-
-
-
-
-
-
-
-
-
-
-
-
-
-\section{The non-modal fragment of intuitionistic ordered logic}
-
-\subsection{Judgments, sequents, and contexts}
-
-Following \citeauthor{Martin-Lof:NJPL96}\autocite{Martin-Lof:NJPL96}, we maintain a separation of ordered propositions, $A$, from judgments about those propositions.
-  The categorical judgment $A \ord$ ... 
-
-To allow hypothetical reasoning, a new form of categorical judgment, $A \ant$, for antecedents and generalize $A \ord$ to sequents
-  \begin{equation*}
-    \oseq{(A_1 \ant) \dotsm (A_i \ant) \dotsm (A_n \ant) |- A \ord}
-    \,,
-  \end{equation*}
-  meaning the ordered sequence $A_1 \ant \dotsm A_n \ant$ can be transformed into $A \ord$.
-  Because the judgment label can be inferred from a proposition's position in the sequent, we usually elide the labels and write $\oseq{A_1 \oc A_2 \dotsm A_n |- A}$.
-
-To further streamline the syntax of sequents,
-% keep sequents from becoming verbose and cumbersome,
-antecedents are usually collected into an \vocab{ordered context}, $\octx = A_1 \oc A_2 \dotsm A_n$; sequents are then written $\oseq{\octx |- A}$.
-% 
-As strings of antecedents, ordered contexts form a free monoid.
-The monoid operation is concatenation of contexts, written as juxtaposition; the unit element is the empty context, written as $\octxe$.
-In other words, ordered contexts are generated by the grammar
-\begin{syntax*}
-  & \octx & \octx_1 \oc \octx_2 \mid \octxe \mid A \ant
-  \,,
-\end{syntax*}
-and are subject to the usual associativity and unit laws.
-\begin{marginfigure}
-  % \vspace*{\dimexpr-\abovedisplayskip\relax}
-  \begin{gather*}
-    (\octx_1 \oc \octx_2) \oc \octx_3 = \octx_1 \oc (\octx_2 \oc \octx_3) \\
-    (\octxe) \oc \octx = \octx = \octx \oc (\octxe)
-  \end{gather*}
-  \caption{Monoid laws for ordered contexts}
-\end{marginfigure}%
-% which may be silently applied as needed within proofs.
-% These monoid laws are applied implicitly as needed within a proof.
-Because contexts are ordered, the underlying monoid is not commutative.
-
-
-\subsection{}
-
-Following \textcite{Martin-Lof:NJPL96}, we maintain a separation of ordered propositions from judgements about those propositions.
-The categorical judgement $A \ord$ holds if language $A$ is inhabited [if there exists a string of type $A$].
-
-To allow hypothetical reasoning, the judgement $A \ord$ is generalized to sequents
-\begin{equation*}
-  \oseq{(A_1 \ant) \oc (A_2 \ant) \dotsb (A_n \ant) |- A \ord}
-  \,,
-\end{equation*}
-meaning that any string drawn from the concatenation of languages $A_1 \oc A_2 \dotsb A_n$ is a member of the language $A$.
-... if the concatenation of languages ... is inhabited, then any inhabitant also inhabits the language $A$.
-
-\begin{itemize}
-\item $\oseq{A_1 \oc A_2 \dotsb A_n |- A}$ means that a string of type $A$ may be obtained from the concatenation of strings of types $A_1, A_2, \dotsc, A_n$.
-\item $\oseq{A_1 \oc A_2 \dotsb A_n |- A}$ means that any string expressible as the concatenation of strings of types $A_1, A_2, \dotsc, A_n$ is also a string of type $A$.
-\end{itemize}
-
-\begin{itemize}
-\item $a$ -- trivial language containing only the single-letter string $a$
-\item $A \fuse B$ -- concatenation of languages
-\item $\one$ -- trivial language containing only the empty string
-\item $A \with B$ -- intersection of languages
-\item $\top$ -- universal language
-\item $A \plus B$ -- union of languages
-\item $\zero$ -- empty language
-\item $A \limp B$ -- left quotient of languages
-\item $B \pmir A$ -- right quotient of languages
-\end{itemize}
-
-$\vdash$ as language inclusion?
-What about the language $a \with b$?  The intersection of languages $a$ and $b$ is empty, but $a \with b \nvdash \zero$.
-
-The right rule says that any string that can be partitioned into consecutive pieces drawn from the languages $\octx_1$ and $\octx_2$ is a member of language $A \fuse B$ if $\octx_1$ is contained in $A$ and $\octx_2$ is contianed in $B$.
-\begin{inferences}
-  \infer[\rrule{\fuse}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
-    \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
-  \and
-  \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
-    \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
-\end{inferences}
-
-\subsection{Judgmental principles of sequents}
-
-Even without knowing the specific structure of propositions, we can already enumerate several judgmental principles that must hold if sequents are to accurately reflect hypothetical reasoning.
-
-First, if we assume that $A$ is ..., then 
-
-If we are given a string that parses to $A$, then that string may be trivially transformed to a string that parses to $A$ -- simply use the same string.
-Cast as a sequent:
-\begin{description}
-\item[Identity principle]
-  $\oseq{A |- A}$ for all propositions $A$.
-\end{description}
-
-Dually, a string that parses to $A$ licenses a hypothesis of $A$:
-\begin{description}
-\item[Cut principle]
-  If $\oseq{\octx |- A}$ and $\oseq{\octx'_L \oc A \oc \octx'_R |- C}$, then $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}$.
-\end{description}
-
-These two judgmental principles are adopted by the ordered sequent calculus as primitive rules of inference.
-But their importance goes beyound that of mere rules of inference, with the two principles playing an important role in the meaning of the logical connectives.
-
-\subsection{The logical connectives and their meanings}
-
-\begin{inferences}
-  \infer[\rrule{\fuse}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
-    \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
-  \and
-  \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
-    \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
-\end{inferences}
-
-
-
-\clearpage 
-
-\newthought{Even without} knowing any specifics about propositions, two purely judgmental principles are already apparent.
-%
-First, there should be a trivial transformation of $A$ into $A$, for all propositions $A$.
-In the sequent calculus, this idea is rendered as an \vocab{identity principle}:
-\begin{quotation}
-  $\oseq{A \ant |- A \ord}$ for all propositions $A$.
-\end{quotation}
-Stated differently, $\vdash$ is reflexive.%
-\footnote{Actually, this is not precisely true because the two sides of the turnstile use different judgments.
-The intuition is nevertheless useful.}
-
-Second, and dually, a proof of $A \ord$ should license the use of $A \ant$ in another proof.
-\begin{quotation}
-  If $\oseq{\octx |- A \ord}$ and $\oseq{\octx'_L \oc (A \ant) \oc \octx'_R |- C \ord}$, then $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C \ord}$.
-\end{quotation}
-
-These two judgmental principles are adopted as primitive rules of inference in the sequent calculus.
-\begin{inferences}
-  \infer[\jrule{CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}}{
-    \oseq{\octx |- A} & \oseq{\octx'_L \oc A \oc \octx'_R |- C}}
-  \and
-  \infer[\jrule{ID}\smash{^A}]{\oseq{A |- A}}{}
-\end{inferences}
-The importance of the cut and identity principles goes beyond that of their corresponding inference rules, however.
-Both principles are intimately linked to what counts as the meanings of the logical connectives.
-
-\subsection{Propositions}
-
-The propositional, purely ordered fragment of intuitionistic ordered logic has propositions given by the following grammar.
-\begin{syntax*}
-  Propositions &
-    A,B,C & \begin{array}[t]{@{}l@{}}
-              \alpha \mid A \limp B \mid B \pmir A
-                \mid A \fuse B \mid \one \\
-              \mathllap{\mid {}} A \with B \mid \top
-                \mid A \plus B \mid \zero
-            \end{array}
-\end{syntax*}
-The ordered propositions in this fragment are:
-propositional variables, $\alpha$;
-left- and right-handed implications, $A \limp B$ and $B \pmir A$, respectively;
-ordered conjunction, $A \fuse B$, and its unit, $\one$;
-alternative conjunction, $A \with B$, and its unit, $\top$;
-and
-additive disjunction, $A \plus B$, and its unit, $\zero$.
-
-In the tradition of \citeauthor{Gentzen:MZ35} and \citeauthor{Martin-Lof:NJPL96}\autocites{Gentzen:MZ35}{Martin-Lof:NJPL96}, the meaning of a proposition $A$ is given by what counts as a verification of the judgment $A \ord$.
-
-Left-handed implication has the following right and left rules.
-\begin{inferences}
-  \infer[\rrule{\limp}]{\oseq{\octx |- A \limp B}}{
-    \oseq{A \oc \octx |- B}}
-  \and
-  \infer[\lrule{\limp}]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- C}}{
-    \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
-\end{inferences}
-According to the right rule, $\rrule{\limp}$, verifying the left-handed implication $A \limp B$ amounts to verifying $B$ under the left-extended context $A \oc \octx$ -- that is, a hypothetical proof of $\oseq{A \oc \octx |- B}$.
-The left rule, $\lrule{\limp}$, shows how to use such a proof:
-Prove $A$ and left-adjoin that proof to the verification of $A \limp B$, which is just a hypothetical proof of $\oseq{A \oc \octx |- B}$.
-This yields 
-
-Right-handed implication is symmetric to its left-handed counterpart:
-\begin{inferences}
-  \infer[\rrule{\pmir}]{\oseq{\octx |- B \pmir A}}{
-    \oseq{\octx \oc A |- B}}
-  \and
-  \infer[\lrule{\pmir}]{\oseq{\octx'_L \oc (B \pmir A) \oc \octx \oc \octx'_R |- C}}{
-    \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
-\end{inferences}
-
-Ordered conjunction is another multiplicative connective; its right and left rules are:
-\begin{inferences}
-  \infer[\rrule{\fuse}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
-    \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
-  \and
-  \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
-    \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
-\end{inferences}
-As its right rule makes clear, ordered conjunction internalizes concatenation of contexts as a logical connective.
-
-$\one$ internalizes the empty context.
-The logical constant $\one$ is the nullary analogue to binary ordered conjunction, as its right and left rules reflect:
-\begin{inferences}
-  \infer[\rrule{\one}]{\oseq{\octxe |- \one}}{}
-  \and
-  \infer[\lrule{\one}]{\oseq{\octx'_L \oc \one \oc \octx'_R |- C}}{
-    \oseq{\octx'_L \oc \octx'_R |- C}}
-\end{inferences}
-Consequently, $\one$ is the unit of ordered conjunction: $\oseq{\one \fuse A \dashv|- \oseq{A \dashv|- A \fuse \one}}$, for all propositions $A$.
-
-
-\begin{equation*}
-  \infer[\rrule{\limp}]{\oseq{A \limp (B \limp C) |- (A \esuf B) \limp C}}{
-    \infer[\lrule{\esuf}]{\oseq{(A \esuf B) \oc (A \limp (B \limp C)) |- C}}{
-      \infer[\lrule{\limp}]{\oseq{B \oc A \oc (A \limp (B \limp C)) |- C}}{
-        \infer[\jrule{ID}]{\oseq{A |- A}}{} &
-        \infer[\lrule{\limp}]{\oseq{B \oc (B \limp C) |- C}}{
-          \infer[\jrule{ID}]{\oseq{B |- B}}{} &
-          \infer[\jrule{ID}]{\oseq{C |- C}}{}}}}}
-\end{equation*}
-
-\begin{equation*}
-  \infer[\rrule{\limp}]{\oseq{(A \esuf B) \limp C |- A \limp (B \limp C)}}{
-    \infer[\rrule{\limp}]{\oseq{A \oc ((A \esuf B) \limp C) |- B \limp C}}{
-      \infer[\lrule{\limp}]{\oseq{B \oc A \oc ((A \esuf B) \limp C) |- C}}{
-        \infer[\rrule{\esuf}]{\oseq{B \oc A |- A \esuf B}}{
-          \infer[\jrule{ID}]{\oseq{B |- B}}{} &
-          \infer[\jrule{ID}]{\oseq{A |- A}}{}} &
-        \infer[\jrule{ID}]{\oseq{C |- C}}{}}}}
-\end{equation*}
-
-\begin{equation*}
-  \infer[\rrule{\pmir}]{\oseq{(C \pmir B) \pmir A |- C \pmir (B \esuf A)}}{
-    \infer[\lrule{\esuf}]{\oseq{((C \pmir B) \pmir A) \oc (B \esuf A) |- C}}{
-      \infer[\lrule{\pmir}]{\oseq{((C \pmir B) \pmir A) \oc A \oc B |- C}}{
-        \infer[\jrule{ID}]{\oseq{A |- A}}{} &
-        \infer[\lrule{\pmir}]{\oseq{(C \pmir B) \oc B |- C}}{
-          \infer[\jrule{ID}]{\oseq{B |- B}}{} &
-          \infer[\jrule{ID}]{\oseq{C |- C}}{}}}}}
-\end{equation*}
-
-\begin{equation*}
-  \infer[\rrule{\pmir}]{\oseq{C \pmir (B \esuf A) |- (C \pmir B) \pmir A}}{
-    \infer[\rrule{\pmir}]{\oseq{(C \pmir (B \esuf A)) \oc A |- C \pmir B}}{
-      \infer[\lrule{\pmir}]{\oseq{(C \pmir (B \esuf A)) \oc A \oc B |- C}}{
-        \infer[\rrule{\esuf}]{\oseq{A \oc B |- B \esuf A}}{
-          \infer[\jrule{ID}]{\oseq{A |- A}}{} &
-          \infer[\jrule{ID}]{\oseq{B |- B}}{}} &
-        \infer[\jrule{ID}]{\oseq{C |- C}}{}}}}
-\end{equation*}
-
-\begin{itemize}
-\item Contexts form a monoid
-\item None of the usual structural properties -- weakening, contraction, exchange -- but we still have (implicitly, judgmentally) associativity
-\item Multiplicative falsehood\alertnote{Get rid of this?}
-\end{itemize}
-
-\subsection{Rules of logical inference}
-
-According to its right rule, verifying $A \limp B$ amounts to verifying $B$ under the additional assumption that $A$ holds;
-moreover, the assumption $A$ is prepended to the left end of context $\octx$, because $A \limp B$ is a left-handed implication.
-
-To use a verification of $A \limp B$, we first verify $A$ and are thus justified in using $B$.
-
-Using a verification of $A \limp B$ thus amounts to using the hypothetical verification of $B$ under $A$
-
-
-The right-handed implication $B \pmir A$ is symmetric to left-handed implication.
-
-
-\begin{figure}
-  \begin{syntax*}
-    Propositions & A, B, C &
-      \begin{array}[t]{@{}l@{}}
-        A \limp B \mid B \pmir A \mid A \fuse B \mid B \esuf A \mid \one \\
-        \mathllap{\mid {}}
-        A \plus B \mid \zero \mid A \with B \mid \top
-      \end{array}
-    \\
-    Contexts & \octx &
-      \octxe \mid \octx_1 \oc \octx_2 \mid A
-  \end{syntax*}
-  \begin{inferences}
-    \infer[\jrule{CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- \cseq}}{
-      \oseq{\octx |- A} & \oseq{\octx'_L \oc A \oc \octx'_R |- \cseq}}
-    \and
-    \infer[\jrule{ID}\smash{^A}]{\oseq{A |- A}}{}
-    \\
-    \infer[\rrule{\limp}]{\oseq{\octx |- A \limp B}}{
-      \oseq{A \oc \octx |- B}}
-    \and
-     \infer[\lrule{\limp}]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- C}}{
-      \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
-    \\
-    \infer[\rrule{\pmir}]{\oseq{\octx |- B \pmir A}}{
-      \oseq{\octx \oc A |- B}}
-    \and
-    \infer[\lrule{\pmir}]{\oseq{\octx'_L \oc (B \pmir A) \oc \octx \oc \octx'_R |- C}}{
-      \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
-    \\
-    \infer[\rrule{\fuse}]{\oseq{\octx_A \oc \octx_B |- A \fuse B}}{
-      \oseq{\octx_A |- A} & \oseq{\octx_B |- B}}
-    \and
-    \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
-      \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
-    \\
-    \infer[\rrule{\esuf}]{\oseq{\octx_A \oc \octx_B |- B \esuf A}}{
-      \oseq{\octx_A |- A} & \oseq{\octx_B |- B}}
-    \and
-    \infer[\lrule{\esuf}]{\oseq{\octx'_L \oc (B \esuf A) \oc \octx'_R |- C}}{
-      \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
-    \\
-    \infer[\rrule{\one}]{\oseq{\octxe |- \one}}{}
-    \and
-    \infer[\lrule{\one}]{\oseq{\octx'_L \oc \one \oc \octx'_R |- C}}{
-      \oseq{\octx'_L \oc \octx'_R |- C}}
-    \\
-    \infer[\rrule{\with}]{\oseq{\octx |- A \with B}}{
-      \oseq{\octx |- A} & \oseq{\octx |- B}}
-    \and
-    \infer[\lrule{\with}_1]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- C}}{
-      \oseq{\octx'_L \oc A \oc \octx'_R |- C}}
-    \and
-    \infer[\lrule{\with}_2]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- C}}{
-      \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
-    \\
-    \infer[\rrule{\top}]{\oseq{\octx |- \top}}{}
-    \and
-    \text{(no $\lrule{\top}$ rule)}
-    \\
-    \infer[\rrule{\plus}_1]{\oseq{\octx |- A \plus B}}{
-      \oseq{\octx |- A}}
-    \and
-    \infer[\rrule{\plus}_2]{\oseq{\octx |- A \plus B}}{
-      \oseq{\octx |- B}}
-    \and
-    \infer[\lrule{\plus}]{\oseq{\octx'_L \oc (A \plus B) \oc \octx'_R |- C}}{
-      \oseq{\octx'_L \oc A \oc \octx'_R |- C} &
-      \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
-    \\
-    \text{(no $\rrule{\zero}$ rule)}
-    \and
-    \infer[\lrule{\zero}]{\oseq{\octx'_L \oc \zero \oc \octx'_R |- C}}{}
-  \end{inferences}
-\end{figure}  
-
-\begin{theorem}[Admissibility of cut]
-  If $\oseq{\octx |- A}$ and $\oseq{\octx'_L \oc A \oc \octx'_R |- C}$, then $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}$.
-\end{theorem}
-\begin{proof}
-  By lexicographic structural induction, first on the structure of the cut formula and then simultaneously on the structures of the given derivations.
-
-  \begin{description}
-  \item[Identity cases]
-    \begin{equation*}
-      \infer-[\jrule{CUT}^A]{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{
-        \infer[\jrule{ID}^A]{\oseq{A |- A}}{} &
-        \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}}
-      =
-      \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}
-    \end{equation*}
-
-  \item[Principal cases]
-    \begin{equation*}
-      \infer-[\jrule{CUT}^{A_1 \limp A_2}]{\oseq{\octx'_L \oc \octx'_{A_1} \oc \octx \oc \octx'_R |- C}}{
-        \infer[\rrule{\limp}]{\oseq{\octx |- A_1 \limp A_2}}{
-          \deduce{\oseq{A_1 \oc \octx |- A_2}}{\DD_1}} &
-        \infer[\lrule{\limp}]{\oseq{\octx'_L \oc \octx'_{A_1} \oc (A_1 \limp A_2) \oc \octx'_R |- C}}{
-          \deduce{\oseq{\octx'_{A_1} |- A_1}}{\EE_1} &
-          \deduce{\oseq{\octx'_L \oc A_2 \oc \octx'_R |- C}}{\EE_2}}}
-      =
-      \infer-[\jrule{CUT}^{A_2}]{\oseq{\octx'_L \oc \octx'_{A_1} \oc \octx \oc \octx'_R |- C}}{
-        \infer-[\jrule{CUT}^{A_1}]{\oseq{\octx'_{A_1} \oc \octx |- A_2}}{
-          \deduce{\oseq{\octx'_{A_1} |- A_1}}{\EE_1} &
-          \deduce{\oseq{A_1 \oc \octx |- A_2}}{\DD_1}} &
-        \deduce{\oseq{\octx'_L \oc A_2 \oc \octx'_R |- C}}{\EE_2}}
-    \end{equation*}
-
-  \item[Commutative cases]
-    \begin{equation*}
-      \infer-[\jrule{CUT}^A]{\oseq{\octx'_L \oc \octx_L \oc (B_1 \with B_2) \oc \octx_R \oc \octx'_R |- C}}{
-        \infer[\lrule{\with}_1]{\oseq{\octx_L \oc (B_1 \with B_2) \oc \octx_R |- A}}{
-          \deduce{\oseq{\octx_L \oc B_1 \oc \octx_R |- A}}{\DD_1}} &
-        \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}}
-      =
-      \infer[\lrule{\with}_1]{\oseq{\octx'_L \oc \octx_L \oc (B_1 \with B_2) \oc \octx_R \oc \octx'_R |- C}}{
-        \infer-[\jrule{CUT}^A]{\oseq{\octx'_L \oc \octx_L \oc B_1 \oc \octx_R \oc \octx'_R |- C}}{
-          \deduce{\oseq{\octx_L \oc B_1 \oc \octx_R |- A}}{\DD_1} &
-          \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}}}
-    \end{equation*}
-
-    \begin{equation*}
-      \infer-[\jrule{CUT}^A]{\oseq{\octx'_{L1} \oc \octx \oc \octx'_{L2} \oc (B_1 \with B_2) \oc \octx'_R |- C}}{
-        \deduce{\oseq{\octx |- A}}{\DD} &
-        \infer[\lrule{\with}_1]{\oseq{\octx'_{L1} \oc A \oc \octx'_{L2} \oc (B_1 \with B_2) \oc \octx'_R |- C}}{
-          \deduce{\oseq{\octx'_{L1} \oc A \oc \octx'_{L2} \oc B_1 \oc \octx'_R |- C}}{\EE_1}}}
-      =
-    \end{equation*}
-  \end{description}
-\end{proof}
-
-\begin{theorem}[Identity expansion]
-  $\oseq{A |- A}$ for all propositions $A$.
-\end{theorem}
-\begin{proof}
-  By induction on the structure of the proposition $A$.
-\end{proof}
-
-\section{Extensions}\label{sec:ordered-logic:extensions}
-
-In this \lcnamecref{sec:ordered-logic:extensions}, we give a brief overview of several extensions to the preceding ordered sequent calculus
-\begin{itemize*}[label=, before=\unskip{:}, itemjoin={,}, itemjoin*={, and}]
-\item first-order universal and existential quantifiers
-\item multiplicative falsehood
-\item mobility and persistence modalities
-\end{itemize*}.
-These extensions are not crucial to the remainder of this dissertation, but are included for the sake of completeness.
-
-\paragraph*{First-order quantification}
-
-The manner in which first-order universal and existential quantifiers, $\forall x{:}\tau.A$ and $\exists x{:}\tau.A$, may be added to the ordered sequent calculus is completely standard.
-Sequents are extended with a separate context, $\Sigma$, of well-sorted term variables, $x{:}\tau$; this new context is structural, admitting weakening, contraction, and exchange properties.
-
-\begin{marginfigure}
-  \begin{inferences}
-    \infer[\rrule{\forall}]{\oseq{\Sigma ; \octx |- \forall x{:}\tau.A}}{
-      \oseq{\Sigma, a{:}\tau ; \octx |- [a/x]A}}
-    \\
-    \infer[\lrule{\forall}]{\oseq{\Sigma ; \octx'_L \oc (\forall x{:}\tau.A) \oc \octx_R |- C}}{
-      \Sigma \vdash t : \tau &
-      \oseq{\Sigma ; \octx_L \oc ([t/x]A) \oc \octx_R |- C}}
-    \\
-    \infer[\rrule{\exists}]{\oseq{\Sigma ; \octx |- \exists x{:}\tau.A}}{
-      \Sigma \vdash t : \tau &
-      \oseq{\Sigma ; \octx |- [t/x]A}}
-    \\
-    \infer[\lrule{\exists}]{\oseq{\Sigma ; \octx'_L \oc (\exists x{:}\tau.A) \oc \octx'_R |- C}}{
-      \oseq{\Sigma, a{:}\tau ; \octx'_L \oc ([a/x]A) \oc \octx'_R |- C}}
-  \end{inferences}
-\end{marginfigure}
-
-\subsection{Multiplicative falsehood}
-
-\subsection{Mobility and persistence modalities}
 
 
 
@@ -1193,31 +772,586 @@ Sequents are extended with a separate context, $\Sigma$, of well-sorted term var
 \end{itemize}
 
 
-\section{Outline}
 
-\subsection{Judgments, contexts, and sequents}
+% \clearpage
 
-\begin{itemize}
-\item Consequent and antecedent judgments 
-  \begin{itemize}
-  \item Hypothetical reasoning -- how to gloss an ordered sequent?
-  \item Drop judgment labels because they are implied from position in sequents
-  \end{itemize}
-\item Ordered contexts: monoidal structure and structural properties as algebraic laws
-\item Judgmental principles -- identity and cut 
-  \begin{itemize}
-  \item First rules of inference, but foreshadow connections to verifications 
-  \end{itemize}
-\end{itemize}
+% Ordered logic is a generalization of \citeauthor{Girard:TCS87}'s linear logic\autocite{Girard:TCS87} that further restricts the admitted structural properties.
+% In addition to ... the weakening and contraction
 
-\subsection{Propositions and their meanings}
+% Like the intuitionistic linear sequent calculus, the ordered sequent calculus can be given a resource interpretation.
+% Because the ordered sequent calculus rejects the exchange property, the resouce interpretation differs slightly from that of linear logic.
 
-\begin{itemize}
-\item right and left rules 
-  \begin{itemize}
-  \item right rules show how to verify propositions; left rules show how to use those verifications 
-  \end{itemize}
-\end{itemize}
+% \begin{itemize}
+% \item \citeauthor{Martin-Lof:NJPL96}: Distinguish propositions from judgments
+
+% \item Ordered sequents are hypothetical judgments
+%   \begin{equation*}
+%     \oseq{A_1 \oc A_2 \dotsb A_n |- A} \,,
+%   \end{equation*}
+%   meaning that using the (ordered) resources $A_1, A_2, \dotsc, A_n$, the resource $A$ can be produced.
+%   A proof of this sequent amounts to a recipe or set of instructions for producing resource $A$ from resources $A_1 \oc A_2 \dotsb A_n$.
+
+% \item Contexts as (noncommutative) free monoid over resources -- associative and unit laws
+
+% \item $A \fuse B$ as resources $A$ and $B$ side by side, as a single resource package.
+%   \begin{equation*}
+%     \infer[\rrule{\fuse}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
+%       \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
+%   \end{equation*}
+%   The sequence of resources $\octx$ can be used to produce the resource $A \fuse B$ if the resources $\octx$ can be partitioned into subsequences $\octx_1$ and $\octx_2$ and those subsequences can be used to produce the resources $A$ and $B$, respectively.
+%   \begin{equation*}
+%     \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
+%       \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
+%   \end{equation*}
+%   To use the resource package $A \fuse B$ to produce $C$, unwrap the package and use the side-by-side resources $A \oc B$ to produce $C$.
+
+% \item Harmony:
+%   \begin{gather*}
+%     \infer[\jrule{CUT}\smash{^{A \fuse B}}]{\oseq{\octx'_L \oc (\octx_1 \oc \octx_2) \oc \octx'_R |- C}}{
+%       \infer[\rrule{\fuse}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
+%         \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}} &
+%       \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
+%         \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}}
+%     \\\rightsquigarrow\\
+%     \infer[\jrule{CUT}\smash{^B}]{\oseq{\octx'_L \oc \octx_1 \oc \octx_2 \oc \octx'_R |- C}}{
+%       \oseq{\octx_2 |- B} &
+%       \infer[\jrule{CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx_1 \oc B \oc \octx'_R |- C}}{
+%         \oseq{\octx_1 |- A} & \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}}
+%   \end{gather*}
+
+%   \begin{equation*}
+%     \infer[\jrule{ID}\smash{^{A \fuse B}}]{\oseq{A \fuse B |- A \fuse B}}{}
+%     \leftrightsquigarrow
+%     \infer[\lrule{\fuse}]{\oseq{A \fuse B |- A \fuse B}}{
+%       \infer[\rrule{\fuse}]{\oseq{A \oc B |- A \fuse B}}{
+%         \infer[\jrule{ID}\smash{^A}]{\oseq{A |- A}}{} &
+%         \infer[\jrule{ID}\smash{^B}]{\oseq{B |- B}}{}}}
+%   \end{equation*}
+
+% \item How do we know that these rules constitute the beginnings of a logic?
+%   Either \citeauthor{Dummett:HUP91} (harmony of the logical rules) or \citeauthor{Martin-Lof:NJPL96} (verifications).
+%   \begin{itemize}
+%   \item These are not unrelated, but we will adopt verifications as our basis. 
+%   \item Verifications use only the logical rules, not the judgmental $\jrule{CUT}$ and $\jrule{ID}$.
+%     This way, the meaning of a proposition depends only on its internal structure, not on other propositions or connectives.
+%   \end{itemize}
+
+% \end{itemize}
+
+
+
+% \begin{align*}
+%   n(\slof{A |- \spawn{P_1}{^B P_2} : C}) &= \nspawn{n(\slof{A |- P_1 : B})}{n(\slof{B |- P_2 : C})} \\
+%   n(\slof{A |- \fwd : A}) &= \eta(A) \\
+%   n(\selectR{\kay}) &= \selectR{\kay} \\
+%   n(\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} : C}) &= \caseL[\ell \in L]{\ell => n(\slof{A_{\ell} |- P_{\ell} : C})}
+% \end{align*}
+
+% \begin{align*}
+%   \nspawn{\fwd}{M} &= M \\
+%   \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} &= \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} \\
+%   \nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}} &= M_{\kay} \\
+%   \nspawn{N}{\selectR{\kay}} &= \spawn{N}{\selectR{\kay}} \\
+%   \nspawn{N}{(\spawn{M_0}{\selectR{\kay}})} &= \spawn{(\nspawn{N}{M_0})}{\selectR{\kay}} \\
+%   \nspawn{\caseL[\ell \in L]{\ell => N_{\ell}}}{M} &= \caseL[\ell \in L]{\ell => \nspawn{N_{\ell}}{M}}
+% \end{align*}
+
+
+% \clearpage
+
+
+
+
+
+
+
+
+
+
+
+
+
+% \section{The non-modal fragment of intuitionistic ordered logic}
+
+% \subsection{Judgments, sequents, and contexts}
+
+% Following \citeauthor{Martin-Lof:NJPL96}\autocite{Martin-Lof:NJPL96}, we maintain a separation of ordered propositions, $A$, from judgments about those propositions.
+%   The categorical judgment $A \ord$ ... 
+
+% To allow hypothetical reasoning, a new form of categorical judgment, $A \ant$, for antecedents and generalize $A \ord$ to sequents
+%   \begin{equation*}
+%     \oseq{(A_1 \ant) \dotsm (A_i \ant) \dotsm (A_n \ant) |- A \ord}
+%     \,,
+%   \end{equation*}
+%   meaning the ordered sequence $A_1 \ant \dotsm A_n \ant$ can be transformed into $A \ord$.
+%   Because the judgment label can be inferred from a proposition's position in the sequent, we usually elide the labels and write $\oseq{A_1 \oc A_2 \dotsm A_n |- A}$.
+
+% To further streamline the syntax of sequents,
+% % keep sequents from becoming verbose and cumbersome,
+% antecedents are usually collected into an \vocab{ordered context}, $\octx = A_1 \oc A_2 \dotsm A_n$; sequents are then written $\oseq{\octx |- A}$.
+% % 
+% As strings of antecedents, ordered contexts form a free monoid.
+% The monoid operation is concatenation of contexts, written as juxtaposition; the unit element is the empty context, written as $\octxe$.
+% In other words, ordered contexts are generated by the grammar
+% \begin{syntax*}
+%   & \octx & \octx_1 \oc \octx_2 \mid \octxe \mid A \ant
+%   \,,
+% \end{syntax*}
+% and are subject to the usual associativity and unit laws.
+% \begin{marginfigure}
+%   % \vspace*{\dimexpr-\abovedisplayskip\relax}
+%   \begin{gather*}
+%     (\octx_1 \oc \octx_2) \oc \octx_3 = \octx_1 \oc (\octx_2 \oc \octx_3) \\
+%     (\octxe) \oc \octx = \octx = \octx \oc (\octxe)
+%   \end{gather*}
+%   \caption{Monoid laws for ordered contexts}
+% \end{marginfigure}%
+% % which may be silently applied as needed within proofs.
+% % These monoid laws are applied implicitly as needed within a proof.
+% Because contexts are ordered, the underlying monoid is not commutative.
+
+
+% \subsection{}
+
+% Following \textcite{Martin-Lof:NJPL96}, we maintain a separation of ordered propositions from judgements about those propositions.
+% The categorical judgement $A \ord$ holds if language $A$ is inhabited [if there exists a string of type $A$].
+
+% To allow hypothetical reasoning, the judgement $A \ord$ is generalized to sequents
+% \begin{equation*}
+%   \oseq{(A_1 \ant) \oc (A_2 \ant) \dotsb (A_n \ant) |- A \ord}
+%   \,,
+% \end{equation*}
+% meaning that any string drawn from the concatenation of languages $A_1 \oc A_2 \dotsb A_n$ is a member of the language $A$.
+% ... if the concatenation of languages ... is inhabited, then any inhabitant also inhabits the language $A$.
+
+% \begin{itemize}
+% \item $\oseq{A_1 \oc A_2 \dotsb A_n |- A}$ means that a string of type $A$ may be obtained from the concatenation of strings of types $A_1, A_2, \dotsc, A_n$.
+% \item $\oseq{A_1 \oc A_2 \dotsb A_n |- A}$ means that any string expressible as the concatenation of strings of types $A_1, A_2, \dotsc, A_n$ is also a string of type $A$.
+% \end{itemize}
+
+% \begin{itemize}
+% \item $a$ -- trivial language containing only the single-letter string $a$
+% \item $A \fuse B$ -- concatenation of languages
+% \item $\one$ -- trivial language containing only the empty string
+% \item $A \with B$ -- intersection of languages
+% \item $\top$ -- universal language
+% \item $A \plus B$ -- union of languages
+% \item $\zero$ -- empty language
+% \item $A \limp B$ -- left quotient of languages
+% \item $B \pmir A$ -- right quotient of languages
+% \end{itemize}
+
+% $\vdash$ as language inclusion?
+% What about the language $a \with b$?  The intersection of languages $a$ and $b$ is empty, but $a \with b \nvdash \zero$.
+
+% The right rule says that any string that can be partitioned into consecutive pieces drawn from the languages $\octx_1$ and $\octx_2$ is a member of language $A \fuse B$ if $\octx_1$ is contained in $A$ and $\octx_2$ is contianed in $B$.
+% \begin{inferences}
+%   \infer[\rrule{\fuse}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
+%     \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
+%   \and
+%   \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
+%     \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
+% \end{inferences}
+
+% \subsection{Judgmental principles of sequents}
+
+% Even without knowing the specific structure of propositions, we can already enumerate several judgmental principles that must hold if sequents are to accurately reflect hypothetical reasoning.
+
+% First, if we assume that $A$ is ..., then 
+
+% If we are given a string that parses to $A$, then that string may be trivially transformed to a string that parses to $A$ -- simply use the same string.
+% Cast as a sequent:
+% \begin{description}
+% \item[Identity principle]
+%   $\oseq{A |- A}$ for all propositions $A$.
+% \end{description}
+
+% Dually, a string that parses to $A$ licenses a hypothesis of $A$:
+% \begin{description}
+% \item[Cut principle]
+%   If $\oseq{\octx |- A}$ and $\oseq{\octx'_L \oc A \oc \octx'_R |- C}$, then $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}$.
+% \end{description}
+
+% These two judgmental principles are adopted by the ordered sequent calculus as primitive rules of inference.
+% But their importance goes beyound that of mere rules of inference, with the two principles playing an important role in the meaning of the logical connectives.
+
+% \subsection{The logical connectives and their meanings}
+
+% \begin{inferences}
+%   \infer[\rrule{\fuse}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
+%     \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
+%   \and
+%   \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
+%     \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
+% \end{inferences}
+
+
+
+% \clearpage 
+
+% \newthought{Even without} knowing any specifics about propositions, two purely judgmental principles are already apparent.
+% %
+% First, there should be a trivial transformation of $A$ into $A$, for all propositions $A$.
+% In the sequent calculus, this idea is rendered as an \vocab{identity principle}:
+% \begin{quotation}
+%   $\oseq{A \ant |- A \ord}$ for all propositions $A$.
+% \end{quotation}
+% Stated differently, $\vdash$ is reflexive.%
+% \footnote{Actually, this is not precisely true because the two sides of the turnstile use different judgments.
+% The intuition is nevertheless useful.}
+
+% Second, and dually, a proof of $A \ord$ should license the use of $A \ant$ in another proof.
+% \begin{quotation}
+%   If $\oseq{\octx |- A \ord}$ and $\oseq{\octx'_L \oc (A \ant) \oc \octx'_R |- C \ord}$, then $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C \ord}$.
+% \end{quotation}
+
+% These two judgmental principles are adopted as primitive rules of inference in the sequent calculus.
+% \begin{inferences}
+%   \infer[\jrule{CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}}{
+%     \oseq{\octx |- A} & \oseq{\octx'_L \oc A \oc \octx'_R |- C}}
+%   \and
+%   \infer[\jrule{ID}\smash{^A}]{\oseq{A |- A}}{}
+% \end{inferences}
+% The importance of the cut and identity principles goes beyond that of their corresponding inference rules, however.
+% Both principles are intimately linked to what counts as the meanings of the logical connectives.
+
+% \subsection{Propositions}
+
+% The propositional, purely ordered fragment of intuitionistic ordered logic has propositions given by the following grammar.
+% \begin{syntax*}
+%   Propositions &
+%     A,B,C & \begin{array}[t]{@{}l@{}}
+%               \alpha \mid A \limp B \mid B \pmir A
+%                 \mid A \fuse B \mid \one \\
+%               \mathllap{\mid {}} A \with B \mid \top
+%                 \mid A \plus B \mid \zero
+%             \end{array}
+% \end{syntax*}
+% The ordered propositions in this fragment are:
+% propositional variables, $\alpha$;
+% left- and right-handed implications, $A \limp B$ and $B \pmir A$, respectively;
+% ordered conjunction, $A \fuse B$, and its unit, $\one$;
+% alternative conjunction, $A \with B$, and its unit, $\top$;
+% and
+% additive disjunction, $A \plus B$, and its unit, $\zero$.
+
+% In the tradition of \citeauthor{Gentzen:MZ35} and \citeauthor{Martin-Lof:NJPL96}\autocites{Gentzen:MZ35}{Martin-Lof:NJPL96}, the meaning of a proposition $A$ is given by what counts as a verification of the judgment $A \ord$.
+
+% Left-handed implication has the following right and left rules.
+% \begin{inferences}
+%   \infer[\rrule{\limp}]{\oseq{\octx |- A \limp B}}{
+%     \oseq{A \oc \octx |- B}}
+%   \and
+%   \infer[\lrule{\limp}]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- C}}{
+%     \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+% \end{inferences}
+% According to the right rule, $\rrule{\limp}$, verifying the left-handed implication $A \limp B$ amounts to verifying $B$ under the left-extended context $A \oc \octx$ -- that is, a hypothetical proof of $\oseq{A \oc \octx |- B}$.
+% The left rule, $\lrule{\limp}$, shows how to use such a proof:
+% Prove $A$ and left-adjoin that proof to the verification of $A \limp B$, which is just a hypothetical proof of $\oseq{A \oc \octx |- B}$.
+% This yields 
+
+% Right-handed implication is symmetric to its left-handed counterpart:
+% \begin{inferences}
+%   \infer[\rrule{\pmir}]{\oseq{\octx |- B \pmir A}}{
+%     \oseq{\octx \oc A |- B}}
+%   \and
+%   \infer[\lrule{\pmir}]{\oseq{\octx'_L \oc (B \pmir A) \oc \octx \oc \octx'_R |- C}}{
+%     \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+% \end{inferences}
+
+% Ordered conjunction is another multiplicative connective; its right and left rules are:
+% \begin{inferences}
+%   \infer[\rrule{\fuse}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
+%     \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
+%   \and
+%   \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
+%     \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
+% \end{inferences}
+% As its right rule makes clear, ordered conjunction internalizes concatenation of contexts as a logical connective.
+
+% $\one$ internalizes the empty context.
+% The logical constant $\one$ is the nullary analogue to binary ordered conjunction, as its right and left rules reflect:
+% \begin{inferences}
+%   \infer[\rrule{\one}]{\oseq{\octxe |- \one}}{}
+%   \and
+%   \infer[\lrule{\one}]{\oseq{\octx'_L \oc \one \oc \octx'_R |- C}}{
+%     \oseq{\octx'_L \oc \octx'_R |- C}}
+% \end{inferences}
+% Consequently, $\one$ is the unit of ordered conjunction: $\oseq{\one \fuse A \dashv|- \oseq{A \dashv|- A \fuse \one}}$, for all propositions $A$.
+
+
+% \begin{equation*}
+%   \infer[\rrule{\limp}]{\oseq{A \limp (B \limp C) |- (A \esuf B) \limp C}}{
+%     \infer[\lrule{\esuf}]{\oseq{(A \esuf B) \oc (A \limp (B \limp C)) |- C}}{
+%       \infer[\lrule{\limp}]{\oseq{B \oc A \oc (A \limp (B \limp C)) |- C}}{
+%         \infer[\jrule{ID}]{\oseq{A |- A}}{} &
+%         \infer[\lrule{\limp}]{\oseq{B \oc (B \limp C) |- C}}{
+%           \infer[\jrule{ID}]{\oseq{B |- B}}{} &
+%           \infer[\jrule{ID}]{\oseq{C |- C}}{}}}}}
+% \end{equation*}
+
+% \begin{equation*}
+%   \infer[\rrule{\limp}]{\oseq{(A \esuf B) \limp C |- A \limp (B \limp C)}}{
+%     \infer[\rrule{\limp}]{\oseq{A \oc ((A \esuf B) \limp C) |- B \limp C}}{
+%       \infer[\lrule{\limp}]{\oseq{B \oc A \oc ((A \esuf B) \limp C) |- C}}{
+%         \infer[\rrule{\esuf}]{\oseq{B \oc A |- A \esuf B}}{
+%           \infer[\jrule{ID}]{\oseq{B |- B}}{} &
+%           \infer[\jrule{ID}]{\oseq{A |- A}}{}} &
+%         \infer[\jrule{ID}]{\oseq{C |- C}}{}}}}
+% \end{equation*}
+
+% \begin{equation*}
+%   \infer[\rrule{\pmir}]{\oseq{(C \pmir B) \pmir A |- C \pmir (B \esuf A)}}{
+%     \infer[\lrule{\esuf}]{\oseq{((C \pmir B) \pmir A) \oc (B \esuf A) |- C}}{
+%       \infer[\lrule{\pmir}]{\oseq{((C \pmir B) \pmir A) \oc A \oc B |- C}}{
+%         \infer[\jrule{ID}]{\oseq{A |- A}}{} &
+%         \infer[\lrule{\pmir}]{\oseq{(C \pmir B) \oc B |- C}}{
+%           \infer[\jrule{ID}]{\oseq{B |- B}}{} &
+%           \infer[\jrule{ID}]{\oseq{C |- C}}{}}}}}
+% \end{equation*}
+
+% \begin{equation*}
+%   \infer[\rrule{\pmir}]{\oseq{C \pmir (B \esuf A) |- (C \pmir B) \pmir A}}{
+%     \infer[\rrule{\pmir}]{\oseq{(C \pmir (B \esuf A)) \oc A |- C \pmir B}}{
+%       \infer[\lrule{\pmir}]{\oseq{(C \pmir (B \esuf A)) \oc A \oc B |- C}}{
+%         \infer[\rrule{\esuf}]{\oseq{A \oc B |- B \esuf A}}{
+%           \infer[\jrule{ID}]{\oseq{A |- A}}{} &
+%           \infer[\jrule{ID}]{\oseq{B |- B}}{}} &
+%         \infer[\jrule{ID}]{\oseq{C |- C}}{}}}}
+% \end{equation*}
+
+% \begin{itemize}
+% \item Contexts form a monoid
+% \item None of the usual structural properties -- weakening, contraction, exchange -- but we still have (implicitly, judgmentally) associativity
+% \item Multiplicative falsehood\alertnote{Get rid of this?}
+% \end{itemize}
+
+% \subsection{Rules of logical inference}
+
+% According to its right rule, verifying $A \limp B$ amounts to verifying $B$ under the additional assumption that $A$ holds;
+% moreover, the assumption $A$ is prepended to the left end of context $\octx$, because $A \limp B$ is a left-handed implication.
+
+% To use a verification of $A \limp B$, we first verify $A$ and are thus justified in using $B$.
+
+% Using a verification of $A \limp B$ thus amounts to using the hypothetical verification of $B$ under $A$
+
+
+% The right-handed implication $B \pmir A$ is symmetric to left-handed implication.
+
+
+% \begin{figure}
+%   \begin{syntax*}
+%     Propositions & A, B, C &
+%       \begin{array}[t]{@{}l@{}}
+%         A \limp B \mid B \pmir A \mid A \fuse B \mid B \esuf A \mid \one \\
+%         \mathllap{\mid {}}
+%         A \plus B \mid \zero \mid A \with B \mid \top
+%       \end{array}
+%     \\
+%     Contexts & \octx &
+%       \octxe \mid \octx_1 \oc \octx_2 \mid A
+%   \end{syntax*}
+%   \begin{inferences}
+%     \infer[\jrule{CUT}\smash{^A}]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- \cseq}}{
+%       \oseq{\octx |- A} & \oseq{\octx'_L \oc A \oc \octx'_R |- \cseq}}
+%     \and
+%     \infer[\jrule{ID}\smash{^A}]{\oseq{A |- A}}{}
+%     \\
+%     \infer[\rrule{\limp}]{\oseq{\octx |- A \limp B}}{
+%       \oseq{A \oc \octx |- B}}
+%     \and
+%      \infer[\lrule{\limp}]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- C}}{
+%       \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+%     \\
+%     \infer[\rrule{\pmir}]{\oseq{\octx |- B \pmir A}}{
+%       \oseq{\octx \oc A |- B}}
+%     \and
+%     \infer[\lrule{\pmir}]{\oseq{\octx'_L \oc (B \pmir A) \oc \octx \oc \octx'_R |- C}}{
+%       \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+%     \\
+%     \infer[\rrule{\fuse}]{\oseq{\octx_A \oc \octx_B |- A \fuse B}}{
+%       \oseq{\octx_A |- A} & \oseq{\octx_B |- B}}
+%     \and
+%     \infer[\lrule{\fuse}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
+%       \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
+%     \\
+%     \infer[\rrule{\esuf}]{\oseq{\octx_A \oc \octx_B |- B \esuf A}}{
+%       \oseq{\octx_A |- A} & \oseq{\octx_B |- B}}
+%     \and
+%     \infer[\lrule{\esuf}]{\oseq{\octx'_L \oc (B \esuf A) \oc \octx'_R |- C}}{
+%       \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
+%     \\
+%     \infer[\rrule{\one}]{\oseq{\octxe |- \one}}{}
+%     \and
+%     \infer[\lrule{\one}]{\oseq{\octx'_L \oc \one \oc \octx'_R |- C}}{
+%       \oseq{\octx'_L \oc \octx'_R |- C}}
+%     \\
+%     \infer[\rrule{\with}]{\oseq{\octx |- A \with B}}{
+%       \oseq{\octx |- A} & \oseq{\octx |- B}}
+%     \and
+%     \infer[\lrule{\with}_1]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- C}}{
+%       \oseq{\octx'_L \oc A \oc \octx'_R |- C}}
+%     \and
+%     \infer[\lrule{\with}_2]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- C}}{
+%       \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+%     \\
+%     \infer[\rrule{\top}]{\oseq{\octx |- \top}}{}
+%     \and
+%     \text{(no $\lrule{\top}$ rule)}
+%     \\
+%     \infer[\rrule{\plus}_1]{\oseq{\octx |- A \plus B}}{
+%       \oseq{\octx |- A}}
+%     \and
+%     \infer[\rrule{\plus}_2]{\oseq{\octx |- A \plus B}}{
+%       \oseq{\octx |- B}}
+%     \and
+%     \infer[\lrule{\plus}]{\oseq{\octx'_L \oc (A \plus B) \oc \octx'_R |- C}}{
+%       \oseq{\octx'_L \oc A \oc \octx'_R |- C} &
+%       \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+%     \\
+%     \text{(no $\rrule{\zero}$ rule)}
+%     \and
+%     \infer[\lrule{\zero}]{\oseq{\octx'_L \oc \zero \oc \octx'_R |- C}}{}
+%   \end{inferences}
+% \end{figure}  
+
+% \begin{theorem}[Admissibility of cut]
+%   If $\oseq{\octx |- A}$ and $\oseq{\octx'_L \oc A \oc \octx'_R |- C}$, then $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}$.
+% \end{theorem}
+% \begin{proof}
+%   By lexicographic structural induction, first on the structure of the cut formula and then simultaneously on the structures of the given derivations.
+
+%   \begin{description}
+%   \item[Identity cases]
+%     \begin{equation*}
+%       \infer-[\jrule{CUT}^A]{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{
+%         \infer[\jrule{ID}^A]{\oseq{A |- A}}{} &
+%         \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}}
+%       =
+%       \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}
+%     \end{equation*}
+
+%   \item[Principal cases]
+%     \begin{equation*}
+%       \infer-[\jrule{CUT}^{A_1 \limp A_2}]{\oseq{\octx'_L \oc \octx'_{A_1} \oc \octx \oc \octx'_R |- C}}{
+%         \infer[\rrule{\limp}]{\oseq{\octx |- A_1 \limp A_2}}{
+%           \deduce{\oseq{A_1 \oc \octx |- A_2}}{\DD_1}} &
+%         \infer[\lrule{\limp}]{\oseq{\octx'_L \oc \octx'_{A_1} \oc (A_1 \limp A_2) \oc \octx'_R |- C}}{
+%           \deduce{\oseq{\octx'_{A_1} |- A_1}}{\EE_1} &
+%           \deduce{\oseq{\octx'_L \oc A_2 \oc \octx'_R |- C}}{\EE_2}}}
+%       =
+%       \infer-[\jrule{CUT}^{A_2}]{\oseq{\octx'_L \oc \octx'_{A_1} \oc \octx \oc \octx'_R |- C}}{
+%         \infer-[\jrule{CUT}^{A_1}]{\oseq{\octx'_{A_1} \oc \octx |- A_2}}{
+%           \deduce{\oseq{\octx'_{A_1} |- A_1}}{\EE_1} &
+%           \deduce{\oseq{A_1 \oc \octx |- A_2}}{\DD_1}} &
+%         \deduce{\oseq{\octx'_L \oc A_2 \oc \octx'_R |- C}}{\EE_2}}
+%     \end{equation*}
+
+%   \item[Commutative cases]
+%     \begin{equation*}
+%       \infer-[\jrule{CUT}^A]{\oseq{\octx'_L \oc \octx_L \oc (B_1 \with B_2) \oc \octx_R \oc \octx'_R |- C}}{
+%         \infer[\lrule{\with}_1]{\oseq{\octx_L \oc (B_1 \with B_2) \oc \octx_R |- A}}{
+%           \deduce{\oseq{\octx_L \oc B_1 \oc \octx_R |- A}}{\DD_1}} &
+%         \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}}
+%       =
+%       \infer[\lrule{\with}_1]{\oseq{\octx'_L \oc \octx_L \oc (B_1 \with B_2) \oc \octx_R \oc \octx'_R |- C}}{
+%         \infer-[\jrule{CUT}^A]{\oseq{\octx'_L \oc \octx_L \oc B_1 \oc \octx_R \oc \octx'_R |- C}}{
+%           \deduce{\oseq{\octx_L \oc B_1 \oc \octx_R |- A}}{\DD_1} &
+%           \deduce{\oseq{\octx'_L \oc A \oc \octx'_R |- C}}{\EE}}}
+%     \end{equation*}
+
+%     \begin{equation*}
+%       \infer-[\jrule{CUT}^A]{\oseq{\octx'_{L1} \oc \octx \oc \octx'_{L2} \oc (B_1 \with B_2) \oc \octx'_R |- C}}{
+%         \deduce{\oseq{\octx |- A}}{\DD} &
+%         \infer[\lrule{\with}_1]{\oseq{\octx'_{L1} \oc A \oc \octx'_{L2} \oc (B_1 \with B_2) \oc \octx'_R |- C}}{
+%           \deduce{\oseq{\octx'_{L1} \oc A \oc \octx'_{L2} \oc B_1 \oc \octx'_R |- C}}{\EE_1}}}
+%       =
+%     \end{equation*}
+%   \end{description}
+% \end{proof}
+
+% \begin{theorem}[Identity expansion]
+%   $\oseq{A |- A}$ for all propositions $A$.
+% \end{theorem}
+% \begin{proof}
+%   By induction on the structure of the proposition $A$.
+% \end{proof}
+
+% \section{Extensions}\label{sec:ordered-logic:extensions}
+
+% In this \lcnamecref{sec:ordered-logic:extensions}, we give a brief overview of several extensions to the preceding ordered sequent calculus
+% \begin{itemize*}[label=, before=\unskip{:}, itemjoin={,}, itemjoin*={, and}]
+% \item first-order universal and existential quantifiers
+% \item multiplicative falsehood
+% \item mobility and persistence modalities
+% \end{itemize*}.
+% These extensions are not crucial to the remainder of this dissertation, but are included for the sake of completeness.
+
+% \paragraph*{First-order quantification}
+
+% The manner in which first-order universal and existential quantifiers, $\forall x{:}\tau.A$ and $\exists x{:}\tau.A$, may be added to the ordered sequent calculus is completely standard.
+% Sequents are extended with a separate context, $\Sigma$, of well-sorted term variables, $x{:}\tau$; this new context is structural, admitting weakening, contraction, and exchange properties.
+
+% \begin{marginfigure}
+%   \begin{inferences}
+%     \infer[\rrule{\forall}]{\oseq{\Sigma ; \octx |- \forall x{:}\tau.A}}{
+%       \oseq{\Sigma, a{:}\tau ; \octx |- [a/x]A}}
+%     \\
+%     \infer[\lrule{\forall}]{\oseq{\Sigma ; \octx'_L \oc (\forall x{:}\tau.A) \oc \octx_R |- C}}{
+%       \Sigma \vdash t : \tau &
+%       \oseq{\Sigma ; \octx_L \oc ([t/x]A) \oc \octx_R |- C}}
+%     \\
+%     \infer[\rrule{\exists}]{\oseq{\Sigma ; \octx |- \exists x{:}\tau.A}}{
+%       \Sigma \vdash t : \tau &
+%       \oseq{\Sigma ; \octx |- [t/x]A}}
+%     \\
+%     \infer[\lrule{\exists}]{\oseq{\Sigma ; \octx'_L \oc (\exists x{:}\tau.A) \oc \octx'_R |- C}}{
+%       \oseq{\Sigma, a{:}\tau ; \octx'_L \oc ([a/x]A) \oc \octx'_R |- C}}
+%   \end{inferences}
+% \end{marginfigure}
+
+% \subsection{Multiplicative falsehood}
+
+% \subsection{Mobility and persistence modalities}
+
+
+
+% \section{Circular propositions and circular derivations}
+
+% \begin{itemize}
+% \item No exponentials; recursion/circularity instead (Milner)\alertnote{Should this go in ordered rewriting chapter instead?}
+% \item $\mu$MALL (Baelde) and circular proofs (Fortier and Santocanale)
+% \item Contractivity requirement
+% \item We will use only general recursion.
+%   Inductive and coinductive types are outside our scope.
+% \item Subset of infinite propositions/derivations
+% \end{itemize}
+
+% \section{Outline}
+
+% \subsection{Judgments, contexts, and sequents}
+
+% \begin{itemize}
+% \item Consequent and antecedent judgments 
+%   \begin{itemize}
+%   \item Hypothetical reasoning -- how to gloss an ordered sequent?
+%   \item Drop judgment labels because they are implied from position in sequents
+%   \end{itemize}
+% \item Ordered contexts: monoidal structure and structural properties as algebraic laws
+% \item Judgmental principles -- identity and cut 
+%   \begin{itemize}
+%   \item First rules of inference, but foreshadow connections to verifications 
+%   \end{itemize}
+% \end{itemize}
+
+% \subsection{Propositions and their meanings}
+
+% \begin{itemize}
+% \item right and left rules 
+%   \begin{itemize}
+%   \item right rules show how to verify propositions; left rules show how to use those verifications 
+%   \end{itemize}
+% \end{itemize}
 
 
 %%% Local Variables:

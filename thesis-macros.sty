@@ -245,11 +245,11 @@
 
 \NewDocumentCommand \oseqv { > { \SplitArgument { 1 } { |- } } m }
   { \__thesis_oseqv:nn #1 }
-\cs_new:Npn \__thesis_oseqv:nn #1#2 { #1 \vdash^{ \mathrm{v} } #2 }
+\cs_new:Npn \__thesis_oseqv:nn #1#2 { #1 \vdash^{ \mathrm{cf},\ell } #2 }
 
-\NewDocumentCommand \oseqel { > { \SplitArgument { 1 } { |- } } m }
-  { \__thesis_oseqel:nn #1 }
-\cs_new:Npn \__thesis_oseqel:nn #1#2 { #1 \vdash^{ \eta } #2 }
+\NewDocumentCommand \oseql { > { \SplitArgument { 1 } { |- } } m }
+  { \__thesis_oseql:nn #1 }
+\cs_new:Npn \__thesis_oseql:nn #1#2 { #1 \vdash^{ \ell } #2 }
 
 \NewDocumentCommand \oseqcf { > { \SplitArgument { 1 } { |- } } m }
   { \__thesis_oseqcf:nn #1 }
