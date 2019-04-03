@@ -362,6 +362,63 @@
 \exp_args:No \PassOptionsToPackage { \l_thesis_biboptions_tl } { biblatex }
 \RequirePackage { biblatex }
 
+% Define new format that applies a hypertext reference
+\DeclareFieldFormat{linked}{%
+  \ifboolexpr{ test {\ifhyperref} and not test {\ifentrytype{online}} }
+    {\iffieldundef{doi}
+       {\iffieldundef{url}
+          {#1}
+          {\href{\thefieldfirstword{url}}{#1}}}
+       {\href{http://dx.doi.org/\thefield{doi}}{#1}}}
+    {#1}}
+
+% Define new command that returns the first word of a given field
+\makeatletter
+\def\thefieldfirstword#1{%
+  \expandafter\expandafter
+  \expandafter\firstword
+  \expandafter\expandafter
+  \expandafter{\csname abx@field@#1\endcsname}}
+\def\firstword#1{\firstword@i#1 \@nil}
+\def\firstword@i#1 #2\@nil{#1}
+\makeatother
+
+% Redefine url format to print only first URL, omit URL prefix
+\DeclareFieldFormat{url}{\url{\firstword{#1}}}
+
+% \renewbibmacro*{title}{% Based on generic definition from biblatex.def
+%   \ifboolexpr{ test {\iffieldundef{title}} and test {\iffieldundef{subtitle}} }
+%     {}
+%     {\printtext[title]{\printtext[linked]{%
+%        \printfield[titlecase]{title}%
+%        \setunit{\subtitlepunct}%
+%        \printfield[titlecase]{subtitle}}}%
+%      \newunit}%
+%   \printfield{titleaddon}}
+% 
+% \renewbibmacro*{periodical}{% Based on generic definition from biblatex.def
+%   \iffieldundef{title}
+%     {}
+%     {\printtext[title]{\printtext[linked]{%
+%        \printfield[titlecase]{title}%
+%        \setunit{\subtitlepunct}%
+%        \printfield[titlecase]{subtitle}}}}}
+
+
+% Don't link titles in citations
+\AtEveryCite{\DeclareFieldAlias{linked}{default}}
+
+
+\DeclareFieldFormat{title}{\printtext[linked]{\mkbibemph{#1}}}
+\DeclareFieldFormat
+  [article,inbook,incollection,inproceedings,patent,thesis,unpublished]
+  {title}{\mkbibquote{\printtext[linked]{#1}\isdot}}
+\DeclareFieldFormat[suppbook,suppcollection,suppperiodical]{title}
+{\printtext[linked]{#1}}
+
+
+\setlength{\bibhang}{2em}
+
 
 %%%%%%%%%%%%%
 % Utilities %
@@ -384,12 +441,14 @@
 % \Crefname{lemma}{Lemma}{Lemmas}
 
 \NewDocumentCommand \parencref { O{} m O{} }
-  { \__thesis_parencref:nnn {#1} {#2} {#3} }
-\cs_new:Npn \__thesis_parencref:nnn #1 #2 #3
+  { \__thesis_xcref:Nnnnn \cref \__thesis_mkparens:n {#1} {#2} {#3} }
+\NewDocumentCommand \footcref { O{} O{} m O{} }
+  { \__thesis_xcref:Nnnnn \cref { \footnote[#1] } {#4} {#2} {#3} }
+
+\cs_new:Npn \__thesis_mkparens:n #1 { ( #1 ) }
+
+\cs_new:Npn \__thesis_xcref:Nnnnn #1 #2 #3 #4 #5
   {
-    \nobreakspace (
-    \tl_if_empty:nF {#1} { #1 ~ }
-    \cref{#2}
-    \tl_if_empty:nF {#3} {#3}
-    )
+    #2 { \tl_if_empty:nF {#3} { #3 ~ }
+         #1{#4} #5 }
   }

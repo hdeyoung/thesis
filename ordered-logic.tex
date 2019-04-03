@@ -6,22 +6,38 @@
 % .
 
 
-This \lcnamecref{ch:ordered-logic} serves to review a sequent calculus presentation of ordered logic, also known as the (full) Lambek calculus\autocites{Lambek:AMM58}{Lambek:SLIM61}.
+% [This \lcnamecref{ch:ordered-logic} serves to review a sequent calculus presentation of ordered logic, also known as the (full) Lambek calculus\autocite{Lambek:AMM58}.]
 
 In its traditional form, intuitionistic logic\footnote{And classical logic, too.} presumes that hypotheses admit three structural properties
 \begin{description*}[
-  before=\unskip:\ ,
-  font=\normalfont, afterlabel={,\ },
-  itemjoin=;\ , itemjoin*=; and\ %
+  before=\unskip:\space,
+  font=\normalfont, afterlabel={,\space},
+  itemjoin=;\space, itemjoin*=; and\space%
 ]
 \item[weakening] that hypotheses need not be used
 \item[contraction] that hypotheses may be reused indefinitely
 \item[exchange] that hypotheses may be freely permuted
 \end{description*}.
 
-Substructural logics are so called because they reject some or all of these structural properties.
+Substructural logics are so named because they reject some or all of these structural properties.
 Most famously, linear logic\autocite{Girard:TCS87} is substructural because it rejects both weakening and contraction.
-The result is a system in which each hypothesis must be used exactly once and may therefore be viewed as 
+The result is a system in which each hypothesis must be used exactly once; accordingly, linear hypotheses may be viewed as consumable resources\autocite{Girard:TCS87}.
+
+Ordered logic, also known as the (full) Lambek calculus,\autocite{Lambek:AMM58} goes a substructural step further.
+Like its linear cousin, ordered logic rejects weakening and contraction, making ordered hypotheses resources, too.
+But ordered logic additionally eschews exchange; 
+ordered hypotheses are resources that must remain in order, with no reshuffling.
+
+
+\newthought{%
+This \lcnamecref{ch:ordered-logic}%
+}
+serves to review a sequent calculus presentation of ordered logic.
+\Citeauthor{Lambek:AMM58} originally developed the calculus to give a formal description of sentence structure.
+In this work, however, our interest is not mathematical linguistics but the logical foundations of concurrent computation.
+
+
+
 
 As a substructural logic, ordered logic eschews the usual structural properties of antecedents -- weakening, contraction, and exchange.
 As in \citeauthor{Girard:TCS87}'s linear logic\autocite{Girard:TCS87}, the lack of weakening and contraction properties means that each antecedent must be used exactly once within a proof.
@@ -165,7 +181,7 @@ Under the resource interpretation of ordered logic, these logical connectives ma
 A connective's right rule defines how to produce that kind of resource, while the corresponding left rules define how that kind of resource may be used.
 % As a first example, consider ordered conjunction.
 
-\paragraph*{Ordered conjunction and its unit}
+\paragraph*{Ordered conjunction and its unit}\label{p:ordered-logic:ordered-conjunction}
 Ordered conjunction\footnote{Also known as multiplicative conjunction.} is the proposition $A \fuse B$, read \enquote{$A$ fuse $B$}.
 Under the resource interpretation, $A \fuse B$ is the side-by-side pair of resources $A$ and $B$, packaged as a single ordered resource.
 Its sequent calculus inference rules are:
