@@ -1,5 +1,9 @@
 \usepackage{tikz}
-\usetikzlibrary { graphs , automata , quotes , cd , fit , shapes.misc }
+\usetikzlibrary { graphs , positioning , automata , quotes , cd , fit , shapes.misc , matrix }
+
+\tikzcdset{
+  arrow style=math font
+}
 
 \usepackage{logic}
 \RenewDocumentCommand \limp { } { \mathbin { \setminus } }

@@ -1,8 +1,59 @@
 \chapter{Miscellaneous notes}
 
-\begin{itemize}
-\item Negative propositions as processes; positive propositions and contexts as configurations?
-\end{itemize}
+\NewDocumentCommand \Circ { } { \medcirc }
+
+\begin{inferences}
+  \infer[\jrule{CUT}_A]{\Gamma, \Gamma' ; \Delta, \Delta' ; \Omega, \Omega' \vdash C}{
+    \Gamma ; \Delta ; \Omega \vdash A &
+    \Gamma' ; \Delta' ; \Omega', A \vdash C}
+  \\
+  \infer[\jrule{CUT}^{\Box}_A]{\Gamma, \Gamma' ; \Delta' ; \Omega' \vdash C}{
+    \Gamma ; \cdot ; \cdot \vdash A &
+    \Gamma', A ; \Delta' ; \Omega' \vdash C}
+  \and
+  \infer[\jrule{MV}]{\Gamma', A ; \Delta' ; \Omega' \vdash C}{
+    \Gamma' ; \Delta' ; \Omega', A \vdash C}
+  \\
+  \infer[\rrule{\Box}]{\Gamma ; \cdot ; \cdot \vdash \Box A}{
+    \Gamma ; \cdot ; \cdot \vdash A}
+  \and
+  \infer[\lrule{\Box}]{\Gamma' ; \Delta' ; \Omega', \Box A \vdash C}{
+    \Gamma', A ; \Delta' ; \Omega' \vdash C}
+  \\
+  \infer[\jrule{CUT}^{\Circ}_A]{\Gamma, \Gamma' ; \Delta, \Delta' ; \Omega' \vdash C}{
+    \Gamma ; \cdot ; \Delta \vdash A &
+    \Gamma' ; \Delta', A ; \Omega' \vdash C}
+  \\
+  \infer[\rrule{\Circ}]{\Gamma ; \Delta ; \cdot \vdash \Circ A}{
+    \Gamma ; \cdot ; \Delta \vdash A}
+  \and
+  \infer[\lrule{\Circ}]{\Gamma' ; \Delta' ; \Omega', \Circ A \vdash C}{
+    \Gamma' ; \Delta', A ; \Omega' \vdash C}
+  \\
+  \infer[\rrule{\plus}_1]{\Gamma ; \Delta ; \Omega \vdash A \plus B}{
+    \Gamma ; \Delta ; \Omega \vdash A}
+  \and
+  \infer[\rrule{\plus}_2]{\Gamma ; \Delta ; \Omega \vdash A \plus B}{
+    \Gamma ; \Delta ; \Omega \vdash B}
+  \\
+  \infer[\lrule{\plus}]{\Gamma' ; \Delta' ; \Omega', A \plus B \vdash C}{
+    \Gamma' ; \Delta' ; \Omega', A \vdash C &
+    \Gamma' ; \Delta' ; \Omega', B \vdash C}
+\end{inferences}
+
+\begin{equation*}
+  \infer[\jrule{CUT}^{\Circ}_A]{\Gamma, \Gamma' ; \Delta, \Delta' ; \cdot \vdash \Circ C}{
+    \Gamma ; \cdot ; \Delta \vdash A &
+    \infer[\rrule{\Circ}]{\Gamma' ; \Delta', A ; \cdot \vdash \Circ C}{
+      \Gamma' ; \cdot ; \Delta', A \vdash C}}
+\end{equation*}
+
+\begin{equation*}
+  \infer[\lrule{\Box}]{\cdot ; \cdot ; \Box A \vdash \Circ C}{
+    \infer[\rrule{\Circ}]{A ; \cdot ; \cdot \vdash \Circ C}{
+      \infer[\jrule{MV}]{A ; \cdot ; \cdot \vdash C}{
+        \cdot ; \cdot ; A \vdash C}}}
+\end{equation*}
 
 %%% Local Variables:
 %%% mode: latex

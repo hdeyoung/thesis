@@ -10,6 +10,7 @@
 
 In its traditional form, intuitionistic logic\footnote{And classical logic, too.} presumes that hypotheses admit three structural properties
 \begin{description*}[
+  mode=unboxed,
   before=\unskip:\space,
   font=\normalfont, afterlabel={,\space},
   itemjoin=;\space, itemjoin*=; and\space%
@@ -303,6 +304,19 @@ The two forms of implication each enjoy their own currying laws: the sequents $\
 
 % \paragraph*{Summary}
 % The sequent calculus presented above is summarized in \cref{fig:ordered-logic:sequent-calculus}.
+
+
+\begin{table}[tbp]
+  \centering
+  \begin{tabular}{@{}rll@{}}
+    Ordered conjunction & $A \fuse B$ & A side-by-side pair of resources $A$ and $B$, packaged as a single resource \\
+    (Additive) disjunction & $A \plus B$ & A resource package that contains $A$ or $B$ (but not both) \\
+    Alternative conjunction & $A \with B$ & A resource that can be transformed into either $A$ or $B$ \\
+    Left-handed implication & $A \limp B$ & A resource that transforms a left-adjacent resource $A$ into resource $B$ \\
+    Right-handed implication & $A \limp B$ & A resource that transforms a right-adjacent resource $A$ into resource $B$
+  \end{tabular}
+  \caption{A resource interpretation}
+\end{table}
 
 \begin{figure}[tbp]
   \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}

@@ -695,7 +695,13 @@ Therefore, the $\jrule{CUT}$ rule is adopted wholesale in the Hilbert system.
 % Because singleton logic does not have an implication connective to internalize the hypothetical judgment, there is no obvious way to turn this rule into an axiom.
 % Both rules are therefore adopted wholesale in the Hilbert-style axiomatization.
 
-Next, consider the sequent calculus's $\rrule{\plus}_1$ inference rule.
+Next, consider the sequent calculus's $\rrule{\plus}_1$ inference rule.%
+\fixnote{Citation of basic logic \parencite{Sambin+:JSL00}?
+  \begin{equation*}
+    \infer={B_1 \plus B_2 \vdash C}{
+      B_1 \vdash C & B_2 \vdash C}
+  \end{equation*}
+}
 % ; how much can we push this rule toward an axiom?
 Using the $\jrule{ID}$ axiom schema, we can obtain a zero-premise derived rule from $\rrule{\plus}_1$:
 \begin{equation*}
@@ -1741,6 +1747,136 @@ Without the binary multiplicative connectives $\tensor$ and ...
     A \dn \vdash \with*[sub=_{\ell \in L}]{\ell:B_{\ell}} \dn & \text{($\kay \in L$)}}
 \end{inferences}
 
+
+\section{Connections to Basic Logic}
+
+\textcite{Sambin+:JSL00} proposes Basic Logic in which connectives are defined by a single \emph{definitional equation}.
+For example, the definitional equation for alternative conjunction would be
+\begin{equation*}
+  \infer=[\with]{\oseq{\octx |- A \with B}}{
+    \oseq{\octx |- A} & \oseq{\octx |- B}}
+\end{equation*}
+Read top-down, the rule is a \emph{formation} rule; read bottom-up, the rule is two \emph{implicit reflection} rules.
+\begin{equation*}
+  \infer[\jrule{$\with$F}]{\oseq{\octx |- A \with B}}{
+    \oseq{\octx |- A} & \oseq{\octx |- B}}
+  \qquad
+  \infer[\jrule{$\with$IR}_1]{\oseq{\octx |- A}}{
+    \oseq{\octx |- A \with B}}
+  \qquad
+  \infer[\jrule{$\with$IR}_2]{\oseq{\octx |- B}}{
+    \oseq{\octx |- A \with B}}
+\end{equation*}
+By trivializing the implicit reflection rules, \citeauthor{Sambin+:JSL00} arrive at the axioms
+\begin{equation*}
+  \infer[\jrule{$\with$A}_1]{\oseq{A \with B |- A}}{}
+  \qquad
+  \infer[\jrule{$\with$A}_2]{\oseq{A \with B |- B}}{}
+\end{equation*}
+Combining these axioms with $\jrule{CUT}$, they arrive at \emph{explicit reflection} rules:%
+\marginnote[\baselineskip]{%
+  \begin{equation*}
+    \infer[\jrule{CUT}^A]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- C}}{
+      \infer[\jrule{$\with$A}_1]{\oseq{A \with B |- A}}{} &
+      \oseq{\octx'_L \oc A \oc \octx'_R |- C}}
+  \end{equation*}
+}
+\begin{equation*}
+  \infer[\jrule{$\with$ER}_1]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- C}}{
+    \oseq{\octx'_L \oc A \oc \octx'_R |- C}}
+  \qquad
+  \infer[\jrule{$\with$ER}_2]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- C}}{
+    \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+\end{equation*}
+Alternatively, the implicit reflection rules could be obtained from the explicit reflection rules by trivializing the explicit rules and then combining the resulting axioms with $\jrule{CUT}$.%
+\marginnote[-\baselineskip]{%
+  \begin{equation*}
+    \infer[\jrule{CUT}^{A \with B}]{\oseq{\octx |- A}}{
+      \oseq{\octx |- A \with B} &
+      \infer[\jrule{$\with$A}_1]{\oseq{A \with B |- A}}{}}
+  \end{equation*}
+}
+So, in fact, the implicit and explicit reflection rules and axioms are all equivalent in the presence of $\jrule{CUT}$.
+
+\newthought{As another example} of this process, consider the definitional equation for ordered conjunction:
+\begin{equation*}
+  \infer=[\fuse]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
+    \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
+\end{equation*}
+The formation and implicit reflection rules are:
+\begin{equation*}
+  \infer[\jrule{$\fuse$F}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
+    \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
+  \qquad
+  \infer[\jrule{$\fuse$IR}]{\oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}{
+    \oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}
+\end{equation*}
+By trivializing the implicit reflection rule, we obtain the axiom
+\begin{equation*}
+  \infer[\jrule{$\fuse$A}]{\oseq{A \oc B |- A \fuse B}}{}
+\end{equation*}
+Combining this axiom with $\jrule{CUT}$, we arrive at the explicit reflection rule%
+\marginnote{%
+  \begin{equation*}
+      \infer[\jrule{CUT}^A]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
+    \oseq{\octx_1 |- A} &
+    \infer[\jrule{CUT}^B]{\oseq{A \oc \octx_2 |- A \fuse B}}{
+      \oseq{\octx_2 |- B} & \infer[\jrule{$\fuse$A}]{\oseq{A \oc B |- A \fuse B}}{}}}
+  \end{equation*}
+}
+\begin{equation*}
+  \infer[\jrule{$\fuse$ER}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
+    \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
+\end{equation*}
+In the other direction, the axiom can also be obtained by trivializing the explicit reflection rule; the implicit reflection rules is then obtained from $\jrule{CUT}$.%
+\marginnote{%
+  \begin{equation*}
+    \infer[\jrule{CUT}^{A \fuse B}]{\oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}{
+      \infer[\jrule{$\fuse$A}]{\oseq{A \oc B |- A \fuse B}}{} &
+      \oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}
+  \end{equation*}
+}
+
+\newthought{As a final example} of this process, consider the definitional equation for left-handed implication:
+\begin{equation*}
+  \infer=[\limp]{\oseq{\octx |- A \limp B}}{
+    \oseq{A \oc \octx |- B}}
+\end{equation*}
+The formation and implicit reflection rules are:
+\begin{equation*}
+  \infer[\jrule{$\limp$F}]{\oseq{\octx |- A \limp B}}{
+    \oseq{A \oc \octx |- B}}
+  \qquad
+  \infer[\jrule{$\limp$IR}]{\oseq{A \oc \octx |- B}}{
+    \oseq{\octx |- A \limp B}}
+\end{equation*}
+By trivializing the implicit reflection rule, we obtain the axiom
+\begin{equation*}
+  \infer[\jrule{$\limp$A}]{\oseq{A \oc (A \limp B) |- B}}{}
+\end{equation*}
+Combining this axiom with $\jrule{CUT}$, we arrive at the explicit reflection rule%
+\marginnote{%
+  \begin{equation*}
+    \infer[\jrule{CUT}^A]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- C}}{
+      \oseq{\octx |- A} &
+      \infer[\jrule{CUT}^B]{\oseq{\octx'_L \oc A \oc (A \limp B) \oc \octx'_R |- C}}{
+        \infer[\jrule{$\limp$A}]{\oseq{A \oc (A \limp B) |- B}}{} &
+        \oseq{\octx'_L \oc B \oc \octx'_R |- C}}}
+  \end{equation*}
+}
+\begin{equation*}
+  \infer[\jrule{$\limp$ER}]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- C}}{
+    \oseq{\octx |- A} &
+    \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+\end{equation*}
+In the other direction, the axiom can also be obtained by trivializing the explicit reflection rule; the implicit reflection rules is then obtained from $\jrule{CUT}$.%
+\marginnote{%
+  \begin{equation*}
+    \infer[\jrule{CUT}^{A \limp B}]{\oseq{A \oc \octx |- B}}{
+      \oseq{\octx |- A \limp B} &
+      \infer[\jrule{$\limp$A}]{\oseq{A \oc (A \limp B) |- B}}{}}
+  \end{equation*}
+}
   
 %%% Local Variables:
 %%% mode: latex

@@ -228,6 +228,14 @@
 \RequirePackage { csquotes }
 
 
+%%%%%%%%
+% Math %
+%%%%%%%%
+
+\RequirePackage { mathtools }
+\mathtoolsset { mathic = true }
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 % Theorem environments %
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -292,10 +300,24 @@
     style = smallcaps-plain ]
   { falseclaim }
 
+\declaretheorem
+  [ sibling = theorem ,
+    refname = { fact , facts } ,
+    Refname = { Fact , Facts } ,
+    style = smallcaps-plain ]
+  { fact }
+
+\declaretheorem
+  [ numbered = no ,
+    name = Desiderata ,
+    refname = { desiderata , desiderata } ,
+    Refname = { Desiderata , Desiderata } ,
+    style = smallcaps-plain ]
+  { desiderata* }
+
 \newtheorem* { theorem* } { Theorem }
 \newtheorem* { lemma* } { Lemma }
 \newtheorem* { corollary* } { Corollary }
-\newtheorem { fact } [ theorem ] { Fact }
 \newtheorem* { fact* } { Fact }
 \newtheorem* { falseclaim* } { False~Claim }
 \newtheorem { conjecture } [ theorem ] { Conjecture }
@@ -330,9 +352,11 @@
 \setlist [ thmdescription ] { nosep , leftmargin=1.25em ,  , font=\emph }
 
 
-%%%%%%%%%%%
-% Figures %
-%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%
+% Figures and Tables %
+%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage { booktabs }
 
 % Remove \FloatBarrier from marginfigure definition
 % to prevent unwanted spaces.

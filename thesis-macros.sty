@@ -34,6 +34,24 @@
 
 \newcommand{\blackdiamond}{\Pimathsymbol[\mathbin]{mathb}{"0C}}
 
+
+\newcommand*\rel@kern[1]{\kern#1\dimexpr\macc@kerna}
+\newcommand*\widebar[1]{%
+  \begingroup
+  \def\mathaccent##1##2{%
+    \rel@kern{0.8}%
+    \overline{\rel@kern{-0.8}\macc@nucleus\rel@kern{0.2}}%
+    \rel@kern{-0.2}%
+  }%
+  \macc@depth\@ne
+  \let\math@bgroup\@empty \let\math@egroup\macc@set@skewchar
+  \mathsurround\z@ \frozen@everymath{\mathgroup\macc@group\relax}%
+  \macc@set@skewchar\relax
+  \let\mathaccentV\macc@nested@a
+  \macc@nested@a\relax111{#1}%
+  \endgroup
+}
+
 %%%%%%%%%%%%%%%%%%%
 %% Ordered logic %%
 %%%%%%%%%%%%%%%%%%%
@@ -49,6 +67,28 @@
 %%%%%%%%%%%%%%
 %% Automata %%
 %%%%%%%%%%%%%%
+
+% just to make sure it exists
+\providecommand \given { }
+% can be useful to refer to this outside \Set
+\NewDocumentCommand \SetSymbol { O{} } {
+  \nonscript\medspace#1\vert
+  \allowbreak
+  \nonscript\medspace
+  \mathopen{}
+}
+
+\DeclarePairedDelimiterX \Set [1] \{ \} {%
+  \renewcommand \given { \SetSymbol[\delimsize] }
+  #1
+}
+
+\NewDocumentCommand \rev { s m } {
+  % \IfBooleanTF {#1}
+    % { (#2)^{\mathsf{R}} }
+    % { #2^{\mathsf{R}} }
+  \underline{#2}
+}
 
 % for abbreviations and acronyms
 \tex_let:D \c_minus_one \scan_stop:
@@ -149,6 +189,14 @@
 \cs_new:Npn \__thesis_nfareduces:n #1
   { \overset {#1} { \__thesis_nfareduces: } }
 
+\cs_set_eq:NN \dfareduces \nfareduces
+
+\NewDocumentCommand \dfanext { } { \__thesis_dfanext: }
+\cs_new:Npn \__thesis_dfanext: { \delta }
+
+\NewDocumentCommand \nfapow { } { \__thesis_nfapow: }
+\cs_new:Npn \__thesis_nfapow: { \Delta }
+
 \NewDocumentCommand \nfaReduces { o }
   {
     \IfNoValueTF {#1}
@@ -210,12 +258,18 @@
   {
     automaton / .style = {
       math~nodes , nodes = state ,
-      edges = { node~quotes~mean / .try = { label=$########1$ } }
+      edges = { node~quotes~mean / .try = { label=$########1$ } } ,
+      grow~right~sep = 1.5em
     }
   }
 
 \NewDocumentCommand \nfa { m } { \__thesis_nfa:n {#1} }
 \cs_new:Npn \__thesis_nfa:n #1 { \hat {#1} }
+
+\cs_set_eq:NN \dfa \nfa
+
+\NewDocumentCommand \nfawds { m } { \__thesis_nfawds:n {#1} }
+\cs_new:Npn \__thesis_nfawds:n #1 { \mkern1mu \underline { \mkern-1mu #1 \mkern-1mu } \mkern1mu }
 
 \NewDocumentCommand \sft { m } { \__thesis_sft:n {#1} }
 \cs_new:Npn \__thesis_sft:n #1 { \hat {#1} }
@@ -265,6 +319,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%
 %% Ordered rewriting %%
 %%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclarePairedDelimiter \card { \lvert } { \rvert }
+
+\tikzcdset{
+  reduces / .style = { rightarrow } ,
+  Reduces / .style = { Rightarrow }
+}
+
+
+\DeclarePairedDelimiterXPP{\cval}[1]{\mathbb{V}}(){}{
+  \tl_if_empty:nTF {#1} { \mathord{-} } {#1} }
+
 
 \RequirePackage { accents }
 
@@ -367,7 +433,18 @@
 \NewDocumentCommand \union { } { \__thesis_union: }
 \cs_new:Npn \__thesis_union: { \mathbin { \cup } }
 
-\DeclarePairedDelimiter \set \lbrace \rbrace
+
+\providecommand \given { }
+\newcommand \GivenSymbol [1] [] {
+  \nonscript\muskip\medmuskip#1\vert
+  \allowbreak
+  \nonscript\muskip\medmuskip
+  \mathopen{}
+}
+\DeclarePairedDelimiterX \set [1] \lbrace \rbrace {
+  \renewcommand \given { \GivenSymbol[\delimsize] }
+  #1
+}
 
 \NewDocumentCommand \bigwith { } { \__thesis_bigwith: }
 \cs_new:Npn \__thesis_bigwith:

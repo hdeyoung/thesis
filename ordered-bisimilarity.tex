@@ -118,18 +118,157 @@ The key feature of this counterexample is that atoms' lack of direction means th
 
 \subsection{\Aclp*{NFA}}
 
-\begin{theorem}
-  If $q \asim s$, then $\nfa{q} \osim \nfa{s}$.
+\begin{lemma}
+  If\/ $\atmR{a} \oc \nfa{s} \Reduces\miso \nfa{q}'$, then there exists a state $s'_a$ such that $s \nfareduces[a] s'_a$ and $\nfa{s}'_a \miso \nfa{q}'$.
+\end{lemma}
+%
+\begin{proof}
+  Assume that $\atmR{a} \oc \nfa{s} \Reduces\miso \nfa{q}'$.
+  There are two cases, according to the trace's structure.
+  \begin{itemize}
+  \item Consider the case in which the trace is trivial; in this case, $\atmR{a} \oc \nfa{s} \miso \nfa{q}'$.
+    Because the underlying \ac{NFA} is well-formed, $s$ has at least one $a$-successor;
+    let $s'_a$ be one such successor.
+    By definition of the encoding, $\atmR{a} \oc \nfa{s} \reduces \nfa{s}'_a$.
+    It follows from the reduction bisimilarity property that $\nfa{q}' \Reduces\osim \nfa{s}'_a$.
+    However, because state encodings are latent\autocite{??} propositions, that trace can only be the trivial one, and so we may conclude that $q'$ and $s'_a$ have bisimilar encodings.
+
+  \item Consider the case in which the trace contains at least one step.
+    By inversion, that step corresponds to \iac{NFA} transition: $\atmR{a} \oc \nfa{s} \reduces \nfa{s}'_a \Reduces\miso \nfa{q}'$, for some state $s'_a$ that is an $a$-successor of $s$.
+    Once again, because state encodings are latent propositions, we may conclude that $q'$ and $s'_a$ have bisimilar encodings.
+  \qedhere
+  \end{itemize}
+\end{proof}
+
+
+\begin{lemma}
+  If $\nfa{F}(q) \Reduces\osim \nfa{F}(s)$, then $q \in F$ if, and only if, $s \in F$.
+\end{lemma}
+%
+\begin{proof}
+  Assume that $\nfa{F}(q) \Reduces\osim \nfa{F}(s)$ and $q \notin F$.
+  By inversion on the trace, $\top \osim \nfa{F}(s)$.
+  Suppose, for the sake of contradiction, that $s \in F$ and so $\nfa{F}(s) = \one$.
+  Then $\top \osim \one$; hence, $\atmR{a} \oc \top \Reduces\osim \atmR{a}$ follows from the input bisimilarity property.
+  But output bisimilarity implies $\atmR{a} \oc \top \Reduces\rframe{\osim}{\atmR{a}} \atmR{a}$, which is impossible because $\atmR{a} \oc \top$ cannot produce $\atmR{a}$ at its right end.
+\end{proof}
+
+\begin{theorem}[\Ac*{NFA} adequacy]
+  Let $\aut{A} = (Q, ?, F)$ be \iac{NFA} over the input alphabet $\ialph$.
+  Then:
+  \begin{enumerate}
+  \item $q \asim s$ if, and only if, $\nfa{q} \osim \nfa{s}$.
+  \item $q \nfareduces[a] q'$ implies $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'$.
+    Conversely, $\atmR{a} \oc \nfa{q} \reduces\osim \nfa{s}'$ implies $q \nfareduces[a]\asim s'$.
+  \item $q \in F$ if, and only if, $\atmR{\emp} \oc \nfa{q} \reduces \one$.
+  \item $q \nfareduces[w] q'$ implies $\atmR{w} \oc \nfa{q} \Reduces \nfa{q}'$.
+    Conversely, $\atmR{w} \oc \nfa{q} \Reduces\osim \nfa{q}'$ implies $q \nfareduces[w]\asim q'$.
+  \end{enumerate}
+\end{theorem}
+%
+
+\begin{theorem}[\Ac*{NFA} adequacy]
+  Let $\aut{A} = (Q, ?, F)$ be \iac{NFA} over the input alphabet $\ialph$.
+  Then:
+  \begin{enumerate}
+  \item $q \asim s$ if, and only if, $\nfa{q} \osim \nfa{s}$.
+  \item $q \asim\nfareduces[a]\asim q'$ if, and only if, $\atmR{a} \oc \nfa{q} \osim\reduces\osim \nfa{q}'$, for all input symbols $a$.
+  \item $q \in F$ if, and only if, $\atmR{\emp} \oc \nfa{q} \reduces \one$.
+  \item $q \asim\nfareduces[w]\asim q'$ if, and only if, $\atmR{w} \oc \nfa{q} \osim\Reduces\osim \nfa{q}'$, for all finite words $w$.
+  \end{enumerate}
 \end{theorem}
 %
 \begin{proof}
-  Let $\simu{R}$ be the least binary relation%
-  \alertnote{What about symmetry?}
-  on ordered contexts given by
-  \begin{equation*}
-    \infer{\nfa{q} \simu{R} \nfa{s}}{
-      q \asim s}
-  \end{equation*}
+  The parts are proved in order, with parts [...] depending on part [...].
+  \begin{enumerate}
+  \item To prove that bisimilar states are exactly those states that have bisimilar encodings, we take each direction in turn.
+    \begin{itemize}
+    \item First, we will prove that bisimilar states have bisimilar encodings.
+      Let $\simu{R}$ be the binary relation that relates two states' encodings if their underlying states are \ac{NFA}-bisimilar -- that is, $\mathord{\simu{R}} = \set{(\nfa{q}, \nfa{s}) \given q \asim s}$; we shall show that $\simu{R}$ satisfies the conditions of \cref{thm:??} and is therefore included in rewriting bisimilarity.
+
+
+    \item Conversely, we will now prove that states that have bisimilar encodings are themselves bisimilar.
+      Let $\simu{R}$ be the binary relation that relates two states if their encodings are rewriting-bisimilar -- that is, $\mathord{\simu{R}} = \set{(q,s) \given \nfa{q} \osim \nfa{s}}$;
+      we shall show that $\simu{R}$ is \iac{NFA} bisimulation and therefore included in \ac{NFA} bisimilarity.
+      \begin{itemize}[listparindent=\parindent]
+      \item Let $q$ and $s$ be states with bisimilar encodings, and let $q'_a$ be an $a$-successor of $q$;
+        we must exhibit a state $s'_a$ that $a$-succeeds $s$ and has an encoding that is bisimilar to that of $q'_a$.
+
+        By definition of the encoding, $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'_a$.
+        Because $q$ and $s$ have bisimilar encodings, the input bisimilarity property allows us to deduce that $\atmR{a} \oc \nfa{s} \Reduces\miso \nfa{q}'_a$.
+        An appeal to \cref{lem:??} provides exactly what is needed: a state $s'_a$ that $a$-succeeds $s$ and has an encoding bisimilar to that of $q'_a$.
+        
+      \item Let $q$ and $s$ be states with bisimilar encodings, and assume that $q$ is a final state;
+        we must show that $s$ is also a final state.
+
+        By definition of the encoding, $\atmR{\emp} \oc \nfa{q} \reduces \nfa{F}(q) = \one$.
+        Because $q$ and $s$ have bisimilar encodings, it follows from input bisimilarity that $\atmR{\emp} \oc \nfa{s} \Reduces\miso \nfa{F}(q)$.
+        \begin{itemize}
+        \item $\nfa{F}(s) \secuder \atmR{\emp} \oc \nfa{s} \miso \nfa{F}(q)$.
+          Then $\nfa{F}(s) \miso\secudeR \nfa{F}(q)$.
+        \item $\nfa{F}(s) \Reduces\miso \nfa{F}(q)$.
+          
+        \end{itemize}
+      \end{itemize}
+      
+    \end{itemize}
+
+  \item 
+    \begin{itemize}
+    \item Assume that, up to bisimilarity, $q'$ is an $a$-successor of $q$ -- that is, that $q \misa s \nfareduces[a] s'_a \asim q'$ for some states $s$ and $s'_a$.
+      By definition of the encoding, $\atmR{a} \oc \nfa{s} \reduces \nfa{s}'_a$.
+      Because bisimilar states have bisimilar encodings (part~\ref{??}), $\nfa{q} \miso \nfa{s}$ and $\nfa{s}'_a \osim \nfa{q}'$.
+      Moreover, because rewriting bisimilarity is an atomic congruence (\cref{??}), $\atmR{a} \oc \nffa{q} \miso \atmR{a} \oc \nfa{s}$.
+      and putting everything together, we have $\atmR{a} \oc \nfa{q} \miso\reduces\osim \nfa{s}'_a$.
+
+    \item Assume that, up to bisimilarity, $\atmR{a} \oc \nfa{q}$ rewrites to $\nfa{q}'$ -- that is, assume that $\atmR{a} \oc \nfa{q} \miso\reduces\osim \nfa{q}'$.
+      An appeal to the reduction bisimilarity property yields $\atmR{a} \oc \nfa{q} \Reduces\miso\osim \nfa{q}'$.
+      Because bisimilarity is a symmetric relation, it follows from \cref{lem:??} that there exists a state $q'_a$ that $a$-succeeds $q$ and has an encoding that is bisimilar to that of $q'$.
+      Moreover, because states with bisimilar encodings are themselves bisimilar (part~\ref{??}) and because bisimilarity is reflexive, $q \misa\nfareduces[a]\asim q'$.
+    \end{itemize}
+
+  \item
+  \item 
+    \begin{itemize}
+    \item We must show that $q \misa\asim q'$ if, and only if, $\nfa{q} \miso\Reduces\osim \nfa{q}'$.
+    \item We must show that $q \misa\nfareduces[a]\nfareduces[w]\asim q'$ if, and only if, $\atmR{w} \oc \atmR{a} \oc \nfa{q} \miso\Reduces\osim \nfa{q}'$.
+      
+    \end{itemize}
+  \end{enumerate}
+
+  Let $\simu{R}$ be the binary relation on ordered contexts such that $\octx$ and $\lctx$ are $\simu{R}$-related if they are equal to the encodings of a pair of bisimilar states -- that is, $\mathord{\simu{R}} = \set{(\octx, \lctx) \given \exists q,s \in Q.\, (\octx = \nfa{q}) \land (q \asim s) \land (\nfa{s} = \lctx)}$.
+  \begin{itemize}
+  \item Let $q$ and $s$ be bisimilar states, and assume that $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\nfa{q}}{\lctx'}$.
+    By inversion, there are two cases; in either case, the context $\atmL{\lctx}_R$ must be empty.
+    \begin{itemize}
+    \item Consider the case in which the context $\atmR{\lctx}_L$ is a single atom $\atmR{\emp}$ and $\lctx' = \nfa{F}(q)$.
+      By the encoding's construction, $\ireduces{\atmR{\emp} \oc #1}{\nfa{s}}{\nfa{F}(s)}$.
+      And, because states $q$ and $s$ are bisimilar, the two are both final or both nonfinal states.
+      $\nfa{F}(s)$
+    \item  or $\atmR{a}$ for some input symbol $a$.
+    \end{itemize}
+  \end{itemize}
+  
+
+  Let $\simu{R}$ be the binary relation on states such that $q$ and $s$ are $\simu{R}$-related if their encodings are ordered bisimilar -- that is, $\mathord{\simu{R}} = \set{(q, s) \given \nfa{q} \osim \nfa{s}}$.
+  \begin{itemize}
+  \item Assume that $s \simu{R}^{-1} q \nfareduces[a] q'_a$.
+    Because $q'_a$ is an $a$-successor of $q$, there exists a trace $\atmR{a} \oc \nfa{q} \Reduces \nfa{q}'_a$.
+    Because $q$ and $s$ have bisimilar encodings, it then follows from the input bisimilarity property that $\atmR{a} \oc \nfa{s} \Reduces\miso \nfa{q}'_a$.
+    By inversion, there are two cases
+    \begin{itemize}
+    \item $\nfa{s}'_a \secuder \atmR{a} \oc \nfa{s} \miso \nfa{q}'_a$, so $\nfa{q}'_a \Reduces\osim \nfa{s}'_a$
+    \item $\atmR{a} \oc \nfa{s} \reduces \nfa{s}'_a \miso \nfa{q}'_a$
+    \end{itemize}
+    By inversion of this trace, there must exist a state $s'_a$ that is an $a$-successor of $s$ and has an encoding that is bisimilar to the encoding of $q'_a$ -- in other words, $s \nfareduces[a] s'_a \simu{R}^{-1} q'_a$.
+
+  \item Assume that $s \simu{R}^{-1} q \in F$.
+    With $q$ being a final state, there exists a trace $\atmR{\emp} \oc \nfa{q} \Reduces \octxe$.
+    Because $q$ and $s$ have bisimilar encodings, $\atmR{\emp} \oc \nfa{s} \Reduces\miso \octxe$.
+    By inversion of this trace, $\nfa{F}(s)$ is bisimilar to the empty context.
+    That is impossible if $s \notin F$, so $s$ must be a final state, like $q$.
+  \end{itemize}
+
   To establish the completness of our \ac{NFA} encoding with respect to bisimularity, it then suffices to show that ordered bisimularity contains the relation $\simu{R}$.
   Appealing to the preceding proof technique for ordered bisimilarity\parencref{thm:ord-bisim-technique}, we need only establish that $\simu{R}$ has immediate output bisimulation, immediate input bisimulation, reduction bisimulation, and emptiness bisimulation properties.
 

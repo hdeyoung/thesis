@@ -79,6 +79,23 @@
 \cs_new:Npn \__logic_reduces: { \longrightarrow }
 \NewDocumentCommand \secuder { } { \__logic_secuder: }
 \cs_new:Npn \__logic_secuder: { \longleftarrow }
+\cs_new:Npn \__logic_secuder:n #1 { \overset {#1} { \__logic_secuder: } }
+
+\NewDocumentCommand \nreduces { o }
+ {
+   \longarrownot
+   \IfValueTF {#1}
+     { \__logic_reduces:n {#1} }
+     { \__logic_reduces: }
+ }
+
+\NewDocumentCommand \nsecuder { o }
+ {
+   \longarrownot
+   \IfValueTF {#1}
+     { \__logic_secuder:n {#1} }
+     { \__logic_secuder: }
+ }
 
 \NewDocumentCommand \Reduces { o }
  {
@@ -234,20 +251,10 @@
 \NewDocumentCommand \fuse { } { \__logic_fuse: }
 \cs_new:Npn \__logic_fuse: { \mathbin { \bullet } }
 
-
-\DeclareRobustCommand\bigop[2][1]{%
-  \mathop{\vphantom{\sum}\mathpalette\bigop@{{#1}{#2}}}\slimits@
-}
-\newcommand{\bigop@}[2]{\bigop@@#1#2}
-\newcommand{\bigop@@}[3]{%
-  \vcenter{%
-    \sbox\z@{$#1\sum$}%
-    \hbox{\resizebox{#2\dimexpr\ht\z@+\dp\z@}{!}{$\m@th#3$}}%
-  }%
-}
+\RequirePackage { relsize }
 
 \NewDocumentCommand \bigfuse { } { \__logic_bigfuse: }
-\cs_new:Npn \__logic_bigfuse: { \DOTSB \bigop [0.8] { \bullet } }
+\cs_new:Npn \__logic_bigfuse: { \mathord{\mbox{\Large $\fuse$}} }
 
 
 
