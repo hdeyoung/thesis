@@ -276,7 +276,14 @@
     refname = { theorem , theorems } ,
     Refname = { Theorem , Theorems } ,
     style = smallcaps-plain ]
-  { theorem }
+    { theorem }
+    
+\declaretheorem
+  [ sibling = theorem ,
+    % refname = { theorem , theorems } ,
+    % Refname = { Theorem , Theorems } ,
+    style = smallcaps-plain ]
+  { specification }
 
 \declaretheorem
   [ sibling = theorem ,
@@ -349,7 +356,7 @@
 \RequirePackage { enumitem }
 
 \newlist { thmdescription } { description } { 1 }
-\setlist [ thmdescription ] { nosep , leftmargin=1.25em ,  , font=\emph }
+\setlist [ thmdescription ] { nosep , leftmargin=1.25em , font=\normalfont\emph }
 
 
 %%%%%%%%%%%%%%%%%%%%%%

@@ -1,11 +1,57 @@
 \chapter{Introduction}\label{ch:introduction}
 
-\begin{figure}
-  \centering
-  xyz
-  \caption{Roadmap}
-  \label{fig:roadmap}
-\end{figure}
+\begin{itemize}
+\item Computation as deduction: clear, expressive, and provably correct programs
+  \begin{itemize}
+  \item Examples of sucess stories
+  \item Can it be applied to concurrency?
+  \end{itemize}
+\item Proof constuction and proof reduction views of con currency
+  \begin{itemize}
+  \item Proof construction: good for specifications 
+  \item Proof reduction: good for implementions 
+  \end{itemize}
+\item Thesis statement: Session types bridge these two views
+\item Ordered logic as a proving ground 
+  \begin{itemize}
+  \item Ordered rewriting for proof construction
+  \item Singleton logic (purely additive fragment of ordered logic) for proof reduction
+  \end{itemize}
+\item Ordered rewriting (chapter 4) for specifications
+  \begin{itemize}
+  \item DFAs and NFAs 
+  \item Binary counters
+  \end{itemize}
+\item Refinement of ordered rewriting for choreographies (chapter 5)
+  \begin{itemize}
+  \item Recursive definitions as processes; atoms as messages 
+  \item Untyped (mostly, except for directions)
+  \item Rewriting bisimilarity for observational equivalence
+    \begin{itemize}
+    \item Examples
+    \end{itemize}
+  \end{itemize}
+\item Singleton logic and its semi-axiomatic calculus (chapter 6)
+\item 
+\end{itemize}
+
+
+Concurrent systems are notoriously difficult to get right.
+
+Beginning with Curry's observation that Hilbert [...] corresponds to a form of computation based on combinatory reduction\autocite{??}, and continuing with Howard's discovery of an isomorphism between [Gentzen's] intuitionistic natural deduction and Church's simply-typed $\lambda$-calculus, computation-as-deduction has been the gold standard for clear, expressive, and provably correct programs.
+
+Computation-as-deduction can be divided into two classes: proof-search-as-computation and proof-reduction-as-computation.
+The former provides a logically grounded basis for the backward- and forward-chaining logic programming paradigms, whereas the latter is the foundation for the functional programming paradigm.
+
+Logically grounded concurrent computation 
+
+More recently, a proof-reduction description of concurrency has been discovered by \textcite{??} with \textcite{??}.
+In this isomorphism, linear propositions correspond to session types; sequent proofs, to session-typed processes; and cut reduction, to synchronous message-passing communication.
+
+This thesis seeks to bring these two apparently divergent views of concurrency together.
+Is there a class of specifications for which well-typed implementations can automatically be extracted?
+
+Thesis statement: Session types form the bridge. 
 
 %%% Local Variables:
 %%% mode: latex

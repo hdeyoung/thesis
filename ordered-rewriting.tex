@@ -736,19 +736,17 @@ In Milner's development of the $\pi$-calculus, there are two avenues to unbounde
 
 \subsection{Encoding \aclp*{DFA}}
 
-For an extended example of ordered rewriting, we will specify how \iac{DFA} processes its input.
+As an extended example, we will use ordered rewriting to specify how \iac{DFA} processes its input.
 %
 % \Acp{DFA} serve as an example of ordered rewriting,  can be used to specify how \iac{DFA} processes its input.
 %
-Given \iac{DFA} $\aut{A} = (Q, ?, F)$ over an input alphabet $\ialph$, the idea is to encode each state, $q \in Q$, as an ordered proposition, $\dfa{q}$, in such a way that the \ac{DFA}'s operational semantics are adequately captured by ordered rewriting.
+Given \iac{DFA} $\aut{A} = (Q, ?, F)$ over an input alphabet $\ialph$, the idea is to encode each state, $q \in Q$, as an ordered proposition, $\dfa{q}$, in such a way that the \ac{DFA}'s operational semantics are adequately captured by [ordered] rewriting.
 %
 % The basic idea is to define an encoding, $\dfa{q}$, of \ac{DFA} states as ordered propositions;
 % this encoding should adequately reflect the \ac{DFA}'s operational semantics with ordered rewriting traces.
 \fixnote{[In general, the behavior of \iac{DFA} state is recursive, so the proposition $\dfa{q}$ will be recursively defined.]}
 %
-\fixnote{Also, input symbols $a$ will be encoded by corresponding propositional atoms $a$, and the atom $\emp$ will be used as an end-of-input marker.}
 % finite input words, $w \in \finwds{\ialph}$, are encoded as ordered contexts by $\emp \oc \rev{w}$
-\fixnote{[Input words $w \in \finwds{\ialph}$ may be represented as ordered contexts using an anti\-homo\-morph\-ism, $...$, that maps symbols by corresponding atoms (see adjacent \lcnamecref{??}).]}
 
 % \NewDocumentCommand \rev { s m } {
 %   \IfBooleanTF {#1}
@@ -762,9 +760,11 @@ Given \iac{DFA} $\aut{A} = (Q, ?, F)$ over an input alphabet $\ialph$, the idea 
 %   \rev{\emp} &= \octxe
 % \end{align*}
 
-Ideally, \ac{DFA} transitions $q \dfareduces[a] q'_a$ would be in bijective correspondence with rewriting steps $a \oc \dfa{q} \reduces \dfa{q}'_a$, where each input symbol $a$ is encoded by a matching [propositional] atom.\fixnote{, and accepting states $q \in F$ should be those having rewriting steps $\emp \oc \dfa{q} \reduces \octxe$}
+Ideally, \ac{DFA} transitions $q \dfareduces[a] q'_a$ would be in bijective correspondence with rewriting steps $a \oc \dfa{q} \reduces \dfa{q}'_a$, where each input symbol $a$ is encoded by a matching [propositional] atom.
 %
-For now, however, we will content ourselves with a correspondence with traces rather than individual steps\footnote{We will return to the possibility of a tighter correspondence in \cref{??}.} and adopt the following desiderata:
+We will return to the possibility of this kind of tight correspondence in \cref{??}, but,
+%
+for now, we will content ourselves with a correspondence with traces rather than individual steps, adopting the following desiderata:
 % Unfortunately, ordered rewriting's small step size turns out to be a poor match for [...], so in both cases we will instead content ourselves with corrspondances with \emph{traces}:
 % a bijection between transitions $q \dfareduces[a] q'_a$ and \emph{traces} $a \oc \dfa{q} \Reduces \dfa{q}'_a$.
 % Similarly, [...] a bijection between accepting states $q \in F$ and traces $\emp \oc \dfa{q} \Reduces \octxe$.
@@ -774,8 +774,7 @@ For now, however, we will content ourselves with a correspondence with traces ra
 \item
   $q \dfareduces[a] q'_a$ if, and only if, $a \oc \dfa{q} \Reduces \dfa{q}'_a$, for all input symbols $a \in \ialph$.
 \item
-  $q \in F$ if, and only if, $\emp \oc \dfa{q} \Reduces \octxe$, where the atom $\emp$ functions as an end-of-input marker.
-  \fixnote{[Also, $q \notin F$ if, and only if, $\emp \oc \dfa{q} \Reduces \top$.]}
+  $q \in F$ if, and only if, $\emp \oc \dfa{q} \Reduces \one$, where the atom $\emp$ functions as an end-of-word marker.
 % \item
 %   $q \dfareduces[w] q'_w \in F$ if, and only if, $\emp \oc \rev{w} \oc \dfa{q} \Reduces \octxe$.
 %   Also, $q \dfareduces[w] q'_w \notin F$ if, and only if, $\emp \oc \rev{w} \oc \dfa{q} \Reduces \top$.
@@ -783,19 +782,22 @@ For now, however, we will content ourselves with a correspondence with traces ra
 Given the reversal (anti-)\-homo\-morph\-ism from finite words to ordered contexts defined in the adjacent \lcnamecref{fig:ordered-rewriting:reversal}%
 \begin{marginfigure}
   \begin{align*}
-    \rev{w_1 \wc w_2} &= \rev{w_2} \oc \rev{w_1} \\
+    \rev*{w_1 \wc w_2} &= \rev{w_2} \oc \rev{w_1} \\
     \rev{\emp} &= \octxe \\
     \rev{a} &= a
   \end{align*}
   \caption{An (anti-)\-homo\-morph\-ism for reversal of finite words to ordered contexts}\label{fig:ordered-rewriting:reversal}
 \end{marginfigure}%
-, the first desideratum implies a third:
+, the first desideratum is subsumed by a third:
 % property that covers finite words:
 \begin{itemize}[resume*]
 \item $q \dfareduces[w] q'$ if, and only if, $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$, for all finite words $w \in \finwds{\ialph}$.
 \end{itemize}
 
-From these desiderata and the observation that \acp{DFA}' graphs frequently contain cycles, we arrive at the following encoding, in which each state is encoded by one of a collection of mutually recursive definitions:
+From these desiderata [and the observation that \acp{DFA}' graphs frequently%
+\fixnote{Actually, there is always at least one cycle in a well-formed \ac{DFA}.}
+contain cycles], we arrive at the following encoding, in which each state is encoded by one of a collection of mutually recursive definitions:%
+\fixnote{$q'_a$, using function or relation?}
 \begin{gather*}
   \dfa{q} \defd
     \parens[size=big]{
@@ -815,14 +817,15 @@ From these desiderata and the observation that \acp{DFA}' graphs frequently cont
 \shortintertext{where}
   %
   q \dfareduces[a] q'_a
-  \text{ for all $a \in \ialph$\quad and\quad}
+  \text{, for all input symbols $a \in \ialph$,\quad and\quad}
   \dfa{F}(q) = 
     \begin{cases*}
       \one & if $q \in F$ \\
-      \top & if $q \notin F$\,.
+      \top & if $q \notin F$%
+    \,.
     \end{cases*}
 \end{gather*}
-Just as each state $q$ has exactly one successor for each input symbol $a$, the encoding $\dfa{q}$ has exactly one input clause, $(a \limp \dotsb)$, for each symbol $a$.
+Just as each state $q$ has exactly one successor for each input symbol $a$, its encoding, $\dfa{q}$, has exactly one input clause, $(a \limp \dotsb)$, for each symbol $a$.
 
 
 
@@ -833,7 +836,8 @@ Just as each state $q$ has exactly one successor for each input symbol $a$, the 
 % Thus, we arrive at the encoding
 
 
-For a concrete instance of this encoding, recall from \cref{ch:automata} the \ac{DFA} that accepts exactly those words, over the alphabet $\ialph = \set{a,b}$, that end with $b$ (repeated in the adjacent \lcnamecref{fig:ordered-rewriting:dfa-example-ends-b})%
+\newthought{For a concrete instance} of this encoding, recall from \cref{ch:automata} the \ac{DFA} (repeated in the adjacent \lcnamecref{fig:ordered-rewriting:dfa-example-ends-b})%
+%
 \begin{marginfigure}
   \begin{equation*}
     \mathllap{\aut{A}_2 = {}}
@@ -852,8 +856,9 @@ For a concrete instance of this encoding, recall from \cref{ch:automata} the \ac
     \end{tikzpicture}
   \end{equation*}
   \caption{\Iac*{DFA} that accepts, from state $q_0$, exactly those words that end with $b$. (Repeated from \cref{fig:dfa-example-ends-b}.)}\label{fig:ordered-rewriting:dfa-example-ends-b}
-\end{marginfigure}%
-; that \ac{DFA} is encoded by the following definitions:
+\end{marginfigure}
+%
+that accepts exactly those words, over the alphabet $\ialph = \set{a,b}$, that end with $b$; that \ac{DFA} is encoded by the following definitions:
 \begin{equation*}
   \begin{lgathered}
     \dfa{q}_0 \defd (a \limp \dfa{q}_0) \with (b \limp \dfa{q}_1) \with (\emp \limp \top) \\
@@ -868,25 +873,23 @@ Indeed, just as the \ac{DFA} has a transition $q_0 \dfareduces[b] q_1$, its enco
      \reduces \dfa{q}_1
   \,.
 \intertext{And, just as $q_1$ is an accepting state, its encoding also admits a trace}
-  &\emp \oc \dfa{q}_1 = \emp \oc \bigl((a \limp \dfa{q}_0) \with (b \limp \dfa{q}_1) \with (\emp \limp \one)\bigr) \Reduces \emp \oc (\emp \limp \one) \reduces \one \reduces \octxe
+  &\emp \oc \dfa{q}_1 = \emp \oc \bigl((a \limp \dfa{q}_0) \with (b \limp \dfa{q}_1) \with (\emp \limp \one)\bigr) \Reduces \emp \oc (\emp \limp \one) \reduces \one
   \,.
 \end{align*}
-More generally, this encoding is complete, in the sense that it simulates all \ac{DFA} transitions: $q \dfareduces[a] q'$ implies $a \oc \dfa{q} \Reduces \dfa{q}'$, for all states $q$ and $q'$ and input symbols $a$.
 
-\newthought{However, the converse}
-does not hold -- this encoding is unsound because there are rewritings that cannot be simulated by \iac{DFA} transition.
+\newthought{More generally}, this encoding is complete, in the sense that it simulates all \ac{DFA} transitions: $q \dfareduces[a] q'$ implies $a \oc \dfa{q} \Reduces \dfa{q}'$, for all states $q$ and $q'$ and input symbols $a$.
+
+However, the converse does not hold -- the encoding is unsound because there are rewritings that cannot be simulated by \iac{DFA} transition.
 % That is, $a \oc \dfa{q} \Reduces \dfa{q}'$ does \emph{not} imply $q \dfareduces[a] q'$.
 % 
 \begin{falseclaim}
   Let $\aut{A} = (Q, \mathord{\dfareduces}, F)$ be \iac{DFA} over the input alphabet $\ialph$.
-  Then $a \oc \dfa{q} \Reduces \dfa{q}'$ implies $q \dfareduces[a] q'$, for all $a \in \ialph$.
+  Then $a \oc \dfa{q} \Reduces \dfa{q}'$ implies $q \dfareduces[a] q'$, for all input symbols $a \in \ialph$.
 \end{falseclaim}
 %
-\begin{proof}[Counterexample]
-  Consider the \ac{DFA} and encoding shown in the adjacent \lcnamecref{fig:ordered-rewriting:dfa-counterexample}; it is the same \ac{DFA} as shown in \cref{fig:ordered-rewriting:dfa-example-ends-b}, but with one added state, namely $s_1$.
-  \begin{marginfigure}
+\begin{marginfigure}
     \centering
-    \subfloat[][]{\label{fig:ordered-rewriting:dfa-counterexample:dfa}%
+    % \subfloat[][]{\label{fig:ordered-rewriting:dfa-counterexample:dfa}%
       \begin{equation*}
         \aut{A}'_2 = 
       \begin{tikzpicture}[baseline=(q_0.base)]
@@ -911,17 +914,19 @@ does not hold -- this encoding is unsound because there are rewritings that cann
         };
       \end{tikzpicture}
     \end{equation*}
-    }
-    \subfloat[][]{\label{fig:ordered-rewriting:dfa-counterexample:encoding}%
+    % }
+    % \subfloat[][]{\label{fig:ordered-rewriting:dfa-counterexample:encoding}%
       $\!\begin{aligned}
         \dfa{q}_0 &\defd (a \limp \dfa{q}_0) \with (b \limp \dfa{q}_1) \with (\emp \limp \top) \\
         \dfa{q}_1 &\defd (a \limp \dfa{q}_0) \with (b \limp \dfa{q}_1) \with (\emp \limp \one) \\
         \dfa{s}_1 &\defd (a \limp \dfa{q}_0) \with (b \limp \dfa{s}_1) \with (\emp \limp \one)
       \end{aligned}$%
-    }
-    \caption{\subref{fig:ordered-rewriting:dfa-counterexample:dfa}~A slightly modified version of the \ac*{DFA} from \cref{fig:ordered-rewriting:dfa-example-ends-b}; and \subref{fig:ordered-rewriting:dfa-counterexample:encoding}~its encoding}\label{fig:ordered-rewriting:dfa-counterexample}
+    % }
+    \caption{{fig:ordered-rewriting:dfa-counterexample:dfa}~A slightly modified version of the \ac*{DFA} from \cref{fig:ordered-rewriting:dfa-example-ends-b}; and {fig:ordered-rewriting:dfa-counterexample:encoding}~its encoding}\label{fig:ordered-rewriting:dfa-counterexample}
   \end{marginfigure}%
-  %
+\begin{proof}[Counterexample]
+  Consider the \ac{DFA} and encoding shown in the adjacent \lcnamecref{fig:ordered-rewriting:dfa-counterexample}; it is the same \ac{DFA} as shown in \cref{fig:ordered-rewriting:dfa-example-ends-b}, but with one added state, $s_1$, that is unreachable from $q_0$ and $q_1$.
+    %
   % When encoded as an ordered rewriting specification, it corresponds to the following definitions:
   % \begin{equation*}
   %   \begin{lgathered}
@@ -932,293 +937,307 @@ does not hold -- this encoding is unsound because there are rewritings that cann
   % \end{equation*}
   Notice that, as a coinductive consequence of the equirecursive treatment of definitions, $\dfa{q}_1 = \dfa{s}_1$.
   Previously, we saw that $b \oc \dfa{q}_0 \Reduces \dfa{q}_1$; hence $b \oc \dfa{q}_0 \Reduces \dfa{s}_1$.
-  However, the \ac{DFA} has no $q_0 \dfareduces[b] s_1$ transition (because $q_1 \neq s_1$), and so this encoding is not adequate with respect to the operational semantics of \acp{DFA}.
+  However, the \ac{DFA} has no $q_0 \dfareduces[b] s_1$ transition (because $q_1 \neq s_1$), and so this encoding is unsound with respect to the operational semantics of \acp{DFA}.
 \end{proof}
 
 As this counterexample shows, the lack of adequacy stems from attempting to use an encoding that is not injective -- here, $q_1 \neq s_1$ even though $\dfa{q}_1 = \dfa{s}_1$.
+In other words, eqality of state encodings is a coarser eqvivalence than equality of the states themselves.
 
-One possible remedy
-% for this apparent lack of adequacy
-might be to revise the encoding to have a stronger nominal character % .
-by tagging each state's encoding with an atom (or atoms) that are unique to that state.
-For instance, given [pairwise distinct] atoms $\set{q}_{q \in F}$ and $\set{\bar{q}}_{q \notin F}$ to tag final and non-final states, respectively, we could define an alternative encoding, $\check{q}$, that is trivially injective.
+One possible remedy for this lack of adequacy might be to revise the encoding to have a stronger nominal character.
+By tagging each state's encoding with an atom that is unique to that state, we can make the encoding manifestly injective.
+For instance, given the pairwise distinct atoms $\Set{q \given q \in F}$ and $\Set{\bar{q} \given q \in Q - F}$ to tag final and non-final states, respectively, we could define an alternative encoding, $\check{q}$:
 %
-% \begin{marginfigure}
 \begin{gather*}
   \check{q} \defd
-    \parens[size=auto]{\displaystyle
-      \bigwith_{a \in \ialph}
-        \parens{a \limp \check{q}'_a}
-    }
+    \parens[size=big]{
+      \bigwith_{a \in \ialph}(a \limp \check{q}'_a)}
     \with
     \parens[size=big]{\emp \limp \check{F}(q)}
   %
   \shortintertext{where}
   %
-  q \dfareduces[a] q'_a \text{ for all $a \in \ialph$\quad and\quad}
-  \check{F}(q) = \begin{cases*}
-                   q & if $q \in F$ \\
-                   \bar{q} & if $q \notin F$%
-                     \,.
-                 \end{cases*}
+  q \dfareduces[a] q'_a
+  \text{, for all input symbols $a \in \ialph$,\quad and\quad}
+  \check{F}(q) =
+    \begin{cases*}
+      q & if $q \in F$ \\
+      \bar{q} & if $q \notin F$%
+    \,.
+    \end{cases*}
 \end{gather*}
-% \end{marginfigure}%
-% , the encoding can be made to be injective.
-% With this change, the alternative encoding is now injective: $\check{q} = \check{s}$ implies $q = s$.
+%
+Under this alternative encoding, the states $q_1$ and $s_1$ of \cref{fig:ordered-rewriting:dfa-counterexample} are no longer a counterexample to injectivity:
+Because $q_1$ and $s_1$ are distinct states, they correspond to distinct tags, and so $\check{q}_1 \neq \check{s}_1$.
 
-Although such a solution is possible, it seems rather ad hoc.
-A closer examination of the preceding counterexample reveals that the states $q_1$ and $s_1$, while not equal, are in fact bisimilar.
+% One possible remedy
+% % for this apparent lack of adequacy
+% might be to revise the encoding to have a stronger nominal character % .
+% by tagging each state's encoding with an atom that is unique to that state.
+% For instance, given the pairwise distinct atoms $\set{q \given q \in F}$ and $\set{\bar{q} \given q \in Q - F}$ to tag final and non-final states, respectively, we could define an alternative encoding, $\check{q}$, that is manifestly injective:
+% %
+% % \begin{marginfigure}
+% \begin{gather*}
+%   \check{q} \defd
+%     \parens[size=big]{
+%       \bigwith_{a \in \ialph}(a \limp \check{q}'_a)}
+%     \with
+%     \parens[size=big]{\emp \limp \check{F}(q)}
+%   %
+%   \shortintertext{where}
+%   %
+%   q \dfareduces[a] q'_a
+%   \text{, for all input symbols $a \in \ialph$,\quad and\quad}
+%   \check{F}(q) =
+%     \begin{cases*}
+%       q & if $q \in F$ \\
+%       \bar{q} & if $q \notin F$%
+%     \,.
+%     \end{cases*}
+% \end{gather*}
+% % \end{marginfigure}%
+% % , the encoding can be made to be injective.
+% % With this change, the alternative encoding is now injective: $\check{q} = \check{s}$ implies $q = s$.
+
+Although such a solution is certainly possible, it seems unsatisfyingly ad~hoc.
+A closer examination of the preceding counterexample reveals that the states $q_1$ and $s_1$, while not equal, are in fact bisimilar~\parencref{??}.
 In other words, although the encoding is not, strictly speaking, injective, it is injective \emph{up to bisimilarity}: $\dfa{q} = \dfa{s}$ implies $q \asim s$.
 This suggests a more elegant solution to the apparent lack of adequacy: the encoding's adequacy should be judged up to \ac{DFA} bisimilarity.
 %
-\begin{theorem}[\ac*{DFA} adequacy up to bisimilarity]\label{thm:ordered-rewriting:dfa-adequacy-bisim}
-  Let $\aut{A} = (Q, \mathord{\dfareduces}, F)$ be \iac{DFA} over the input alphabet $\ialph$.
+\newcommand{\dfaadequacybisimbody}{%
+  Let $\aut{A} = (Q, ?, F)$ be \iac{DFA} over the input alphabet $\ialph$.
   Then, for all states $q$, $q'$, and $s$:
   \begin{enumerate}
   \item\label{enum:ordered-rewriting:dfa-adequacy:1}
     $q \asim s$ if, and only if, $\dfa{q} = \dfa{s}$.
   \item\label{enum:ordered-rewriting:dfa-adequacy:2}
     $q \asim\dfareduces[a]\asim q'$ if, and only if, $a \oc \dfa{q} \Reduces \dfa{q}'$, for all input symbols $a \in \ialph$.    
+    More generally, $q \asim\dfareduces[w]\asim q'$ if, and only if, $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$, for all finite words $w \in \finwds{\ialph}$.
   \item\label{enum:ordered-rewriting:dfa-adequacy:3}
     $q \in F$ if, and only if, $\emp \oc \dfa{q} \Reduces \one$.
-    % \fixnote{Also, $q \notin F$ if, and only if, $\emp \oc \dfa{q} \Reduces \top$.}
-  \item\label{enum:ordered-rewriting:dfa-adequacy:4}
-    $q \asim\dfareduces[w]\asim q'$ if, and only if, $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$, for all finite words $w \in \finwds{\ialph}$.
-  \end{enumerate}
-\end{theorem}
+  \end{enumerate}%
+}%
+%  
+\begin{restatable*}[
+  name=\ac*{DFA} adequacy up to bisimilarity,
+  label=thm:ordered-rewriting:dfa-adequacy-bisim
+]{theorem}{dfaadequacybisim}
+  \dfaadequacybisimbody
+% Let $\aut{A} = (Q, \mathord{\dfareduces}, F)$ be \iac{DFA} over the input alphabet $\ialph$.
+%   Then, for all states $q$, $q'$, and $s$:
+%   \begin{enumerate}
+%   \item\label{enum:ordered-rewriting:dfa-adequacy:1}
+%     $q \asim s$ if, and only if, $\dfa{q} = \dfa{s}$.
+%   \item\label{enum:ordered-rewriting:dfa-adequacy:2}
+%     $q \asim\dfareduces[a]\asim q'$ if, and only if, $a \oc \dfa{q} \Reduces \dfa{q}'$, for all input symbols $a \in \ialph$.    
+%     More generally, $q \asim\dfareduces[w]\asim q'$ if, and only if, $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$, for all finite words $w \in \finwds{\ialph}$.
+%   \item\label{enum:ordered-rewriting:dfa-adequacy:3}
+%     $q \in F$ if, and only if, $\emp \oc \dfa{q} \Reduces \one$.
+%   \end{enumerate}
+\end{restatable*}
+
+Before proving this \lcnamecref{thm:ordered-rewriting:dfa-adequacy-bisim}, we must first prove a \lcnamecref{lem:ordered-rewriting:dfa-traces}: the only traces from one state's encoding to another's are the trivial traces.
+%
+\begin{lemma}\label{lem:ordered-rewriting:dfa-traces}
+  Let $\aut{A} = (Q, ?, F)$ be \iac{DFA} over the input alphabet $\ialph$.
+  For all states $q$ and $s$, if $\dfa{q} \Reduces \dfa{s}$, then $\dfa{q} = \dfa{s}$.
+\end{lemma}
+%
+\begin{proof}
+  Assume that a trace $\dfa{q} \Reduces \dfa{s}$ exists.
+  If the trace is trivial, then $\dfa{q} = \dfa{s}$ is immediate.
+  Otherwise, the trace is nontrivial and consists of a strictly positive number of rewriting steps.
+  By inversion, those rewriting steps drop one or more conjuncts from $\dfa{q}$ to form $\dfa{s}$.
+  Every \ac{DFA} state's encoding contains exactly $\card{\ialph} + 1$ conjuncts -- one for each input symbol $a$ and one for the end-of-word marker, $\emp$.
+  % Being the encoding of \iac{DFA} state, $\dfa{q}$ contains one $(\emp \limp \dotsb)$ conjunct and exactly one $(a \limp \dotsb)$ conjunct for each input symbol $a$.
+  % Similarly, $\dfa{s}$ must contain the same.
+  If even one conjunct is dropped from $\dfa{q}$, not enough conjuncts will remain to form $\dfa{s}$.
+  Thus, a nontrivial trace $\dfa{q} \Reduces \dfa{s}$ cannot exist.
+\end{proof}
+%
+\noindent
+It is important to differentiate this \lcnamecref{lem:ordered-rewriting:dfa-traces} from the false claim that a state's encoding can take no rewriting steps.
+There certainly exist nontrivial traces from $\dfa{q}$, but they do not arrive at the encoding of any state.
+
+With this \lcnamecref{lem:ordered-rewriting:dfa-traces} now in hand, we can proceed to proving adequacy up to bisimilarity.
+%
+\dfaadequacybisim
 %
 \begin{proof}
   Each part is proved in turn.
-  The proofs of parts~\ref{enum:ordered-rewriting:dfa-adequacy:2} and~\ref{enum:ordered-rewriting:dfa-adequacy:4} depend on the proof of part~\ref{enum:ordered-rewriting:dfa-adequacy:1}.
-  \begin{enumerate}
-  \item To prove that bisimilarity coincides with equality of encodings, we prove each direction separately.
+  The proof of part~\ref{enum:ordered-rewriting:dfa-adequacy:2} % and~\ref{enum:ordered-rewriting:dfa-adequacy:4}
+  depends on the proof of part~\ref{enum:ordered-rewriting:dfa-adequacy:1}.
+  \begin{enumerate}[parsep=0em, listparindent=\parindent]
+  %% Part one
+  \item
+    We shall show that bisimilarity coincides with equality of encodings, proving each direction separately.
     \begin{itemize}[parsep=0em, listparindent=\parindent]
     \item
-      We shall prove, by coinduction, that bisimilar \ac{DFA} states have equal encodings -- \ie, that $q \asim s$ implies $\dfa{q} = \dfa{s}$.
+      To prove that bisimilar \ac{DFA} states have equal encodings -- \ie, that $q \asim s$ implies $\dfa{q} = \dfa{s}$ -- a fairly straightforward proof by coinduction suffices.
 
       Let $q$ and $s$ be bisimilar states.
-      By definition, two properties hold:
-      \begin{enumerate}[label=\emph{(\roman*)}]
-      \item\label{enum:ordered-rewriting:proof-bisim:1} For all input symbols $a$, the unique $a$-successors of $q$ and $s$ are also bisimilar.
-        % -- that is, $q'_a \asim s'_a$ for all $a \in \ialph$, where $q'_a = \dfanext(q, a)$ and $s'_a = \dfanext(s, a)$.
-      \item\label{enum:ordered-rewriting:proof-bisim:2} States $q$ and $s$ have matching finalities -- \ie, $q \in F$ if and only if $s \in F$.
-      \end{enumerate}
-      Applying the coinductive hypothesis to property \ref{enum:ordered-rewriting:proof-bisim:1}, we may deduce that, for all input symbols $a$, the $a$-successors of $q$ and $s$ have equal encodings.
-      From property \ref{enum:ordered-rewriting:proof-bisim:2}, it follows that $\dfa{F}(q) = \dfa{F}(s)$.
-      Putting these equalities together, we see that the unrollings of the encodings $\nfa{q}$ and $\nfa{s}$ are equal; because definitions are interpreted equirecursively, the encodings themselves are equal, as well.
+      By the definition of bisimilarity~\parencref{??}, two properties hold:
+      \begin{itemize}
+      \item For all input symbols $a$, the unique $a$-successors of $q$ and $s$ are also bisimilar.
+      \item States $q$ and $s$ have matching finalities -- \ie, $q \in F$ if and only if $s \in F$.
+      \end{itemize}
+      Applying the coinductive hypothesis to the former property, we may deduce that, for all symbols $a$, the $a$-successors of $q$ and $s$ also have equal encodings.
+      From the latter property, it follows that $\dfa{F}(q) = \dfa{F}(s)$.
+      Because definitions are interpreted equirecursively, these equalities together imply that $q$ and $s$ themselves have equal encodings.
 
-    \item We shall now prove the converse -- that states with equal encodings are bisimilar -- by showing that the relation $\mathord{\simu{R}} = \set{(q, s) \given \dfa{q} = \dfa{s}}$ is a bisimulation.
-      \begin{itemize}[label=\emph{(\roman*)}]
-      \item Assume that $\dfa{q} = \dfa{s}$ (\ie, $q$ and $s$ are $\simu{R}$-related).
-        Their unrollings must also be equal, and so the unique $a$-successors of $q$ and $s$ have equal encodings, for all input symbols $a$ -- that is, $\dfa{q}'_a = \dfa{s}'_a$ for all $a \in \ialph$, where $q'_a = \dfanext(q, a)$ and $s'_a = \dfanext(s, a)$.
-        By definition, therefore, $q'_a \simu{R} s'_a$.
+    \item
+      To prove the converse -- that states with equal encodings are bisimilar -- we will show that the relation $\mathord{\simu{R}} = \Set{(q, s) \given \dfa{q} = \dfa{s}}$, which relates states if they have equal encodings, is a bisimulation and is therefore included in bisimilarity.
+      \begin{itemize}
       \item
-        Assume that $q \simu{R} s$, that is, that $\dfa{q} = \dfa{s}$.
-        Once again, their unrollings must also be equal, and so $\dfa{F}(q) = \dfa{F}(s)$.
-        Thus, $q$ is a final state if, and only if, $s$ is.
+        The relation $\simu{R}$ is symmetric.
+      \item
+        We must show that $\simu{R}$-related states have $\simu{R}$-related $a$-successors, for all input symbols $a$.
+
+        Let $q$ and $s$ be $\simu{R}$-related states.
+        Being $\simu{R}$-related, $q$ and $s$ have equal encodings;
+        because definitions are interpreted equirecursively, the unrollings of those encodings are also equal.
+        By definition of the encoding, it follows that, for each input symbol $a$, the unique $a$-successors of $q$ and $s$ have equal encodings.
+        Therefore, for each $a$, the $a$-successors of $q$ and $s$ are themselves $\simu{R}$-related.
+
+      \item
+        We must show that $\simu{R}$-related states have matching finalities.
+
+        Let $q$ and $s$ be $\simu{R}$-related states, with $q$ a final state.
+        Being $\simu{R}$-related, $q$ and $s$ have equal encodings;
+        because definitions are interpreted equirecursively, the unrollings of those encodings are also equal.
+        It follows that $\dfa{F}(q) = \dfa{F}(s)$, and so $s$ is also a final state.
       \end{itemize}
     \end{itemize}
 
-  % \item 
-  %   \begin{enumerate}
-  %   \item We shall prove that, up to bisimilarity, \ac{DFA} transitions may be simulated by ordered rewriting -- \ie, that $q \misa\dfareduces[a]\asim q'$ implies $a \oc \dfa{q} \Reduces \dfa{q}'$.
-
-  %     Assume that $q \misa s \dfareduces[a] s'_a \asim q'$ for some states $s$ and $s'_a$.
-  %     Because $\aut{A}_2$ is \iac{DFA}, $s'_a$ is unique as the $a$-successor of $s$ % -- that is, $\dfanext_2(s, a) = s'_a$ -- 
-  %     and so, by construction, $a \oc \dfa{s} \Reduces \dfa{s}'_a$.
-  %     By the previous [...], the bisimilarity of $q$ and $s$ and the bisimilarity of $s'_a$ and $q'$ imply that $\dfa{q} = \dfa{s}$ and $\dfa{s}'_a = \dfa{q}'$.
-  %     Putting everything together, $a \oc \dfa{q} \Reduces \dfa{q}'$.
-
-  %   \item We shall prove that ordered rewriting may be simulated by \ac{DFA} transitions, up to bisimilarity -- \ie, that $a \oc \dfa{q} \Reduces \dfa{q}'$ implies $q \misa\dfareduces[a]\asim q'$.
-
-  % Assume that $a \oc \dfa{q} \Reduces \dfa{q}'$.
-  % By the input lemma, $\dfa{q} \Reduces (a \limp B) \oc \octx'_a$ for some proposition $B$ and context $\octx'_a$ such that $B \oc \octx'_a \Reduces \dfa{q}'$.
-  % By analyzing the valid rewriting steps from $\dfa{q}$, we may conclude that $\octx'_a = \octxe$ and that $B = \dfa{q}'_a$, where $q'_a$ is the unique $a$-successor of $q$.
-  % Thus, $\dfa{q}'_a \Reduces \dfa{q}'$.
-  % An analysis of this trace shows that it must be the trivial trace, with $\dfa{q}'_a = \dfa{q}'$.
-  %   \end{enumerate}
-
+  %% Part two
   \item
-    We would like to prove that $q \asim\dfareduces[a]\asim q'$ if, and only if, $a \oc \dfa{q} \Reduces \dfa{q}'$.
-    Because bisimilar states have equal encodings (part~\ref{??}) and bisimilarity is reflexive (\cref{??}), it suffices to show that
+    We would like to prove that $q \asim\dfareduces[a]\asim q'$ if, and only if, $a \oc \dfa{q} \Reduces \dfa{q}'$, or, more generally, that $q \asim\dfareduces[w]\asim q'$ if, and only if, $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$.
+    Because bisimilar states have equal encodings (part~\ref{enum:ordered-rewriting:dfa-adequacy:1}) and bisimilarity is reflexive (\cref{??}), it suffices to show two stronger statements:
     \begin{enumerate*}
-    \item $q \dfareduces[a] q'$ implies $a \oc \dfa{q} \Reduces \dfa{q}'$; and that
-    \item $a \oc \dfa{q} \Reduces \dfa{q}'$ implies $q \dfareduces[a]\asim q'$.
+    \item that $q \dfareduces[w] q'$ implies $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$; and
+    \item that $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$ implies $q \dfareduces[w]\asim q'$.
     \end{enumerate*}
+    %
+    We prove these in turn.
+    %
+    \begin{enumerate}
+    %% Subpart (a)
+    \item
+      We shall prove that $q \dfareduces[w] q'$ implies $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$ by induction over the structure of word $w$.
+      \begin{itemize}
+      \item
+        Consider the case of the empty word, $\emp$; we must show that $q = q'$ implies $\dfa{q} \Reduces \dfa{q}'$.
+        Because the encoding is a function, this is immediate.
+      \item
+        Consider the case of a nonempty word, $a \wc w$; we must show that $q \dfareduces[a]\dfareduces[w] q'$ implies $\rev{w} \oc a \oc \dfa{q} \Reduces \dfa{q}'$.
+        Let $q'_a$ be an $a$-successor of state $q$ that is itself $w$-succeeded by state $q'$.
+        There exists, by definition of the encoding, a trace
+        \begin{equation*}
+          \rev{w} \oc a \oc \dfa{q}
+            \Reduces \rev{w} \oc a \oc (a \limp \dfa{q}'_a)
+            \reduces \rev{w} \oc \dfa{q}'_a
+            \Reduces \dfa{q}'
+          \,,
+        \end{equation*}
+        with the trace's tail justified by an appeal to the inductive hypothesis.
+        % Because $q'$ is a $w$-successor of $q'_a$, an appeal to the inductive hypothesis yields a trace $\rev{w} \oc \dfa{q}'_a \Reduces \dfa{q}'$.
+      \end{itemize}
 
+      % Let $q'$ be an $a$-successor of state $q$.
+      % There exists, by definition of the encoding, a trace
+      % \begin{equation*}
+      %   a \oc \dfa{q} \Reduces a \oc (a \limp \dfa{q}') \reduces \dfa{q}'
+      % \,.
+      % \end{equation*}
+
+    %% Subpart (b)
+    \item
+      We shall prove that $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$ implies $q \dfareduces[w]\asim q'$ by induction over the structure of word $w$.
+      \begin{itemize}
+      \item
+        Consider the case of the empty word, $\emp$;
+        we must show that $\dfa{q} \Reduces \dfa{q}'$ implies $q \asim q'$.
+        By \cref{lem:ordered-rewriting:dfa-traces}, $\dfa{q} \Reduces \dfa{q}'$ implies that $q$ and $q'$ have equal encodings.
+        Part~\ref{enum:ordered-rewriting:dfa-adequacy:1} can then be used to establish that $q$ and $q'$ are bisimilar.
+      \item
+        Consider the case of a nonempty word, $a \wc w$;
+        we must show that $\rev{w} \oc a \oc \dfa{q} \Reduces \dfa{q}'$ implies $q \dfareduces[a]\dfareduces[w]\asim q'$.
+        By inversion\fixnote{Is this enough justification?}, the given trace can only begin by inputting $a$:
+        \begin{equation*}
+          \rev{w} \oc a \oc \dfa{q}
+            \Reduces \rev{w} \oc a \oc (a \limp \dfa{q}'_a)
+            \reduces \rev{w} \oc \dfa{q}'_a
+            \Reduces \dfa{q}'
+          \,,
+        \end{equation*}
+        where $q'_a$ is an $a$-successor of state $q$.
+        An appeal to the inductive hypothesis on the trace's tail yields $q'_a \dfareduces[w]\asim q'$, and so the \ac{DFA} admits $q \dfareduces[a]\dfareduces[w]\asim q'$, as required.
+      \end{itemize}
+      % Assume that a trace $a \oc \dfa{q} \Reduces \dfa{q}'$ exists.
+      % By the input lemma, $\dfa{q} \Reduces (a \limp A) \oc \octx'$ for some proposition $A$ and context $\octx'$ such that $A \oc \octx' \Reduces \dfa{q}'$.
+      % Upon inversion of the trace from $\dfa{q}$, we conclude that $A = \dfa{q}'_a$, where $q'_a$ is an $a$-successor of $q$, and that $\octx'$ is empty -- in other words, we have a trace $\dfa{q}'_a \Reduces \dfa{q}'$.
+      % Such a trace exists only if $\dfa{q}'_a = \dfa{q}'$.
+      % By part~\ref{enum:ordered-rewriting:dfa-adequacy:1} of this \lcnamecref{thm:ordered-rewriting:dfa-adequacy-bisim}, it follows that $q'_a$ and $q'$ are bisimilar.
+    \end{enumerate}
+
+  %% Part three
+  \item
+    We shall prove that the final states are exactly those states $q$ such that $\emp \oc \dfa{q} \Reduces \one$.
     \begin{itemize}
     \item
-      Let $q'$ be an $a$-successor of state $q$.
+      Let $q$ be a final state; accordingly, $\dfa{F}(q) = \one$.
       There exists, by definition of the encoding, a trace
       \begin{equation*}
-        a \oc \dfa{q} \Reduces a \oc (a \limp \dfa{q}') \reduces \dfa{q}'
+        \emp \oc \dfa{q} \Reduces \emp \oc (\emp \limp \dfa{F}(q)) \reduces \dfa{F}(q) = \one
       \,.
       \end{equation*}
 
     \item
-      Assume that a trace $a \oc \dfa{q} \Reduces \dfa{q}'$ exists.
-      By the input lemma, $\dfa{q} \Reduces (a \limp A) \oc \octx'$ for some proposition $A$ and context $\octx'$ such that $A \oc \octx' \Reduces \dfa{q}'$.
-      Upon inversion of the trace from $\dfa{q}$, we conclude that $A = \dfa{q}'_a$, where $q'_a$ is an $a$-successor of $q$, and that $\octx'$ is empty -- in other words, we have a trace $\dfa{q}'_a \Reduces \dfa{q}'$.
-      Such a trace exists only if $\dfa{q}'_a = \dfa{q}'$.
-      By part~\ref{??} of this \lcnamecref{??}, it follows that $q'_a$ and $q'$ are bisimilar.
-    \end{itemize}
-
-    \begin{itemize}
-    \item
-      Assume that $q \misa s \dfareduces[a] s'_a \asim q'$, for some states $s$ and $s'_a$.
-      Because $s'_a$ is an $a$-successor of $s$, there exists, by definition, a trace
+      Assume that a trace $\emp \oc \dfa{q} \Reduces \one$ exists.
+      By inversion\fixnote{Is this enough justification?}, this trace can only begin by inputting $\emp$:
       \begin{equation*}
-        a \oc \dfa{s} \Reduces a \oc (a \limp \dfa{s}'_a) \reduces \dfa{s}'_a
+        \emp \oc \dfa{q} \Reduces \emp \oc (\emp \limp \dfa{F}(q)) \reduces \dfa{F}(q) \Reduces \one
       \,.
       \end{equation*}
-      By part~\ref{??} of this \lcnamecref{??}, the assumed bisimilarities imply $\dfa{q} = \dfa{s}$ and $\dfa{s}'_a = \dfa{q}'$.
-      Putting these together with the above trace, we have a trace $a \oc \dfa{q} \Reduces \dfa{q}'$.
-
-    \item
-      Assume that a trace $a \oc \dfa{s} \Reduces \dfa{s}'$ exists.
-      By the input lemma, $\dfa{s} \Reduces (a \limp A) \oc \octx'$ for some proposition $A$ and context $\octx'$ such that $A \oc \octx' \Reduces \dfa{q}'$.
-      Upon inversion of the trace from $\dfa{s}$, we conclude that $A = \dfa{s}'_a$, where $s'_a = \dfanext_2(s,a)$, and that $\octx'$ is empty -- in other words, we have a trace $\dfa{s}'_a \Reduces \dfa{s}'$.
-      Such a trace exists only if $\dfa{s}'_a = \dfa{s}'$.
-      By part~\ref{??} of this \lcnamecref{??}, it follows that $q'_a$ and $q'$ are bisimilar.
+      The tail of this trace, $\dfa{F}(q) \Reduces \one$, can exist only if $q$ is a final state.
+    %
+    \qedhere
     \end{itemize}
 
-  \item
-    We shall prove that final states are exactly those states $q$ such that $\emp \oc \dfa{q} \Reduces \octxe$.
-    \begin{itemize}
-    \item
-      Assume that $q$ is a final state; accordingly, $\dfa{F}(q) = \one$.
-      By the encoding's definition,
-      \begin{equation*}
-        \emp \oc \dfa{q} \Reduces \emp \oc (\emp \limp \dfa{F}(q)) \reduces \dfa{F}(q) = \one \reduces \octxe
-      \,,
-      \end{equation*}
-      as required.
+  % %% Part four
+  % \item 
+  %   We would like to prove that $q \asim\dfareduces[w]\asim q'$ if, and only if, $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$.
+  %   Because bisimilar states have equal encodings (part~\ref{enum:ordered-rewriting:dfa-adequacy:1}) and bisimilarity is reflexive (\cref{??}), it suffices to show:
+  %   \begin{enumerate*}
+  %   \item that $q \dfareduces[w] q'$ implies $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$; and
+  %   \item that $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$ implies $q \dfareduces[w]\asim q'$.
+  %   \end{enumerate*}
 
-    \item
-      Assume that a trace $\emp \oc \dfa{q} \Reduces \octxe$ exists.
-      By the input lemma, $\dfa{q} \Reduces (\emp \limp A) \oc \octx'$ for some proposition $A$ and context $\octx'$ such that $A \oc \octx' \Reduces \octxe$.
-      Upon inversion of the trace from $\dfa{q}$, we conclude that $A = \dfa{F}(q)$ and that $\octx'$ is empty -- in other words, we have a trace $\dfa{F}(q) \Reduces \octxe$.
-      Such a trace exists only if $q$ is a final state.
-    \end{itemize}
-
-  \item 
-    We shall prove, by induction on the structure of word $w$, that $q \misa\dfareduces[w]\asim q'$ if, and only if, $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$.
-
-    We would like to prove that $q \asim\dfareduces[w]\asim q'$ if, and only if, $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$.
-    Because bisimilar states have equal encodings (part~\ref{??}) and bisimilarity is reflexive (\cref{??}), it suffices to show that
-    \begin{enumerate*}
-    \item $q \dfareduces[w] q'$ implies $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$; and that
-    \item $\rev{w} \oc \dfa{q} \Reduces \dfa{q}'$ implies $q \dfareduces[w]\asim q'$.
-    \end{enumerate*}
-
-    The former can be established by a straightforward induction on the structure of word $w$.
-    The latter can also be established by induction of the structure of word $w$:
-    \begin{itemize}
-    \item Consider the case in which $w$ is the empty word; we must show that $\dfa{q} \Reduces \dfa{q}'$ implies $q \asim q'$.
-
-    \item Consider the case of a nonempty word, $a \wc w$; we must show that $\rev{w} \oc a \oc \dfa{q} \Reduces \dfa{q}'$ implies $q \dfareduces[a]\dfareduces[w]\asim q'$.
-    \end{itemize}
-
-    \begin{itemize}
-    \item
-      Consider the case in which $w$ is the empty word; we must show that $q \misa\dfareduces[\emp]\asim q'$ if, and only if, $\rev{\emp} \oc \dfa{q} \Reduces \dfa{q}'$.
-      By the definitions of $\dfareduces[\emp]$ and $\rev{\emp}$ and because bisimilarity is symmetric, we may equivalently prove that $q \asim q'$ if, and only if, $\dfa{q} \Reduces \dfa{q}'$.
-      \begin{itemize}
-      \item Assume that $q \asim q'$.
-        By part~\ref{??} of this \lcnamecref{??}, $\dfa{q} = \dfa{q}'$.
-        There is therefore a trvial trace $\dfa{q} \Reduces \dfa{q}'$.
-
-      \item Assume that $\dfa{q} \Reduces \dfa{q}'$.
-        If the this trace is trivial, the desired result is immediate.
-        Otherwise, it contains at least one step, and, by inversion, those steps necessarily drop some of conjuncts present in $\dfa{q}$.
-        Dropping any of the conjuncts results in a proposition that is not a valid encoding of \iac{DFA} state, because a state's encoding must have exactly one $(a \limp \dotsb)$ clause for each input symbol $a$ and exactly one $(\emp \limp \dotsb)$ clause.
-        Therefore, a non-trivial trace from $\dfa{q}$ to $\dfa{q}'$ is impossible.
-      \end{itemize}
-
-    \item
-      Consider the case in which $w$ is a single symbol $a$; we must show that $q \misa\dfareduces[a]\asim q'$ if, and only if, $a \oc \dfa{q} \Reduces \dfa{q}'$.
-      This is exactly the content of part~\ref{??} of this \lcnamecref{??}.
-
-    \item
-      Consider the case of a nonempty word, $a \wc w$; we must show that $q \misa\dfareduces[a]\dfareduces[w]\asim q'$ if, and only if, $\rev{w} \oc a \oc \dfa{q} \Reduces \dfa{q}'$.
-      \begin{itemize}
-      \item Assume that $q \misa\dfareduces[a] q'_a \dfareduces[w]\asim q'$ for some state $q'_a$.
-        Because bisimilarity is reflexive, it follows from part~\ref{??} and the inductive hypothesis that $a \oc \dfa{q} \Reduces \dfa{q}'_a$ and $\rev{w} \oc \dfa{q}'_a \Reduces \dfa{q}'$.
-        Consequently, $\rev{w} \oc a \oc \dfa{q} \Reduces \rev{w} \oc \dfa{q}'_a \Reduces \dfa{q}'$.
-
-      \item Assume that $\rev{w} \oc a \oc \dfa{q} \Reduces \dfa{q}'$.
-        By inversion, $\rev{w} \oc a \oc \dfa{q} \Reduces \rev{w} \oc a \oc (a \limp \dfa{q}'_a) \reduces \rev{w} \oc \dfa{q}'_a \Reduces \dfa{q}'$, where $q'_a$ is the $a$-successor of $q$.
-        It follows from the inductive hypothesis that $q'_a \misa\dfareduces[w]\asim q'$.
-        By \cref{lem:??}, $q'_a \dfareduces[w]\misa\asim q'$.
-        Putting everything together and appealing to reflexivity and symmetry of bisimilarity, $q \misa\dfareduces[a]\dfareduces[w]\asim q'$.
-      \end{itemize}
-    \end{itemize}
-  \end{enumerate}
-  
-  % We first establish the relationship between bisimilarity and equality.
-  % Let $q \in Q_1$ and $s \in Q_2$ be arbitrary states of the \acp{DFA} $\aut{A}_1$ and $\aut{A}_2$;
-  % we will first prove, by coinduction, that $q \asim s$ implies $\dfa{q} = \dfa{s}$.
-
-  % Assume that states $q$ and $s$ are bisimilar.
-  % Then, for all input symbols $a \in \ialph$, the unique $a$-successors of $q$ and $s$ are also bisimilar -- that is, $q'_a \asim s'_a$ for all $a \in \ialph$, where $q'_a = \dfanext_1(q, a)$ and $s'_a = \dfanext_2(s, a)$.
-  % From the coinductive hypothesis, it follows that $\dfa{q}'_a = \dfa{s}'_a$ for all $a \in \ialph$.
-  % Because $q$ and $s$ are bisimilar, we also know that [...], and so $\dfa{F}(q) = \dfa{F}(s)$.
-  % From these equalities, we may conclude that the definientia of $\nfa{q}$ and $\nfa{s}$ are equal, and so, by the equirecursive treatment of definitions, $\nfa{q}$ and $\nfa{s}$ are as well.
-
-  % \begin{itemize}
-  %   \item Let $a \in \ialph$ be an arbitrary input symbol, and let $q'_a$ be the unique $a$-successor of $q$.
-  %     By the definition of \ac{DFA} bisimilarity, $q'_a \asim s'_a$, where $s'_a$ is the unique $a$-successor of $s$.
-  %     It follows from the coinductive hypothesis that $\nfa{q}'_a = \nfa{s}'_a$.
-  %   \item By the definition of \ac{DFA} bisimilarity, $q \in F$ if, and only if, $s \in F$.
-  %     Thus, $\nfa{F}(q) = \nfa{F}(s)$.
-  %   \end{itemize}
-  %   We may conclude that the definientia of $\nfa{q}$ and $\nfa{s}$ are equal, and so, by the equirecursive treatment of definitions, $\nfa{q}$ and $\nfa{s}$ are as well.
-
-
-
-  % Assume that $q \misa s \dfareduces[a] s'_a \asim q'$, for some states $s,s'_a \in Q_2$.
-  % Because $\aut{A}_2$ is \iac{DFA}, $s'_a$ is the unique $a$-successor of $s$ -- that is, $\dfanext_2(s, a) = s'_a$ -- and so, by construction, $a \oc \dfa{s} \Reduces \dfa{s}'_a$.
-  % By the previous [...], the assumed bisimilarities imply that both $\dfa{q} = \dfa{s}$ and $\dfa{s}'_a = \dfa{q}'$.
-  % Putting everything together, $a \oc \dfa{q} \Reduces \dfa{q}'$.
-
-
-  % Assume that $a \oc \dfa{q} \Reduces \dfa{q}'$.
-  % By the input lemma, $\dfa{q} \Reduces (a \limp B) \oc \octx'_a$ for some proposition $B$ and context $\octx'_a$ such that $B \oc \octx'_a \Reduces \dfa{q}'$.
-  % By analyzing the valid rewriting steps from $\dfa{q}$, we may conclude that $\octx'_a = \octxe$ and that $B = \dfa{q}'_a$, where $q'_a$ is the unique $a$-successor of $q$.
-  % Thus, $\dfa{q}'_a \Reduces \dfa{q}'$.
-  % An analysis of this trace shows that it must be the trivial trace, with $\dfa{q}'_a = \dfa{q}'$.
-  
-  % \begin{enumerate}
-  % \item Suppose that $q \asim s$; we must show that $\nfa{q} = \nfa{s}$.
-
-  %   Conversely, suppose that $\nfa{q} = \nfa{s}$; we must show that $q \asim s$.
+  %   Both statements can be established by induction over the structure of word $w$.
+  %   The latter proof is slightly more involved and deserves a bit of explanation.
   %   \begin{itemize}
-  %   \item Let $a \in \ialph$ be an arbitrary input symbol, and let $q'_a$ and $s'_a$ be the unique $a$-successors of $q$ and $s$, respectively.
-  %     Because $\nfa{q} = \nfa{s}$, the clause $(a \limp \nfa{q}'_a)$ must be contained in $\nfa{s}$.
-  %     However, by construction, the only clause of $\nfa{s}$ that involves $a$ is $(a \limp \nfa{s}'_a)$.
-  %     We may conclude that $\nfa{q}'_a = \nfa{s}'_a$.
-  %   \item Because $\nfa{q} = \nfa{s}$, it follows that $\nfa{F}(q) = \nfa{F}(s)$.
-      
-  %   \end{itemize}
+  %   \item Consider the case in which $w$ is the empty word; we must show that $\dfa{q} \Reduces \dfa{q}'$ implies $q \asim q'$.
+  %     By \cref{lem:ordered-rewriting:dfa-traces}, $\dfa{q} \Reduces \dfa{q}'$ implies that $\dfa{q} = \dfa{q}'$.
+  %     Part~\ref{enum:ordered-rewriting:dfa-adequacy:1} can then be used to establish $q$ and $q'$ as bisimilar.
 
-  % \item Suppose that $a \oc \dfa{q} \Reduces \dfa{q}'$; we must show that $q \misa\dfareduces[a]\asim q'$.
-  %   By the lemma, $\dfa{q} \Reduces (a \limp B) \oc \octx'_a$ for some $B$ and $\octx'_a$ such that $B \oc \octx'_a \Reduces \dfa{q}'$.
-  %   By inversion, $\octx'_a = \octxe$ and $B = \dfa{q}'_a$, where $q'_a$ is the unique $a$-successor of $q$.
-  %   Further inversion on the trace $\dfa{q}'_a \Reduces \dfa{q}'$ establishes that $\dfa{q}'_a = \dfa{q}'$.
-  %   Any rewriting step from $\dfa{q}'_a$ would result in dropping one of the clauses, and such a proposition is not in the image of the encoding because every state has, for each $a \in \ialph$, a unique $a$-successor.
-  %   Because $\dfa{q}'_a = \dfa{q}$, it follows from the previous part that $q'_a \asim q'$.
-  % \end{enumerate}
+  %   \item Consider the case of a nonempty word, $a \wc w$.
+  %     We must show that $\rev{w} \oc a \oc \dfa{q} \Reduces \dfa{q}'$ implies $q \dfareduces[a]\dfareduces[w]\asim q'$.
+  %     By inversion, the given trace must begin by inputting $a$:
+  %     \begin{equation*}
+  %       \rev{w} \oc a \oc \dfa{q} \Reduces \rev{w} \oc a \oc (a \limp \dfa{q}'_a) \reduces \rev{w} \oc \dfa{q}'_a \Reduces \dfa{q}'
+  %       \,,
+  %     \end{equation*}
+  %     where $q'_a$ is an $a$-successor of state $q$.
+  %     Appealing to the inductive hypothesis on the trace's tail yields $q'_a \dfareduces[w]\asim q'$, and so $q \dfareduces[a]\dfareduces[w]\asim q'$, as required.
+  %   %
+  %   \qedhere
+  %   \end{itemize}
+  \end{enumerate}
 \end{proof}
 
 
-\begin{corollary}
-  $w \in \autlang{\aut{A}}{q}$ if, and only if, $\emp \oc \dfa{w} \oc \dfa{q} \Reduces \octxe$.
-\end{corollary}
+\subsection{Encoding \aclp*{NFA}?}
 
-
-\subsection{\Aclp*{NFA}}
-
-Attempting to generalize the above rewriting specification of \acp{DFA} to their nondeterministic cousins is a natural follow-up.
+We would certainly be remiss if we did not attempt to generalize the rewriting specification of \acp{DFA} to one for their nondeterministic cousins.
 
 Differently from \ac{DFA} states, \iac{NFA} state $q$ may have several nondeterministic successors for each input symbol $a$.
 To encode the \ac{NFA} state $q$, all of its $a$-successors are collected in an alternative conjunction underneath the left-handed input of $a$.
@@ -1238,7 +1257,7 @@ where $\nfa{F}(q)$ is defined as for \acp{DFA}.
 The adjacent \lcnamecref{fig:ordered-rewriting:nfa-example}
 \begin{marginfigure}
   \centering
-  \subfloat[][]{\label{fig:ordered-rewriting:nfa-example:nfa}%
+  % \subfloat[][]{\label{fig:ordered-rewriting:nfa-example:nfa}%
     \begin{tikzpicture}
       \graph [automaton] {
         q_0
@@ -1252,19 +1271,19 @@ The adjacent \lcnamecref{fig:ordered-rewriting:nfa-example}
         q_2;
       };
     \end{tikzpicture}
-    }
+  % }
 
-  \subfloat[][]{\label{fig:ordered-rewriting:nfa-example:encoding}%
+%   \subfloat[][]{\label{fig:ordered-rewriting:nfa-example:encoding}%
       $\!\begin{aligned}
         \nfa{q}_0 &\defd (a \limp \nfa{q}_0) \with \bigl(b \limp (\nfa{q}_0 \with \nfa{q}_1)\bigr) \with (\emp \limp \top) \\
         \nfa{q}_1 &\defd (a \limp \nfa{q}_2) \with (b \limp \nfa{q}_2) \with (\emp \limp \one) \\
         \nfa{q}_2 &\defd (a \limp \nfa{q}_2) \with (b \limp \nfa{q}_2) \with (\emp \limp \top)
       \end{aligned}$
-    }
+%     }
 
-  \caption{\subref{fig:ordered-rewriting:nfa-example:nfa}~\Iac*{NFA} that accepts exactly those words, over the alphabet $\ialph = \set{a,b}$, that end with $b$; and \subref{fig:ordered-rewriting:nfa-example:encoding}~its encoding}\label{fig:ordered-rewriting:nfa-example}
+  \caption{{fig:ordered-rewriting:nfa-example:nfa}~\Iac*{NFA} that accepts exactly those words, over the alphabet $\ialph = \set{a,b}$, that end with $b$; and {fig:ordered-rewriting:nfa-example:encoding}~its encoding}\label{fig:ordered-rewriting:nfa-example}
 \end{marginfigure}%
-recalls from \cref{ch:automata} \iac{NFA}, over the alphabet $\ialph = \set{a,b}$, that accepts exactly those words that end with $b$.
+recalls from \cref{ch:automata} \iac{NFA} that accepts exactly those words, over the alphabet $\ialph = \set{a,b}$, that end with $b$.
 Using the above encoding of \acp{NFA}, ordered rewriting does indeed simulate this \ac{NFA}.
 For example, just as there are transitions $q_0 \nfareduces[b] q_0$ and $q_0 \nfareduces[b] q_1$, there are traces
 \begin{equation*}
@@ -1286,7 +1305,7 @@ For example, just as there are transitions $q_0 \nfareduces[b] q_0$ and $q_0 \nf
 \end{equation*}
 
 Unfortunately, while it does simulate \ac{NFA} behavior, this encoding is not adequate.
-Like the \ac{DFA} encoding, it is injective up to (\ac{NFA}) bisimilarity.
+Like \ac{DFA} states, \ac{NFA} states that have equal encodings are bisimilar.
 % \begin{proof}
 %   Define a relation $\mathord{\simu{R}} = \set{(q, s) \given \nfa{q} = \nfa{s}}$; we will show that $\simu{R}$ is a bisimulation.
 %   \begin{itemize}
@@ -1299,14 +1318,15 @@ Like the \ac{DFA} encoding, it is injective up to (\ac{NFA}) bisimilarity.
 %     Thus, $q$ is an accepting state if and only if $s$ is.
 %   \end{itemize}
 % \end{proof}
-However, for \acp{NFA}, the converse does not hold: bisimilar states do not have equal encodings.
+However, for \acp{NFA}, the converse does not hold: bisimilar states do not necessarily have equal encodings.
 %
 \begin{falseclaim}
-  If $q \asim s$, then $\nfa{q} = \nfa{s}$.
+  Let $\aut{A} = (Q, ?, F)$ be \iac{NFA} over input alphabet $\ialph$.
+  Then $q \asim s$ implies $\nfa{q} = \nfa{s}$, for all states $q$ and $s$.
 \end{falseclaim}
 %
 \begin{proof}[Counterexample]
-  Consider the \ac{NFA} and encoding depicted in the adjacent \lcnamecref{fig:??}.
+  Consider the \ac{NFA} and encoding depicted in the adjacent \lcnamecref{fig:ordered-rewriting:nfa-counterexample}.
   \begin{marginfigure}
     \begin{alignat*}{2}
       \begin{tikzpicture}
@@ -1325,10 +1345,10 @@ However, for \acp{NFA}, the converse does not hold: bisimilar states do not have
       &\quad& \nfa{q}_0 &\defd \bigl(a \limp (\nfa{q}_0 \with \nfa{q}_1)\bigr) \with (\emp \limp \one) \\
       &\quad& \nfa{q}_1 &\defd (a \limp \nfa{q}_1) \with (\emp \limp \one)
     \end{alignat*}
-    \caption{\Iac*{NFA} that accepts all finite words over the alphabet $\ialph = \set{a}$}
+    \caption{\Iac*{NFA} that accepts all finite words over the alphabet $\ialph = \set{a}$}\label{fig:ordered-rewriting:nfa-counterexample}
   \end{marginfigure}
   It is easy to verify that the relation $\set{q_1} \times \set{q_0,q_1}$ is a bisimulation; in particular, $q_1$ simulates the $q_0 \nfareduces[a] q_1$ transition by its self-loop, $q_1 \nfareduces[a] q_1$.
-  Hence $q_0$ and $s_0$ are bisimilar.
+  Hence, $q_0$ and $s_0$ are bisimilar.
   %
   % These same \acp{NFA} are encoded by the following definitions.
   % \begin{align*}
@@ -1340,82 +1360,607 @@ However, for \acp{NFA}, the converse does not hold: bisimilar states do not have
   It is equally easy to verify, by unrolling the definitions used in the encoding, that $\nfa{q}_0 \neq \nfa{s}_0$.
 \end{proof}
 
-For \acp{DFA}, bisimilar states do have equal encodings because bisimilarity is a rather fine-grained equiavalence.
+For \acp{DFA}, bisimilar states do have equal encodings because the inherent determinism \ac{DFA} bisimilarity is a rather fine-grained equivalence.
+Because each \ac{DFA} state has exactly one successor for each input symbol
 The additional flexibility entailed by nondeterminism
 
-\subsection{Extended example: Binary representation of natural numbers}
+Once again, it would be possible to construct an adequate encoding, by tagging each state with a unique atom.
+% with a stronger nominal character
 
-As a further example of ordered rewriting, consider a rewriting specification of a binary representation of natural numbers equipped with increment and decrement operations.
+For the moment, we will put aside the question of an adequate encoding of \acp{NFA}.
 
-\NewDocumentCommand \aval { m m } { #1 \approx_{\text{\normalfont\scshape v}} #2 }
-\NewDocumentCommand \ainc { m m } { #1 \approx_{\text{\normalfont\scshape i}} #2 }
-\NewDocumentCommand \adec { m m } { #1 \approx_{\text{\normalfont\scshape d}} #2 }
+\subsection{Binary representation of natural numbers}
 
+As a further example of ordered rewriting, consider a rewriting specification of binary counters: binary representations of natural numbers equipped with increment and decrement operations.
 
-\newthought{In this setting}, we represent a natural number [in binary] by
+\paragraph*{Binary representations}
+In this setting, we represent a natural number in binary by
 % A binary representation of a natural number is
 an ordered context that consists of a big-endian sequence of atoms $b_0$ and $b_1$, prefixed by the atom $e$; leading $b_0$s are permitted.
-For example, both $\octx = e \oc b_1$ and $\octx = e \oc b_0 \oc b_1$ are valid binary representations of the natural number $1$.
+For example, both $\octx = e \oc b_1$ and $\octx' = e \oc b_0 \oc b_1$ are valid binary representations of the natural number $1$.
 
-More generally, let $\aval{}{}$ be the binary relation between ordered contexts and natural numbers that is inductively defined by the following rules; when $\aval{\octx}{n}$, we say that the ordered context $\octx$ \emph{represents} natural number, or value\footnote{Hence the \textsc{v} subscript in $\aval{}{}$.}, $n$.
-\begin{inferences}
-  \infer{\aval{e}{0}}{}
-  \and
-  \infer{\aval{\octx \oc b_0}{2n}}{
-    \aval{\octx}{n}}
-  \and
-  \infer{\aval{\octx \oc b_1}{2n+1}}{
-    \aval{\octx}{n}}
-\end{inferences}
-The relation $\aval{}{}$ defines an adequate representation because it is, in fact, a bijection (up to leading $b_0$s) between ordered contexts and natural numbers.
+To be more precise, we inductively define a relation, $\aval{}{}$, 
+% [between binary representations and the natural number [value]s that they represent.]
+that assigns to each binary representation a unique natural number denotation.
+% , defined inductively by the following rules.
+% between ordered contexts and natural numbers that is inductively defined by the following rules.
+When $\aval{\octx}{n}$, we say that $\octx$ denotes, or represents, natural number $n$ in binary.
 %
-\begin{theorem}[Representational adequacy]
-  For all natural numbers $n$, there exists a context $\octx$, unique up to leading $b_0$s, such that $\aval{\octx}{n}$.
-  Conversely, if $\aval{\octx}{n}$ and $\aval{\octx}{n'}$, then $n = n'$.
-\end{theorem}
+\newcommand{\ooavalrules}{%
+  \infer[\jrule{$e$-V}]{\aval{e}{0}}{}
+  \and
+  \infer[\jrule{$b_0$-V}]{\aval{\octx \oc b_0}{2n}}{
+    \aval{\octx}{n}}
+  \and
+  \infer[\jrule{$b_1$-V}]{\aval{\octx \oc b_1}{2n+1}}{
+    \aval{\octx}{n}}%
+}%
+\begin{inferences}
+  \ooavalrules
+\end{inferences}
+% [In addition to assigning each binary representation a natural number value,]
+Besides providing a denotational semantics of binary numbers, the $\aval{}{}$ relation also serves to implicitly characterize the well-formed binary numbers as those ordered contexts $\octx$ that form the relation's domain of definition.%
+% Implicit in this definition is 
+\footnote{Alternatively, the well-formed binary numbers could be described more explicitly by the grammar
+% More precisely, the binary numbers are those contexts that are generated by the following grammar:
+\begin{equation*}
+  \octx \Coloneqq e \mid \octx \oc b_0 \mid \octx \oc b_1
+  \,.
+\end{equation*}%
+}
+
+These properties\fixnote{which properties?} of the $\aval{}{}$ relation are proved as the following adequacy \lcnamecref{thm:ordered-rewriting:binary-adequacy}.
+%
+\newcommand{\ooavaltheorem}{%
+  \begin{theorem}[Adequacy of binary representations]\label{thm:ordered-rewriting:binary-adequacy}%
+    \leavevmode
+    \begin{thmdescription}
+    \item[Functional]
+      For every binary number $\octx$, there exists a unique natural number $n$ such that $\aval{\octx}{n}$.
+      % [If $\aval{\octx}{n}$ and $\aval{\octx}{n'}$, then $n = n'$.]
+    \item[Surjectivity]
+      For every natural number $n$, there exists a binary number $\octx$ such that $\aval{\octx}{n}$.
+      % Moreover, when the rule for $b_0$ is restricted to nonzero even numbers, the representation is unique.
+    \item[Value]
+      If $\aval{\octx}{n}$, then $\octx \nreduces$.
+    \end{thmdescription}
+  \end{theorem}%
+}%
+%
+\ooavaltheorem
 \begin{proof}
-  The first part follows by induction on the natural number $n$; the second part follows by induction on the structure of the context $\octx$.
+  The three claims may be proved by induction over the structure of $\octx$, and by induction on $n$, respectively.
 \end{proof}
 
+Notice that the above $\jrule{$e$-V}$ and $\jrule{$b_0$-V}$ rules overlap when the denotation\fixnote{represented natural number?} is $0$, giving rise to the leading $b_0$s that make the $\aval{}{}$ relation surjective:
+for example, both $\aval{e \oc b_1}{1}$ and $\aval{e \oc b_0 \oc b_1}{1}$ hold.
+However, if the rule for $b_0$ is restricted to \emph{nonzero} even numbers, then each natural number has a unique, canonical representation that is free of leading $b_0$s.%
+\footnote{
+  A restriction of the $b_0$ rule to nonzero even numbers is:
+  \begin{equation*}
+    \infer{\aval{\octx \oc b_0}{2n}}{
+      \aval{\octx}{n} & \text{($n > 0$)}}
+  \,.
+  \end{equation*}
+  The leading-$b_0$-free representations could alternatively be seen as the canonical representatives of the equivalence classes induced by the equivalence relation among binary numbers that have the same denotation: $\octx \equiv \octx'$ if $\aval{\octx}{n}$ and $\aval{\octx'}{n}$ for some $n$.}
 
-\newthought{Next, to describe} the increment operation on binary representations with ordered rewriting, we first introduce a new, uninterpreted atom $i$.
-The basic idea is to This atom is appended to a counter to initiate an increment 
-By appending this atom to a counter, This atom is appended to a counter
-ordered rewriting of 
-Because of these increments,
-To initiate an increment of a counter $\octx$, we simply append an uninterpreted atom $i$ to the counter; the atom $i$
-%
-% \begin{desiderata*}[Computational adequacy -- increments]\label{des:ordered-rewriting:increments}\leavevmode
-  \begin{itemize}[noitemsep]
-  \item If $\aval{\octx}{n}$ and $\octx \oc i \Reduces\aval{}{n'}$, then $n' = n+1$.
-  \item In addition, if $\aval{\octx}{n}$, then $\octx \oc i \Reduces\aval{}{n+1}$.
+
+% This leads to a nontrivial equivalence relation over binary numbers: binary numbers $\octx$ and $\octx'$ are equivalent up to leading $b_0$s if both $\octx$ and $\octx'$ represent the same $n$.
+% % $\aval{\octx}{n}$ and $\aval{\octx}{n}$ for some $n$.
+% Corresponding to the [...] of leading $b_0$s.
+
+% Define a nontrivial equivalence relation on binary numbers. 
+
+% If the rule for $\octx \oc b_0$ is restricted to apply to only strictly positive even numbers
+
+
+% (\octx, n) R(~) (\octx', n) iff \octx ~ n and \octx' ~ n
+% R(~) is an equivalence relation.
+% ~/R(~) = {[(\octx, n)] | \octx ~ n}
+% \octx ~/R(~) n iff \octx is leading-b0-free and \octx ~ n
+
+% Let ~ be an equivalence relation over X.
+% Let [-] : X -> X/~ be the surjection that maps to equivalence classes
+% Let s : X/~ -> X be an injective function such that [s(c)] = c.
+
+% This function describes an adequate representation because it forms a bijection (up to leading $b_0$s) between binary counters and natural numbers.
+% %
+% \begin{theorem}[Representational adequacy]
+%   Up to leading $b_0$s, the $\aval{}{}$ relation is a bijection:
+%   \begin{itemize}[noitemsep]
+%   \item
+%     For every binary counter $\octx$, there exists a unique natural number $n$ such that $\aval{\octx}{n}$.
+%   \item
+%     Conversely, for every natural number $n$, there exists a binary counter $\octx$, unique up to leading $b_0$s, such that $\aval{\octx}{n}$.
+%   \item
+%     For all binary counters $\octx$ and $\octx'$ that are syntactically equal modulo leading $b_0$s, $\aval{\octx}{n}$ if, and only if, $\aval{\octx'}{n}$.
+%   \end{itemize}
+% \end{theorem}
+% %
+% \begin{proof}
+%   The two claims may be proved by induction over the structure of the binary counter $\octx$, and by induction on the natural number $n$, respectively.
+% \end{proof}
+
+% Alternatively, binary counters could be organized around leading-$b_0$--free representations.
+% Leading-$b_0$--free representations form a retract within the binary counters, with the 
+% \begin{equation*}
+%   \begin{lgathered}
+%     r(e) = e \\
+%     r(\octx \oc b_0) =
+%       \begin{cases*}
+%         e & if $r(\octx) = e$ \\
+%         r(\octx) \oc b_0 & otherwise
+%       \end{cases*} \\
+%     r(\octx \oc b_1) = r(\octx) \oc b_1
+%   \end{lgathered}
+% \end{equation*}
+
+% Notice that the representations that are free of leading $b_0$s form a retract 
+
+% \begin{inferences}
+%   \infer{\aval{e}{0}}{}
+%   \and
+%   \infer{\aval{\octx \oc b_0}{2n+2}}{
+%     \aval{\octx}{' n+1}}
+%   \and
+%   \infer{\aval{\octx \oc b_1}{2n+1}}{
+%     \aval{\octx}{n}}
+%   \and
+%   \infer{\aval{\octx \oc b_0}{' 2n+2}}{
+%     \aval{\octx}{' n+1}}
+%   \and
+%   \infer{\aval{\octx \oc b_1}{' 2n+1}}{
+%     \aval{\octx}{n}}
+% \end{inferences}
+
+% % bin = +{ e: 1, b0: pos, b1: bin }
+% % pos = +{ b0: pos, b1: bin }
+% %
+% % bin = &{ i: pos, d: +{ z: 1, s: bin  } }
+% % pos = &{ i: pos, d: bin }
+% %
+% % e = (e * b1 / i) & (z / d) & (e * z / h)
+% % b0 = (b1 / i) & (d * (s \ b1) * s) & (b0 * s / h)
+% % b1 = (i * b0 / i) & (h * b1' * s / d) & (b1 * s / h)
+% % b1' = (z \ 1) & (s \ b0)
+
+% % C b0 d --> C d (s \ b1) s --> C' b1 s
+% % 2(n+1) --> 2(n+1)-1 + 1 --> 2n+1 + 1
+
+% % e b1 d --> e d b1' s --> z b1' s --> e s
+% % 2(0)+1 --> 2(0) + 1 --> 2(0) + 1 --> 0 + 1
+
+% % C b1 d --> C d b1' s --> C' s b1' s --> C' i b0 s
+% % 2(n+1)+1 --> 2(n+1) + 1 --> 2(n + 1) + 1 --> 
+% \begin{equation*}
+%   \begin{lgathered}
+%     e \defd (e \fuse b_1 \pmir i) \with (z \pmir d) \\
+%     b_0 \defd (b_1 \pmir i) \with (d \fuse b_1 \fuse s \pmir d) \\
+%     b_1 \defd (i \fuse b_0 \pmir i) \with (d \fuse b'_1 \pmir d) \\
+%     p_0 \defd () \with (d \fuse b_1 \pmir d) \\
+%     b'_1 \defd (z \limp e \fuse s) \with (s \limp i \fuse b_0 \fuse s)
+%   \end{lgathered}
+% \end{equation*}
+
+% \begin{equation*}
+%   \begin{lgathered}
+%     e \defd (e \fuse b_1 \pmir i) \with (z \pmir d) \\
+%     b_0 \defd (b_1 \pmir i) \with (d \fuse b'_0 \pmir d) \with (c \fuse b^c_0 \pmir c) \\
+%     b^c_0 \defd (z \limp z) \with (s \limp b_0 \fuse s) \\
+%     b'_0 \defd (z \limp z) \with (s \limp b_1 \fuse s) \\
+%     b_1 \defd (b_0 \pmir i) \with (d \fuse ((z \limp e \fuse s) \with (s \limp b_0 \fuse s)) \pmir d)
+%   \end{lgathered}
+% \end{equation*}
+
+% % e b1 d --> e s
+% % e b1 b1 d --> e b1 d ... --> e s ... --> e i b0 s
+
+% % 2(n+1)+1 - 1 --> 2(n+1-1)+1
+
+% % e b1 d --> e d b1' --> z b1' --> e s
+% % e b1 b0 d --> e s b0' --> e b1 s
+% % e b1 b0 b0 d --> e b1 s b0' --> e b1 b1 s
+% % e b1 b1 d --> e s b1' --> e i b0 s --> e b1 b0 s
+% % e b1 b0 b1 d --> e b1 s b1' --> e b1 i b0 s --> e b1 b0 b0 s
+
+% \begin{inferences}
+%   \infer{\aval{e}{e}}{}
+%   \and
+%   \infer{\aval{\octx \oc b_0}{e}}{
+%     \aval{\octx}{e}}
+%   \and
+%   \infer{\aval{\octx \oc b_0}{\octx' \oc b_0}}{
+%     \aval{\octx}{\octx'}}
+%   \and
+%   \infer{\aval{\octx \oc b_1}{\octx' \oc b_1}}{
+%     \aval{\octx}{\octx'}}
+% \end{inferences}
+% By analogy with functional computation, the ordered contexts $\octx$ that appear in this relation will serve as values -- end results of computations.
+
+% The relation $\aval{}{}$ defines an adequate representation because it is, in fact, a bijection (up to leading $b_0$s) between ordered contexts and natural numbers.
+
+% If we restrict our attention to counters $\octx$ that are free of leading $b_0$s, then the $\aval{}{}$ relation is a bijection with the natural numbers.
+% %
+% Right-unique: $\aval{\octx}{n}$ and $\aval{\octx}{n'}$, then $n = n'$.
+% Left-total:
+
+% \begin{theorem}[Representational adequacy]
+%   For all natural numbers $n$, there exists a context $\octx$, unique up to leading $b_0$s, such that $\aval{\octx}{n}$.
+%   Moreover, the relation $\aval{}{}$ is functional -- \ie, if $\aval{\octx}{n}$ and $\aval{\octx}{n'}$, then $n = n'$.
+% \end{theorem}
+% \begin{proof}
+%   The first part follows by induction on the natural number $n$; the second part follows by induction on the structure of the context $\octx$.
+% \end{proof}
+% %
+% In other words, the binary representations that are free of leading $b_0$s form a retract.
+
+
+\paragraph{An increment operation}
+To use ordered rewriting to describe an increment operation on binary representations, we introduce a new, uninterpreted atom $i$ that will serve as an increment instruction.
+
+Given a binary number $\octx$ that represents $n$, we may append $i$ to form a computational state, $\octx \oc i$.
+For $i$ to adequately represent the increment operation, the state $\octx \oc i$ must meet two conditions, captured by the following global desiderata:
+% \lcnamecref{thm:increment-structural-adequacy}.
+%global desiderata: 
+\begin{theorem}\label{thm:increment-structural-adequacy}
+  Let $\octx$ be a binary representation of $n$.
+  Then:
+  \begin{itemize}[nosep]
+  \item
+    \emph{some} computation from $\octx \oc i$ results in a binary representation of $n+1$ -- that is, $\octx \oc i \Reduces\aval{}{n+1}$; and
+  \item
+    \emph{any} computation from $\octx \oc i$ results in a binary representation of $n+1$ -- that is, $\octx \oc i \Reduces\aval{}{n'}$ only if $n' = n+1$.%
+    \fixnote{Compare \enquote{If $\octx \oc i \Reduces \octx'$, then $\octx' \Reduces\aval{}{n+1}$.}}
+    % Moreover, computations preserve an absence of leading $b_0$s.\fixnote{Is this necessary?}
   \end{itemize}
-% \end{desiderata*}
+\end{theorem}
+\noindent
+For example, because $e \oc b_1$ denotes $1$, a computation $e \oc b_1 \oc i \Reduces\aval{}{2}$ must exist; moreover, every computation $e \oc b_1 \oc i \Reduces\aval{}{n'}$ must satisfy $n' = 2$.
 
-
-
-Because of the new increment operation, the previously uninterpreted atoms $e$, $b_0$, and $b_1$ are now given mutually recursive definitions that describe how they may be rewritten when encountering $i$:
-\begin{equation*}
-  \begin{lgathered}
-    e \defd e \fuse b_1 \pmir i \\
-    b_0 \defd b_1 \pmir i \\
-    b_1 \defd i \fuse b_0 \pmir i
-  \end{lgathered}
-\end{equation*}
-\begin{description}
+\newthought{To implement these} global desiderata locally, the previously uninterpreted atoms $e$, $b_0$, and $b_1$ are now given mutually recursive definitions that describe how they may be rewritten when the increment instruction, $i$, is encountered.
+\begin{description}[font=\color{structure}]
 \item[$e \defd e \fuse b_1 \pmir i$]
-  To increment the counter $e$, which represents $0$, introduce $b_1$ as a new most significant bit, resulting in the counter $e \oc b_1$, which represents $1$.
-  That is, $e \oc i \Reduces e \oc b_1$.
-  % Having started at value $0$ (\ie, $\aval{e}{0}$), an increment results in value $1$ (\ie, $\aval{e \oc b_1}{1}$).
+  To increment $e$, append $b_1$ as a new most\fixnote{or least?} significant bit, resulting in $e \oc b_1$;
+  the rewriting sequence $e \oc i \reduces e \fuse b_1 \reduces e \oc b_1$ is entailed by this definition.
 \item[$b_0 \defd b_1 \pmir i$]
-  To increment a counter that ends with least significant bit $b_0$, simply flip that bit to $b_1$.
-  That is, $\octx \oc b_0 \oc i \reduces \octx \oc b_1$.
-  % Having started at value $2n$ (\ie, $\aval{\octx \oc b_0}{2n}$ with $\aval{\octx}{n}$), an increment results in value $2n+1$ (\ie, $\aval{\octx \oc b_1}{2n+1}$).
+  To increment a binary number ending in $b_0$, flip that bit to $b_1$;
+  the entailed rewriting step is $\octx \oc b_0 \oc i \reduces \octx \oc b_1$.
 \item[$b_1 \defd i \fuse b_0 \pmir i$]
-  To increment a counter that ends with least significant bit $b_1$, flip that bit to $b_0$ and propagate the increment to the more significant bits as a carry.
-  That is, $\octx \oc b_1 \oc i \Reduces \octx \oc i \oc b_0$.
-  % Having started at value $2n+1$ (\ie, $\cval{\octx \oc b_1} = 2\cval{\octx}+1$), an increment results in value $2n+2 = 2(n+1)$ (\ie, $\cval{\octx \oc i \oc b_0} = 2\cval{\octx}+1$).
+  To increment a binary number ending in $b_1$, flip that bit to $b_0$ and carry the increment over to the more significant bits;
+  the entailed rewriting sequence is $\octx \oc b_1 \oc i \reduces \octx \oc (i \fuse b_0) \reduces \octx \oc i \oc b_0$.
 \end{description}
+Comfortingly, $1+1 = 2$: that is, a computation
+% $e \oc b_1 \oc i \Reduces \aval{e \oc b_1 \oc b_0}{2}$, namely:
+$e \oc b_1 \oc i \Reduces e \oc i \oc b_0 \Reduces e \oc b_1 \oc b_0$ indeed exists.
+
+\newthought{It should also} be possible to permit several increments at once, such as in $e \oc b_1 \oc i \oc i$.
+We could, of course, handle the increments sequentially from left to right, fully computing a binary value before moving on to the subsequent increment:
+\begin{equation*}
+  e \oc b_1 \oc i \oc i \Reduces e \oc b_1 \oc b_0 \oc i \reduces e \oc b_1 \oc b_1
+  \,.
+\end{equation*}
+However, a strictly sequential treatment of increments would be rather disappointing.
+Because the ordered rewriting framework\fixnote{wc?} is inherently concurrent, a truly concurrent treatment of multiple increments would be far more satisfying.
+
+For example, consider the several computations of $(1+1)+1 = 3$ from $e \oc b_1 \oc i \oc i$:
+\begin{equation*}
+  \begin{tikzcd}[
+    cells={inner xsep=0.65ex,
+           inner ysep=0.4ex},
+    row sep=0em,
+    column sep=scriptsize
+  ]
+    &[-0.2em]
+    e \oc b_1 \oc b_0 \oc i
+      \drar[reduces, start anchor=base east,
+                     end anchor=north west]
+    &[-0.2em]
+    \\
+    e \oc b_1 \oc i \oc i \Reduces e \oc i \oc b_0 \oc i
+      \urar[Reduces, start anchor=north east,
+                     end anchor=base west]
+      \ar[Reduces, gray, dashed]{rr}
+      \drar[reduces, start anchor=base east,
+                     end anchor=west]
+    &&
+    e \oc b_1 \oc b_1
+    \\
+    &
+    e \oc i \oc b_1
+      \urar[Reduces, start anchor=east,
+                     end anchor=base west]
+    &
+  \end{tikzcd}
+\end{equation*}
+In other words, once the leftmost increment is carried past the least significant bit, the two increments can be processed concurrently -- the increments' rewriting steps can be interleaved, with no observable difference between the various interleavings.
+We can even abstract from the interleavings by writing simply $e \oc i \oc b_0 \oc i \Reduces e \oc b_1 \oc b_1$.
+
+Unfortunately, a concurrent treatment of increments falls outside the domain of \cref{??}.
+Intermediate computational states, such as ...,
+\begin{equation*}
+  e \oc i \oc b_0 \oc i \reduces e \oc i \oc b_1
+\end{equation*}
+because $e \oc i \oc b_0$ is simply not a binary value.
+An adequacy theorem stronger than \cref{??} is needed.
+
+The situation here is roughly analogous to the desire, in a functional language, for stronger metatheorems than a big-step, natural sematics admits, and we adopt a similar solution.
+
+\newthought{To this end}, we define a binary relation, $\ainc{}{}$, that assigns a natural number denotation to each intermediate computational state, not only to the terminal values as $\aval{}{}$ did..%
+\footnote{Like the $\aval{}{}$ relation does for values, the $\ainc{}{}$ relation also serves to implicitly characterize the valid intermediate states as those contexts that form the relation's domain of definition.
+As with values, the valid intermediate states could also be enumerated more explicitly and syntactically with a grammar:
+\begin{equation*}
+  \octx \Coloneqq e \mid \octx \oc b_0 \mid \octx \oc b_1 \mid \octx \oc i \mid e \fuse b_1 \mid \octx \oc (i \fuse b_0)
+\end{equation*}}%
+%
+\newcommand{\aincrules}{%
+  \infer[\jrule{$e$-I}]{\ainc{e}{0}}{}
+  \and
+  \infer[\jrule{$b_0$-I}]{\ainc{\octx \oc b_0}{2n}}{
+    \ainc{\octx}{n}}
+  \and
+  \infer[\jrule{$b_1$-I}]{\ainc{\octx \oc b_1}{2n+1}}{
+    \ainc{\octx}{n}}
+  \and
+  \infer[\jrule{$i$-I}]{\ainc{\octx \oc i}{n+1}}{
+    \ainc{\octx}{n}}
+  \\
+  \infer[\jrule{$\fuse_1$-I}]{\ainc{e \fuse b_1}{1}}{}
+  \and
+  \infer[\jrule{$\fuse_2$-I}]{\ainc{\octx \oc (i \fuse b_0)}{2(n+1)}}{
+    \ainc{\octx}{n}}%
+}%
+%
+\begin{inferences}
+  \aincrules
+\end{inferences}
+Binary values should themselves be valid, terminal computational states, so the first three rules are carried over from the $\aval{}{}$ relation.
+The $\jrule{$i$-I}$ rule allows multiple increment instructions to be interspersed throughout the state.
+Lastly, because the atomicity of ordered rewriting steps is very fine-grained, the $\jrule{$\fuse_1$-I}$ and $\jrule{$\fuse_2$-I}$ rules are needed to completely describe the valid intermediate states and their denotations.
+For instance, the state $e \oc i$ first rewrites to the intermediate $e \fuse b_1$ before eventually rewriting to $e \oc b_1$; the state $\octx \oc (i \fuse b_0)$ has a similar status.
+
+With this $\ainc{}{}$ relation in hand, we can now prove a stronger, small-step adequacy theorem.
+%
+\newcommand{\smallincadequacytheorem}{%
+\begin{theorem}[Small-step adequacy of increments]%
+  \leavevmode
+  \begin{thmdescription}
+  \item[Value soundness]
+    If $\aval{\octx}{n}$, then $\ainc{\octx}{n}$ and $\octx \nreduces$.
+  \item[Preservation]
+    If $\ainc{\octx}{n}$ and $\octx \reduces \octx'$, then $\ainc{\octx'}{n}$.
+  \item[Progress]
+    If $\ainc{\octx}{n}$, then either
+    \begin{itemize*}[
+      mode=unboxed, label=, afterlabel=,
+      before=\unskip:\space,
+      itemjoin=;\space, itemjoin*=; or\space%
+    ]
+    \item $\octx \reduces \octx'$ for some $\octx'$; or
+    \item $\aval{\octx}{n}$.\fixnote{Compare with \enquote{If $\ainc{\octx}{n}$, then $\aval{\octx}{n}$ if, and only if, $\octx \nreduces$.}}
+    \end{itemize*}
+  \item[Termination]
+    If $\ainc{\octx}{n}$, then every rewriting sequence from $\octx$ is finite.
+  \end{thmdescription}
+\end{theorem}%
+}%
+%
+\smallincadequacytheorem
+\begin{proof}
+  Each part is proved separately.
+  \begin{description}[
+    parsep=0pt, listparindent=\parindent,
+    labelsep=0.35em
+  ]
+  \item[Value soundness]
+    can be proved by structural induction on the derivation of $\aval{\octx}{n}$.
+  \item[Preservation and progress]
+    can likewise be proved by structural induction on the derivation of $\ainc{\octx}{n}$.
+    In particular, the $e \fuse b_1$ and $\octx \oc (i \fuse b_0)$ rules
+  \item[Termination]
+    can be proved using an explicit termination measure, $\card{\octx}$, that is strictly decreasing across each rewriting, $\octx \reduces \octx'$.
+    Specifically, we use a measure (see the adjacent \lcnamecref{fig:ordered-rewriting:binary-counter:measure}),
+    % For valid states $\octx$, we define a measure $\card{\octx}$ that is strictly decreasing across each rewriting $\octx \reduces \octx'$ (see the adjacent \lcnamecref{fig:ordered-rewriting:binary-counter:measure}).
+    \begin{marginfigure}
+      \begin{equation*}
+        \begin{lgathered}[t]
+          \card{e} = 0 \\
+          \card{\octx \oc b_0} = \card{\octx} \\
+          \card{\octx \oc b_1} = \card{\octx} + 2 \\
+          \card{\octx \oc i} = \card{\octx} + 4
+        \end{lgathered}
+        \qquad
+        \begin{lgathered}[t]
+          \card{e \fuse b_1} = 3 \\
+          \card{\octx \oc (i \fuse b_0)} = \card{\octx} + 5
+        \end{lgathered}
+      \end{equation*}
+      \caption{A termination measure, adapted from the standard amortized work analysis of increment for binary counters}\label{fig:ordered-rewriting:binary-counter:measure}
+    \end{marginfigure}%
+    adapted from the standard amortized work analysis of increment for binary counters\autocite{??}, for which $\octx \reduces \octx'$ implies $\card{\octx} > \card{\octx'}$.
+    % That is, if $\octx$ is a valid state and $\octx \reduces \octx'$, then $\card{\octx} > \card{\octx'}$.
+    Because the measure is always nonnegative, only finitely many such rewritings can occur.
+
+    As an example case, consider the intermediate state $\octx \oc b_0 \oc i$ and its rewriting $\octx \oc b_0 \oc i \reduces \octx \oc b_1$.
+    It follows that $\card{\octx \oc b_0 \oc i} = \card{\octx} + 4 > \card{\octx} + 2 = \card{\octx \oc b_1}$.
+  \qedhere
+  \end{description}
+\end{proof}
+
+\begin{corollary}[Big-step adequacy of increments]
+  \leavevmode
+  \begin{thmdescription}
+  \item[Evaluation]
+    If $\ainc{\octx}{n}$, then $\octx \Reduces\aval{}{n}$.
+    In particular, if $\aval{\octx}{n}$, then $\octx \oc i \Reduces\aval{}{n+1}$.
+  \item[Preservation]
+    If $\ainc{\octx}{n}$ and $\octx \Reduces \octx'$, then $\ainc{\octx'}{n}$.
+    In particular, if $\aval{\octx}{n}$ and $\octx \oc i \Reduces\aval{}{n'}$, then $n' = n+1$.
+  \end{thmdescription}
+\end{corollary}
+\begin{proof}
+  The two parts are proved separately.
+  \begin{description}[labelsep=0.35em]
+  \item[Evaluation] can be proved by repeatedly appealing to the progress and preservation results\parencref{??}.
+    By the accompanying termination result, a binary value must eventually be reached.
+  \item[Preservation] can be proved by structural induction on the given rewriting sequence.
+  %
+  \qedhere
+  \end{description}
+\end{proof}
+
+\newthought{But, of course}, a few isolated examples do not make a proof.
+
+
+
+By analogy with functional programming, the above adequacy conditions can be seen as stating evaluation and termination results for a big-step, evaluation semantics of increments, with $\aval{\octx}{n}$ acting as a kind of typing judgment -- admittedly, a very precise one.
+
+In functional programming, big-step results like these are usually proved by first providing a small-step operational semantics, then characterizing the valid intermediate states that arise with small steps, and finally establishing type preservation, progress, and termination results for the small-step semantics.
+We will adopt the same proof strategy here.
+
+In this case, the small-step operational semantics already exists -- it is simply the individual rewriting steps entailed by the definitions of $e$, $b_0$, and $b_1$.
+So our first task is to characterize the valid intermediate states that arise during a computation.
+To this end, we define a binary relation, $\ainc{}{}$, that, like the $\aval{}{}$ relation, serves the dual purposes of enumerating the valid intermediate states and assigning to each state a natural number denotation.%
+\footnote{As with values, we could also choose to enumerate the valid immediate states more explicitly and syntactically with a grammar:
+  \begin{equation*}
+    \octx \Coloneqq e \mid \octx \oc b_0 \mid \octx \oc b_1 \mid \octx \oc i \mid e \fuse b_1 \mid \octx \oc (i \fuse b_0)
+  \end{equation*}}
+% To this end, we define a binary relation, $\ainc{}{}$, between computational states and the natural numbers that they represent;
+\begin{inferences}
+  \infer{\ainc{e}{0}}{}
+  \and
+  \infer{\ainc{\octx \oc b_0}{2n}}{
+    \ainc{\octx}{n}}
+  \and
+  \infer{\ainc{\octx \oc b_1}{2n+1}}{
+    \ainc{\octx}{n}}
+  \and
+  \infer{\ainc{\octx \oc i}{n+1}}{
+    \ainc{\octx}{n}}
+  \\
+  \infer{\ainc{e \fuse b_1}{1}}{}
+  \and
+  \infer{\ainc{\octx \oc (i \fuse b_0)}{2(n+1)}}{
+    \ainc{\octx}{n}}
+\end{inferences}
+Binary values should themselves be valid, terminal computational states, so the first three rules are carried over from the $\aval{}{}$ relation.
+The fourth rule, involving $i$, allows multiple increments to be interspersed throughout the counter.
+
+Because ordered rewriting steps are quite fine-grained, two final rules are needed to completely describe the valid intermediate states and their denotations.
+For instance, the state $e \oc i$ first rewrites to $e \fuse b_1$ before eventually rewriting to $e \oc b_1$.
+
+
+
+Having characterized the valid intermediate states, we may state and prove the small-step adequacy of increments: preservation, progress, and termination.
+%
+\begin{theorem}[Small-step adequacy of increments]%
+  \leavevmode
+  \begin{thmdescription}[nosep]
+  \item[Value inclusion]
+    If $\aval{\octx}{n}$, then $\ainc{\octx}{n}$.
+  \item[Preservation]
+    If $\ainc{\octx}{n}$ and $\octx \reduces \octx'$, then $\ainc{\octx'}{n}$.
+  \item[Progress]
+    If $\ainc{\octx}{n}$, then either
+    \begin{itemize*}[
+      mode=unboxed, label=, afterlabel=,
+      before=\unskip:\space,
+      itemjoin=;\space, itemjoin*=; or\space%
+    ]
+    \item $\octx \reduces \octx'$ for some $\octx'$; or
+    \item $\octx \nreduces$ and $\aval{\octx}{n}$.
+    \end{itemize*}
+  \item[Termination]
+    If $\ainc{\octx}{n}$, then every rewriting sequence from $\octx$ is finite.
+  \end{thmdescription}
+\end{theorem}
+%
+\begin{proof}
+  Each part is proved separately.
+  \begin{description}[
+    parsep=0pt, listparindent=\parindent,
+    labelsep=0.35em
+  ]
+  \item[Value inclusion]
+    can be proved by structural induction on the derivation of $\aval{\octx}{n}$.
+  \item[Preservation and progress]
+    can likewise be proved by structural induction on the derivation of $\ainc{\octx}{n}$.
+    In particular, the $e \fuse b_1$ and $\octx \oc (i \fuse b_0)$ rules
+  \item[Termination]
+    can be proved using an explicit termination measure, $\card{\octx}$, that is strictly decreasing across each rewriting, $\octx \reduces \octx'$.
+    Specifically, we use a measure (see the adjacent \lcnamecref{fig:ordered-rewriting:binary-counter:measure}),
+    % For valid states $\octx$, we define a measure $\card{\octx}$ that is strictly decreasing across each rewriting $\octx \reduces \octx'$ (see the adjacent \lcnamecref{fig:ordered-rewriting:binary-counter:measure}).
+    \begin{marginfigure}
+      \begin{equation*}
+        \begin{lgathered}[t]
+          \card{e} = 0 \\
+          \card{\octx \oc b_0} = \card{\octx} \\
+          \card{\octx \oc b_1} = \card{\octx} + 2 \\
+          \card{\octx \oc i} = \card{\octx} + 4
+        \end{lgathered}
+        \qquad
+        \begin{lgathered}[t]
+          \card{e \fuse b_1} = 3 \\
+          \card{\octx \oc (i \fuse b_0)} = \card{\octx} + 5
+        \end{lgathered}
+      \end{equation*}
+      \caption{A termination measure, adapted from the standard amortized work analysis of increment for binary counters}\label{fig:ordered-rewriting:binary-counter:measure}
+    \end{marginfigure}%
+    adapted from the standard amortized work analysis of increment for binary counters\autocite{??}, for which $\octx \reduces \octx'$ implies $\card{\octx} > \card{\octx'}$.
+    % That is, if $\octx$ is a valid state and $\octx \reduces \octx'$, then $\card{\octx} > \card{\octx'}$.
+    Because the measure is always nonnegative, only finitely many such rewritings can occur.
+
+    As an example case, consider the intermediate state $\octx \oc b_0 \oc i$ and its rewriting $\octx \oc b_0 \oc i \reduces \octx \oc b_1$.
+    It follows that $\card{\octx \oc b_0 \oc i} = \card{\octx} + 4 > \card{\octx} + 2 = \card{\octx \oc b_1}$.
+  \qedhere
+  \end{description}
+\end{proof}
+
+\begin{theorem}[Big-step adequacy of increments]\leavevmode
+  \begin{thmdescription}
+  \item[Preservation]
+    If $\ainc{\octx}{n}$ and $\octx \Reduces\aval{}{n'}$, then $n' = n$.
+  \item[Termination?]
+    If $\ainc{\octx}{n}$, then $\octx \Reduces\aval{}{n}$.
+  \end{thmdescription}
+\end{theorem}
+\begin{proof}
+  Both parts are consequences of the small-step adequacy of increments \parencref{??}.
+  \begin{description}
+  \item[Preservation]
+    is proved by structural induction on the given rewriting sequence.
+    The base case follows [...] by an inner structural induction on the derivation of $\aval{\octx}{n'}$.
+    The inductive case can be proved by first appealing to small-step preservation \parencref{??} and then to the inductive hypothesis.
+  \item[Termination?]
+    is proved by repeatedly appealing to small-step progress \parencref{??}.
+    The small-step termination [...] \parencref{??} ensures that a value will be reached after finitely many such appeals.
+  %
+  \qedhere
+  \end{description}
+\end{proof}
+
+\begin{corollary}[Structural adequacy of increments]
+  If $\aval{\octx}{n}$, then $\octx \oc i \Reduces\aval{}{n'}$ if, and only if, $n' = n+1$.
+\end{corollary}
+
+
+
+% For example, incrementing [a representation of] $1$ should result in [a representation of] $2$, as evidenced by a trace $e \oc b_1 \oc i \Reduces e \oc b_1 \oc b_0$.
+
+% Given a binary number $\octx$ that represents $n$, we may append $i$ to form a computational state, $\octx \oc i$, that should compute a binary representation of $n+1$ and thereby increment the number.
+% For example, incrementing [a representation of] $1$ should result in [a representation of] $2$, as evidenced by a trace $e \oc b_1 \oc i \Reduces e \oc b_1 \oc b_0$.
+
+% Conversely, any computation
+
+% To describe\fixnote{implement?} the increment operation using ordered rewriting, the previously uninterpreted atoms $e$, $b_0$, and $b_1$ are now given mutually recursive definitions that describe how they may be rewritten when $i$ is encountered.
+% \begin{description}[font=\color{structure}]
+% \item[$e \defd e \fuse b_1 \pmir i$]
+%   To increment $e$, append $b_1$ as a most significant bit, resulting in $e \oc b_1$.
+% \item[$b_0 \defd b_1 \pmir i$]
+%   To increment a binary number that has $b_0$ as its least significant bit, simply flip that bit to $b_1$.
+% \item[$b_1 \defd i \fuse b_0 \pmir i$]
+%   To increment a binary number that has $b_1$ as its least significant bit, flip that bit to $b_0$ and carry the increment over to the more significant bits.
+% \end{description}
+
 
 As an example computation, consider incrementing $e \oc b_1$ twice, as captured by the state $e \oc b_1 \oc i \oc i$.
 \begin{equation*}
@@ -1450,6 +1995,132 @@ As an example computation, consider incrementing $e \oc b_1$ twice, as captured 
 First, processing of the leftmost increment begins: the least significant bit is flipped, and the increment is carried over to the more significant bits.
 This corresponds to the reduction $e \oc b_1 \oc i \oc i \Reduces e \oc i \oc b_0 \oc i$.
 Next, either of the two remaining increments may be processed -- that is, either $e \oc i \oc b_0 \oc i \Reduces e \oc b_1 \oc b_0 \oc i$ or $e \oc i \oc b_0 \oc i \Reduces e \oc i \oc b_1$.
+
+
+% Conversely, any complete computation from $\octx \oc i$ must have as its result a binary rrepresentation of $n+1$.
+
+% These two properties ensure that the atom $i$ adequately characterizes an increment operation:
+% \begin{itemize}
+% \item 
+% \end{itemize}
+
+% For this to be an adequate description of an increment operation, it should satisfy two desiderata:
+% \begin{enumerate*}
+% \item
+% \end{enumerate*}
+% Formally, these desiderata are captured by the following adequacy theorem:
+% \begin{itemize}
+% \item If $\aval{\octx}{n}$, then $\octx \oc i \Reduces\aval{}{n+1}$.
+% \item If $\aval{\octx}{n}$, then $\octx \oc i \Reduces\aval{}{n'}$ implies $n' = n+1$.
+% \end{itemize}
+
+% By analogy with functional programming, ...
+
+% Appending $i$ to a counter will initiate an increment, with ordered rewriting used to compute, step by step, a binary representation of the incremented value.
+
+
+
+% \begin{itemize}
+% \item
+%   If counter $\octx$ represents $n$, then $\octx \oc i$ can compute a representation of $n+1$ and, conversely, any computation from $\octx \oc i$ results in a representation of $n+1$.
+%   That is, if $\aval{\octx}{n}$, then $\octx \oc i \Reduces\aval{}{n'}$ if, and only if, $n' = n+1$.
+% \end{itemize}
+
+% \begin{equation*}
+%   \octx \Coloneqq e \mid \octx \oc b_0 \mid \octx \oc b_1 \mid \octx \oc i
+% \end{equation*}
+% The binary counters
+
+% If counter $\octx$ represents $n$, then $\octx \oc i$ should compute to a representation of $n+1$.
+% If $\octx$ represents $n$ and $\octx \oc i$ can reduce to $n'$, then $n' = n+1$.
+% \begin{itemize}
+% \item 
+% \end{itemize}
+
+% The basic idea is to assign $e$, $b_0$, and $b_1$ recursive definitions that enable them to interact with these atoms $i$.
+
+% The basic idea is to This atom is appended to a counter to initiate an increment 
+% By appending this atom to a counter, This atom is appended to a counter
+% ordered rewriting of 
+% Because of these increments,
+% To initiate an increment of a counter $\octx$, we simply append an uninterpreted atom $i$ to the counter; the atom $i$
+% %
+% % \begin{desiderata*}[Computational adequacy -- increments]\label{des:ordered-rewriting:increments}\leavevmode
+%   \begin{itemize}[noitemsep]
+%   \item If $\aval{\octx}{n}$ and $\octx \oc i \Reduces\aval{}{n'}$, then $n' = n+1$.
+%   \item In addition, if $\aval{\octx}{n}$, then $\octx \oc i \Reduces\aval{}{n+1}$.
+%   \end{itemize}
+% % \end{desiderata*}
+
+
+
+% Because of the new increment operation, the previously uninterpreted atoms $e$, $b_0$, and $b_1$ are now given mutually recursive definitions that describe how they may be rewritten when encountering $i$:
+% % \begin{equation*}
+% %   \begin{lgathered}
+% %     e \defd e \fuse b_1 \pmir i \\
+% %     b_0 \defd b_1 \pmir i \\
+% %     b_1 \defd i \fuse b_0 \pmir i
+% %   \end{lgathered}
+% % \end{equation*}
+% \begin{description}[font=\color{structure}]
+% \item[$e \defd e \fuse b_1 \pmir i$]
+%   To increment $e$, append $b_1$ as a most significant bit, resulting in $e \oc b_1$.
+% \item[$b_0 \defd b_1 \pmir i$]
+%   To increment a binary number that has $b_0$ as its least significant bit, simply flip that bit to $b_1$.
+% \item[$b_1 \defd i \fuse b_0 \pmir i$]
+%   To increment a binary number that has $b_1$ as its least significant bit, flip that bit to $b_0$ and carry the increment over to the more significant bits.
+% \end{description}
+
+% \begin{description}
+% \item[$e \defd e \fuse b_1 \pmir i$]
+%   To increment the counter $e$, which represents $0$, introduce $b_1$ as a new most significant bit, resulting in the counter $e \oc b_1$, which represents $1$.
+%   That is, because $\aval{e}{0}$, there should exist a trace $e \oc i \Reduces \aval{e \oc b_1}{1}$.
+%   % Having started at value $0$ (\ie, $\aval{e}{0}$), an increment results in value $1$ (\ie, $\aval{e \oc b_1}{1}$).
+% \item[$b_0 \defd b_1 \pmir i$]
+%   Because $\aval{\octx \oc b_0}{2n}$ when $\aval{\octx}{n}$, there should exist a trace $\octx \oc b_0 \oc i \Reduces \aval{\octx \oc b_1}{2n+1}$.
+%   To increment a counter that ends with least significant bit $b_0$, simply flip that bit to $b_1$.
+%   That is, $\octx \oc b_0 \oc i \reduces \octx \oc b_1$.
+%   % Having started at value $2n$ (\ie, $\aval{\octx \oc b_0}{2n}$ with $\aval{\octx}{n}$), an increment results in value $2n+1$ (\ie, $\aval{\octx \oc b_1}{2n+1}$).
+% \item[$b_1 \defd i \fuse b_0 \pmir i$]
+%   Because $\aval{\octx \oc b_1}{2n+1}$ when $\aval{\octx}{n}$, there should exist a trace $\octx \oc b_1 \oc i \Reduces \aval{\octx' \oc b_0}{2n+2}$, provided that there exists a trace $\octx \oc i \Reduces \aval{\octx'}{n+1}$.
+%   To increment a counter that ends with least significant bit $b_1$, flip that bit to $b_0$ and propagate the increment to the more significant bits as a carry.
+%   That is, $\octx \oc b_1 \oc i \Reduces \octx \oc i \oc b_0$.
+%   % Having started at value $2n+1$ (\ie, $\cval{\octx \oc b_1} = 2\cval{\octx}+1$), an increment results in value $2n+2 = 2(n+1)$ (\ie, $\cval{\octx \oc i \oc b_0} = 2\cval{\octx}+1$).
+% \end{description}
+
+% As an example computation, consider incrementing $e \oc b_1$ twice, as captured by the state $e \oc b_1 \oc i \oc i$.
+% \begin{equation*}
+%   \begin{tikzcd}[
+%     cells={inner xsep=0.65ex,
+%            inner ysep=0.4ex},
+%     row sep=0em,
+%     column sep=scriptsize
+%   ]
+%     &[-0.2em]
+%     e \oc b_1 \oc b_0 \oc i
+%       \drar[reduces, start anchor=base east,
+%                      end anchor=west]
+%     &[-0.2em]
+%     \\
+%     e \oc b_1 \oc i \oc i \Reduces e \oc i \oc b_0 \oc i
+%       \urar[Reduces, start anchor=east,
+%                      end anchor=base west]
+%       \drar[reduces, start anchor=base east,
+%                      end anchor=west]
+%     &&
+%     e \oc b_1 \oc b_1
+%     \\
+%     &
+%     e \oc i \oc b_1
+%       \urar[Reduces, start anchor=east,
+%                      end anchor=base west]
+%     &
+%   \end{tikzcd}
+% \end{equation*}
+
+% First, processing of the leftmost increment begins: the least significant bit is flipped, and the increment is carried over to the more significant bits.
+% This corresponds to the reduction $e \oc b_1 \oc i \oc i \Reduces e \oc i \oc b_0 \oc i$.
+% Next, either of the two remaining increments may be processed -- that is, either $e \oc i \oc b_0 \oc i \Reduces e \oc b_1 \oc b_0 \oc i$ or $e \oc i \oc b_0 \oc i \Reduces e \oc i \oc b_1$.
 
 
 We should like to prove the correctness of this specification of increments by establishing a computational adequacy result:
@@ -1489,121 +2160,121 @@ This relation is defined inductively by the following rules.
 \end{inferences}
 The latter two
 
-\begin{lemma}[Value inclusion]
-  If $\aval{\octx}{n}$, then $\ainc{\octx}{n}$.
-\end{lemma}
-%
-\begin{proof}
-  By structural induction on the derivation of $\aval{\octx}{n}$.
-\end{proof}
+% \begin{lemma}[Value inclusion]
+%   If $\aval{\octx}{n}$, then $\ainc{\octx}{n}$.
+% \end{lemma}
+% %
+% \begin{proof}
+%   By structural induction on the derivation of $\aval{\octx}{n}$.
+% \end{proof}
 
-\begin{theorem}[Preservation]
-  If $\ainc{\octx}{n}$ and $\octx \reduces \octx'$, then $\ainc{\octx'}{n}$.
-\end{theorem}
-%
-\begin{proof}
-  By structural induction on the derivation of $\ainc{\octx}{n}$.
-  % We will show a representative cases.
-  % \begin{itemize}
-  % % \item Consider the case in which
-  % %   \begin{equation*}
-  % %     \octx
-  % %     =
-  % %     \infer{\ainc{\octx_0 \oc i}{n_0+1}}{
-  % %       \ainc{\octx_0}{n_0}}
-  % %     =
-  % %     n
-  % %   \end{equation*}
-  % %   and $\octx = \octx_0 \oc i \reduces \octx'_0 \oc i = \octx'$ because $\octx_0 \reduces \octx'_0$, for some $\octx_0$, $\octx'_0$, and $n_0$.
-  % %   By the inductive hypothesis, $\ainc{\octx'_0}{n_0}$.
-  % %   And so, $\octx' = \ainc{\octx'_0 \oc i}{n_0+1} = n$, as required.
-  % 
-  % % \item Consider the case in which
-  % %   \begin{equation*}
-  % %     \octx
-  % %     =
-  % %     \infer{\ainc{\octx_0 \oc b_1 \oc i}{(2n_0+1)+1}}{
-  % %       \infer{\ainc{\octx_0 \oc b_1}{2n_0+1}}{
-  % %         \ainc{\octx_0}{n_0}}}
-  % %     =
-  % %     n
-  % %   \end{equation*}
-  % %   and $\octx = \octx_0 \oc b_1 \oc i \reduces \octx_0 \oc (i \fuse b_0) = \octx'$, for some $\octx_0$ and $n_0$.
-  % %   It immediately follows that $\octx' = \ainc{\octx_0 \oc (i \fuse b_0)}{2(n_0+1)} = 2n_0+2 = n$, as required.
-  % 
-  % \item Consider the case in which
-  %   \begin{equation*}
-  %     \octx
-  %     =
-  %     \infer{\ainc{\octx_0 \oc (i \fuse b_0)}{2(n_0+1)}}{
-  %       \ainc{\octx_0}{n_0}}
-  %     =
-  %     n
-  %   \end{equation*}
-  %   and $\octx = \octx_0 \oc (i \fuse b_0) \reduces \octx_0 \oc i \oc b_0 = \octx'$, for some $\octx_0$ and $n_0$.
-  %   It immediately follows that
-  %   \begin{equation*}
-  %     \octx'
-  %     =
-  %     \infer{\ainc{\octx_0 \oc i \oc b_0}{2(n_0+1)}}{
-  %       \infer{\ainc{\octx_0 \oc i}{n_0+1}}{
-  %         \ainc{\octx_0}{n_0}}}
-  %     =
-  %     n
-  %     \,,
-  %   \end{equation*}
-  %   as required.
-  % \qedhere
-  % \end{itemize}
-\end{proof}
+% \begin{theorem}[Preservation]
+%   If $\ainc{\octx}{n}$ and $\octx \reduces \octx'$, then $\ainc{\octx'}{n}$.
+% \end{theorem}
+% %
+% \begin{proof}
+%   By structural induction on the derivation of $\ainc{\octx}{n}$.
+%   % We will show a representative cases.
+%   % \begin{itemize}
+%   % % \item Consider the case in which
+%   % %   \begin{equation*}
+%   % %     \octx
+%   % %     =
+%   % %     \infer{\ainc{\octx_0 \oc i}{n_0+1}}{
+%   % %       \ainc{\octx_0}{n_0}}
+%   % %     =
+%   % %     n
+%   % %   \end{equation*}
+%   % %   and $\octx = \octx_0 \oc i \reduces \octx'_0 \oc i = \octx'$ because $\octx_0 \reduces \octx'_0$, for some $\octx_0$, $\octx'_0$, and $n_0$.
+%   % %   By the inductive hypothesis, $\ainc{\octx'_0}{n_0}$.
+%   % %   And so, $\octx' = \ainc{\octx'_0 \oc i}{n_0+1} = n$, as required.
+%   % 
+%   % % \item Consider the case in which
+%   % %   \begin{equation*}
+%   % %     \octx
+%   % %     =
+%   % %     \infer{\ainc{\octx_0 \oc b_1 \oc i}{(2n_0+1)+1}}{
+%   % %       \infer{\ainc{\octx_0 \oc b_1}{2n_0+1}}{
+%   % %         \ainc{\octx_0}{n_0}}}
+%   % %     =
+%   % %     n
+%   % %   \end{equation*}
+%   % %   and $\octx = \octx_0 \oc b_1 \oc i \reduces \octx_0 \oc (i \fuse b_0) = \octx'$, for some $\octx_0$ and $n_0$.
+%   % %   It immediately follows that $\octx' = \ainc{\octx_0 \oc (i \fuse b_0)}{2(n_0+1)} = 2n_0+2 = n$, as required.
+%   % 
+%   % \item Consider the case in which
+%   %   \begin{equation*}
+%   %     \octx
+%   %     =
+%   %     \infer{\ainc{\octx_0 \oc (i \fuse b_0)}{2(n_0+1)}}{
+%   %       \ainc{\octx_0}{n_0}}
+%   %     =
+%   %     n
+%   %   \end{equation*}
+%   %   and $\octx = \octx_0 \oc (i \fuse b_0) \reduces \octx_0 \oc i \oc b_0 = \octx'$, for some $\octx_0$ and $n_0$.
+%   %   It immediately follows that
+%   %   \begin{equation*}
+%   %     \octx'
+%   %     =
+%   %     \infer{\ainc{\octx_0 \oc i \oc b_0}{2(n_0+1)}}{
+%   %       \infer{\ainc{\octx_0 \oc i}{n_0+1}}{
+%   %         \ainc{\octx_0}{n_0}}}
+%   %     =
+%   %     n
+%   %     \,,
+%   %   \end{equation*}
+%   %   as required.
+%   % \qedhere
+%   % \end{itemize}
+% \end{proof}
 
 
-\begin{theorem}[Progress]
-  If $\ainc{\octx}{n}$, then either $\octx \reduces \octx'$ or $\aval{\octx}{n}$.
-\end{theorem}
-%
-\begin{proof}
-  By structural induction on the derivation of $\ainc{\octx}{n}$.
-  % \begin{itemize}
-  % \item Consider the case in which
-  %   \begin{equation*}
-  %     \octx
-  %     =
-  %     \infer{\ainc{\octx_0 \oc i}{n_0+1}}{
-  %       \ainc{\octx_0}{n_0}}
-  %     =
-  %     n
-  %   \end{equation*}
-  %   for some $\octx_0$ and $n_0$.
-  % \end{itemize}
-\end{proof}
+% \begin{theorem}[Progress]
+%   If $\ainc{\octx}{n}$, then either $\octx \reduces \octx'$ or $\aval{\octx}{n}$.
+% \end{theorem}
+% %
+% \begin{proof}
+%   By structural induction on the derivation of $\ainc{\octx}{n}$.
+%   % \begin{itemize}
+%   % \item Consider the case in which
+%   %   \begin{equation*}
+%   %     \octx
+%   %     =
+%   %     \infer{\ainc{\octx_0 \oc i}{n_0+1}}{
+%   %       \ainc{\octx_0}{n_0}}
+%   %     =
+%   %     n
+%   %   \end{equation*}
+%   %   for some $\octx_0$ and $n_0$.
+%   % \end{itemize}
+% \end{proof}
 
-Because rewriting is nondeterministic, we cannot take \enquote{$\ainc{\octx}{n}$ implies $\octx \Reduces\aval{}{n}$} as a statement of termination.
+% Because rewriting is nondeterministic, we cannot take \enquote{$\ainc{\octx}{n}$ implies $\octx \Reduces\aval{}{n}$} as a statement of termination.
 
-\begin{theorem}[Termination]
-  If $\ainc{\octx}{n}$, then there is no infinite rewriting of $\octx$.
-\end{theorem}
-%
-\begin{proof}
-  For valid states $\octx$, we define a measure $\card{\octx}$ that is strictly decreasing across each rewriting $\octx \reduces \octx'$ (see the adjacent \lcnamecref{fig:ordered-rewriitting:binary-counter:measure}).
-  \begin{marginfigure}
-    \begin{equation*}
-      \begin{lgathered}
-        \card{e} = 0 \\
-        \card{\octx \oc b_0} = \card{\octx} \\
-        \card{\octx \oc b_1} = \card{\octx} + 2 \\
-        \card{\octx \oc i} = \card{\octx} + 4 \\
-        \card{e \fuse b_1} = 3 \\
-        \card{\octx \oc (i \fuse b_0)} = \card{\octx} + 5
-      \end{lgathered}
-    \end{equation*}
-  \end{marginfigure}%
-  That is, if $\octx$ is a valid state and $\octx \reduces \octx'$, then $\card{\octx} > \card{\octx'}$.
-  Because the measure is nonnegative, only finitely many such rewrittings can occour. 
+% \begin{theorem}[Termination]
+%   If $\ainc{\octx}{n}$, then there is no infinite rewriting of $\octx$.
+% \end{theorem}
+% %
+% \begin{proof}
+%   For valid states $\octx$, we define a measure $\card{\octx}$ that is strictly decreasing across each rewriting $\octx \reduces \octx'$ (see the adjacent \lcnamecref{fig:ordered-rewriitting:binary-counter:measure}).
+%   \begin{marginfigure}
+%     \begin{equation*}
+%       \begin{lgathered}
+%         \card{e} = 0 \\
+%         \card{\octx \oc b_0} = \card{\octx} \\
+%         \card{\octx \oc b_1} = \card{\octx} + 2 \\
+%         \card{\octx \oc i} = \card{\octx} + 4 \\
+%         \card{e \fuse b_1} = 3 \\
+%         \card{\octx \oc (i \fuse b_0)} = \card{\octx} + 5
+%       \end{lgathered}
+%     \end{equation*}
+%   \end{marginfigure}%
+%   That is, if $\octx$ is a valid state and $\octx \reduces \octx'$, then $\card{\octx} > \card{\octx'}$.
+%   Because the measure is nonnegative, only finitely many such rewrittings can occour. 
 
-  As an example case, consider the valid state $\octx \oc b_0 \oc i$ and its rewritting  $\octx \oc b_0 \oc i \reduces \octx \oc b_1$.
-  It follows from the definition that $\card{\octx \oc b_0 \oc i} = \card{\octx} + 4 > \card{\octx} + 2 = \card{\octx \oc b_1}$.
-\end{proof}
+%   As an example case, consider the valid state $\octx \oc b_0 \oc i$ and its rewritting  $\octx \oc b_0 \oc i \reduces \octx \oc b_1$.
+%   It follows from the definition that $\card{\octx \oc b_0 \oc i} = \card{\octx} + 4 > \card{\octx} + 2 = \card{\octx \oc b_1}$.
+% \end{proof}
 
 
 % %
@@ -1705,6 +2376,728 @@ Because rewriting is nondeterministic, we cannot take \enquote{$\ainc{\octx}{n}$
 %     \end{itemize}
 %   \end{description}
 % \end{proof}
+
+\paragraph{A decrement operation}
+Binary counters
+% \newthought{These binary counters}
+may also be equipped with a decrement operation.
+Instead of examining decrements \emph{per se}, we will implement a closely related operation: the normalization of binary representations to what might be called \vocab{head-unary form}.%
+\footnote{We will frequently abuse terminology, using \enquote*{head-unary normalization} and \enquote*{decrement} interchangably.}
+An ordered context $\octx$ will be said to be in head-unary form if it has one of two forms: $\octx = z$; or $\octx = \octx' \oc s$, for some binary number $\octx'$.
+
+Just as appending the atom $i$ to a counter initiates an increment, appending an uninterpreted atom $d$ will cause the counter to begin normalizing to head-unary form.
+The following \lcnamecref{thm:decrement-adequacy} serves as a specification of head-unary normalization, relating a value's head-unary form to its denotation.
+%
+\begin{theorem}[Structural adequacy of decrements]
+  If $\aval{\octx}{n}$, then:
+  \begin{itemize}[nosep]
+  \item $\octx \oc d \Reduces z$ if, and only if, $n=0$;
+  \item $\octx \oc d \Reduces \octx' \oc s$ for some $\octx'$ such that $\aval{\octx'}{n-1}$, if $n > 0$; and
+  \item $\octx \oc d \Reduces \octx' \oc s$ only if $n > 0$ and $\aval{\octx'}{n-1}$.
+  \end{itemize}
+\end{theorem}
+%
+\noindent
+For example, because $e \oc b_1$ denotes $1$, a computation $e \oc b_1 \oc d \Reduces \octx' \oc s$ must exist, for some $\aval{\octx'}{0}$.
+
+\newthought{Once again}, to implement these desiderata locally, the recursive definitions of $e$, $b_0$, and $b_1$ will be revised with an additional clause that handles decrements;
+also, a recursively defined proposition $b'_0$ is introduced:
+% 
+% Similarly to the use of the atom $i$ to describe 
+% Similarly to the way $i$ initiates increments, a decrement is triggered by appending an [uninterpreted] atom $d$ to the counter;
+% $d$ is then processed from right to left by the counter's individual bits.
+% To support this, the definitions of $e$, $b_0$, and $b_1$ are revised with an addition clause each:
+\begin{description}[font=\color{structure}]
+\item[$e \defd (\dotsb \pmir i) \with (z \pmir d)$]
+  Because $e$ denotes $0$, its head-unary form is simply $z$.
+  % Because $e$ denotes $0$, it may be put into head-unary form by replacing it with $z$.
+\item[$b_0 \defd (\dotsb \pmir i) \with (d \fuse b'_0 \pmir d)$]
+  Because $\octx \oc b_0$ denotes $2n$ if $\octx$ denotes $n$, its head-unary form can be contructed by recursively putting the more significant bits into head-unary form and appending $b'_0$ to process that result.
+  % To put $\octx \oc b_0$ into head-unary form, recursively put the more significant bits into head-unary form and append $b'_0$ to process that result.
+\item[$b'_0 \defd (z \limp z) \with (s \limp b_1 \fuse s)$]
+  If the more significant bits have head-unary form $z$ and therefore denote $0$, then $\octx \oc b_0$ also denotes $0$ and has head-unary form $z$.
+  Otherwise, if they have head-unary form $\octx' \oc s$ and therefore denote $n > 0$, then $\octx \oc b_0$ denotes $2n$ and has head-unary form $\octx' \oc b_1 \oc s$, which can be constructed by replacing $s$ with $b_1 \oc s$.
+  % If the more significant bits, $\octx$, have $z$ as their head-unary form, then so does $\octx \oc b_0$; otherwise, if their head-unary form ends with $s$, then
+\item[$b_1 \defd (\dotsb \pmir i) \with (b_0 \fuse s \pmir d)$]
+  Because $\octx \oc b_1$ denotes $2n+1$ if $\octx$ denotes $n$, its head-unary form, $\octx \oc b_0 \oc s$, can be constructed by flipping the least significant bit to $b_0$ and appending $s$.
+  % To put $\octx \oc b_1$ into head-unary form, decrement the least significant bit to $b_0$ and append $s$.
+\end{description}
+%
+Comfortingly, $2-1 = 1$: the head-unary form of $e \oc b_1$ is $e \oc b_0 \oc b_1 \oc s$:
+\begin{equation*}
+  e \oc b_1 \oc b_0 \oc d \Reduces e \oc b_1 \oc d \oc b'_0 \Reduces e \oc b_0 \oc s \oc b'_0 \Reduces e \oc b_0 \oc b_1 \oc s
+  \,.
+\end{equation*}
+
+
+\newthought{At this point}, we would like to prove the adequacy of decrements.
+However, having just revised the definitions of $e$, $b_0$, and $b_1$, we must first recheck the adequacy of binary representation\parencref[see]{??}.
+%
+Unfortunately, the newly introduced alternative conjunctions, together with the fine-grained atomicity of ordered rewriting, cause [...].
+%
+\begin{falseclaim}[Adequacy of binary representations]%
+  \leavevmode
+  \begin{thmdescription}
+  \item[Functional]
+    For every binary number $\octx$, there exists a unique natural number $n$ such that $\aval{\octx}{n}$.
+  \item[Surjectivity]
+    For every natural number $n$, there exists a binary number $\octx$ such that $\aval{\octx}{n}$.
+  \item[Values]
+    If $\aval{\octx}{n}$, then $\octx \nreduces$.
+  \end{thmdescription}
+\end{falseclaim}
+\begin{proof}[Counterexample]
+  Although the $\aval{}{}$ relation remains functional and surjective, it does not satisfy [...].
+  Because $\aval{e}{0}$, the counter $e$ is a value (with denotation $0$).
+  However, because the atomicity of ordered rewriting is extremely fine-grained, $e$ can be rewritten:
+  \begin{equation*}
+    \begin{tikzcd}[
+      cells={inner xsep=0.65ex,
+             inner ysep=0.4ex},
+      row sep=0em,
+      column sep=scriptsize,
+      /tikz/column 2/.append style={anchor=west}
+    ]
+      &[-0.2em] e \mathrlap{{} \fuse b_1 \pmir i}
+      \\
+      e = (e \fuse b_1 \pmir i) \with (z \pmir d)
+        \urar[reduces, start anchor=east]
+        \drar[reduces, start anchor=base east]
+      \\
+      & z \mathrlap{{} \pmir d}
+    \end{tikzcd}
+    \hphantom{{} \fuse b_1 \pmir i}
+  \end{equation*}
+  That $e$ is an active proposition violates our conception of values as inactive.
+\end{proof}
+
+\newthought{At this point}, we would like to prove the adequacy of decrements.
+However, having just revised the definitions of $e$, $b_0$, and $b_1$, we must first recheck the adequacy of increments.
+%
+Unfortunately, the newly introduced alternative conjunctions, together with the fine-grained atomicity of ordered rewriting, cause the preservation and progress properties to fail.
+%
+\begin{falseclaim}[Small-step adequacy of increments]%
+  \leavevmode
+  \begin{thmdescription}
+  \item[Value inclusion]
+    If $\aval{\octx}{n}$, then $\ainc{\octx}{n}$.
+  \item[Preservation]
+    If $\ainc{\octx}{n}$ and $\octx \reduces \octx'$, then $\ainc{\octx'}{n}$.
+  \item[Progress]
+    If $\ainc{\octx}{n}$, then either%
+    \begin{itemize*}[
+      mode=unboxed, label=, afterlabel=,
+      before=\unskip:\space,
+      itemjoin=;\space, itemjoin*=; or\space%
+    ]  
+    \item $\octx \reduces \octx'$ for some $\octx'$
+    \item $\octx \nreduces$ and $\aval{\octx}{n}$
+    \end{itemize*}
+  \item[Termination]
+    If $\ainc{\octx}{n}$, then every rewriting sequence from $\octx$ is finite.
+  \end{thmdescription}
+\end{falseclaim}
+\begin{proof}[Counterexample]
+  As a counterexample to preservation, notice that $e \oc i$ denotes $1$ and that
+\begin{equation*}
+  e \oc i = (e \fuse b_1 \pmir i) \with (z \pmir d)
+    \reduces (e \fuse b_1 \pmir i) \oc i
+  \,,
+\end{equation*}
+but that $(e \fuse b_1 \pmir i) \oc i$ does not have a denotation under the $\ainc{}{}$ relation.
+
+  Even worse, computations can now enter stuck states -- $e \oc i \reduces (z \pmir d) \oc i \nreduces$, for example.
+  It's difficult to imagine assigning denotations to these stuck states, making them counterexamples to preservation.
+  Even if denotations were somehow assigned to them, such states would anyway violate the desired progress theorem.
+\end{proof}
+
+In both cases, these counterexamples arise from the very fine-grained atomicity of ordered rewriting.
+Now that the definitions of $e$, $b_0$, and $b_1$ include alternative conjunctions, [...].
+
+\begin{theorem}
+  \begin{thmdescription}
+  \item[Evaluation]
+    If $\ainc{\octx}{n}$, then $\octx \Reduces\aval{}{n}$.
+    In particular, if $\aval{\octx}{n}$, then $\octx \Reduces\aval{n+1}$.
+  \item[Preservation]
+    If $\ainc{\octx}{n}$ and $\octx \Reduces\aval{}{n'}$, then $n' = n$.
+  \end{thmdescription}
+\end{theorem}
+\begin{proof}
+  By structural induction on the given derivation of $\ainc{\octx}{n}$.
+\end{proof}
+
+The solution is to chain several small rewriting steps together into a single, larger atomic step. 
+
+
+\section{Weakly focused rewriting}
+
+\Textcite{Andreoli:??}'s observation was that propositions can be partitioned into two classes, or \vocab{polarities}\fixnote{reference?}, according to the invertibility of their sequent calculus rules, and that [...].
+
+
+
+The ordered propositions are polarized into two classes, the positive and negative propositions, according to the invertibility of their sequent calculus rules.
+\begin{syntax*}
+  Positive props. &
+    \p{A} & \p{\alpha} \mid \p{A} \fuse \p{B} \mid \one \mid \dn \n{A}
+  \\
+  Negative props. &
+    \n{A} & \n{\alpha} \mid
+    % \begin{array}[t]{@{{} \mid {}}l@{}}
+              \p{A} \limp \n{B} \mid \n{B} \pmir \p{A} \mid % \\
+              \n{A} \with \n{B} \mid \top \mid \up \p{A}
+            % \end{array}
+\end{syntax*}
+The positive propositions are those propositions that have invertible left rules, such as ordered conjunction;
+the negative propositions are those that have invertible right rules, such as the ordered implications.
+
+\begin{syntax*}
+  Ordered contexts &
+    \octx & \octx_1 \oc \octx_2 \mid \octxe \mid \p{A}
+\end{syntax*}
+
+Left rules for negative connectives may be chained together into a single \vocab{left-focusing phase}, reflected by the pattern judgment $\lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}}$.
+Following \textcite{Zeilberger:??}, this judgment can be read as a function of an in-focus negative proposition, $\n{A}$, that produces the ordered contexts $\octx_L$ and $\octx_R$ and the positive consequent $\p{C}$ as outputs.
+
+The left-focus judgment is defined inductively on the structure of the in-focus proposition by the following rules.
+\begin{inferences}
+  \infer[\lrule{\limp}']{\lfocus{\octx_L}{\p{A} \limp \n{B}}{\octx_R}{\p{C}}}{
+    \lfocus{\octx_L \oc \p{A}}{\n{B}}{\octx_R}{\p{C}}}
+  \and
+  \infer[\lrule{\pmir}']{\lfocus{\octx_L}{\n{B} \pmir \p{A}}{\octx_R}{\p{C}}}{
+    \lfocus{\octx_L}{\n{B}}{\p{A} \oc \octx_R}{\p{C}}}
+  \\
+  \infer[\lrule{\with}_1]{\lfocus{\octx_L}{\n{A} \with \n{B}}{\octx_R}{\p{C}}}{
+    \lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}}}
+  \and
+  \infer[\lrule{\with}_2]{\lfocus{\octx_L}{\n{A} \with \n{B}}{\octx_R}{\p{C}}}{
+    \lfocus{\octx_L}{\n{B}}{\octx_R}{\p{C}}}
+  \and
+  \text{(no $\lrule{\top}$ rule)}
+  \\
+  \infer[\lrule{\up}]{\lfocus{}{\up \p{A}}{}{\p{A}}}{}
+\end{inferences}
+These rules parallel the usual sequent calculus rules, maintaining focus on the subformulas of negative polarity.
+First, the $\lrule{\up}$ rule finishes a left-focusing phase by producing the consequent $\p{A}$ from $\up \p{A}$.
+
+Second, the $\lrule{\limp}'$ and $\lrule{\pmir}'$ rules diverge slightly from the usual left rules for left- and right-handed implication in that they have no premises decomposing [the antecedent\fixnote{wc?}] $\p{A}$.
+This would mean that a weakly focused sequent calculus based on $\lrule{\limp}'$ and $\lrule{\pmir}'$ would be incomplete for provability.
+It is possible to [...]\autocite{Simmons:CMU??}.
+However, because our goal here is a rewriting framework and such a framework is inherently incomplete\fixnote{Is this right?}, [...].
+
+
+\begin{equation*}
+  \infer[\jrule{$\dn$D}]{\octx_L \oc \dn \n{A} \oc \octx_R \reduces \p{C}}{
+    \lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}}}
+\end{equation*}
+
+Consider the recursively defined proposition $\alpha \defd (\beta \limp \alpha) \with (\gamma \limp \one)$.
+Previously, in the unfocused rewriting framework, it took two steps to rewrite $\beta \oc \alpha$ into $\alpha$:
+\begin{equation*}
+  \beta \oc \alpha = \beta \oc \bigl((\beta \limp \alpha) \with (\gamma \limp \one)\bigr)
+    \reduces \beta \oc (\beta \limp \alpha)
+    \reduces \alpha
+\end{equation*}
+Now, in the polarized, weakly focused rewriting framework, the analogous recursive definition is $\n{\alpha} \defd (\p{\beta} \limp \up \dn \n{\alpha}) \with (\p{\gamma} \limp \up \one)$, and it takes only one step to rewrite $\p{\beta} \oc \dn \n{\alpha}$ into $\dn \n{\alpha}$:
+\begin{equation*}
+  \p{\beta} \oc \dn \n{\alpha} = \p{\beta} \oc \dn \bigl((\p{\beta} \limp \up \dn \n{\alpha}) \with (\p{\gamma} \limp \up \one)\bigr)
+    \reduces \dn \n{\alpha}
+\end{equation*}
+because $\lfocus{\p{\beta}}{\n{\alpha}}{}{\dn \n{\alpha}}$.
+
+Notice that, because the left-focus judgment is defined inductively, there are some recursively defined negative propositions that cannot successfully be put in focus.
+For example, under the definition $\n{\alpha} \defd \p{\beta} \limp \n{\alpha}$, there are no contexts $\octx_L$ and $\octx_R$ and conseqeunt $\p{C}$ for which $\lfocus{\octx_L}{\n{\alpha}}{\octx_R}{\p{C}}$ is derivable.
+
+In addition to the $\jrule{$\dn$D}$ rule for decomposing $\dn \n{A}$, weakly focused ordered rewriting retains the $\jrule{$\fuse$D}$ and $\jrule{$\one$D}$ rules for decomposing $\p{A} \fuse \p{B}$ and $\one$ and the compatability rules, $\jrule{$\reduces$C}_{\jrule{L}}$ and $\jrule{$\reduces$C}_{\jrule{R}}$.
+Together, these five rules and the left focus\fixnote{focal?} rules comprise the weakly focused ordered rewriting framework; they are summarized in \cref{??}.
+%
+\begin{figure}
+  \begin{syntax*}
+    Positive props. &
+      \p{A} & \p{\alpha} \mid \p{A} \fuse \p{B} \mid \one \mid \dn \n{A}
+    \\
+    Negative props. &
+      \n{A} & \n{\alpha} \mid
+      % \begin{array}[t]{@{{} \mid {}}l@{}}
+                \p{A} \limp \n{B} \mid \n{B} \pmir \p{A} \mid % \\
+                \n{A} \with \n{B} \mid \top \mid \up \p{A}
+              % \end{array}
+    \\
+    Ordered contexts &
+      \octx & \octx_1 \oc \octx_2 \mid \octxe \mid \p{A}
+  \end{syntax*}
+  \begin{inferences}[Rewriting: $\octx \reduces \octx'$ and $\octx \Reduces \octx'$]
+    \infer[\jrule{$\dn$D}]{\octx_L \oc \dn \n{A} \oc \octx_R \reduces \p{C}}{
+      \lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}}}
+    \and
+    \infer[\jrule{$\fuse$D}]{\p{A} \fuse \p{B} \reduces \p{A} \oc \p{B}}{}
+    \and
+    \infer[\jrule{$\one$D}]{\one \reduces \octxe}{}
+    \\
+    \text{(no $\jrule{$\plus$D}$ and $\jrule{$\zero$D}$ rules)}
+    \\
+    \infer[\jrule{$\reduces$C}_{\jrule{L}}]{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
+      \octx_1 \reduces \octx'_1}
+    \and
+    \infer[\jrule{$\reduces$C}_{\jrule{R}}]{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
+      \octx_1 \reduces \octx'_1}
+  \end{inferences}
+  \begin{inferences}
+    \infer[\jrule{$\Reduces$R}]{\octx \Reduces \octx}{}
+    \and
+    \infer[\jrule{$\Reduces$T}]{\octx \Reduces \octx''}{
+      \octx \reduces \octx' & \octx' \Reduces \octx''}
+  \end{inferences}
+
+  \begin{inferences}[Left focus: $\lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}}$]
+    \infer[\lrule{\limp}']{\lfocus{\octx_L}{\p{A} \limp \n{B}}{\octx_R}{\p{C}}}{
+      \lfocus{\octx_L \oc \p{A}}{\n{B}}{\octx_R}{\p{C}}}
+    \and
+    \infer[\lrule{\pmir}']{\lfocus{\octx_L}{\n{B} \pmir \p{A}}{\octx_R}{\p{C}}}{
+      \lfocus{\octx_L}{\n{B}}{\p{A} \oc \octx_R}{\p{C}}}
+    \\
+    \infer[\lrule{\with}_1]{\lfocus{\octx_L}{\n{A} \with \n{B}}{\octx_R}{\p{C}}}{
+      \lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}}}
+    \and
+    \infer[\lrule{\with}_2]{\lfocus{\octx_L}{\n{A} \with \n{B}}{\octx_R}{\p{C}}}{
+      \lfocus{\octx_L}{\n{B}}{\octx_R}{\p{C}}}
+    \and
+    \text{(no $\lrule{\top}$ rule)}
+    \\
+    \infer[\lrule{\up}]{\lfocus{}{\up \p{A}}{}{\p{A}}}{}
+  \end{inferences}
+  \caption{A weakly focused ordered rewriting framework}
+\end{figure}
+
+Weakly focused ordered rewriting is sound with respect to the unfocused rewriting framework of \cref{??}.
+Given a depolarization function $\erase{}$ that maps polarized propositions and contexts to their unpolarized counterparts,%
+\begin{marginfigure}
+  \begin{equation*}
+    \begin{aligned}[t]
+      \erase{\octx_1 \oc \octx_2}
+        &= \erase*{\octx_1} \oc \erase*{\octx_2} \\
+      \erase{\octxe} &= \octxe \\
+      \erase{\p{A}} &= \erase{\p{A}}
+    \end{aligned}
+    \qquad
+    \begin{gathered}[t]
+      \erase{\dn \n{A}} = \erase{\n{A}}
+      \\
+      \erase{\up \p{A}} = \erase{\p{A}}
+      % \\
+      % \erase{\p{A} \fuse \p{B}} &= \erase{\p{A}} \fuse \erase{\p{B}}
+      \\
+      \begin{array}{@{}l@{}}
+        \erase{\p{A} \limp \n{B}} \\
+        \quad{} = \erase{\p{A}} \limp \erase{\n{B}}
+      \end{array}
+      \\
+      \rlap{\emph{etc.}}
+    \end{gathered}
+  \end{equation*}
+  \caption{Depolarization of propositions and contexts}
+\end{marginfigure}%
+%
+we may state and prove the following soundness theorem for weakly focused rewriting.
+%
+\begin{theorem}[Soundness of weakly focused rewriting]
+  If $\octx \Reduces \octx'$, then $\erase*{\octx} \Reduces \erase{\octx'}$.
+\end{theorem}
+\begin{proof}
+  By structural induction on the given rewriting step, after generalizing the inductive hypothesis to include:
+  \begin{itemize}[nosep]
+  \item If $\octx \reduces \octx'$, then $\erase*{\octx} \Reduces \erase{\octx'}$.
+  \item If $\lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}}$, then $\erase{\octx_L \oc \dn \n{A} \oc \octx_R} \Reduces \erase{\p{C}}$.
+  %
+  \qedhere
+  \end{itemize}
+\end{proof}
+%
+\noindent
+A completeness theorem also holds, but we forgo its development because it is not essential to the remainder of this work.
+
+Second, with the lone exception negative propositions are latent\autocite{??} -- 
+
+\section{Revisiting automata}
+
+\begin{gather*}
+  \dfa{q} \defd
+    \parens[size=big]{\bigwith_{a \in \ialph}(a \limp \up \dn \dfa{q}'_a)}
+    \with
+    (\emp \limp \up \dfa{F}(q))
+\shortintertext{where}
+  q \dfareduces[a] q'_a
+  \text{, for all $a \in \ialph$\quad and\quad}
+  \dfa{F}(q) = \begin{cases*}
+                 \one & if $q \in F$ \\
+                 \dn \top & if $q \notin F$
+               \end{cases*}
+\end{gather*}
+
+\begin{theorem}[\ac*{DFA} adequacy up to bisimilarity]
+  \dfaadequacybisimbody
+\end{theorem}
+
+Lemma\cref{??} is still needed, but now has a much different proof.
+Previously, the proof of \cref{??} relied on a very specific and delicate property of \acp{DFA}, namely that each \ac{DFA} state has one and only one $a$-successor for each input symbol $a$.
+Now, with weakly focused ordered rewriting, the \lcnamecref{??}'s proof is much less fragile.
+With the larger granularity of individual rewriting steps that the weakly focused framework affords, a state's encoding is a latent proposition 
+
+\section{Revisiting binary counters}
+
+With ordered rewriting now based on a weakly focused sequent calculus, we can revisit our previous attempt to extend binary counters with support for decrements or head-unary normalization.
+
+The propositions $e$, $b_0$, $b'_0$, and $b_1$ are recursively defined in nearly the same way as before.
+With one exception discussed below, only the necessary shifts are inserted to consistently assign a negative polarity to the defined atoms $e$, $b_0$, $b'_0$, and $b_1$ and a positive polarity to the uninterpreted atoms $i$, $d$, $z$, and $s$.
+\begin{equation*}
+  \begin{lgathered}
+    e \defd (e \fuse b_1 \pmir i) \with (z \pmir d) \\
+    b_0 \defd (\up \dn b_1 \pmir i) \with (d \fuse b'_0 \pmir d) \\
+    b'_0 \defd (z \limp z) \with (s \limp b_1 \fuse s) \\
+    b_1 \defd (i \fuse b_0 \pmir i) \with (b_0 \fuse s \pmir d)
+  \end{lgathered}
+\end{equation*}
+
+\paragraph*{Values}
+Once again, we use the same $\aval{}{}$ relation to assign a unique natural number denotation to each binary representation.
+\begin{inferences}
+  \ooavalrules
+\end{inferences}
+Because the underlying ordered rewriting framework has changed, we must verify that $\aval{}{}$ is adequate -- inparticular, the [...] property that values cannot be independently rewritten.
+%
+\ooavaltheorem
+\begin{proof}
+  By induction over the structure of $\octx$.
+  As an example, consider the case in which $\aval{e}{0}$.
+  Indeed, $e \nreduces$ because $e = (e \fuse b_1 \pmir i) \with (z \pmir d)$ and
+  \begin{equation*}
+    \lfocus{\octx_L}{(e \fuse b_1 \pmir i) \with (z \pmir d)}{\octx_R}{\p{C}}
+    \text{\ only if $\octx_L = \octxe$ and either $\octx_R = i$ or $\octx_R = d$.}
+  \end{equation*}
+  The other cases are similar.
+\end{proof}
+
+\paragraph*{Increment}
+Previously, under the unfocused rewriting framework\fixnote{wc?}, rewriting $e \oc i$ into $e \fuse b_1$ took two small steps:
+\begin{equation*}
+  e \oc i = \bigl((e \fuse b_1 \pmir i) \with (z \pmir d)\bigr) \oc i
+    \reduces (e \fuse b_1 \pmir i) \oc i
+    \reduces e \fuse b_1
+\end{equation*}
+But now, with weakly focused rewriting, those two steps are combined into one atomic whole: $e \oc i \reduces e \fuse b_1$.
+
+As for the unfocused rewriting implementation of binary increments, we use a $\ainc{}{}$ relation to assign a natural number denotation to each computational state.
+In fact, the specific definition of the $\ainc{}{}$ remains unchanged from \cref{??}: 
+\begin{inferences}
+  \aincrules
+\end{inferences}
+
+The only exception to [...] is the appearance of $\up \dn b_1$ in the definition of $b_0$.
+Without this double shift, $e \oc b_0 \oc i$ would be latent, unable to rewrite to a value until a second increment is appended, because the necessary $\lfocus{}{(b_1 \pmir i) \with (d \fuse b'_0 \pmir d)}{i}{b_1}$ is not derivable.
+However, with the double shift, $e \oc b_0 \oc i \reduces e \oc b_1$ because $\lfocus{}{(\up \dn b_1 \pmir i) \with (d \fuse b'_0 \pmir d)}{i}{\dn b_1}$ is derivable.
+
+
+With weakly focused rewriting, it is no longer possible to reach the stuck state $...$.
+\smallincadequacytheorem
+\begin{proof}
+  As before, each part is proved separately.
+  \begin{description}[
+    parsep=0pt, listparindent=\parindent,
+    labelsep=0.35em
+  ]
+  \item[Value soundness, preservation, and progress]
+    can be proved by structural induction on the derivation of $\ainc{\octx}{n}$.
+  \item[Termination]
+    can be proved using the same explicit termination measure, $\card{\octx}$, as in \cref{??}.
+  %
+  \qedhere
+  \end{description}
+\end{proof}
+
+
+\paragraph*{Decrements}
+
+\begin{inferences}
+  \infer[\jrule{$d$-D}]{\adec{\octx \oc d}{n}}{
+    \ainc{\octx}{n}}
+  \and
+  \infer[\jrule{$b'_0$-D}]{\adec{\octx \oc b'_0}{2n}}{
+    \adec{\octx}{n}}
+  \and
+  \infer[\jrule{$z$-D}]{\adec{z}{0}}{}
+  \and
+  \infer[\jrule{$s$-D}]{\adec{\octx \oc s}{n+1}}{
+    \ainc{\octx}{n}}
+  \\
+  \infer[\jrule{$\fuse_1$-D}]{\adec{\octx \oc (d \fuse b'_0)}{2n}}{
+    \ainc{\octx}{n}}
+  \\
+  \infer[\jrule{$\fuse_2$-D}]{\adec{\octx \oc (b_0 \fuse s)}{2n+1}}{
+    \ainc{\octx}{n}}
+  \and
+  \infer[\jrule{$\fuse_3$-D}]{\adec{\octx \oc (b_1 \fuse s)}{2n+2}}{
+    \ainc{\octx}{n}}
+\end{inferences}
+
+\begin{theorem}[Small-step adequacy of decrements]
+  \leavevmode
+  \begin{thmdescription}
+  \item[Preservation]
+    If $\adec{\octx}{n}$ and $\octx \reduces \octx'$, then $\adec{\octx'}{n}$.
+  \item[Progress]
+    If $\adec{\octx}{n}$, then [either]:
+    \begin{itemize}[nosep]
+    \item $\octx \reduces \octx'$, for some $\octx'$;
+    \item $n = 0$ and $\octx = z$; or
+    \item $n > 0$ and $\octx = \octx' \oc s$, for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
+    \end{itemize}
+  \item[Termination]
+    If $\adec{\octx}{n}$, then every rewriting sequence from $\octx$ is finite.
+  \end{thmdescription}
+\end{theorem}
+\begin{proof}
+  \begin{description}
+  \item[Preservation and progress]
+    are proved, as before, by structural induction on the given derivation of $\adec{\octx}{n}$.
+  \item[Termination] is proved by exhibiting a measure, $\card[d]{}$, that is strictly decreasing across each rewriting.
+    Following the example of termination for increment-only binary counters\parencref{??}, we could try to assign a constant amount of potential to each of the counter's constituents.
+    Leaving these potentials as unknowns, we can generate a set of constraints from the allowed rewritings and then attempt to solve them.
+
+    For instance, here are several rewritings and their corresponding potential constraints.
+    \begin{center}
+      \begin{tabular}{@{}c@{\quad}c@{}}
+        \emph{Some selected rewritings} & \emph{Potential constraints}
+        \\
+        $\octx \oc b_1 \oc i \reduces \octx \oc (i \fuse b_0) \reduces \octx \oc i \oc b_0$
+        & $b_1 + i > i + b_0 + 1$
+        \\
+        $\octx \oc b_0 \oc d \reduces \octx \oc (d \fuse b'_0) \reduces \octx \oc d \oc b'_0$
+        & $b_0 + d > d + b'_0 + 1$
+        \\
+        $\octx \oc s \oc b'_0 \reduces \octx \oc (b_1 \fuse s) \reduces \octx \oc b_1 \oc s$
+        & $s + b'_0 > b_1 + s + 1$
+        % \\
+        % $\octx \oc b_1 \oc d \reduces \octx \oc (b_0 \fuse s) \reduces \octx \oc b_0 \oc s$
+        % & $b_1 + d > b_0 + s + 1$
+      \end{tabular}
+    \end{center}
+    These constraints are satisfiable only if $b_1 > b_0 > b'_0 > b_1$, which is, of course, impossible.
+
+    However, notice that each $b_1$ that arises from an interaction between $s$ and $b'_0$ will never participate in further rewritings because any increments remaining to the left of $b_1$ will only involve more significant bits, not this less significant $b_1$.
+    A similar argument can be made for all bits that occur between the rightmost $i$ and the terminal $s$, suggesting that those bits be assigned no potential at all.
+
+    This leads to the termination measure, $\card[d]{}$, and its auxiliary measures, $\card[i]{}$ and $\card[s]{}$, shown in the adjacent \lcnamecref{??}.
+    (Note that the measure $\card[i]{}$ is not the same as the measure used for increment-only binary counters\parencref{??}.)x
+
+
+
+
+    is proved by exhibiting a pair of measures, $\card{\octx}_d$ and $\card{\octx}_s$, ordered lexicographically:
+    \begin{itemize}
+    \item If $\adec{\octx}{n}$ and $\octx \reduces \octx'$, then either:
+      \begin{itemize*}[label=, afterlabel=]
+      \item $\card{\octx}_d > \card{\octx'}_d$; or
+      \item $\card{\octx}_d = 0$ and $\card{\octx}_s > \card{\octx'}_s$.
+      % \item $\card{\octx} > \card{\octx'}$; or
+      % \item $n = 0$ and $\octx' = z$; or
+      % \item $n > 0$ and $\octx' = \octx'' \oc s$, for some $\octx''$ such that $\ainc{\octx''}{n-1}$.
+      % \item $\octx = \octx_0 \oc (b_1 \fuse s) \reduces \octx_0 \oc b_1 \oc s = \octx'$.
+      \end{itemize*}
+    \end{itemize}
+    These measures are shown in the adjacent \lcnamecref{??}, %
+    \begin{marginfigure}
+      \begin{equation*}
+        \begin{lgathered}[t]
+          \card{\octx \oc s}_s = \card{\octx} \\
+          \card{e} = 0 \\
+          \card{\octx \oc b_0} = \card{\octx} + 4 \\
+          \card{\octx \oc b_1} = \card{\octx} + 6 \\
+          \card{\octx \oc i} = \card{\octx} + 8 \\
+          \card{e \fuse b_1} = 7 \\
+          \card{\octx \oc (i \fuse b_0)} = \card{\octx} + 13
+        \end{lgathered}
+        \qquad
+        \begin{lgathered}[t]
+          \card{\octx \oc d}_d = \card{\octx} + 1 \\
+          \card{\octx \oc b'_0}_d = \card{\octx}_d + 2 \\
+          \card{z}_d = 0 \\
+          \card{\octx \oc s}_d = 0 \\
+          \card{\octx \oc (d \fuse b'_0)}_d = \card{\octx} + 4 \\
+          \card{\octx \oc (b_0 \fuse s)}_d = 1 \\
+          \card{\octx \oc (b_1 \fuse s)}_d = 1
+        \end{lgathered}
+      \end{equation*}
+    \end{marginfigure}
+    rely on an auxiliary measure, $\card{\octx}$, for increment states.
+    Unfortunately, it is not possible to simply reuse the measure from \cref{??}.
+    In that measure, each $b_0$ bit was assigned no potential.
+    With decrements, however, $b_0$ needs to carry enough potential to transfer to $b'_0$ in case a decrement instruction is encountered.
+
+    For the rewritings $\octx \oc b_1 \oc i \reduces \octx \oc (i \fuse b_0) \reduces \octx \oc i \oc b_0$, the assigned potentials must satisfy $b_1 + i > i + b_0 + 1$
+
+
+    No 
+
+        
+    % e d --> z   1 > 0
+    % b0 d --> d * b0' --> d b0'  4 > 3 > 2
+    % b1 d --> b0 * s --> b0 s    6 > 1 > 0
+    % z b0' --> z                 2 > 0
+    % s b0' --> b1* s --> b1 s    2 > 1 > 0
+    % e i --> e * b1 --> e b1     8 > 7 > 6
+    % b0 i --> b1                 12 > 6
+    % b1 i --> i * b0 --> i b0    14 > 13 > 12
+
+    % e + i > e + b1 + 1  
+    % b0 + i > b1
+    % b1 + i > i + b0 + 1
+    % e + d > z
+    % b0 + d > d + b0' + 1
+    % b1 + d > s + 1
+    % z + b0' > z
+    % s + b0' > s + 1
+
+    % b1 d --> b0 * s --> b0 s      2 + d > 1 > 0
+    % b0 d --> d * b'0 --> d b'0    b0 + d > d + 2 + 1 > d + 2
+    % z b'0 --> z
+    % s b'0 --> b1 * s --> b1 s
+
+    As an example case, consider the intermediate state $\octx \oc (b_1 \fuse s)$ and its rewriting $\octx \oc (b_1 \fuse s) \reduces \octx \oc b_1 \oc s$.
+    It follows $\card{\octx \oc (b_1 \fuse s)}_d = 1 > 0 = \card{\octx \oc b_1 \oc s}_d$.
+    Any subsequent rewritings of $\octx$ are justified by a decrease in $\card{\octx \oc b_1 \oc s}_s > \card{\octx}$.
+  \end{description}
+\end{proof}
+
+\begin{corollary}[Big-step adequacy of decrements]
+  If $\adec{\octx}{n}$, then:
+  \begin{itemize}[nosep]
+  \item $\octx \Reduces z$ if, and only if, $n = 0$;
+  \item $\octx \Reduces \octx' \oc s$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$, if $n > 0$; and
+  \item $\octx \Reduces \octx' \oc s$ only if $n > 0$ and $\ainc{\octx'}{n-1}$.
+  \end{itemize}
+\end{corollary}
+\begin{proof}
+  From the small-step preservation result of \cref{??}, it is possible to prove, using a structural induction on the given trace, a big-step preservation result: namely, that $\adec{\octx}{n}$ and $\octx \Reduces \octx'$ only if $\adec{\octx'}{n}$.
+  Each of the above claims then follows from either progress and termination\parencref{??} or big-step preservation together with inversion.
+\end{proof}
+
+%   \begin{itemize}
+%   \item
+%     In the left-to-right direction, preservation yields $\adec{z}{n}$; by inversion, $n$ can only be $0$.
+%     The right-to-left direction follows immediately from productivity.
+%   \item
+%     This second statement follows immediately from productivity.
+%   \item
+%     Preservation yields $\adec{\octx' \oc s}{n}$; by inversion, $n$ must be strictly positive with $\ainc{\octx'}{n-1}$.
+%   \end{itemize}
+% \end{proof}
+
+    \begin{equation*}
+      \begin{lgathered}[t]
+        \card[d]{\octx \oc d} = \card[i]{\octx} + 1 \\
+        \card[d]{\octx \oc b'_0} = \card[d]{\octx} + 2 \\
+        \card[d]{z} = 0 \\
+        \card[d]{\octx \oc s} = \card[s]{\octx}
+        \\[\jot]
+        \card[d]{\octx \oc (d \fuse b'_0)} = \card[d]{\octx \oc d \oc b'_0} + 1 \\
+        \card[d]{\octx \oc (b_0 \fuse s)} = \card[d]{\octx \oc b_0 \oc s} + 1 \\
+        \card[d]{\octx \oc (b_1 \fuse s)} = \card[d]{\octx \oc b_1 \oc s} + 1
+      \end{lgathered}
+      \qquad
+      \begin{lgathered}[t]
+        \card[i]{e} = 0 \\
+        \card[i]{\octx \oc b_0} = \card[i]{\octx} + 4 \\
+        \card[i]{\octx \oc b_1} = \card[i]{\octx} + 6 \\
+        \card[i]{\octx \oc i} = \card[i]{\octx} + 8
+        \\[\jot]
+        \card[i]{e \fuse b_1} = \card[i]{e \oc b_1} + 1 \\
+        \card[i]{\octx \oc (i \fuse b_0)} = \card[i]{\octx \oc i \oc b_0} + 1
+      \end{lgathered}
+      \qquad
+      \begin{lgathered}[t]
+        \card[s]{e} = \card[i]{e} = 0 \\
+        \card[s]{\octx \oc b_0} = \card[s]{\octx} \\
+        \card[s]{\octx \oc b_1} = \card[s]{\octx} \\
+        \card[s]{\octx \oc i} = \card[i]{\octx \oc i} = \card[i]{\octx} + 8
+        \\[\jot]
+        \card[s]{e \fuse b_1} = \card[s]{e \oc b_1} + 1 \\
+        \card[s]{\octx \oc (i \fuse b_0)} = \card[s]{\octx \oc i \oc b_0} + 1
+      \end{lgathered}
+    \end{equation*}
+
+    \begin{itemize}
+    \item If $\adec{\octx}{n}$ and $\octx \reduces \octx'$, then $\card[d]{\octx} > \card[d]{\octx'}$.
+    \item If $\ainc{\octx}{n}$ and $\octx \reduces \octx'$, then $\card[i]{\octx} > \card[i]{\octx'}$ and $\card[s]{\octx} > \card[s]{\octx'}$.
+    \end{itemize}
+
+% b1 d --> b0 s  |-|i + 7 > |-|s + 1
+% s b0' --> b1 s  |-|s + 2 > |-|s + 1
+
+
+\section{Temporary}
+
+% \begin{theorem}[Behavioral adequacy of decrements]
+%   If $\adec{\octx}{n}$, then:
+%   \begin{itemize}[nosep]
+%   \item $\octx \Reduces z$ if, and only if, $n = 0$;
+%   \item $\octx \Reduces \octx' \oc s$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$, if $n > 0$;
+%   \item $\octx \Reduces \octx' \oc s$ only if $n > 0$ and $\ainc{\octx'}{n-1}$.
+%   \end{itemize}
+% \end{theorem}
+
+\begin{inferences}
+  \infer{\adec{\octx \oc d}{n}}{
+    \ainc{\octx}{n}}
+  \and
+  \infer{\adec{\octx \oc b'_0}{2n}}{
+    \adec{\octx}{n}}
+  \and
+  \infer{\adec{z}{0}}{}
+  \and
+  \infer{\adec{\octx \oc s}{n+1}}{
+    \ainc{\octx}{n}}
+  \\
+  \infer{\adec{\octx \oc (d \fuse b'_0)}{2n}}{
+    \adec{\octx}{n}}
+  \and
+  \infer{\adec{\octx \oc (b_1 \fuse s)}{2n+2}}{
+    \ainc{\octx}{n}}
+  \and
+  \infer{\adec{\octx \oc (b_0 \fuse s)}{2n+1}}{
+    \ainc{\octx}{n}}
+\end{inferences}
+As the first rule exhibits, a binary number and its head-unary form denote the same value.
+The last three rules are included by analogy with the $e \fuse b_1$ and $i \fuse b_0$ rules of the $\ainc{}{}$ relation.
+
+\begin{falseclaim}[Small-step adequacy of decrements]\leavevmode
+  \begin{thmdescription}
+  \item[Preservation]
+    If $\adec{\octx}{n}$ and $\octx \reduces \octx'$, then $\adec{\octx'}{n}$.
+  \item[Progress]
+    If $\adec{\octx}{n}$, then either:
+    \begin{itemize}[nosep]
+    \item $\octx \reduces \octx'$;
+    \item $n = 0$ and $\octx = z$; or
+    \item $n > 0$ and $\octx = \octx' \oc s$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
+    \end{itemize}
+  \item[Productivity]
+    If $\adec{\octx}{n}$, then every rewriting sequence from $\octx$ has a finite prefix $\octx \Reduces \octx'$ such that either:
+    \begin{itemize}[nosep]
+    \item $n = 0$ and $\octx' = z$; or
+    \item $n > 0$ and $\octx' = \octx'_0 \oc s$, for some $\octx'_0$ such that $\ainc{\octx'_0}{n-1}$.
+    \end{itemize}
+  \end{thmdescription}
+\end{falseclaim}
+\begin{proof}
+  The fine-grained atomicity of ordered rewriting, together with the use of alternative conjunction in the recursively defined propositions $e$, $b_0$, $b'_0$, and $b_1$, causes both preservation and progress properties to fail.
+
+  As a counterexample to preservation, $\adec{e \oc d}{0}$ and $e \oc d \reduces (z \pmir d) \oc d$, but $\adec{(z \pmir d) \oc d}{0}$ does \emph{not} hold.
+
+  Even worse, the fine-grained atomicity of ordered rewriting means that computations can enter stuck states, which shouldn't have denotations and which would violate progress if they were somehow assigned denotations.
+  For example, $\adec{e \oc d}{0}$ and $e \oc d \reduces (e \fuse b_1 \pmir i) \oc d \nreduces$.
+
+  $\ainc{e \oc i}{0}$ and $e \oc i \reduces (z \pmir d) \oc i \nreduces$
+\end{proof}
 
 
 \newthought{These binary counters} may also be equipped with a decrement operation.
@@ -1840,6 +3233,22 @@ If we revise the $s$ rule to use $n+1$, then a different problem arises: $\adec{
 \end{theorem}
 
 
+
+\section{}
+
+\begin{corollary}[Big-step adequacy of decrements]
+  If $\adec{\octx}{n}$, then:
+  \begin{itemize}
+  \item $\octx \Reduces \atmR{z}$ if, and only if, $n = 0$;
+  \item $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$, if $n > 0$; and
+  \item $\octx \Reduces \octx' \oc \atmR{s}$ only if $n > 0$ and $\ainc{\octx'}{n-1}$.
+  \end{itemize}
+\end{corollary}
+
+
+
+
+\section{}
 
 \subsection{Automata}
 
@@ -2246,9 +3655,9 @@ After defining a representation, $\nfawds{w}$, of words $w$ (see adjacent \lcnam
 
 As a second example, consider a rewriting specification of the binary representation of natural numbers with increment and decrement operations.
 
-\NewDocumentCommand \aval { m m } { #1 \approx_{\text{\normalfont\scshape v}} #2 }
-\NewDocumentCommand \ainc { m m } { #1 \approx_{\text{\normalfont\scshape i}} #2 }
-\NewDocumentCommand \adec { m m } { #1 \approx_{\text{\normalfont\scshape d}} #2 }
+% \NewDocumentCommand \aval { m m } { #1 \approx_{\text{\normalfont\scshape v}} #2 }
+% \NewDocumentCommand \ainc { m m } { #1 \approx_{\text{\normalfont\scshape i}} #2 }
+% \NewDocumentCommand \adec { m m } { #1 \approx_{\text{\normalfont\scshape d}} #2 }
 
 \NewDocumentCommand \cinc { m } { \mathbb{I}(#1) }
 \NewDocumentCommand \cnat { m } { \cinc{#1} }
@@ -2714,20 +4123,20 @@ Next, either of the two remaining increments may be processed -- that is, either
 \item Alternative choreography -- how are these related?
 \begin{equation*}
   \begin{lgathered}
-    i \defd (e \limp e \fuse b_1) \with (b_0 \limp b_1) \with (b_1 \limp i \fuse b_0) \\
-    d \defd (e \limp z) \with (b_0 \limp d \fuse b'_0) \with (b_1 \limp b_0 \fuse s) \\
-    b'_0 \defd (z \limp z) \with (s \limp b_1 \fuse s)
+    p \defd (i \fuse p \pmir \atmL{i}) \with (d \fuse p' \pmir \atmL{d}) \\
+    p' \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp p \fuse \atmR{s}) \\
+    i \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp i \fuse \atmR{b}_0) \\
+    d \defd (\atmR{e} \limp \atmR{z}) \with (\atmR{b}_0 \limp d \fuse b'_0) \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse \atmR{s}) \\
+    b'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \atmR{b}_1 \fuse \atmR{s})
   \end{lgathered}
 \end{equation*}
 
-\begin{equation*}
-  \begin{lgathered}
-    i \defd (e \limp e \fuse b_1) \with (b_0 \limp b_1) \with (b_1 \limp i \fuse b_0) \\
-    d \defd (e \limp z) \with (b_0 \limp d \fuse b'_0) \with (b_1 \limp b_0 \fuse s) \\
-    z \defd z \pmir b'_0 \\
-    s \defd b_1 \fuse s \pmir b'_0
-  \end{lgathered}
-\end{equation*}
+\begin{inferences}
+  \infer{\adec{\octx \oc d}{n}}{
+    \ainc{\octx}{n}}
+\end{inferences}
+
+If $\octx \oc \atmL{i} \reduces \octx'$, then $\atmR{\octx} \oc i \reduces \atmR{\octx}'$.
 \end{itemize}
 
 

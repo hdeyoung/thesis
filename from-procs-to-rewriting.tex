@@ -7,14 +7,15 @@ Is HOAS deep or shallow?}
 
 \begin{equation*}
   \begin{aligned}
-    \trproc{\spawn{P}{Q}} &= \trproc{P} \fuse \trproc{Q} \\
-            \trproc{\fwd} &= \one
+    \trproc[+]{\spawn{P}{Q}} &= \trproc[+]{P} \fuse \trproc[+]{Q} \\
+    \trproc[+]{\fwd} &= \one \\
+    \trproc[+]{\selectR{\kay}} &= \atmR{\kay} \\
+    \trproc[+]{\selectL{\kay}} &= \atmL{\kay} \\
+    \trproc[+]{P} &= \dn \trproc[-]{P}
     \\
-                         \trproc{\selectR{\kay}} &= \atmR{\kay} \\
-    \trproc{\caseL[\ell \in L]{\ell => Q_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\atmR{\ell} \limp \trproc{Q_{\ell}}\bigr)
-    \\
-    \trproc{\caseR[\ell \in L]{\ell => P_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\trproc{P_{\ell}} \pmir \atmL{\ell}\bigr) \\
-                         \trproc{\selectL{\kay}} &= \atmL{\kay}
+    \trproc[-]{\caseL[\ell \in L]{\ell => Q_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\atmR{\ell} \limp \up \trproc[+]{Q_{\ell}}\bigr) \\
+    \trproc[-]{\caseR[\ell \in L]{\ell => P_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\up \trproc[+]{P_{\ell}} \pmir \atmL{\ell}\bigr) \\
+    \trproc[-]{P} &= \up \trproc[+]{P}
   \end{aligned}
 \end{equation*}
 
@@ -22,120 +23,239 @@ Is HOAS deep or shallow?}
   \begin{aligned}
     \trconf{\cnfe} &= \cnfe \\
     \trconf{\cnf_1 \cc \cnf_2} &= \trconf{\cnf_1} \oc \trconf{\cnf_2} \\
-    \trconf{P} &= \trproc{P}
+    \trconf{P} &= \trproc[+]{P}
   \end{aligned}
 \end{equation*}
 
 \begin{theorem}
-  If $\cnf \reduces \cnf'$, then $\trconf{\cnf} \Reduces \trconf{\cnf'}$.\alertnote{Weak reduction only because rewriting is unfocused...}
+  $\trconf{}$ constitutes a (strong) reduction bisimulation.
+  That is:
+  \begin{itemize}[nosep]
+  \item If $\cnf \reduces \cnf'$, then $\trconf{\cnf} \reduces \trconf{\cnf'}$.
+  \item If $\trconf{\cnf} = \octx \reduces \octx'$, then $\cnf \reduces \cnf'$ for some $\cnf'$ such that $\trconf{\cnf'} = \octx'$.
+  \end{itemize}
 \end{theorem}
 
-\begin{theorem}
-  If $\trconf{\cnf} \Reduces \trconf{\cnf'}$, then $\cnf \Reduces \cnf'$.
-\end{theorem}
-
-These two theorems do not establish $\trconf{}$ as a (weak) reduction bisimulation\alertnote{Is this the right term?} because the second theorem assumes a reduction to an ordered context that is in the translation's image.
-The second theorem is equivalent to 
-\begin{theorem}
-  If $\trconf{\cnf} = P \Reduces P' = \trconf{\cnf'}$, then $\cnf \Reduces \cnf'$.
-\end{theorem}
-For the translation to be a (weak) reduction bisimulation, we would need to prove the following, which is false for unfocused rewriting.
-\begin{falseclaim}
-  If $\trconf{\cnf} = P \Reduces P'$, then $\cnf \Reduces \cnf'$ and $\trconf{\cnf'} = P'$ for some $\cnf'$.
-\end{falseclaim}
-It is false because of rewritings like $\bigwith_{\ell \in L} (\selectR{\ell} \limp \trproc{Q_{\ell}}) \reduces \selectR{\kay} \limp \trproc{Q_{\kay}}$ for $\kay \in L$.
-
-However, for focused rewriting, the translation (with appropriate shifts added) would be a (strong) reduction bisimulation:
-\begin{theorem}
-  If $\cnf \reduces \cnf'$, then $\trconf{\cnf} \reduces \trconf{\cnf'}$.
-\end{theorem}
-%
-\begin{theorem}
-  If $\trconf{\cnf} \reduces P'$, then $\cnf \reduces \cnf'$ and $\trconf{\cnf'} = P'$ for some $\cnf'$.
-\end{theorem}
+Notice that neither this \lcnamecref{??} nor a corresponding weak reduction bisimulation \lcnamecref{??} would hold if the unfocused form of ordered rewriting were used.%
+\footnote{For example, $\trconf{\caseL[\ell \in L]{\ell => P_{\ell}}} = \bigwith_{\ell \in L}(\atmR{\ell} \limp \trproc{Q_{\ell}}) \reduces (\atmR{\kay} \limp \trproc{Q_{\kay}})$ if $\kay \in L$, but there is no configuration $\cnf'$ such that $\caseL[\ell \in L]{\ell => P_{\ell}} \Reduces \cnf'$ and $\trconf{\cnf'} = \atmR{\kay} \limp \trproc{Q_{\kay}}$.}
 
 
 \section{A session type system for ordered rewriting}
 
 \begin{inferences}
-  \infer{\slof{A |- A_1 \fuse A_2 : C}}{
-    \slof{A |- A_1 : B} & \slof{B |- A_2 : C}}
+  \infer[\jrule{CUT}\smash{^B}]{\slof{A |- \p{A}_1 \fuse \p{A}_2 : C}}{
+    \slof{A |- \p{A}_1 : B} & \slof{B |- \p{A}_2 : C}}
   \and
-  \infer{\slof{A |- \one : A}}{}
+  \infer[\jrule{ID}\smash{^A}]{\slof{A |- \one : A}}{}
   \\
-  \infer{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+  \infer[\rrule{\plus}']{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
     \text{($\kay \in L$)}}
   \and
-  \infer{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \bigwith_{\ell \in L} (\selectR{\ell} \limp A_{\ell}) : C}}{
-    \multipremise{\ell \in L}{\slof{A_{\ell} |- A_{\ell} : C}}}
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \dn \bigwith_{\ell \in L} (\selectR{\ell} \limp \up \p{A}_{\ell}) : C}}{
+    \multipremise{\ell \in L}{\slof{A_{\ell} |- \p{A}_{\ell} : C}}}
   \\
-  \infer{\slof{A |- \bigwith_{\ell \in L} (A_{\ell} \pmir \selectL{\ell}) : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
-    \multipremise{\ell \in L}{\slof{A |- A_{\ell} : B_{\ell}}}}
+  \infer[\rrule{\with}]{\slof{A |- \dn \bigwith_{\ell \in L} (\p{A}_{\ell} \pmir \selectL{\ell}) : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+    \multipremise{\ell \in L}{\slof{A |- \p{A}_{\ell} : B_{\ell}}}}
   \and
-  \infer{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \selectL{\kay} : B_{\kay}}}{
+  \infer[\lrule{\with},]{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \selectL{\kay} : B_{\kay}}}{
     \text{($\kay \in L$)}}
   \\
-  \infer{\slcof{A |- \octx_1 \oc \octx_2 : C}}{
+  \infer[\jrule{C-CUT}\smash{^B}]{\slcof{A |- \octx_1 \oc \octx_2 : C}}{
     \slcof{A |- \octx_1 : B} & \slcof{B |- \octx_2 : C}}
   \and
-  \infer{\slcof{A |- \octxe : A}}{}
+  \infer[\jrule{C-ID}\smash{^A}]{\slcof{A |- \octxe : A}}{}
   \and
-  \infer{\slcof{A |- A : B}}{
-    \slof{A |- A : B}}
+  \infer[\jrule{C-PROC}]{\slcof{A |- \p{A} : B}}{
+    \slof{A |- \p{A} : B}}
 \end{inferences}
 
 \footnote{Careful with the 0-ary forms because you could end up with $\slof{\zero |- \top : C}$ and \emph{also} $\slof{A |- \top : \top}$.}
 
 \begin{theorem}
-  If $\slof{A |- P : B}$, then $\slof{A |- \trproc{P} : B}$.
+  If $\slof{A |- P : B}$, then $\slof{A |- \trproc[+]{P} : B}$.
+  Conversely, if $\slof{A |- \p{A} : B}$, then $\slof{A |- P : B}$ for some process $P$ such that $\trproc[+]{P} = \p{A}$.
+
   Similarly, if $\slcof{A |- \cnf : B}$, then $\slcof{A |- \trconf{\cnf} : B}$.
+  Conversely, if $\slcof{A |- \octx : B}$, then $\slcof{A |- \cnf : B}$ for some configuration $\cnf$ such that $\trconf{\cnf} = \octx$.
 \end{theorem}
 
-\begin{theorem}
-  If $\slof{A |- A : B}$, then there exists a process $P$ such that $\trproc{P} = A$ and $\slof{A |- P : B}$.
-  Similarly, if $\slcof{A |- \octx : B}$, then there exists a configuration $\cnf$ such that $\trconf{\cnf} = \octx$ and $\slcof{A |- \cnf : B}$.
-\end{theorem}
 
-\section{Open bisimilarity}
+\section{Examples}
 
-\begin{falseclaim}
-  If $\slcof{A |- \cnf \tsim \dnf : B}$, then $\trconf{\cnf} \osim \trconf{\dnf}$.
-\end{falseclaim}
+\begin{equation*}
+  \dfa{q} \defd \caseL[a \in \ialph]{a => \dfa{q}'_a | \emp => \dfa{F}(q)}
+\end{equation*}
+where $\dfa{F}(q) = \selectR{?}$ if $q \in F$ and $\dfa{F}(q) = \selectR{?}$ if $q \notin F$.
 
-Consider $\slcof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \cnf = \cnfe : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ and $\slcof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \dnf = \caseL[\ell \in L]{\ell => \selectR{\ell}} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$.
-We do not have $\octxe \osim \bigwith_{\ell \in L}(\selectR{\ell} \limp \selectR{\ell})$ because of atoms from outside $L$ -- for example, $\selectR{a} \oc \bigwith_{\ell \in L}(\selectR{\ell} \limp \selectR{\ell})$ can not emit $\selectR{a}$ when $a \notin L$.
-
-\begin{conjecture}
-  If $\slcof{A |- \cnf : B}$ and $\trconf{\cnf} \osim \octx$, then there exists a configuration $\dnf$ such that $\slcof{A |- \cnf \tsim \dnf : B}$ and $\trconf{\dnf} = \octx$.
-\end{conjecture}
-\begin{proof}[Proof idea]
-  By structural induction on $\cnf$, using the following.
-  \begin{quotation}
-    If $\slof{A |- P : B}$ and $\trproc{P} \osim \octx$, then there exists a process $Q$ such that $\slof{A |- P \tsim Q : B}$ and $\trproc{Q} \secudeR \octx$.
-  \end{quotation}
-
-  Suppose $\slof{A_{\ell} |- P_{\ell} ; B}$ and $\bigwith_{\ell \in L}(\selectR{\ell} \limp \trproc{P_{\ell}}) \osim \octx$; we must exibit a configuation $Q$ such that $\slof{\plus*[sub=_{\ell \in L}]{\ell;A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} \tsim Q : B}$ and $\trproc{Q} \secudeR \octx$.
-  By input bisimilarity, $\selectR{\ell} \oc \octx \Reduces\miso \trproc{P_{\ell}}$ for all $\ell \in L$.
-  By the inductive hypothesis, there exist processes $Q_{\ell}$ such that $\slof{A_{\ell} |- P_{\ell} \tsim Q_{\ell} : B}$ and $\trproc{Q_{\ell}} \secudeR \selectR{\ell} \oc \octx$.
-  Is $\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} \tsim \caseL[\ell \in L]{\ell => Q_{\ell}} : B}$ true?
-  I think so. 
-  Is $\trproc{\caseL[\ell \in L]{\ell => Q_{\ell}}} = \bigwith_{\ell \in L}(\selectR{\ell} \limp \trproc{Q_{\ell}}) \secudeR \octx$ true?
-\end{proof}
+\begin{align*}
+  \trproc[-]{\dfa{q}}
+    &\defd \trproc[-]{\caseL[a \in \ialph]{a => \dfa{q}'_a | \emp => \dfa{F}(q)}} \\
+    &= \bigwith_{a \in \ialph} (\atmR{a} \limp \up \trproc[+]{\dfa{q}'_a}) \with (\atmR{\emp} \limp \up \trproc[+]{\dfa{F}(q)}) \\
+    &= \bigwith_{a \in \ialph} (\atmR{a} \limp \up \dn \trproc[-]{\dfa{q}'_a}) \with (\atmR{\emp} \limp \up \trproc[+]{\dfa{F}(q)})
+\end{align*}
 
 
-\begin{conjecture}
-  If $\slcof{A |- \cnf : B}$ and $\slcof{A |- \dnf : B}$ and $\trconf{\cnf} \osim \trconf{\dnf}$, then $\slcof{A |- \cnf \tsim \dnf : B}$.
-\end{conjecture}
-\begin{proof}[Proof idea]
-  By structural induction on $\cnf$, using the following.
-  \begin{quotation}
-    If $\slof{A |- P : B}$ and $\slof{A |- Q : B}$ and $\trproc{P} \osim \trproc{Q}$, then $\slof{A |- P \tsim Q : B}$.
-  \end{quotation}
+\begin{equation*}
+  \begin{lgathered}
+    e \defd (e \fuse b_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d})
+  \end{lgathered}
+\end{equation*}
 
-  Suppose that $P = \caseL[\ell \in L]{\ell => P_{\ell}}$ and $\slof{A_{\ell} |- P_{\ell} : B}$; we must show that $\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} \tsim Q : B}$.
-  By input bisimilarity, we have $\selectR{\ell} \oc \trproc{Q} \Reduces \octx_{\ell} \miso \trproc{P_{\ell}}$.
-  I'm not sure how to continue from here.
-\end{proof}
+\begin{equation*}
+  \begin{lgathered}
+    \trproc[-]{e} \defd \bigl(\up (\dn \trproc[-]{e} \fuse \dn \trproc[-]{b_1}) \pmir \atmL{i}\bigr) \with (\up \atmR{z} \pmir \atmL{d})
+    \\
+    \trproc[-]{b_0} \defd (\up \dn \trproc[-]{b_1} \pmir \atmL{i}) \with \bigl(\up (\atmL{d} \fuse \dn \trproc[-]{b'_0}) \pmir \atmL{d}\bigr)
+    \\
+    \trproc[-]{b_1} \defd \bigl(\up (\atmL{i} \fuse \dn \trproc[-]{b_0}) \pmir \atmL{i}\bigr) \with \bigl(\up (\dn \trproc[-]{b_0} \fuse \atmR{s}) \pmir \atmL{d}\bigr)
+    \\
+    \trproc[-]{b'_0} \defd (\atmR{z} \limp \up \atmR{z}) \with \bigl(\atmR{s} \limp \up (\dn \trproc[-]{b_1} \fuse \atmR{s})\bigr)
+  \end{lgathered}
+  \qquad
+  \begin{lgathered}
+    e \defd (e \fuse b_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d}) \\
+    b_0 \defd (\up \dn b_1 \pmir \atmL{i}) \with (\atmL{d} \fuse b'_0 \pmir \atmL{d}) \\
+    b_1 \defd (\atmL{i} \fuse b_0 \pmir \atmL{i}) \with (b_0 \fuse \atmR{s} \pmir \atmL{d}) \\
+    b'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp b_1 \fuse \atmR{s})
+  \end{lgathered}
+\end{equation*}
+
+
+\section{}
+
+\begin{equation*}
+  \left\lbag
+    \infer{a \oc \dfa{q} \reduces \dfa{q}'_a}{
+      (q \dfareduces[a] q'_a)}
+  \right\rbag_{(q, a) \in Q \times \ialph}
+  \qquad\text{and}\qquad
+  \left\lbag
+    \infer{\emp \oc \dfa{q} \reduces \dfa{F}(q)}{}
+  \right\rbag_{q \in Q}
+\end{equation*}
+
+Either $\atmR{a} \oc \dfa{q}$ or $a \oc \atmL{\dfa{q}}$.
+
+\begin{equation*}
+  \begin{lgathered}
+    a \defd \bigwith_{q \in Q} (\atmL{q}'_a \pmir \atmL{q}) \\
+    \emp \defd \bigwith_{q \in Q} (\dfa{F}(q) \pmir \atmL{q})
+  \end{lgathered}
+\end{equation*}
+
+Previously, we argued that the state-oriented encoding  required adequacy to be judged up to bisimilarity: $\atmR{a} \oc \dfa{q} \reduces \dfa{q}'$ did not imply $q \dfareduces[a] q'$ because the equivirecursive treatment of definitions means that the encoding is not injective.
+
+In the symbol-oriented encoding, adequacy no longer needs to be judged up to bisimilarity: $a \oc \atmL{q} \reduces \atmL{q}'$ does indeed imply $q \dfareduces[a] q'$.
+By inversion on the given rewriting, it suffices to show that $q \dfareduces[a] q'_a$ and $\atmL{q}'_a = \atmL{q}'$ together imply $q \dfareduces[a] q'$.
+This time, because states are encoded as atoms, which have an uncomplicated notion of equality, the encoding is injective.
+
+These differences in equality of atoms and recursively defined propositions should perhaps not be unexpected given the correspondence between atoms and messages; recursively defined propositions and processes.
+Being observable, messages are easy to compare for equality.
+But processes' internal structures are hidden, and therefore it shouldn't be possible to compare them for equality,
+
+We could try to reverse engineer an equivalence on input symbols from the rewriting bisimilarity of their encodings.
+The encodings of symbols $a$ and $b$ are bisimilar if, and only if:
+\begin{itemize}
+\item $q \dfareduces[a] q'_a$ implies $q \dfareduces[b] q'_a$, for all $q$ and $q'_a$; and
+  % $q \dfareduces[a] q'_a$ implies $b \oc \atmL{q} \Reduces\lframe{\atmL{q}'_a}{\osim} \atmL{q}'_a$
+  % which implies $b \oc \atmL{q} \Reduces \atmL{q}'_a$
+  % which implies $q \dfareduces[b] q'_a$.
+\item $q \dfareduces[b] q'_b$ implies $q \dfareduces[a] q'_b$, for all $q$ and $q'_b$.
+  % and vice versa.
+\end{itemize}
+In other words, symbols $a$ and $b$ have bisimilar encodings exactly when those encodings are equal.
+
+
+$\atmR{\emp} \oc \rev{\atmR{w}} \oc \dfa{q} \osim \emp \oc \rev{w} \oc \atmL{q}$ for all $w \in \finwds{\ialph}$ and $q \in Q$.
+
+\begin{inferences}
+  \infer{\atmR{\emp} \oc \dfa{q} \simu{R} \dfa{F}(q)}{}
+  \and 
+  \infer{\octx \oc \atmR{a} \oc \dfa{q} \simu{R} \p{A}}{
+    \octx \oc \dfa{q}'_a \simu{R} \p{A} & \text{($q \dfareduces[a] q'_a$)}}
+  \and
+  \infer{\octx \simu{R} \octxe}{
+    \octx \simu{R} \one}
+\end{inferences}
+
+\begin{inferences}
+  \infer{\emp \oc \atmL{q} \simu{S} \dfa{F}(q)}{}
+  \and 
+  \infer{\lctx \oc a \oc \atmL{q} \simu{S} \p{A}}{
+    \lctx \oc \atmL{q}'_a \simu{S} \p{A} & \text{($q \dfareduces[a] q'_a$)}}
+  \and
+  \infer{\octx \simu{S} \octxe}{
+    \octx \simu{S} \one}
+\end{inferences}
+
+The relation $\simu{R}\simu{S}^{-1} \union \simu{R} \union \simu{S}^{-1}$ is a labled bisimulation up to reflexivity.
+
+% If $q \dfareduces[a] q'_a$ and $\dfa{q}'_a = \dfa{q}'$, then $q \dfareduces[a] q'$.
+
+% If $a \oc \atmL{q} \reduces \atmL{q}'$, then $q \dfareduces[a] q'$.
+
+% If $q \dfareduces[a] q'_a$ and $\atmL{q}'_a = \atmL{q}'$, then $q \dfareduces[a] q'$.
+
+% \begin{itemize}
+% \item $q \dfareduces[a] q'$ if, and only if, $a \oc \atmL{q} \reduces \atmL{q}'$.
+% \item $q \dfareduces[w] q'$ if, and only if, $\rev{w} \oc \atmL{q} \Reduces \atmL{q}'$.
+% \item $q \in F$ if, and only if, $\emp \oc \atmL{q} \reduces \one$.
+% \item If $q \asim s$, then $a \oc \atmL{q} \reduces \atmL{q}'_a$ implies $a \oc \atmL{s} \reduces \atmL{s}'_a$ for some $s'_a$ such that $q'_a \asim s'_a$.
+% \end{itemize}
+
+% $a \osim b$ if and only if $b \oc \atmL{q} \Reduces\osim \atmL{q}'_a$ for all $q$.
+
+% $a \osim b$ if and only if $b \oc \atmL{q} \reduces \atmL{q}'_a$ for all $q$.
+
+% $\octx \osim \octxe$ only if $\octx \Reduces \octxe$.
+% $\octx \osim \octxe$ only if $\atmR{x} \oc \octx \Reduces\osim \atmR{x}$ only if $\atmR{x} \oc \octx \Reduces \octx' \oc \atmR{x}$ and $\octx' \osim \octxe$ only if $\octx \Reduces \octx' = \octxe$.
+
+% $a \sim b$ if $q \dfareduces[a] q'_a$ if and only if $q \dfareduces[b] q'_a$ for all $q$.
+
+
+
+\section{}
+
+% \section{Open bisimilarity}
+
+% \begin{falseclaim}
+%   If $\slcof{A |- \cnf \tsim \dnf : B}$, then $\trconf{\cnf} \osim \trconf{\dnf}$.
+% \end{falseclaim}
+
+% Consider $\slcof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \cnf = \cnfe : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$ and $\slcof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \dnf = \caseL[\ell \in L]{\ell => \selectR{\ell}} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}$.
+% We do not have $\octxe \osim \bigwith_{\ell \in L}(\selectR{\ell} \limp \selectR{\ell})$ because of atoms from outside $L$ -- for example, $\selectR{a} \oc \bigwith_{\ell \in L}(\selectR{\ell} \limp \selectR{\ell})$ can not emit $\selectR{a}$ when $a \notin L$.
+
+% \begin{conjecture}
+%   If $\slcof{A |- \cnf : B}$ and $\trconf{\cnf} \osim \octx$, then there exists a configuration $\dnf$ such that $\slcof{A |- \cnf \tsim \dnf : B}$ and $\trconf{\dnf} = \octx$.
+% \end{conjecture}
+% \begin{proof}[Proof idea]
+%   By structural induction on $\cnf$, using the following.
+%   \begin{quotation}
+%     If $\slof{A |- P : B}$ and $\trproc{P} \osim \octx$, then there exists a process $Q$ such that $\slof{A |- P \tsim Q : B}$ and $\trproc{Q} \secudeR \octx$.
+%   \end{quotation}
+
+%   Suppose $\slof{A_{\ell} |- P_{\ell} ; B}$ and $\bigwith_{\ell \in L}(\selectR{\ell} \limp \trproc{P_{\ell}}) \osim \octx$; we must exibit a configuation $Q$ such that $\slof{\plus*[sub=_{\ell \in L}]{\ell;A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} \tsim Q : B}$ and $\trproc{Q} \secudeR \octx$.
+%   By input bisimilarity, $\selectR{\ell} \oc \octx \Reduces\miso \trproc{P_{\ell}}$ for all $\ell \in L$.
+%   By the inductive hypothesis, there exist processes $Q_{\ell}$ such that $\slof{A_{\ell} |- P_{\ell} \tsim Q_{\ell} : B}$ and $\trproc{Q_{\ell}} \secudeR \selectR{\ell} \oc \octx$.
+%   Is $\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} \tsim \caseL[\ell \in L]{\ell => Q_{\ell}} : B}$ true?
+%   I think so. 
+%   Is $\trproc{\caseL[\ell \in L]{\ell => Q_{\ell}}} = \bigwith_{\ell \in L}(\selectR{\ell} \limp \trproc{Q_{\ell}}) \secudeR \octx$ true?
+% \end{proof}
+
+
+% \begin{conjecture}
+%   If $\slcof{A |- \cnf : B}$ and $\slcof{A |- \dnf : B}$ and $\trconf{\cnf} \osim \trconf{\dnf}$, then $\slcof{A |- \cnf \tsim \dnf : B}$.
+% \end{conjecture}
+% \begin{proof}[Proof idea]
+%   By structural induction on $\cnf$, using the following.
+%   \begin{quotation}
+%     If $\slof{A |- P : B}$ and $\slof{A |- Q : B}$ and $\trproc{P} \osim \trproc{Q}$, then $\slof{A |- P \tsim Q : B}$.
+%   \end{quotation}
+
+%   Suppose that $P = \caseL[\ell \in L]{\ell => P_{\ell}}$ and $\slof{A_{\ell} |- P_{\ell} : B}$; we must show that $\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \caseL[\ell \in L]{\ell => P_{\ell}} \tsim Q : B}$.
+%   By input bisimilarity, we have $\selectR{\ell} \oc \trproc{Q} \Reduces \octx_{\ell} \miso \trproc{P_{\ell}}$.
+%   I'm not sure how to continue from here.
+% \end{proof}
 
 %%% Local Variables:
 %%% mode: latex

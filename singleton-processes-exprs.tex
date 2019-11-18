@@ -898,7 +898,7 @@ For instance, a transducer process that transforms a stream of input symbols int
 The solution is to introduce mutually recursive type definitions, in a manner reminiscent of the recursively defined ordered propositions, $\alpha \defd A$, seen in \cref{??}.
 However, recursively defined types are not particularly useful if process expressions remain finitary, so we also introduce mutually recursive processes: $\slof{A |- p : C} \defd P$.
 In both cases, the recursion is defined using general fixed points, not least or greatest fixed points.%
-\footnote{Treatments of inductive and coinductive types in linear logic~\parencite{Baelde:TCL12,Toninho+:TGC14} should be adaptable to a singleton logic setting, and work on a Curry--Howard extrapolation of \citeauthor{Fortier+Santocanale:CSL13}'s work on circular proofs\textcite*{Fortier+Santocanale:CSL13} is underway~\parencite{Derakhshan+Pfenning:CMU19}.}
+\footnote{Treatments of inductive and coinductive types in linear logic~\parencite{Baelde:TCL12,Toninho+:TGC14} should be adaptable to a singleton logic setting, and work on a Curry--Howard extrapolation of \citeauthor{Fortier+Santocanale:CSL13}'s work on circular proofs\textcite*{Fortier+Santocanale:CSL13} is underway~\parencite{Derakhshan+Pfenning:LMCS19}.}
 
 
 We require that recursive type definitions be \emph{contractive}\autocite{Gay+Hole:AI05} -- that the body of each recursive type definition begin with a type constructor ($\plus$ or $\with$) at the top level.

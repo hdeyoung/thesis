@@ -52,6 +52,8 @@
   \endgroup
 }
 
+\NewDocumentCommand \nats { } { \mathbb{N} }
+
 %%%%%%%%%%%%%%%%%%%
 %% Ordered logic %%
 %%%%%%%%%%%%%%%%%%%
@@ -72,9 +74,9 @@
 \providecommand \given { }
 % can be useful to refer to this outside \Set
 \NewDocumentCommand \SetSymbol { O{} } {
-  \nonscript\medspace#1\vert
+  \nonscript\mskip\medmuskip#1\vert
   \allowbreak
-  \nonscript\medspace
+  \nonscript\mskip\medmuskip
   \mathopen{}
 }
 
@@ -84,10 +86,9 @@
 }
 
 \NewDocumentCommand \rev { s m } {
-  % \IfBooleanTF {#1}
-    % { (#2)^{\mathsf{R}} }
-    % { #2^{\mathsf{R}} }
-  \underline{#2}
+  \IfBooleanTF {#1}
+    { (#2)^{\mathsf{R}} }
+    { #2^{\mathsf{R}} }
 }
 
 % for abbreviations and acronyms
@@ -320,11 +321,19 @@
 %% Ordered rewriting %%
 %%%%%%%%%%%%%%%%%%%%%%%
 
-\DeclarePairedDelimiter \card { \lvert } { \rvert }
+\DeclarePairedDelimiterXPP \icard [ 1 ] {} { \lvert } { \rvert } { \sb{ \text { \normalfont \scshape i } } } { \tl_if_empty:nTF {#1} { \mathord{-} } {#1}}
+\DeclarePairedDelimiterXPP \dcard [ 1 ] {} { \lvert } { \rvert } { \sb{ \text { \normalfont \scshape d } } } { \tl_if_empty:nTF {#1} { \mathord{-} } {#1}}
+\DeclarePairedDelimiterXPP \scard [ 1 ] {} { \lvert } { \rvert } { \sb{ \text { \normalfont \scshape s } } } { \tl_if_empty:nTF {#1} { \mathord{-} } {#1}}
+\DeclarePairedDelimiterXPP \ucard [ 1 ] {} { \lvert } { \rvert } { } { \tl_if_empty:nTF {#1} { \mathord{-} } {#1}}
+
+\NewDocumentCommand \card { O{u} m }
+  { \use:c { #1 card } {#2} }
 
 \tikzcdset{
   reduces / .style = { rightarrow } ,
-  Reduces / .style = { Rightarrow }
+  Reduces / .style = { Rightarrow } ,
+  relation / .style = { dash } ,
+  exists / .style = { dashed }
 }
 
 
@@ -342,6 +351,41 @@
 \cs_new:Npn \__thesis_atmL:n #1
   { \mathrlap { \reflectbox { $ \atmR { \phantom {#1} } $ } } #1 }
 
+\NewDocumentCommand \lfocus { m m m m } { \__thesis_lfocus:nnnn {#1} {#2} {#3} {#4} }
+\cs_new:Npn \__thesis_lfocus:nnnn #1#2#3#4
+  {
+    \tl_if_empty:nF {#1} {#1 \oc}
+    [#2]
+    \tl_if_empty:nF {#3} {\oc #3}
+    \Vdash
+    #4
+  }
+
+\NewDocumentCommand \rfocus { m m } { \__thesis_rfocus:nn {#1} {#2} }
+\cs_new:Npn \__thesis_rfocus:nn #1#2
+  {
+    #1
+    \Vdash
+    [#2]
+  }
+
+\NewDocumentCommand \erase { s m }
+  {
+    \IfBooleanTF {#1}
+      { \__thesis_erase_star:n {#2} }
+      { \__thesis_erase_nostar:n {#2} }
+  }
+\cs_new:Npn \__thesis_erase_star:n #1
+  {
+    \tl_if_empty:nTF {#1} { \mathord{-} } {#1}
+    ^ { \circ }
+  }
+\cs_new:Npn \__thesis_erase_nostar:n #1
+  {
+    \tl_if_empty:nTF {#1}
+      { \__thesis_erase_star:n { ( \mathord{-} ) } }
+      { \__thesis_erase_star:n { (#1) } }
+  }
 
 %%%%%%%%%%%%%%%%%%%%%
 %% Singleton logic %%
@@ -420,6 +464,30 @@
 %% Other %%
 %%%%%%%%%%%
 
+\NewDocumentCommand \aval { m m }
+  { #1 \approx\sb{\text{\normalfont\scshape v}} #2 }
+
+\NewDocumentCommand \ainc { m m }
+  { #1 \approx\sb{\text{\normalfont\scshape i}} #2 }
+
+\NewDocumentCommand \iainc { m m }
+  { #1 \approx\sb{\text{\normalfont\scshape i}}^{\circ} #2 }
+
+\NewDocumentCommand \eainc { m m } { \ainc{#1}{#2} }
+
+\NewDocumentCommand \iadec { m m }
+  { #1 \approx\sb{\text{\normalfont\scshape d}}^{\circ} #2 }
+
+\NewDocumentCommand \eadec { m m } { \adec{#1}{#2} }
+
+\NewDocumentCommand \iaval { m m }
+  { #1 \approx\sb{\text{\normalfont\scshape v}}^{\circ} #2 }
+
+\NewDocumentCommand \eaval { m m } { \aval{#1}{#2} }
+ 
+\NewDocumentCommand \adec { m m }
+  { #1 \approx\sb{\text{\normalfont\scshape d}} #2 }
+
 \NewDocumentCommand \downsquigarrow { } { \__thesis_downsquigarrow: }
 \cs_new:Npn \__thesis_downsquigarrow:
   { \mathrel { \mathpalette \__thesis_rotate_squig:nn \relax } }
@@ -433,13 +501,19 @@
 \NewDocumentCommand \union { } { \__thesis_union: }
 \cs_new:Npn \__thesis_union: { \mathbin { \cup } }
 
+\NewDocumentCommand \bigunion { } { \__thesis_bigunion: }
+\cs_new:Npn \__thesis_bigunion: { \bigcup }
+
+
+
 
 \providecommand \given { }
 \newcommand \GivenSymbol [1] [] {
-  \nonscript\muskip\medmuskip#1\vert
-  \allowbreak
-  \nonscript\muskip\medmuskip
-  \mathopen{}
+  % \nonscript\muskip\medmuskip#1
+  \vert
+  % \allowbreak
+  % \nonscript\muskip\medmuskip
+  % \mathopen{}
 }
 \DeclarePairedDelimiterX \set [1] \lbrace \rbrace {
   \renewcommand \given { \GivenSymbol[\delimsize] }
@@ -462,16 +536,29 @@
 \cs_new:Npn \__thesis_simu:n #1
   { \mathrel { \mathcal {#1} } }
 
-\NewDocumentCommand \refl { s m }
+\NewDocumentCommand \reflc { s m }
   {
     \IfBooleanTF {#1}
-      { \__thesis_refl_star:n {#2} }
-      { \__thesis_refl:n {#2} }
+      { \__thesis_reflc_star:n {#2} }
+      { \__thesis_reflc:n {#2} }
   }
-\cs_new:Npn \__thesis_refl:n #1
+\cs_new:Npn \__thesis_reflc:n #1
   { \mathrel { #1 ^{ \mathord{=} } } }
-\cs_new:Npn \__thesis_refl_star:n #1
-  { \mathrel { ( \__thesis_refl:n {#1} ) } }
+\cs_new:Npn \__thesis_reflc_star:n #1
+  { \mathrel { ( \__thesis_reflc:n {#1} ) } }
+
+
+\NewDocumentCommand \ctxc { s m }
+  {
+    \IfBooleanTF {#1}
+      { \__thesis_ctxc_star:n {#2} }
+      { \__thesis_ctxc:n {#2} }
+  }
+\cs_new:Npn \__thesis_ctxc:n #1
+  { \mathrel { [ #1 ] } }
+\cs_new:Npn \__thesis_ctxc_star:n #1
+  { \mathrel { ( \__thesis_ctxc:n {#1} ) } }
+
 
 \NewDocumentCommand \congrel { s m }
   {
@@ -489,20 +576,29 @@
 \NewDocumentCommand \miso { } { \__thesis_miso: }
 \cs_new:Npn \__thesis_miso: { \mathrel { \cong } ^ {-1} }
 
-\NewDocumentCommand \lrframe { m m m }
-  { \__thesis_lrframe:nnn {#1} {#2} {#3} }
-\cs_new:Npn \__thesis_lrframe:nnn #1#2#3
-  { \mathrel { ( #1 \mathord{#2} #3 ) } }
+\NewDocumentCommand \nosim { } { \__thesis_nosim: }
+\cs_new:Npn \__thesis_nosim: { \mathrel { \ncong } }
 
-\NewDocumentCommand \lframe { m m }
-  { \__thesis_lframe:nn {#1} {#2} }
-\cs_new:Npn \__thesis_lframe:nn #1#2
-  { \__thesis_lrframe:nnn {#1} {#2} { } }
+\NewDocumentCommand \lsim { } { \__thesis_lsim: }
+\cs_new:Npn \__thesis_lsim: { \mathrel { \simeq } }
 
-\NewDocumentCommand \rframe { m m }
-  { \__thesis_rframe:nn {#1} {#2} }
-\cs_new:Npn \__thesis_rframe:nn #1#2
-  { \__thesis_lrframe:nnn { } {#1} {#2} }
+
+\DeclarePairedDelimiter{\parenrel}{\lparen}{\rparen}
+
+\NewDocumentCommand \lrframe { O{} m m m }
+  { \__thesis_lrframe:nnnn {#1} {#2} {#3} {#4} }
+\cs_new:Npn \__thesis_lrframe:nnnn #1#2#3#4
+  { \mathrel { \parenrel [#1] { #2 \mathord{#3} #4 } } }
+
+\NewDocumentCommand \lframe { O{} m m }
+  { \__thesis_lframe:nnn {#1} {#2} {#3} }
+\cs_new:Npn \__thesis_lframe:nnn #1#2#3
+  { \__thesis_lrframe:nnnn {#1} {#2} {#3} { } }
+
+\NewDocumentCommand \rframe { O{} m m }
+  { \__thesis_rframe:nnn {#1} {#2} {#3} }
+\cs_new:Npn \__thesis_rframe:nnn #1#2#3
+  { \__thesis_lrframe:nnnn {#1} { } {#2} {#3} }
 
 
 \cs_new:Npn \__thesis_tmp:n #1 {#1}
@@ -517,8 +613,13 @@
 \cs_new_protected:Npn \__thesis_ireduces:Nnn #1#2#3
   { #1 { [#2] } \reduces #3 }
 
-\NewDocumentCommand \trproc { m } { \__thesis_trproc:n {#1} }
-\cs_new:Npn \__thesis_trproc:n #1 { \llbracket #1 \rrbracket }
+\NewDocumentCommand \itrans { m m }
+  { \__thesis_itrans:nn {#1} {#2} }
+\cs_new:Npn \__thesis_itrans:nn #1#2
+  { \overset { #1 \mathrel{;} #2 } { \reduces } }
+
+\NewDocumentCommand \trproc { O{} m } { \__thesis_trproc:nn {#1} {#2} }
+\cs_new:Npn \__thesis_trproc:nn #1#2 { \llbracket #2 \rrbracket \tl_if_empty:nTF {#1} {} {^{#1}} }
 
 \NewDocumentCommand \trconf { m } { \__thesis_trconf:n {#1} }
 \cs_new:Npn \__thesis_trconf:n #1 { \llbracket #1 \rrbracket }
@@ -530,9 +631,19 @@
 % Inferences environment %
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\NewDocumentEnvironment { inferences } { }
-  { \__thesis_inferences_begin: }
+\NewDocumentEnvironment { inferences } { o }
+  {
+    \IfValueTF {#1}
+      { \__thesis_inferences_begin:n {#1} }
+      { \__thesis_inferences_begin: }
+  }
   { \__thesis_inferences_end: }
+
+\cs_new_protected:Npn \__thesis_inferences_begin:n #1
+  {
+    \textcolor{structure}{\scshape \MakeTextLowercase{#1}}%
+    \__thesis_inferences_begin:
+  }
 
 \cs_new_protected:Npn \__thesis_inferences_begin:
   {

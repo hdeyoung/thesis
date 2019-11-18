@@ -97,50 +97,71 @@ This is because we will be primarily interested in the operational aspects of \i
     \caption{\Iac*{DFA} that accepts, from state $s_0$, exactly those words that end with $b$.}\label{fig:dfa-example-ends-b}
   \end{marginfigure}
   \Cref{fig:dfa-example-ends-b} depicts \iac{DFA} over the input alphabet $\ialph = \set{a, b}$ that accepts, from state $s_0$, exactly those words that end with $b$.
-  For comparrison, the empty word $\emp$, too, is accepted from the state $s_1$.
+  For comparison, the empty word $\emp$, too, is accepted from the state $s_1$.
 \end{example}
 
 \subsection{\acs*{NFA} bisimilarity}
 
-\begin{definition}
-  Let $\aut{A}_1 = (Q, \mathord{\nfareduces}_1, F_1)$ and $\aut{A}_2 = (S, \mathord{\nfareduces}_2, F_2)$ be \acp{NFA}.
-  \emph{\ac{NFA} bisimilarity}, $\asim$, is the largest relation on pairs of states%
-  \footnote{That is, $\mathord{\asim} \subseteq Q \times S$.}
-  that satifies the following conditions.
+\begin{definition}[\ac*{NFA} bisimilarity]
+  Let $\aut{A} = (Q, \mathord{\nfareduces}, F)$ be \iac{NFA} over the input alphabet $\ialph$.
+  An \emph{\acs{NFA} bisimulation} for $\aut{A}$ is a symmetric binary relation on states, $\mathord{\simu{R}} \subseteq Q \times Q$, that satisfies the following conditions.
   \begin{description}
-  \item[Finality]
-    If $s \misa q \in F_1$, then $s \in F_2$.
-    Symmetrically, if $q \asim s \in F_2$, then $q \in F_1$.
   \item[Input bisimilarity]
-    If $s \misa\nfareduces[a]_1 q'$, then $s \nfareduces[a]_2\misa q'$.
-    Symmetrically, if $q \asim\nfareduces[a]_2 s'$, then $q \nfareduces[a]_1\asim s'$.
+    If $q \simu{R}\nfareduces[a] s'$, then $q \nfareduces[a]\simu{R} s'$.
+  \item[Finality]
+    If $q \simu{R} s \in F$, then $q \in F$.
   \end{description}
+  \vocab{\ac{NFA} bisimilarity} for $\aut{A}$, $\asim_{\aut{A}}$, is the largest bisimulation for $\aut{A}$.
 \end{definition}
 
+Usually the automaton $\aut{A}$ is 
+
 \begin{theorem}
-  Let $\aut{A}_1 = (Q, \mathord{\nfareduces}_1, F_1)$ and $\aut{A}_2 = (S, \mathord{\nfareduces}_2, F_2)$ be \acp{NFA}.
-  If $q \asim s$, then $\autlang{\aut{A}_1}{q} = \autlang{\aut{A}_2}{s}$.
+  Bisimilarity is an equivalence relation.
 \end{theorem}
 %
 \begin{proof}
-  Each direction of the equality is proved by induction on the structure of an arbitrary word in the language.
+  Bisimilarity can be proved to be reflexive by showing that the state equality relation is a bisimulation and therefore included in the largest bisimulation.
+  Bisimilarity is symmetric by definition.
+  Bisimilarity can be proved to be transitive by showing that the relation $\asim\asim$ is a bisimulation.
+\end{proof}
+
+\begin{theorem}
+  Let $\aut{A} = (Q, \mathord{\nfareduces}, F)$ be \iac{NFA} over the input alphabet $\ialph$, and let $\simu{R}$ be a bisimulation for $\aut{A}$.
+  Then $q \simu{R}\nfareduces[w] s'$ implies $q \nfareduces[w]\simu{R} s'$.
+\end{theorem}
+%
+\begin{proof}
+  By induction over the structure of word $w$.
+\end{proof}
+
+\begin{theorem}
+  Let $\aut{A} = (Q, \mathord{\nfareduces}, F)$ be \iac{NFA} over the input alphabet $\ialph$.
+  Then $q \asim s$ implies $\autlang{\aut{A}}{q} = \autlang{\aut{A}}{s}$.
+\end{theorem}
+%
+\begin{proof}
+  Because bisimilarity is symmetric, it suffices to show that $q \asim s$ implies $\autlang{\aut{A}}{q} \subseteq \autlang{\aut{A}}{s}$.
+  Let $q$ and $s$ be bisimilar states, and choose an arbitrary word $w$ that is accepted from state $q$.
+  By definition, $q \nfareduces[w] q'_w \in F$ for some state $q'_w$.
+  It follows from \cref{??} and [...] that $s \nfareduces[w] s'_w \in F$, for some state $s'_w$.
 \end{proof}
 
 The converse is false.
 %
 \begin{falseclaim}
-  Let $\aut{A}_1 = (Q, \mathord{\nfareduces}_1, F_1)$ and $\aut{A}_2 = (S, \mathord{\nfareduces}_2, F_2)$ be \acp{NFA}.
-  If $\autlang{\aut{A}_1}{q} = \autlang{\aut{A}_2}{s}$, then $q \asim s$.
+  Let $\aut{A} = (Q, \mathord{\nfareduces}, F)$ be \iac{NFA} over the input alphabet $\ialph$.
+  If $\autlang{\aut{A}}{q} = \autlang{\aut{A}}{s}$, then $q \asim s$.
 \end{falseclaim}
 %
 \begin{proof}[Counterexample]
-  Recall the \acp{NFA} $\aut{A}_1$ and $\aut{A}_2$ given in \cref{fig:nfa-example-ends-b,fig:dfa-example-ends-b}.
-  Although the languages accepted by states $q_0$ and $s_0$ are the same, the two states are \emph{not} bisimilar:
+  Construct the \ac{NFA} $\aut{A} = \aut{A}_1 \union \aut{A}_2$ from the \acp{NFA} given in \cref{fig:nfa-example-ends-b,fig:dfa-example-ends-b}.
+  Although the languages accepted by states $q_0$ and $s_0$ are the same, the two states are \emph{not} bisimilar.
 
-  For the sake of deriving a contradiction, assume that $q_0 \asim s_0$.
-  Because $s_0 \misa q_0 \nfareduces[b] q_0$, it follows by the input bisimilarity condition that $s_0 \nfareduces[b]\misa q_0$.
-  But $s_1$ is the unique $b$-successor of $s_0$, and so we may deduce $q_0 \asim s_1$.
-  Just as $s_1$ is a final state, the finality condition demands that $q_0$ be final.
+  For the sake of deriving a contradiction, assume that $q_0 \asim s_0$ and its symmetric reflection, $s_0 \asim q_0$.
+  Because $q_0$ is one of the $b$-successors of $q_0$, it follows by the input bisimilarity condition that $s_0 \nfareduces[b]\asim q_0$.
+  But $s_1$ is the unique $b$-successor of $s_0$, and so we may deduce that $s_1 \asim q_0$.
+  Just as $s_1$ is a final state, the finality condition demands that $q_0$ be final, which it is not.
   From this contradiction, we conclude that $q_0$ and $s_0$ are \emph{not} bisimilar. 
 \end{proof}
 
