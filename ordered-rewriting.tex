@@ -492,6 +492,69 @@ We may then prove the following \lcnamecref{fact:ordered-rewriting:reduction}.
 On the basis of this \lcnamecref{fact:ordered-rewriting:reduction}, we will frequently refer to the rewriting relation, $\reduces$, as reduction.
 
 
+\section{Ordered rewriting for specifications}
+
+\subsection{\Aclp*{DFA}}
+
+\begin{equation*}
+  \infer[]{a \oc q \reduces q'_a}{}
+\end{equation*}
+for each \ac{DFA} transition $q \dfareduces[a] q'_a$, and 
+\begin{equation*}
+  \infer[]{\emp \oc q \reduces F(q)}{}
+\end{equation*}
+for each state $q$, where $F(q) = \one$ if $q$ is a final state and $F(q) = \top$ otherwise.
+
+\begin{itemize}
+\item $q \dfareduces[a] q'_a$ if, and only if, $a \oc q \reduces q'_a$; and 
+\item $q \in F$ if, and only if, $\emp \oc q \reduces \one$.
+\end{itemize}
+
+\subsection{\Aclp*{NFA}}
+
+Equally straightforward
+
+\subsection{Binary counters}
+
+Values
+
+\paragraph*{An increment operation}
+To use ordered rewriting to specify [...]
+\begin{equation*}
+  \infer[]{e \oc i \reduces e \oc b_1}{}
+  \qquad
+  \infer[]{b_0 \oc i \reduces b_1}{}
+  \qquad
+  \infer[]{b_1 \oc i \reduces i \oc b_0}{}
+\end{equation*}
+
+Small- and big-step adequacy theorems for increments
+\begin{itemize}
+\item Slightly simplified because there is no $\fuse$
+\end{itemize}
+
+
+\paragraph*{A decrement operation}
+\begin{equation*}
+  \infer[]{e \oc d \reduces z}{}
+  \qquad
+  \infer[]{b_0 \oc d \reduces d \oc b'_0}{}
+  \qquad
+  \infer[]{b_1 \oc d \reduces b_0 \oc s}{}
+  \qquad
+  \infer[]{z \oc b'_0 \reduces z}{}
+  \qquad
+  \infer[]{s \oc b'_0 \reduces b_1 \oc s}{}
+\end{equation*}
+
+\begin{itemize}
+\item Significantly simpler because there is no $\with$, so we don't need (weak) focusing
+\end{itemize}
+
+
+
+\section{}
+
 \subsection{Concurrency in ordered rewriting}
 
 As an example of multi-step rewriting, observe that

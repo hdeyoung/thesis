@@ -1,0 +1,156 @@
+\chapter{}
+
+\section{Ordered rewriting for specifications}
+
+\subsection{\Aclp*{DFA}}
+
+\begin{equation*}
+  \infer[]{a \oc q \reduces q'_a}{}
+\end{equation*}
+for each \ac{DFA} transition $q \dfareduces[a] q'_a$, and 
+\begin{equation*}
+  \infer[]{\emp \oc q \reduces F(q)}{}
+\end{equation*}
+for each state $q$, where $F(q) = \one$ if $q$ is a final state and $F(q) = \top$ otherwise.
+
+\begin{itemize}
+\item $q \dfareduces[a] q'_a$ if, and only if, $a \oc q \reduces q'_a$; and 
+\item $q \in F$ if, and only if, $\emp \oc q \reduces \one$.
+\end{itemize}
+
+\subsection{\Aclp*{NFA}}
+
+Equally straightforward
+
+\subsection{Binary counters}
+
+Values
+
+\paragraph*{An increment operation}
+To use ordered rewriting to specify [...]
+\begin{equation*}
+  \infer[]{e \oc i \reduces e \oc b_1}{}
+  \qquad
+  \infer[]{b_0 \oc i \reduces b_1}{}
+  \qquad
+  \infer[]{b_1 \oc i \reduces i \oc b_0}{}
+\end{equation*}
+
+Small- and big-step adequacy theorems for increments
+\begin{itemize}
+\item Slightly simplified because there is no $\fuse$
+\end{itemize}
+
+
+\paragraph*{A decrement operation}
+\begin{equation*}
+  \infer[]{e \oc d \reduces z}{}
+  \qquad
+  \infer[]{b_0 \oc d \reduces d \oc b'_0}{}
+  \qquad
+  \infer[]{b_1 \oc d \reduces b_0 \oc s}{}
+  \qquad
+  \infer[]{z \oc b'_0 \reduces z}{}
+  \qquad
+  \infer[]{s \oc b'_0 \reduces b_1 \oc s}{}
+\end{equation*}
+
+\begin{itemize}
+\item Significantly simpler because there is no $\with$, so we don't need (weak) focusing
+\end{itemize}
+
+
+\section{Choreography}
+
+\subsection{Definitions and messages}
+
+Unfocused
+
+\subsection{Revisiting the binary counter}
+
+Two choreographies: object-oriented and functional.
+Compare
+\begin{equation*}
+  \infer[]{e \oc \atmL{i} \reduces e \oc b_1}{}
+  \qquad\text{with}\qquad
+  \infer[]{\atmR{e} \oc i \reduces \atmR{e} \oc \atmR{b}_1}{}
+\end{equation*}
+Instead of adding these as rewriting axioms, we can give recursive definitions for the process atoms:
+\begin{equation*}
+  \begin{lgathered}[t]
+    e \defd (e \fuse b_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d}) \\
+    b_0 \defd (b_1 \pmir \atmL{i}) \with (\atmL{d} \fuse b'_0 \pmir \atmL{d}) \\
+    b_1 \defd (\atmL{i} \fuse b_0 \pmir \atmL{i}) \with (b_0 \fuse \atmR{s} \pmir \atmL{d}) \\
+    b'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp b_1 \fuse \atmR{s})
+  \end{lgathered}
+  \qquad
+  \begin{lgathered}[t]
+    i \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp i \fuse \atmR{b}_0) \\
+    d \defd (\atmR{e} \limp z) \with (\atmR{b}_0 \limp d \fuse \atmL{b}'_0) \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse s) \\
+    z \defd (z \pmir \atmL{b}'_0) \\
+    s \defd (\atmR{b}_1 \fuse s \pmir \atmL{b}'_0)
+  \end{lgathered}
+\end{equation*}
+
+How to define adequacy with respect to the specification?
+\begin{itemize}
+\item $e \oc \atmL{i} \reduces \octx'$ if, and only if, $\octx' = e \oc b_1$ does not hold with unfocused or weakly focused rewriting.
+\item $e \oc \atmL{i} \reduces \octx'$ if, and only if, $\octx' \Reduces e \oc b_1$ does not hold.
+  $\octx' = e \oc \atmL{i} \Reduces e \oc b_1$ but $e \oc \atmL{i} \nreduces e \oc \atmL{i}$.
+\item How about $e \oc \atmL{i} \Reduces \octx'$ if, and only if, $\octx' \Reduces e \oc b_1$?
+\end{itemize}
+
+
+Two problems arise: values, such as $e$, can rewrite, and stuck states can occur.
+$e \oc \atmL{i} \reduces (\atmR{z} \pmir \atmL{d}) \oc \atmL{i} \nreduces$.
+
+\subsection{Weak focusing}
+
+\subsection{Binary counter, again}
+
+With axioms, $e \oc \atmL{i} \reduces e \oc b_1$; with definitions, $e \oc \atmL{i} \reduces e \fuse b_1 \reduces e \oc b_1$.
+
+If $\ainc{\octx}{n}$ and $\octx \reduces \octx'$, then 
+
+
+\subsection{\Acp*{DFA} and \acp*{NFA}, revisited}
+
+The specification is 
+\begin{equation*}
+  \infer[]{a \oc q \reduces q'_a}{}
+\end{equation*}
+for each \ac{NFA} transition $q \nfareduces[a] q'_a$.
+
+The functional choreography yields $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'_a$ for each specification axiom $a \oc q \reduces q'_a$.
+The converse does not hold: $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'$ does not imply $a \oc q \reduces q'$ in the specification.
+
+Working up to \ac{DFA} bisimilarity, we can prove adequacy of the \ac{DFA} encoding, as before.
+Adequacy of the \ac{NFA} encoding requires rewriting bisimilarity, leading into the next chapter.
+
+
+\begin{equation*}
+  \infer[]{\hat{a} \oc \atmL{q} \reduces \atmL{q}'_a}{}
+\end{equation*}
+with
+\begin{equation*}
+  \hat{a} \defd \bigwith_{q \in Q}(\atmL{q}'_a \pmir \atmL{q})
+\end{equation*}
+
+
+\section{Rewriting bisimilarity}
+
+As before, but now in a separate chapter from the message-passing choreographies.
+
+
+\section{Singleton logic}
+
+\section{Process interpretation}
+
+\section{From choreographies to processes}
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End:
