@@ -54,6 +54,27 @@
 
 \NewDocumentCommand \nats { } { \mathbb{N} }
 
+\NewDocumentCommand \symrej { } { \mathit{n} }
+\NewDocumentCommand \bin { m } { \hat{#1} }
+\NewDocumentCommand \defp { m } { \hat{#1} }
+\NewDocumentCommand \np { m } { #1^{\mp} }
+
+\NewDocumentCommand \sralph { } { \Sigma }
+\NewDocumentCommand \srsig { } { \Theta }
+\NewDocumentCommand \srsige { } { \cdot }
+
+\DeclareMathOperator{\dom}{dom}
+
+
+%%%%%%%%%%%%%%%%%%%%
+%% Choreographies %%
+%%%%%%%%%%%%%%%%%%%%
+
+\NewDocumentCommand \chorarrow { } { \rightsquigarrow }
+\NewDocumentCommand \chorsig { m m m } { #1 \vdash #2 \chorarrow #3 }
+\NewDocumentCommand \chorax { m m m m m } { #1 \vdash #2 \oc [#3] \oc #4 \chorarrow #5 }
+
+
 %%%%%%%%%%%%%%%%%%%
 %% Ordered logic %%
 %%%%%%%%%%%%%%%%%%%
@@ -132,6 +153,13 @@
     long = linear~communicating~automaton ,
     short-indefinite = an ,
     long-plural-form = linear~communicating~automata
+  }
+
+
+\DeclareAcronym { CLF }
+  {
+    short = CLF ,
+    long = Concurrent~Logical~Framework
   }
 
 \NewDocumentCommand \wc { s }
@@ -329,6 +357,16 @@
 \NewDocumentCommand \card { O{u} m }
   { \use:c { #1 card } {#2} }
 
+
+\DeclarePairedDelimiterXPP \denotesV [ 1 ] {} { \llbracket } { \rrbracket } { \sb{ \jrule{V} } } { \tl_if_empty:nTF {#1} { \mathord{-} } {#1}}
+\DeclarePairedDelimiterXPP \denotesI [ 1 ] {} { \llbracket } { \rrbracket } { \sb{ \jrule{I} } } { \tl_if_empty:nTF {#1} { \mathord{-} } {#1}}
+\DeclarePairedDelimiterXPP \denotesD [ 1 ] {} { \llbracket } { \rrbracket } { \sb{ \jrule{D} } } { \tl_if_empty:nTF {#1} { \mathord{-} } {#1}}
+\DeclarePairedDelimiterXPP \denotes [ 1 ] {} { \llbracket } { \rrbracket } { \sb{ \jrule{D} } } { \tl_if_empty:nTF {#1} { \mathord{-} } {#1}}
+
+\NewDocumentCommand \deno { O{} m }
+  { \use:c { denotes #1 } {#2} }
+
+
 \tikzcdset{
   reduces / .style = { rightarrow } ,
   Reduces / .style = { Rightarrow } ,
@@ -364,10 +402,15 @@
 \NewDocumentCommand \rfocus { m m } { \__thesis_rfocus:nn {#1} {#2} }
 \cs_new:Npn \__thesis_rfocus:nn #1#2
   {
-    #1
-    \Vdash
     [#2]
+    \mathrel{\reflectbox{$\Vdash$}}
+    #1
   }
+
+
+\NewDocumentCommand \embed { s m } { \IfBooleanT{#1}{(} \tl_if_empty:nTF{#2}{\mathord{-}}{#2} \IfBooleanT{#1}{)} ^{\Box} }
+\NewDocumentCommand \embedp { s m } { \IfBooleanT{#1}{(} #2 \IfBooleanT{#1}{)} ^{\boxplus} }
+\NewDocumentCommand \embedn { s m } { \IfBooleanT{#1}{(} #2 \IfBooleanT{#1}{)} ^{\boxminus} }
 
 \NewDocumentCommand \erase { s m }
   {
@@ -411,7 +454,10 @@
 \cs_new:Npn \__thesis_nspawn:nn #1 #2 { #1 \mathbin{\blackdiamond} #2 }
 
 \NewDocumentCommand \proc { m } { \__thesis_proc:n {#1} }
-\cs_new:Npn \__thesis_proc:n #1 { \__thesis_pred_font:n { proc } (#1) }
+\cs_new:Npn \__thesis_proc:n #1 { \hat{#1} }
+
+\NewDocumentCommand \dprop { m } { \__thesis_dprop:n {#1} }
+\cs_new:Npn \__thesis_dprop:n #1 { \hat{#1} }
 
 \NewDocumentCommand \msgR { m } { \__thesis_msgR:n {#1} }
 \cs_new:Npn \__thesis_msgR:n #1 { \__thesis_pred_font:n { msgR } (#1) }

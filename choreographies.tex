@@ -1,0 +1,597 @@
+\chapter{Choreographies}\label{ch:choreographies}
+
+As shown in \cref{ch:string-rewriting}, string rewriting is a suitable framework for describing the behavior\fixnote{?} of concurrent systems whose components form a monoidal structure.
+But these [string rewriting] descriptions are [...] high-level specifications, not implementations, because they give only a global characterization of the interactions between components.
+
+String rewriting axioms $w \reduces w'$ are strictly global in their phrasing, stating merely that any substring of the form $w$ may be replaced, en masse, with $w'$ -- nothing is said about how this replacement is achieved.
+The string rewriting framework therefore implicitly suggests that a meta-level actor is responsible for coordinating and conducting the rewriting, with substrings and their constituent symbols as mere passive accessories\fixnote{word choice?}.
+
+In this \lcnamecref{ch:choreographies}, our goal is to move toward a lower level of abstraction.
+
+Accordingly, we refine the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} into one that can be given a \vocab{formula-as-process} interpretation in which [ordered] rewriting faithfully represents message-passing communication among processes that are arranged in a linear topology.
+Then, in \cref{??}, we describe how a string rewriting specification may be transformed into an ordered rewriting \vocab{choreography}.
+
+In this \lcnamecref{ch:choreographies}, we refine the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} into one that can be given a \vocab{formula-as-process} interpretation in which rewriting faithfully represents message-passing communication among 
+
+As argued 
+
+Then we show how, given a mapping of symbols to either [...], choreographies can be generated from a string rewriting specification.
+
+\section{Refining ordered rewriting: A formula-as-process interpretation}
+
+Negative propositions, $\n{A}$, are interpreted as message-passing processes, with positive atoms, $\p{a}$, as messages passed between them.
+Ordered contexts, $\octx$, are then configurations of processes and messages arranged in a linear topology.
+Finally, the positive propostions, $\p{A}$, reify ordered contexts, and so they can be interpreted as process expressions that reify process configurations.
+
+The ordered implications $\p{A} \limp \n{B}$ and $\n{B} \pmir \p{A}$ are restricted to $\p{a} \limp \n{B}$ and $\n{B} \pmir \p{a}$, respectively, so that they may cleanly be interpreted as processes that input a message $\p{a}$ from the left and right, respectively.
+
+
+Each positive atom $\p{a}$ is assigned a direction, either $\atmL{a}$ or $\atmR{a}$, that indicates 
+
+$\atmL{a}$ and $\atmR{a}$; and $\p{A} \limp \n{B}$ restricted to $\atmR{a} \limp \n{B}$ and similarly for right-handed implication.
+
+\subsection{Formula-as-process}
+
+Discuss here?
+
+Example of $\proc{b} \defd (\atmR{a} \limp \up \dn \proc{b}) \with \up \one$, without explicitly relating it to the specification.
+
+\subsection{Focused ordered rewriting, revisited}
+
+
+\begin{inferences}
+  \infer[\jrule{ID}\smash{^{\atmR{a}}}]{\rfocus{\atmR{a}}{\atmR{a}}}{}
+  \and\text{and}\and
+  \infer[\jrule{ID}\smash{^{\atmL{a}}}]{\rfocus{\atmL{a}}{\atmL{a}}}{}
+\end{inferences}
+
+\begin{equation*}
+  \infer[\lrule{\limp}']{\lfocus{\atmR{\octx}_L \oc \atmR{a}}{\atmR{a} \limp \n{B}}{\atmL{\octx}_R}{\p{C}}}{
+    \infer[\jrule{ID}\smash{^{\atmR{a}}}]{\rfocus{\atmR{a}}{\atmR{a}}}{} &
+    \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
+\end{equation*}
+
+\begin{inferences}
+  \infer[\lrule{\limp}']{\lfocus{\atmR{\octx}_L \oc \atmR{a}}{\atmR{a} \limp \n{B}}{\atmL{\octx}_R}{\p{C}}}{
+    \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
+  \and
+  \infer[\lrule{\pmir}']{\lfocus{\atmR{\octx}_L}{\n{B} \pmir \atmL{a}}{\atmL{a} \oc \atmL{\octx}_R}{\p{C}}}{
+    \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
+\end{inferences}
+
+\subsection{Input transitions}
+
+Also discuss here?
+
+\begin{inferences}
+  \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\n{A}}{\octx'}}{
+    \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}} &
+    \rfocus{\octx'}{\p{C}}}
+  \\
+  \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\atmR{a} \oc \octx}{\octx'}}{
+    \ireduces{\atmR{\octx}_L \oc \atmR{a} \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}}
+  \and
+  \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx \oc \atmL{a}}{\octx'}}{
+    \ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{a} \oc \atmL{\octx}_R}{\octx}{\octx'}}
+  \\
+  \infer{\ireduces{#1 \oc \atmL{\octx}_R}{\omega \oc \octx}{\omega \oc \octx'}}{
+    \ireduces{#1 \oc \atmL{\octx}_R}{\octx}{\octx'}}
+  \and
+  \infer{\ireduces{\atmR{\octx}_L \oc #1}{\octx \oc \omega}{\octx' \oc \omega}}{
+    \ireduces{\atmR{\octx}_L \oc #1}{\octx}{\octx'}}
+\end{inferences}
+
+\begin{theorem}
+  If $\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}$, then $\atmR{\octx}_L \oc \octx \oc \atmL{\octx}_R \reduces \octx'$.
+  Conversely, if $\octx \reduces \octx'$, then $\ireduces{#1}{\octx}{\octx'}$.
+\end{theorem}
+\begin{proof}
+  The two claims are proved by induction on the structure of the given input transition and reduction, respectively, after first proving an easy lemma:
+  \begin{itemize}
+  \item If $\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}$, then $\ireduces{#1}{\atmR{\octx}_L \oc \octx \oc \atmL{\octx}_R}{\octx'}$.
+  \qedhere
+  \end{itemize}
+\end{proof}
+
+\section{Constructing a choreography from a specification}
+
+Suppose that we are given a string rewriting specification that consists of axioms $?$ over the rewriting alphabet $\sralph$.
+A \vocab{choreographing assignment} is an injection in which each symbol $a \in \sralph$ is mapped to an ordered proposition: either an atomic proposition, $\atmL{a}$ or $\atmR{a}$, or a recursively defined proposition, $\defp{a}$.
+
+Given a choregraphing assignment $\theta$, we may construct a choregraphy from the string rewriting specification.
+Intuitively, each axiom is annotated according to $\theta$, and then the resulting [...] are used to construct a family of recursive definitions, one for each $\defp{a}$ in the image of $\theta$.
+
+A choreography is an ordered rewriting specification that simulates the string rewriting specification [...].
+
+Consider the recurring string rewriting specification with axioms
+\begin{equation*}
+  \infer{a \oc b \reduces b}{}
+  \qquad\text{and}\qquad
+  \infer{b \reduces \emp}{}
+  \:.
+\end{equation*}
+We must consistently annotate each symbol as either a left-directed atom, right-directed atom, or recursively defined proposition in sucha way that each axiom's premise $w$ has the form $w_1 \wc a \wc w_2$ with 
+
+\begin{equation*}
+  \atmR{a} \oc \defp{b} \reduces \defp{b}
+  \qquad\text{and}\qquad
+  \defp{b} \reduces \octxe
+\end{equation*}
+
+Now we must solve for $\defp{b}$, determining a definition $\defp{b} \defd \n{B}$ such that these two rewriting steps are derivable.
+For the first step to be derivable, $\defp{b}$ should have a definition that is consistent with $\atmR{a} \limp \up \dn \defp{b}$, for 
+\begin{equation*}
+  \atmR{a} \oc (\atmR{a} \limp \up \dn \defp{b}) \reduces \defp{b}
+\end{equation*}
+
+Consider the choreographing assignment $\theta$ that maps $a$ to the atom $\atmR{a}$ and $b$ to the recursively defined proposition $\defp{b}$.
+Upon annotating the above string rewriting axioms according to $\theta$, we arrive at the [...]
+\begin{equation*}
+  \atmR{a} \oc \dprop{b} \reduces \dprop{b}
+  \qquad\text{and}\qquad
+  \dprop{b} \reduces \one
+  \,.
+\end{equation*}
+
+\begin{equation*}
+  \dprop{b} \defd \atmR{a} \limp \up \dn \dprop{b}
+  \qquad\text{and}\qquad
+  \dprop{b} \defd \up \one
+  \,,
+\end{equation*}
+respectively.
+Combining these into a single definition that allows a nondeterministic choice between the two, we have
+\begin{equation*}
+  \dprop{b} \defd (\atmR{a} \limp \up \dn \dprop{b}) \with \up \one
+  \,,
+\end{equation*}
+or $\dprop{b} \defd (\atmR{a} \limp \up \dprop{b}) \with \one$ if the minimally necessary shifts are elided.
+
+By construction, this choreography is adequate with respect to the specification, in the sense that it can simulate each of the specification's possible steps and vice versa.
+\begin{itemize}
+\item $w \reduces w'$ only if $\theta(w) \reduces \theta(w')$
+  For example, just as the string rewriting specification admits $a \oc b \reduces b$, the ordered rewriting choreography admits
+  \begin{equation*}
+    \theta(a \oc b) = \atmR{a} \oc \defdP{b} = \atmR{a} \oc \bigl((\atmR{a} \limp \up \dn \defdP{b}) \with \one\bigr) \reduces \defdP{b} = \theta(b)
+    \,.
+  \end{equation*}
+
+\item $\theta(w) \reduces \octx'$ only if $w \reduces \theta^{-1}(\octx')$
+  For example, just as the ordered rewriting choreography admits $\theta(b) = \defdP{b} \reduces \octxe$, the string rewriting specification admits $b \reduces \emp = \theta^{-1}(\octxe)$.
+\end{itemize}
+% The choreography can simulate each of the specification's possible rewriting steps: for example, $\theta(a \oc b) = \atmR{a} \oc \dprop{b} \reduces \dprop{b} = \theta(b)$, just as $a \oc b \reduces b$.
+% Conversely, each of the choreography's possible rewriting steps can be simulated by the specification: for example, $\theta^{-1}(\atmR{a} \oc \dprop{b}) = a \oc b \reduces b = \theta^{-1}(\dprop{b})$, just as $\atmR{a} \oc \dprop{b} \reduces \dprop{b}$.
+
+\subsection{Formal description}
+
+Judgments $\chorsig{\theta}{\sig}{\sig'}$ and $\chorax{\theta}{w_1}{\n{A}}{w_2}{\n{B}}$.
+In both judgments, all terms before the $\chorarrow$ are inputs; all terms after the $\chorarrow$ are outputs.
+
+\begin{inferences}
+  \infer{\chorsig{\theta}{\sige}{\sige}}{}
+  \\
+  \infer{\chorsig{\theta}{\sig, w_1 \oc a \oc w_2 \reduces w'}{\sig', \proc{a} \defd \n{A} \with \n{B}}}{
+    \text{($\theta(a) = \hat{a}$)} &
+    \chorax{\theta}{w_1}{\bigfuse \theta(w')}{w_2}{\n{B}} &
+    \chorsig{\theta}{\sig}{\sig'} &
+    \text{($\sig'(\proc{a}) = \n{A}$)}}
+  \\
+  \infer{\chorsig{\theta}{\sig, w_1 \oc a \oc w_2 \reduces w'}{\sig', \proc{a} \defd \n{B}}}{
+    \text{($\theta(a) = \hat{a}$)} &
+    \chorax{\theta}{w_1}{\bigfuse \theta(w')}{w_2}{\n{B}} &
+    \chorsig{\theta}{\sig}{\sig'} &
+    \text{($\proc{a} \notin \dom{\sig'}$)}}
+  \\
+  \infer{\chorax{\theta}{\emp}{\p{A}}{\emp}{\up \p{A}}}{}
+  \\
+  \infer{\chorax{\theta}{w_1 \oc b}{\p{A}}{w_2}{\atmR{b} \limp \n{B}}}{
+    \chorax{\theta}{w_1}{\p{A}}{w_2}{\n{B}} &
+    \text{($\theta(b) = \atmR{b}$)}}
+  \and
+  \infer{\chorax{\theta}{w_1}{\p{A}}{b \oc w_2}{\n{B} \pmir \atmL{b}}}{
+    \chorax{\theta}{w_1}{\p{A}}{w_2}{\n{B}} &
+    \text{($\theta(b) = \atmL{b}$)}}
+\end{inferences}
+
+% \begin{inferences}
+%   \infer{\chorsig{\theta}{\sige}{\sige}}{}
+%   \and
+%   \infer{\chorsig{\theta}{\sig, w \reduces w'}{\sig', \proc{a} \defd \n{A}_1 \with \n{A}_2(\up \p{C})}}{
+%     \chorsig{\theta}{\sig}{\sig'} &
+%     \chorax{\theta}{w \reduces w'}{\proc{a}}{\n{A}_2(\Box)}{\p{C}} &
+%     \text{($\sig'(\proc{a}) = \n{A}_1$)}}
+%   \\
+%   \infer{\chorsig{\theta}{\sig, w \reduces w'}{\sig', \proc{a} \defd \n{A}(\up \p{C})}}{
+%     \chorsig{\theta}{\sig}{\sig'} &
+%     \chorax{\thea}{w \reduces w'}{\proc{a}}{\n{A}(\Box)}{\p{C}} &
+%     \text{($\proc{a} \notin \dom{\sig'}$)}}
+%   \\
+%   \infer{\chorax{\theta}{a \reduces w'}{\proc{a}}{\Box}{\bigfuse \octx'}}{
+%     \text{($\theta(a) = \proc{a}$)} &
+%     \text{($\theta(w') = \octx'$)}}
+%   \and
+%   \infer{\chorax{\theta}{b \oc w \reduces w'}{\proc{a}}{\n{A}(\atmR{b} \limp \Box)}{\p{C}}}{
+%     \chorax{\theta}{w \reduces w'}{\proc{a}}{\n{A}(\Box)}{\p{C}} &
+%     \text{($\theta(b) = \atmR{b}$)}}
+%   \\
+%   \infer{\chorax{\theta}{w \oc b \reduces w'}{\proc{a}}{\n{A}(\Box \pmir \atmL{b})}{C}}{
+%     \chorax{\theta}{w \reduces w'}{\proc{a}}{\n{A}(\Box)}{\p{C}} &
+%     \text{($\theta(b) = \atmL{b}$)}}
+% \end{inferences}
+
+
+\begin{lemma}
+  If $\chorax{\theta}{w_1}{\p{C}}{w_2}{\n{B}}$, then $\lfocus{\theta(w_1)}{\n{B}}{\theta(w_2)}{\p{C}}$.
+\end{lemma}
+\begin{proof}
+  By induction over the structure of the given derivation.
+
+  Consider the case in which
+  \begin{equation*}
+    \infer{\chorax{\theta}{\emp}{\p{C}}{\emp}{\up \p{C}}}{}
+    \,.
+  \end{equation*}
+  Because $\theta(\emp) = \octxe$, it is immediate that $\lfocus{\theta(\emp)}{\up \p{C}}{\theta(\emp)}{\p{C}}$.
+
+  Consider the case in which
+  \begin{equation*}
+    \infer{\chorax{\theta}{w_1 \oc b}{\p{C}}{w_2}{\atmR{b} \limp \n{B}}}{
+      \chorax{\theta}{w_1}{\p{C}}{w_2}{\n{B}} &
+      \text{($\theta(b) = \atmR{b}$)}}
+    \,.
+  \end{equation*}
+  By the inductive hypothesis, $\lfocus{\theta(w_1)}{\n{B}}{\theta(w_2)}{\p{C}}$.
+  Appending the $\lrule{\limp}'$ rule and observing that $\theta(b) = \atmR{b}$, we see that $\lfocus{\theta(w_1 \oc b)}{\atmR{b} \limp \n{B}}{\theta(w_2)}{\p{C}}$, as required.
+
+  The case involving the ?? rule is analogous to the previous one.
+\end{proof}
+
+
+\begin{lemma}
+  If $\octx \reduces_{\sig'} \octx'$, then:
+  \begin{itemize}[nosep]
+  \item $\sig'(\hat{a}) = \n{A}$ implies $\octx \reduces_{\sig', \hat{a} \defd \n{A} \with \n{B}} \octx'$, for all $\n{B}$; and
+  \item $\hat{a} \notin \dom{\sig'}$ implies $\octx \reduces_{\sig', \hat{a} \defd \n{B}} \octx'$, for all $\n{B}$.
+  \end{itemize}
+\end{lemma}
+
+\begin{lemma}
+  If $(w \reduces w') \in \sig$ and $\chorsig{\theta}{\sig}{\sig'}$, then $\theta(w) \reduces_{\sig'} \theta(w')$.
+\end{lemma}
+\begin{proof}
+  By induction over the structure of the given choreographing derivation.
+  \begin{itemize}
+  \item Consider the case in which $w = w_1 \oc a \oc w_2 \reduces w'$ is the axiom in question and
+    \begin{equation*}
+      \infer{\chorsig{\theta}{\sig, w_1 \oc a \oc w_2 \reduces w'}{\sig', \hat{a} \defd \n{A} \with \n{B}}}{
+        \text{($\theta(a) = \hat{a}$)} &
+        \chorax{\theta}{w_1}{\bigfuse \theta(w')}{w_2}{\n{B}} &
+        \chorsig{\theta}{\sig}{\sig'} &
+        \text{($\sig'(\hat{a}) = \n{A}$)}}
+    \end{equation*}
+    It follows from \cref{??} that $\lfocus{\theta(w_1)}{\n{B}}{\theta(w_2)}{\bigfuse \theta(w')}$, and hence $\lfocus{\theta(w_1)}{\n{A} \with \n{B}}{\theta(w_2)}{\bigfuse \theta(w')}$.
+    And because $\rfocus{\theta(w')}{\bigfuse \theta(w')}$ and $\hat{a} \defd \n{A} \with \n{B}$, we have $\theta(w) = \theta(w_1) \oc \hat{a} \oc \theta(w_2) \reduces \theta(w')$.
+  
+  \item Consider the case in which
+    \begin{equation*}
+      \infer{\chorsig{\theta}{\sig, v_1 \oc a \oc v_2 \reduces v'}{\sig', \hat{a} \defd \n{A} \with \n{B}}}{
+        \text{($\theta(a) = \hat{a}$)} &
+        \chorax{\theta}{v_1}{\bigfuse \theta(v')}{v_2}{\n{B}} &
+        \chorsig{\theta}{\sig}{\sig'} &
+        \text{($\sig'(\hat{a}) = \n{A}$)}}
+    \end{equation*}
+    and the axiom $w \reduces w'$ comes from $\sig$.
+    By the inductive hypothesis, $\theta(w) \reduces_{\sig'} \theta(w')$.
+    By \cref{??}, $\theta(w) \reduces_{\sig', \hat{a} \defd \n{A} \with \n{B}} \theta(w')$.
+  
+  \item Consider the case in which
+    \begin{equation*}
+      \infer{\chorsig{\theta}{\sig, v_1 \oc a \oc v_2 \reduces v'}{\sig', \hat{a} \defd \n{B}}}{
+        \text{($\theta(a) = \hat{a}$)} &
+        \chorax{\theta}{v_1}{\bigfuse \theta(v')}{v_2}{\n{B}} &
+        \chorsig{\theta}{\sig}{\sig'} &
+        \text{($\hat{a} \notin \dom{\sig'}$)}}
+    \end{equation*}
+    and the axiom $w \reduces w'$ comes from $\sig$.
+    By the inductive hypothesis, $\theta(w) \reduces_{\sig'} \theta(w')$.
+    By \cref{??}, $\theta(w) \reduces_{\sig', \hat{a} \defd \n{B}} \theta(w')$.
+  %
+  \qedhere
+  \end{itemize}
+\end{proof}
+
+\begin{theorem}\leavevmode
+  If $\chorsig{\theta}{\sig}{\sig'}$ and $w \reduces_{\sig} w'$, then $\theta(w) \reduces_{\sig'} \theta(w')$.
+\end{theorem}
+\begin{proof}
+  Consider the case in which the given string rewriting step is derived by an axiom from $\sig$.
+  The desired result follows directly from \cref{??}.
+
+  Consider the case in which the given string rewriting step is derived by
+  \begin{equation*}
+    w =
+    \infer[\jrule{$\reduces$C}\smash{_{\jrule{L}}}]{w_1 \oc w_2 \reduces w'_1 \oc w_2}{
+      w_1 \reduces w'_1}
+    = w'
+  \end{equation*}
+  By the inductive hypothesis, $\theta(w_1) \reduces \theta(w'_1)$.
+  It follows from ordered rewriting's $\jrule{$\reduces$C}\smash{_{\jrule{L}}}$ rule that $\theta(w) = \theta(w_1) \oc \theta(w_2) \reduces \theta(w'_1) \oc \theta(w_2) = \theta(w')$.
+
+  The case in which the given string rewriting step is derived by the $\jrule{$\reduces$C}\smash{_{\jrule{R}}}$ rule is analogous.
+\end{proof}
+
+
+
+
+\begin{lemma}
+  If $\chorax{\theta}{w_1}{\p{A}}{w_2}{\n{B}}$ and $\lfocus{\atmR{\octx}_1}{\n{B}}{\atmL{\octx}_2}{\p{C}}$, then $\atmR{\octx}_1 = \theta(w_1)$ and $\atmL{\octx}_2 = \theta(w_2)$ and $\p{A} = \p{C}$.
+\end{lemma}
+\begin{proof}
+  \begin{equation*}
+    \infer{\chorax{\theta}{\emp}{\p{A}}{\emp}{\up \p{A}}}{}
+    = \n{B}
+  \end{equation*}
+  By inversion on the left-focus derivation, $\atmR{\octx}_1 = \octxe = \theta(\emp)$ and $\atmL{\octx}_2 = \octxe = \theta(\emp)$ and $\p{A} = \p{C}$.
+
+  \begin{equation*}
+    \infer{\chorax{\theta}{w_1 \oc b}{\p{A}}{w_2}{\atmL{b} \limp \n{B}}}{
+      \text{($\theta(b) = \atmL{b}$)} &
+      \chorax{\theta}{w_1}{\p{A}}{w_2}{\n{B}}}
+  \end{equation*}
+  By inversion on the left-focus derivation for $\atmL{b} \limp \n{B}$, there exists $\atmR{\octx}'_1$ such that $\atmR{\octx}_1 = \atmR{\octx}'_1 \oc \atmR{b}$ and $\lfocus{\atmR{\octx}'_1}{\n{B}}{\atmL{\octx}_2}{\p{C}}$.
+  By the inductive hypothesis, $\atmR{\octx}'_1 = \theta(w_1)$ and $\atmL{\octx}_2 = \theta(w_2)$ and $\p{A} = \p{C}$.
+  So $\atmR{\octx}_1 = \theta(w_1 \oc b)$.
+\end{proof}
+
+
+\begin{lemma}
+  If $\chorsig{\theta}{\sig}{\sig'}$ and $\lfocus{\atmR{\octx}_L}{\hat{a}}{\atmL{\octx}_R}{\p{C}}$ with $\hat{a} \in \dom{\sig'}$, then there exists a string rewriting axiom $(w_1 \oc a \oc w_2 \reduces w') \in \sig$ such that $\atmR{\octx}_L = \theta(w_1)$, $\atmL{\octx}_R = \theta(w_2)$, and $\p{C} = \bigfuse \theta(w')$.
+\end{lemma}
+\begin{proof}
+  By induction over the structure of the given choreographing derivation.
+  \begin{itemize}
+  \item
+  Consider the case in which
+  \begin{equation*}
+    \infer{\chorsig{\theta}{\sig, v_1 \oc b \oc v_2 \reduces v'}{\sig', \hat{b} \defd \n{A} \with \n{B}}}{
+      \text{($\theta(b) = \hat{b}$)} &
+      \chorax{\theta}{v_1}{\bigfuse \theta(v')}{v_2}{\n{B}} &
+      \chorsig{\theta}{\sig}{\sig'} &
+      \text{($\sig'(\hat{b}) = \n{A}$)}}
+    \,.
+  \end{equation*}
+  \begin{itemize}
+  \item Suppose that $a \neq b$.
+    Then $\hat{a} \in \dom{\sig'}$.
+    By the inductive hypothesis, there exists a string rewriting axiom $(w_1 \oc a \oc w_2 \reduces w') \in \sig$ such that $\atmR{\octx}_L = \theta(w_1)$, $\atmL{\octx}_R = \theta(w_2)$, and $\p{C} = \bigfuse \theta(w')$.
+    The larger signature, $\sig, v_1 \oc b \oc v_2 \reduces v'$ also contains the axiom $w_1 \oc a \oc w_2 \reduces w'$.
+
+  \item Suppose that $a = b$.
+    There are two cases, according to whether the derivation of $\lfocus{\atmR{\octx}_L}{\hat{a}}{\atmL{\octx}_R}{\p{C}}$ ends with the $\lrule{\with}_1$ or $\lrule{\with}_2$ rule.
+    \begin{itemize}
+    \item If the left-focus derivation ends with the $\lrule{\with}_2$ rule, then $\lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}$.
+      By \cref{??}, $\atmR{\octx}_L = \theta(v_1)$ and $\atmL{\octx}_R = \theta(v_2)$ and $\p{C} = \bigfuse \theta(v')$.
+      Choose the axiom $w_1 \oc a \oc w_2 \reduces w'$ to be $v_1 \oc b \oc v_2 \reduces v'$.
+
+    \item If the left-focus derivation instead ends with the $\lrule{\with}_1$ rule, then $\lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}$.
+      By the inductive hypothesis, $\atmR{\octx}_L = \theta(v_1)$, $\atmL{\octx}_R = \theta(v_2)$, and $\p{C} = \bigfuse \theta(v')$ for some string rewriting axiom $(v_1 \oc a \oc v_2 \reduces v') \in \sig$.
+    \end{itemize}
+  \end{itemize}
+
+  \item
+  Consider the case in which 
+  \begin{equation*}
+    \infer{\chorsig{\theta}{\sig, w_1 \oc a \oc w_2 \reduces w'}{\sig', \hat{a} \defd \n{B}}}{
+      \text{($\theta(a) = \hat{a}$)} &
+      \chorax{\theta}{w_1}{\bigfuse \theta(w')}{w_2}{\n{B}} &
+      \chorsig{\theta}{\sig}{\sig'} &
+      \text{($\hat{a} \notin \dom{\sig'}$)}}
+  \end{equation*}
+  Because $\hat{a} \notin \dom{\sig'}$, the left-focus derivation is $\lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}$.
+  By \cref{??}, $\atmR{\octx}_L = \theta(w_1)$, $\atmL{\octx}_R = \theta(w_2)$, and $\bigfuse \theta(w') = \p{C}$.
+  %
+  \qedhere
+  \end{itemize}
+\end{proof}
+
+
+\begin{theorem}
+  If $\chorsig{\theta}{\sig}{\sig'}$ and $\theta(w) \reduces_{\sig'} \octx'$, then $\octx' = \theta(w')$ for some $w'$ such that $w \reduces_{\sig} w'$.
+\end{theorem}
+\begin{proof}
+  By induction over the structure of the given ordered rewriting step.
+
+  Consider the case in which
+  \begin{equation*}
+    \theta(w) = 
+    \infer[\jrule{$\reduces$C}\smash{_{\jrule{L}}}]{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
+      \octx_1 \reduces \octx'_1}
+    = \octx'
+    \,.
+  \end{equation*}
+  By inversion, $w = w_1 \oc w_2$ for some $w_1$ and $w_2$ such that $\octx_1 = \theta(w_1)$ and $\octx_2 = \theta(w_2)$.
+  By the inductive hypothesis, there exists a string $w'_1$ such that $w_1 \reduces w'_1$ and $\octx'_1 = \theta(w'_1)$.
+  Let $w' = w'_1 \oc w_2$, and notice that $w = w_1 \oc w_2 \reduces w'_1 \oc w_2 = w'$ and $\octx' = \theta(w'_1) \oc \theta(w_2) = \theta(w')$, as required.
+
+  The case in which the given ordered rewriting step is derived by the $\jrule{$\reduces$C}\smash{_{\jrule{L}}}$ rule is symmetric.
+
+  Consider the case in which 
+  \begin{equation*}
+    \theta(w) =
+    \infer{\atmR{\octx}_1 \oc \n{A} \oc \atmL{\octx}_2 \reduces \octx'}{
+      \lfocus{\atmR{\octx}_1}{\n{A}}{\atmL{\octx}_2}{\p{C}} &
+      \rfocus{\octx'}{\p{C}}}
+  \end{equation*}
+  By inversion, $w = w_1 \oc a \oc w_2$ for some $w_1$, $a$, and $w_2$ such that $\theta(w_1) = \atmR{\octx}_1$, $\theta(a) = \hat{a}$, $\hat{a} \defd \n{A}$, and $\theta(w_2) = \atmL{\octx}_2$.
+  By \cref{??}, $\p{C} = \bigfuse \theta(w')$ for some $w'$ such that $(w_1 \oc a \oc w_2 \reduces w') \in \sig$ is an axiom.
+  Because $\rfocus{\octx'}{\bigfuse \theta(w')}$ only if $\octx' = \theta(w')$, it follows that $w = w_1 \oc a \oc w_2 \reduces w'$, with $\octx' = \theta(w')$.
+\end{proof}
+
+
+
+\subsection{No choreography}
+
+Not all string rewriting specifications admit a choreography.
+For example, the specification
+\begin{equation*}
+  \infer{a \oc b \reduces b}{}
+  \qquad
+  \infer{a \reduces \emp}{}
+  \qquad\text{and}\qquad
+  \infer{b \reduces \emp}{}
+\end{equation*}
+cannot be given a choreography.
+More precisely, there is no choreographing assignment $\theta$ such that $\chorsig{\theta}{\sig}{\sig'}$ is derivable for some signature $\sig'$.
+For the sake of contradiction, suppose that $\theta$ were such a choreographing assignment.
+Then, for the specification's latter two axioms to be choreographable, both $\theta(a) = \proc{a}$ and $\theta(b) = \proc{b}$ must hold.
+In that case, however, the specification's first axiom cannot be choreographed properly because $\theta$ maps more than one of the axiom's symbols to recursively defined propositions.
+
+
+\section{Encoding \aclp*{NFA}}
+
+Recall from \cref{??} our string rewriting specification of how \iac{NFA} processes its input.
+Given \iac{NFA} $\aut{A} = (Q, ?, F)$ over an input alphabet $\ialph$, the \ac{NFA}'s operational semantics are adequately captured by the folllwing string rewriting axioms:
+\begin{equation*}
+  \infer{a \oc q \reduces q'_a}{}
+  \enspace\text{for each transition $q \nfareduces[a] q'_a$.}
+\end{equation*}
+\begin{equation*}
+  \infer{\emp \oc q \reduces F(q)}{}
+  \enspace\text{for each state $q$, where}\enspace
+  F(q) = \begin{cases*}
+           (\octxe) & if $q \in F$ \\
+           \symrej & if $q \notin F$\,.
+         \end{cases*}
+\end{equation*}
+
+\subsection{A functional choreography}
+
+One possible choreography for this specification treats the input symbols $a \in \ialph$ as atomic propositions $\atmR{a}$; states $q \in Q$ as recursively defined propostions $\proc{q}$;and the end-of-word marker $\emp$ as an atomic proposition $\atmR{\emp}$.
+In other words, the \ac{NFA}'s input is treated as a sequence of messages, $\atmR{\emp} \oc \atmR{a}_n \dotsm \atmR{a}_2 \oc \atmR{a}_1$, and the \ac{NFA}'s states are treated as [recursive] processes.
+
+$a \mapsto \atmR{a}$ for all $a \in \ialph$; $q \mapsto \proc{q}$ for all $q \in Q$; and $\emp \mapsto \atmR{\emp}$.
+
+Using this assignment, the choreography constructed from the specification consists of the following definition, one for each \ac{NFA} state $q \in Q$:
+\begin{equation*}
+  \proc{q} \defd \bigwith_{a \in \ialph} \bigwith_{q\smash{'_a}} (\atmR{a} \limp \proc{q}'_a) \with (\atmR{\emp} \limp \nfa{F}(q))
+  \,.
+\end{equation*}
+
+\begin{corollary}
+  If $q \nfareduces[a] q'_a$, then $\atmR{a} \oc \proc{q} \Reduces \proc{q}'_a$.
+  If $\atmR{a} \oc \proc{q} \reduces \octx'$, then $\octx' \Reduces \proc{q}'_a$ for some $q'_a$ that $a$-succeeds $q$.
+  If $q \nfareduces[a] q'_a$, then $\atmR{a} \oc \proc{q} \Reduces \proc{q}'_a$.
+  If $\atmR{a} \oc \proc{q} \reduces \octx'$, then $\octx' \Reduces \proc{q}'_a$ for some $q'_a$ that $a$-succeeds $q$.
+\end{corollary}
+
+\begin{corollary}
+  If $q \nfareduces[a] q'_a$, then $\atmR{a} \oc \proc{q} \Reduces \proc{q}'_a$.
+  If $\atmR{a} \oc \proc{q} \reduces \octx'$, then $\octx' = \proc{q}'_a$ for some $q'_a$ that $a$-succeeds $q$.
+\end{corollary}
+
+
+\begin{theorem}
+  Let $\aut{A} = (...)$ be \iac{DFA} over the input alphabet $\ialph$.
+  $q \asim s$ if, and only if, $\proc{q} = \proc{s}$, for all states $q$ and $s$.
+\end{theorem}
+\begin{proof}
+  ...
+\end{proof}
+
+But the same does not hold for \acp{NFA}.
+\begin{proof}[Counterexample]
+  ...
+\end{proof}
+
+\subsection{An object-oriented choreography}
+
+\begin{equation*}
+  \begin{lgathered}
+    \proc{a} \defd \bigwith_{q \in Q} \bigwith_{q\smash{'_a}} (\atmL{q}'_a \pmir \atmL{q}) \\
+    \proc{\emp} \defd \bigwith_{q \in Q} (\nfa{F}(q) \pmir \atmL{q})
+    \,.
+  \end{lgathered}
+\end{equation*}
+
+\begin{corollary}
+  If $q \nfareduces[a] q'_a$, then $\proc{a} \oc \atmL{q} \Reduces \atmL{q}'_a$.
+  If $\proc{a} \oc \atmL{q} \reduces \octx'$, then $\octx' \Reduces \atmL{q}'_a$ for some $q'_a$ that $a$-succeeds $q$.
+\end{corollary}
+
+Define a relation on input symbols $a$ and $b$ such that $\proc{a} = \proc{b}$.
+Two symbols are then related exactly when they lead to the same successor states.
+
+\section{Binary counters}
+
+\subsection{An object-oriented choreography}
+
+\begin{equation*}
+  \begin{lgathered}
+    \proc{e} \defd (\proc{e} \fuse \proc{b}_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d}) \\
+    \proc{b}_0 \defd (\up \dn \proc{b}_1 \pmir \atmL{i}) \with (\atmL{d} \fuse \proc{b}'_0 \pmir \atmL{d}) \\
+    \proc{b}_1 \defd (\atmL{i} \fuse \proc{b}_0 \pmir \atmL{i}) \with (\proc{b}_0 \fuse \atmR{s} \pmir \atmL{d}) \\
+    \proc{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \proc{b}_1 \fuse \atmR{s})
+  \end{lgathered}
+\end{equation*}
+
+
+Is the following result what we want?
+\begin{corollary}
+  If $\ainc{w}{n}$, then $\theta(w) \Reduces \theta(w')$ and $\aval{w'}{n}$, for some $w'$.
+  If $\ainc{w}{n}$ and $\theta(w) \Reduces \octx'$, then $\octx' = \theta(w')$ and $\ainc{w'}{n}$, for some $w'$.
+\end{corollary}
+
+
+\begin{equation*}
+  \begin{lgathered}
+    \proc{e} \defd (\proc{e} \fuse \proc{b}_1 \pmir \atmL{i}) \with (\proc{z} \pmir \atmL{d}) \\
+    \proc{b}_0 \defd (\up \dn \proc{b}_1 \pmir \atmL{i}) \with (\atmL{d} \fuse \atmL{b}'_0 \pmir \atmL{d}) \\
+    \proc{b}_1 \defd (\atmL{i} \fuse \proc{b}_0 \pmir \atmL{i}) \with (\proc{b}_0 \fuse \proc{s} \pmir \atmL{d}) \\
+    \proc{z} \defd \up \dn \proc{z} \pmir \atmL{b}'_0 \\
+    \proc{s} \defd \proc{b}_1 \fuse \proc{s} \pmir \atmL{b}'_0
+  \end{lgathered}
+\end{equation*}
+
+\begin{verbatim}
+  bin = &{ i: bin, d: hdun }
+  hdun = &{ x: +{ z: 1, s: bin } }
+
+  1 |- e : bin
+  bin |- b0 : bin
+  bin |- b1 : bin
+  1 |- z : hdun
+  bin |- s : hdun
+\end{verbatim}
+
+\begin{equation*}
+  \begin{lgathered}
+    \proc{z} \defd (\up \dn \proc{z} \pmir \atmL{b}'_0) \with (\atmR{z} \pmir \atmL{x}) \\
+    \proc{s} \defd (\proc{b}_1 \fuse \proc{s} \pmir \atmL{b}'_0) \with (\atmR{s} \pmir \atmL{x})
+  \end{lgathered}
+\end{equation*}
+
+
+\subsection{A functional choreography}
+
+\begin{equation*}
+  \begin{lgathered}
+    \proc{\imath} \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp \proc{\imath} \fuse \atmR{b}_0) \\
+    \proc{d} \defd (\atmR{e} \limp \up \dn \proc{z}) \with (\atmR{b}_0 \limp \proc{d} \fuse \atmL{b}'_0) \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse \proc{s}) \\
+    \proc{z} \defd \up \dn \proc{z} \pmir \atmL{b}'_0 \\
+    \proc{s} \defd \atmR{b}_1 \fuse \proc{s} \pmir \atmL{b}'_0
+  \end{lgathered}
+\end{equation*}
+
+
+\begin{equation*}
+  \begin{lgathered}
+    \proc{\imath} \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp \proc{\imath} \fuse \atmR{b}_0) \\
+    \proc{d} \defd (\atmR{e} \limp \atmR{z}) \with (\atmR{b}_0 \limp \proc{d} \fuse \proc{b}'_0) \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse \atmR{s}) \\
+    \proc{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \proc{b}_1 \fuse \atmR{s})
+  \end{lgathered}
+\end{equation*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End:

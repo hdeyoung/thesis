@@ -1,5 +1,68 @@
 \chapter{From ordered rewriting to message-passing concurrency}\label{ch:ordered-bisimilarity}
 
+The previous \lcnamecref{ch:ordered-rewriting} introduced a process-as-formula view of the Lambek calculus, used to provide local, message-passing choreographies of the global, string rewriting specifications seen in \cref{ch:string-rewriting}.
+
+With the notion of process identity uninterpreted atomic propositions as messages and 
+
+This \lcnamecref{ch:ordered-bisimilarity} explores the question of when two propositions have equivalent behavior under this process-as-formula view.
+In keeping with the large body of work on bisimilarity for message-passing processes\autocite{??}, we develop a notion of bisimilarity for ordered propositions.
+This \vocab{ordered rewriting bisimilarity} treats the uninterpreted atomic propositions as the sole observables, in keeping with their interpretation as messages.
+Messages are observable, but processes are opaque.
+
+
+\section{}
+
+
+
+
+
+\section{Ordered rewriting bisimilarity}
+
+\paragraph*{Atoms are observable}
+
+An ordered context $\octx$ may be composed when surrounded by ordered contexts $\octx_L$ and $\octx_R$.
+
+Thus, in $\octx_L \oc \octx \oc \octx_R$, we view $\octx$ as existing within the environment formed by its surrounding contexts, $\octx_L$ and $\octx_R$.
+The context $\octx$ then interacts with that environment along two interfaces: the left end of $\octx$ may interact with the right end of $\octx_L$, and, symmetrically, the right end of $\octx$ may interact with the left end of $\octx_R$.
+
+An atom's location and direction are crucial to its observability.
+For an atom to be observable, it must be possible for an external observer to receive that atom as a message.
+In $\atmL{a} \oc \octx$ and $\octx \oc \atmR{b}$, the atoms $\atmL{a}$ and $\atmR{b}$, respectively, are observable, because $\octx_O \oc (\p{A} \pmir \atmL{a}) \oc \atmL{a} \oc \octx \reduces \octx_O \oc \p{A} \oc \octx$
+
+But those same atoms are not observable in $\octx \oc \atmL{a}$ and $\atmR{b} \oc \octx$.
+
+\begin{theorem}
+  If $\octx = \atmL{a} \oc \octx_0 \reduces \octx'$, then $\octx' = \atmL{a} \oc \octx'_0$ for some $\octx'_0$ such that $\octx_0 \reduces \octx'_0$.
+  Symmetrically, if $\octx = \octx_0 \oc \atmR{a} \reduces \octx'$, then $\octx' = \octx'_0 \oc \atmR{a}$ for some $\octx'_0$ such that $\octx_0 \reduces \octx'_0$.
+\end{theorem}
+\begin{proof}
+  By inversion on the given reduction, making use of the fact that $\atmL{a} \limp \n{B}$ and $\n{B} \pmir \atmR{a}$ are not well-formed propositions.
+\end{proof}
+
+\paragraph*{Ordered rewriting is asynchronous}
+
+Notice that $\octx_L \oc (\up \p{A} \pmir \atmL{a}) \oc (\atmL{a} \fuse \p{B}) \oc \octx_R \Reduces \octx_L \oc \p{A} \oc \p{B} \oc \octx_R$ in two steps, first decomposing $\atmL{a} \fuse \p{B}$ into $\atmL{a}$ and $\p{B}$, and then using that $\atmL{a}$ to decompose $\up \p{A} \pmir \atmL{a}$ into $\p{A}$.
+But the rewriting cannot occur in a single, synchronous step:
+\begin{equation*}
+  \octx_L \oc (\up \p{A} \pmir \atmL{a}) \oc (\atmL{a} \fuse \p{B}) \oc \octx_R
+    \nreduces \octx_L \oc \p{A} \oc \p{B} \oc \octx_R
+  \,.
+\end{equation*}
+
+For this reason, ordered rewriting is asynchronous, and we should expect the notion of bisimilarity that we develop to be similar to bisimilarity developed for the asynchronous $\pi$-calculus\autocite{Amadio+:TCS98}.
+
+\subsection{}
+
+Because outgoing atoms are observable at a context's edges, there is a built-in notion of (immediate) output transition: a context $\octx$ outputs $\atmL{a}$ to its left exactly when $\octx = \atmL{a} \oc \octx'$, for some $\octx'$.
+Symmetrically, a context $\octx$ outputs $\atmR{b}$ to its right exactly when $\octx = \octx' \oc \atmR{b}$.
+We could adopt a process-calculus--like labeled transition notation for these output transitions -- such as $\octx = \atmL{a} \oc \octx' \reduces[\atmL{a}] \octx'$ and $\octx = \octx' \oc \atmR{a} \reduces[\atmR{a}] \octx'$ -- but that 
+
+A weak output transition would then be
+So, in this setting, $\octx$ would have a weak output transition to $\octx'$ if there exists a context $\octx_0$ such that $\octx \Reduces \atmL{a} \oc \octx_0$ and $\octx_0 \Reduces \octx'$ -- or, more simply, if $\octx \Reduces \atmL{a} \oc \octx'$.
+
+
+\section{}
+
 This \lcnamecref{ch:ordered-bisimilarity} marks a change in our perspective on ordered rewriting.
 In the previous \lcnamecref{ch:ordered-rewriting}, we viewed ordered rewriting as an abstract framework for global specifications of concurrent systems, in the vein of previous work on [...].
 The emphasis was placed squarely on state transformation [...].

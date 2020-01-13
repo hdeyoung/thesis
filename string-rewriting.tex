@@ -1,0 +1,976 @@
+\chapter{String rewriting for concurrent specifications}\label{ch:string-rewriting}
+
+In this \lcnamecref{ch:string-rewriting}, we consider abstract rewriting as a framework for specifying the behavior\fixnote{operational semantics?} of concurrent systems.
+This is not, of course, a new idea.
+Multiset rewriting\autocite{??}, and other state-transformation models such as Petri nets\autocite{??}, 
+[...]\fixnote{fix}
+Unlike the application domain for multiset rewriting, we are particularly interested in concurrent systems whose components are arranged in a linear topology and have a monoidal structure.
+Given that finite strings over an alphabet $\ialph$ form a monoid, string rewriting is a good match for this structure.
+
+For a broad sketch of string rewriting, consider the finite strings over the alphabet $\Set{a,b}$, and let $\reduces$ be the least compositional\fixnote{compatible?} binary relation over those strings that satisfies the axioms
+\begin{equation}\label{eq:string-rewriting:ends-b-nondeterministic}
+  \infer{a \wc b \reduces b}{}
+  \qquad\text{and}\qquad
+  \infer{b \reduces \emp}{}
+  \:.
+\end{equation}
+This relation can be seen as a rewriting relation on strings.
+For instance, because $a \wc b \wc b \reduces b \wc b$, we would say that $a \wc b \wc b$ may be rewritten to $b \wc b$.
+
+More generally, under the rewriting axioms of \cref{eq:string-rewriting:ends-b-nondeterministic}, a string $w$ can be rewritten to the empty string -- that is, $w \reduces \dotsb \reduces \emp$ -- if, and only if, that string ends with $b$.
+For example, the string $abb$ ends with $b$, and $abb$ can indeed be rewritten to the empty string:
+\begin{equation*}
+  a \wc b \wc b
+    \reduces b \wc b
+    \reduces b
+    \reduces \emp
+  \,.
+\end{equation*}
+In this way, the rewriting axioms of \cref{eq:string-rewriting:ends-b-nondeterministic} constitute a specification of a system that identifies those strings over the alphabet $\Set{a,b}$ that end with $b$.
+
+The usual operation semantics for string rewriting employs committed\-choice nondeterminism, which
+% this specification is nondeterministic
+% and that that nondeterminism
+can lead to stuck, or otherwise undesirable, states.
+For example, although $abb$ certainly ends with $b$, the string $abb$ can be rewritten to $a$, a stuck state, if incorrect choices about which axioms to apply are made:
+\begin{equation*}
+  a \wc b \wc b \reduces a \wc b \reduces a \nreduces
+  \,\!.
+\end{equation*}
+% even though $abb$ certainly ends with $b$.
+No backtracking is performed to reconsider the choices.
+\fixnote{Bring up concurrency here?}
+
+\newthought{The remainder of this \lcnamecref{ch:string-rewriting}} describes the string rewriting framework in more detail~\parencref{sec:string-rewriting:framework} and examines its properties, most importantly concurrent rewritings.
+Then we present two extended examples of how string rewriting may be used to specify concurrent systems: \aclp*{NFA}~\parencref{sec:string-rewriting:nfa} and binary representations of natural numbers~\parencref{sec:string-rewriting:binary-counter}.
+These will serve as recurring examples throughout the remainder of this document.
+
+\section{String rewriting}\label{sec:string-rewriting:framework}
+
+\subsection{Symbols and strings}
+
+String rewriting presupposes an alphabet, $\sralph$, of symbols $a$ from which finite strings are constructed.
+This alphabet is usually, but need not be, finite.
+
+Strings, $w$, are then finite lists of symbols: $w = a_1 \wc a_2 \dotsb a_n$.
+Algebraically, strings form a free (noncommutative) monoid over symbols $a \in \sralph$ and may be described syntactically by the grammar
+\begin{equation*}
+  w \Coloneqq w_1 \wc w_2 \mid \emp \mid a
+  \,,
+\end{equation*}
+where the monoid operation is string concatenation, denoted by $w_1 \wc w_2$, and the unit element is the empty string, denoted by $\emp$.%
+% and $a$ is a symbol drawn from the alphabet $\ialph$.%
+\footnote{As usual for a free monoid, the alternative grammar,
+  % \begin{equation*}
+    $w \Coloneqq \emp \mid a \wc w$,
+  % \end{equation*}
+  describes the same strings.}
+As a monoid, strings are equivalent up to associativity and unit laws (see adjacent \lcnamecref{fig:string-rewriting:monoid-laws}).%
+\begin{marginfigure}
+  \begin{gather*}
+    (w_1 \wc w_2) \wc w_3 = w_1 \wc (w_2 \wc w_3) \\
+    \emp \wc w = w = w \wc \emp
+  \end{gather*}
+  \caption{The monoid laws for strings}\label{fig:string-rewriting:monoid-laws}
+\end{marginfigure}
+We choose to keep this equivalence implicit, however, treating equivalent strings as syntactically indistinguishable.
+
+% The reason for the change of notation -- from $w$ and $\emp$ at the outset to $\octx$ and $(\emp$ here -- will become clear in the subsequent \lcnamecref{ch:ordered-rewriting}.
+
+\subsection{A rewriting relation}
+
+At the heart of string rewriting is a binary relation, $\reduces$, over strings.
+When $w \reduces w'$, we say that $w$ can be rewritten to $w'$.
+This relation is defined as the least compositional\fixnote{compatible?} relation satisfying a collection of rewriting axioms, chosen on a per-application basis%
+, such as the axioms
+% For example, in the new notation, the axioms of \cref{eq:string-rewriting:ends-b-nondeterministic} are
+\begin{equation}\label{eq:string-rewriting:ends-b-simpler}
+  \infer{a \wc b \reduces b}{}
+  \qquad\text{and}\qquad
+  \infer{b \reduces \emp}{}
+\end{equation}
+shown earlier.
+More generally, an axiom is any pair of concrete, finite strings, $w \reduces w'$, although axioms of the form $\emp \reduces w'$ are forbidden.
+% Axioms $w \reduces w'$ may only rewrite a \emph{nonempty} concrete string $w$ into another, possibly empty concrete string $w'$.
+
+To be more formal, these axioms are collected into a signature, $\srsig$, that indexes the rewriting relation:
+\begin{equation*}
+  \srsig \Coloneqq \srsige \mid \srsig, w \reduces w' \quad\text{($w \neq \emp$)}
+\end{equation*}
+The axioms of this signature may then be used via a $\jrule{$\reduces$AX}$ rule,
+\begin{equation*}
+  \infer[\mathrlap{\jrule{$\reduces$AX}}]{w \reduces_{\srsig} w'}{
+    w \reduces w' \in \srsig}
+  \mathrlap{\phantom{\jrule{$\reduces$AX}}\,.}
+\end{equation*}
+Aside from this rule, all of the other rules for the rewriting relation simply pass on the signature $\srsig$ untouched; for this reason, we nearly always elide the signature index on the rewriting relation, writing $\reduces$ instead of $\reduces_{\srsig}$.
+
+In addition to the application-specific axioms contained within the signature, rewriting is always permitted within substrings,
+so we adopt two compatibility rules.
+Together, the rules
+\begin{inferences}
+  \infer[\jrule{$\reduces$C}\smash{_{\jrule{L}}}]{w_1 \wc w_2 \reduces w'_1 \wc w_2}{
+    w_1 \reduces w'_1}
+  \and\text{and}\and
+  \infer[\jrule{$\reduces$C}\smash{_{\jrule{R}}}]{w_1 \wc w_2 \reduces w_1 \wc w'_2}{
+    w_2 \reduces w'_2}
+  \,.
+\end{inferences}
+ensure that the rewriting relation is compatible with the [free]\fixnote{fix} monoidal structure of strings.%
+\footnote{Because strings form a monoid, these compatibility rules are equivalent to the unified rule
+  \begin{equation*}
+    \infer[\jrule{$\reduces$C}]{w_L \wc w \wc w_R \reduces w_L \wc w' \wc w_R}{
+      w \reduces w'}
+    \:.
+  \end{equation*}
+  However, we prefer the two-rule formulation because it aligns more closely with the free monoid's syntactic structure.}
+
+% With these compatibility rules, the axioms of \cref{eq:string-rewriting:ends-b-simpler} can be streamlined: they are derivable from the simpler rules
+% \begin{equation}\label{eq:string-rewriting:ends-b-simplest}
+%   \infer{a \oc b \reduces b}{}
+%   \qquad\text{and}\qquad
+%   \infer{b \reduces \octxe}{}
+%   \:.
+% \end{equation}
+
+The $\reduces$ relation describes the rewritings that are possible in a single step: exactly one axiom, perhaps embellished by the compatibility rules.
+In addition to these single-step rewritings, it will frequently be useful to describe the rewritings that are possible in some finite number of steps.
+For this, we construct a multi-step rewriting relation, $\Reduces$, from the reflexive, transitive closure of $\reduces$.%
+\footnote{Usually written as $\reduces^*$, we instead chose $\Reduces$ for the reflexive, transitive closure because of its similarity with standard process calculus notation for weak transitions, $\Reduces[\alpha]$.
+  Our reasons for this choice of notation will become clear in subsequent \lcnamecrefs{ch:ordered-rewriting}.}
+
+Consistent with its [free]\fixnote{fix} monoidal structure, there are two equivalent formulations of this reflexive, transitive closure: each rewriting sequence $w \Reduces w'$ can be viewed as either a list or tree of individual rewriting steps.
+We prefer the list-based formulation,
+\begin{inferences}
+  \infer[\jrule{$\Reduces$R}]{w \Reduces w}{}
+  \and\text{and}\and
+  \infer[\jrule{$\Reduces$T}]{w \Reduces w''}{
+    w \reduces w' & w' \Reduces w''}
+  \,,
+\end{inferences}
+because it tends to streamline proofs by structural induction.
+However, on the basis of the following \lcnamecref{lem:string-rewriting:trace-transitivity}, we allow ourselves to freely switch between the two formulations as needed.
+\begin{lemma}[Transitivity of $\Reduces$]\label{lem:string-rewriting:trace-transitivity}
+  If $w \Reduces w'$ and $w' \Reduces w''$, then $w \Reduces w''$.
+\end{lemma}
+\begin{proof}
+  By structural induction over the first of the given rewriting sequences, $w \Reduces w'$.
+\end{proof}
+
+% This closure, denoted by $\Reduces$, is the least relation satisfying 
+% \footnote{The $\jrule{$\Reduces$T}$ rule could be replaced by
+%   \begin{equation*}
+%     \infer{\octx \Reduces \octx'}{
+%       \octx \reduces \octx'}
+%     \qquad\text{and}\qquad
+%     \infer{\octx \Reduces \octx''}{
+%       \octx \Reduces \octx' & \octx' \Reduces \octx''}
+%     \:,
+%   \end{equation*}
+%   but the $\jrule{$\Reduces$T}$ rule is slightly more convenient to work with in inductive proofs.}
+
+A summary of string rewriting is shown in \cref{fig:string-rewriting:summary}.
+\begin{figure}[tbp]
+  \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
+  \begin{syntax*}
+    Strings &
+      w & w_1 \wc w_2 \mid \emp \mid a
+    \\
+    Signatures &
+      \srsig & \srsige \mid \srsig, w \reduces w'
+      \mathrlap{\qquad\text{($w \neq \emp$)}}
+  \end{syntax*}
+  \begin{gather*}
+    (w_1 \wc w_2) \wc w_3 = w_1 \wc (w_2 \wc w_3) \\
+    \emp \wc w = w = w \wc \emp
+  \end{gather*}
+  \begin{inferences}
+    \infer[\jrule{$\reduces$AX}]{w \reduces_{\srsig} w'}{
+      w \reduces w' \in \srsig}
+    \and
+    \infer[\jrule{$\reduces$C}\smash{_{\jrule{L}}}]{w_1 \wc w_2 \reduces w'_1 \wc w_2}{
+      w_1 \reduces w'_1}
+    \and
+    \infer[\jrule{$\reduces$C}\smash{_{\jrule{R}}}]{w_1 \wc w_2 \reduces w_1 \wc w'_2}{
+      w_2 \reduces w'_2}
+    \\
+    \infer[\jrule{$\Reduces$R}]{w \Reduces w}{}
+    \and
+    \infer[\jrule{$\Reduces$T}]{w \Reduces w''}{
+      w \reduces w' & w' \Reduces w''}
+  \end{inferences}
+  \caption{A string rewriting framework}\label{fig:string-rewriting:summary}
+\end{figure}
+
+\subsection{Properties of string  rewriting}
+
+As an abstract rewriting system, string rewriting can be evaluated for several [standard]\fixnote{fix} properties: confluence, termination, and, of particular interest to us, concurrency.
+
+\paragraph*{Concurrency}
+As an example multi-step rewriting sequence, observe that $a \wc b \wc b \Reduces \emp$, under the axioms of our running example~(\cref{eq:string-rewriting:ends-b-simplest}).
+In fact, as shown in the adjacent \lcnamecref{fig:string-rewriting:abb}%
+\begin{marginfigure}
+  \begin{equation*}
+    \hphantom{a \wc b \wc {}}
+    \begin{tikzcd}%[/tikz/baseline=]
+      &
+      b \wc b
+        \drar[reduces]
+      \\
+      \mathllap{a \wc b \wc {}} b
+        \urar[reduces]
+        \drar[reduces]
+        \arrow[Reduces]{rr}
+      &&
+      b \mathrlap{{} \reduces \emp}
+      \\
+      &
+      \smash{a \wc b}\vphantom{a}
+        \urar[reduces]
+      % \rar[reduces]
+      % &
+      % a \mathrlap{{} \nreduces}
+    \end{tikzcd}
+    \hphantom{{} \reduces \emp}
+  \end{equation*}
+  \caption{An example of concurrent string rewriting}\label{fig:string-rewriting:abb}
+\end{marginfigure}%
+, multiple sequences witness this rewriting.
+The initial $a \wc b$ can first be rewritten to $b$ and then the terminal $b$ can be rewritten to $\emp$ (upper half of \lcnamecref{fig:string-rewriting:abb}); or vice versa: the terminal $b$ can first be rewritten to $\emp$ and then the initial $a \wc b$ can be rewritten to $b$ (lower half of \lcnamecref{fig:string-rewriting:abb}).
+In either case, the remaining $b$ (which is the leftmost of the original $b$s) can finally be rewritten to $\emp$.
+
+Notice that these two sequences differ only in how non-overlapping, and therefore independent, rewritings of the string's two segments are interleaved.
+Consequently, the two sequences can be -- and indeed should be -- considered essentially equivalent.
+The details of how the individual, small steps are interleaved are irrelevant, so that -- conceptually at least -- only the big-step sequence from $a \wc b \wc b$ to $b$ (and ultimately $\emp$) remains (middle of \lcnamecref{fig:string-rewriting:abb}).
+
+In contrast, a third rewriting sequence does not admit this reordering:
+the leftmost $b$ is rewritten first to $\emp$ and then the resulting $a \wc b$ is rewritten to $b$ (and ultimately $\emp$).
+This sequence's two rewriting steps are not independent because the $b$ that participates in the rewriting of $a \wc b$ is not adjacent to the $a$ until the first rewriting step occurs.
+\fixnote{explain figure}
+% This sequence's rewriting of $a \wc b$ into $b$ is not independent of the rewriting of the leftmost $b$ because the 
+%
+\begin{marginfigure}
+  \begin{equation*}
+    \begin{tikzcd}%[/tikz/baseline=]
+      &
+      b_1 \wc b_2
+        \drar[reduces]
+        \rar[reduces]
+      &
+      b_2
+        \drar[reduces]
+      &
+      \\
+      a \wc b_1 \wc b_2
+        \urar[reduces]
+        \drar[reduces]
+        \arrow[Reduces]{rr}
+        \arrow[reduces]{ddr}
+      &&
+      b_1
+        \rar[reduces]
+      &
+      \emp
+      \\
+      &
+      a \wc b_1
+        \urar[reduces]
+        \rar[reduces]
+      &
+      a \mathrlap{{} \nreduces}
+      \\
+      &
+      a \wc b_2
+        \urar[reduces]
+        \arrow[reduces]{uuur}
+    \end{tikzcd}
+  \end{equation*}
+  \caption{When multiple occurences of $b$ are properly distinguished, a complete trace diagram can be given.}\label{fig:string-rewriting:abb-complete}
+\end{marginfigure}%
+
+More generally, this idea that the interleaving of independent actions is irrelevant is known as \vocab{concurrent equality}\autocite{Watkins+:CMU02}, and it forms the basis of concurrency\autocite{??}.
+With the partial commutativity endowed by concurrent equality, the [free] monoid formed by rewriting sequences is, more specifically, a trace monoid.
+As such, we will frequently refer to rewriting sequences as \vocab{traces}.
+
+\paragraph*{Non-confluence}
+We may also evaluate string rewriting for confluence.
+Confluence requires that all strings with a common ancestor be joinable, \ie, that $w'_1 \secudeR\Reduces w'_2$ implies $w'_1 \Reduces\secudeR w'_2$, for all strings $w'_1$ and $w'_2$.
+
+Because string rewriting is an asymmetric, committed-choice relation, some nondeterministic choices are irreversible.
+For example, under the axioms of our running example (\cref{eq:string-rewriting:ends-b-simpler}), $a \wc b$ can be nondeterministically rewritten into either $a$ or $\emp$, as shown in \cref{fig:string-rewriting:abb-complete}%
+% \begin{marginfigure}
+%   \begin{equation*}
+%     \begin{tikzcd}
+%       & b \mathrlap{{} \reduces \emp}
+%       \\
+%       a \wc b
+%         \urar[reduces]
+%         \drar[reduces]
+%       \\
+%       & a \mathrlap{{} \nreduces}
+%     \end{tikzcd}
+%     \hphantom{{} \reduces \emp}
+%   \end{equation*}
+%   \caption{String rewriting is not confluent.}\label{fig:string-rewriting:ab-not-confluent}
+% \end{marginfigure}%
+.
+However, neither $a$ nor $\emp$ can be rewritten, so confluence fails to hold for string rewriting in general.
+
+\paragraph*{Non-termination}
+In our running example, rewriting always terminates: each possible rewriting step removes exactly one symbol, and each string contains only finitely many symbols.
+
+In general, however, string rewriting does not terminate even though strings are finite.
+For a simple example, consider rewriting of strings over the alphabet $\Set{a,b}$ with axioms
+\begin{inferences}
+  \infer{a \reduces b}{}
+  \and\text{and}\and
+  \infer{b \reduces a}{}
+  \:.
+\end{inferences}
+Every finite trace from a nonempty string can always be extended by applying one of these axioms, so rewriting never terminates.
+
+
+\section{Extended example: \Aclp*{NFA}}\label{sec:string-rewriting:nfa}
+
+As an extended example of string rewriting, we will specify how \iac{NFA} processes its input.
+Beginning with this specification, \acp{NFA} will serve as a recurring example throughout the remainder of this document.
+ 
+Given \iac{NFA} $\aut{A} = (Q, ?, F)$\fixnote{fix} over an input alphabet $\ialph$, the idea is to introduce a string rewriting axiom for each transition that the \ac{NFA} can make:
+\begin{equation*}
+  \infer{a \oc q \reduces q'_a}{}
+  \enspace\text{for each transition $q \nfareduces[a] q'_a$.}
+\end{equation*}
+In addition, the \ac{NFA}'s acceptance criteria is captured by introducing a distinguished symbol\fixnote{replace with $\$$?} $\emp$ to act as an end-of-word marker, along with axioms\fixnote{Check these with choreography}
+\begin{equation*}
+  \infer{\emp \oc q \reduces F(q)}{}
+  \enspace\text{for each state $q$, where }
+  F(q) = \begin{cases*}
+           (\octxe) & if $q \in F$ \\
+           \symrej & if $q \notin F$\,.
+         \end{cases*}
+\end{equation*}
+These axioms imply that rewriting occurs over the strings $\Set{\emp} \times \finwds{\ialph} \times Q$.
+
+For a concrete instance of this encoding, recall from \cref{ch:automata} the \ac{NFA} (repeated in the adjacent \lcnamecref{fig:string-rewriting:nfa-example-ends-b})%
+%
+\begin{marginfigure}
+  \begin{equation*}
+    \mathllap{\aut{A}_1 = {}}
+    \begin{tikzpicture}[baseline=(q_0.base)]
+        \graph [automaton] {
+          q_0
+           -> [loop above, "a,b"]
+          q_0
+           -> ["b"]
+          q_1 [accepting]
+           -> ["a,b"]
+          q_2
+           -> [loop above, "a,b"]
+          q_2;
+        };
+      \end{tikzpicture}
+  \end{equation*}
+  \caption{\Iac*{NFA} that accepts, from state $q_0$, exactly those words that end with $b$. (Repeated from \cref{fig:nfa-example-ends-b}.)}\label{fig:string-rewriting:nfa-example-ends-b}
+\end{marginfigure}
+%
+that accepts exactly those words, over the alphabet $\ialph = \set{a,b}$, that end with $b$; that \ac{NFA} is specified by the following string rewriting axioms:
+\begin{equation*}
+  \begin{array}{@{}l@{\qquad}c@{\qquad}l@{}}
+    \infer[]{a \oc q_0 \reduces q_0}{}
+    &
+    \infer{b \oc q_0 \reduces q_0}{}
+    \text{\enspace and\enspace}
+    \infer[]{b \oc q_0 \reduces q_1}{}
+    &
+    \infer[]{\emp \oc q_0 \reduces \symrej}{}
+    \\[2\jot]
+    \infer[]{a \oc q_1 \reduces q_2}{}
+    &
+    \infer[]{b \oc q_1 \reduces q_2}{}
+    &
+    \infer[]{\emp \oc q_1 \reduces \octxe}{}
+    \\[2\jot]
+    \infer[]{a \oc q_2 \reduces q_2}{}
+    &
+    \infer[]{b \oc q_2 \reduces q_2}{}
+    &
+    \infer[]{\emp \oc q_2 \reduces \symrej}{}
+  \end{array}
+\end{equation*}
+Indeed, just as the \ac{NFA} $\aut{A}_1$ accepts the input word $abb$, its rewriting specification admits a trace
+\begin{align*}
+  \emp \oc b \oc b \oc a \oc q_0
+    \reduces \emp \oc b \oc b \oc q_0
+    \reduces \emp \oc b \oc q_0
+    \reduces \emp \oc q_1
+    \reduces (\octxe)
+  \:.
+\end{align*}
+
+More generally, this string rewriting specification of \acp{NFA} adequately describes their operational semantics, in the sense that it simulates all \ac{NFA} transitions.
+Given the reversal (anti-)\-homo\-morph\-ism for finite words defined in the adjacent \lcnamecref{fig:string-rewriting:reversal}%
+\begin{marginfigure}
+  \begin{align*}
+    \rev*{w_1 \wc w_2} &= \rev{w_2} \oc \rev{w_1} \\
+    \rev{\emp} &= \octxe \\
+    \rev{a} &= a
+  \end{align*}
+  \caption{An (anti-)\-homo\-morph\-ism for reversal of finite words}\label{fig:string-rewriting:reversal}
+\end{marginfigure}%
+, we can prove the following adequacy result.
+\begin{theorem}[Adequacy of \ac*{NFA} specification]\label{thm:nfa-adequacy-string-rewriting}
+  Let $\aut{A} = (Q, ?, F)$\fixnote{fix} be \iac{NFA} over the input alphabet $\ialph$.
+  \begin{itemize}[nosep]
+  \item
+    $q \nfareduces[a] q'_a$ if, and only if, $a \oc q \reduces q'_a$, for all input symbols $a \in \ialph$.
+  \item
+    $q \in F$ if, and only if, $\emp \oc q \reduces (\octxe)$.%, where the atom $\emp$ functions as an end-of-word marker.
+  \item
+    $q \nfareduces[w] q'$ if, and only if, $\rev{w} \oc q \Reduces q'$, for all finite words $w \in \finwds{\ialph}$.
+  \end{itemize}  
+\end{theorem}
+\begin{proof}
+  The first two parts follow immediately from the \ac{NFA}'s specification; the third part follows by induction over the structure of the input word $w$.
+\end{proof}
+
+This adequacy \lcnamecref{thm:nfa-adequacy-string-rewriting} is relatively straightforward to state and prove because string rewriting is a good match for labeled transition systems, like the one that defines \iac{NFA}'s operational semantics.
+On the other hand, when a system is not so clearly based on a labeled transition system, stating and proving the adequacy of its string rewriting specification becomes a bit more involved.
+This is the case for the next example, binary representations of natural numbers.
+
+\section{Extended example: Binary representations of natural numbers}\label{sec:string-rewriting:binary-counter}
+
+For a second recurring example, we will use
+binary representations of natural numbers equipped with increment and decrement operations, or \vocab{binary counters}.
+% , will serve as a second recurring example throughout the remainder of this document.
+Here we present a string rewriting specification of these binary counters.
+% further example of string rewriting, consider a specification of binary counters: binary representations of natural numbers equipped with increment and decrement operations.
+
+\subsection{Binary representations}
+
+In this setting, we represent a natural number in binary by a string that consists of a big-endian sequence of symbols $b_0$ and $b_1$, prefixed by the symbol $e$; leading $b_0$s are permitted.
+For example, both $\octx = e \oc b_1$ and $\octx' = e \oc b_0 \oc b_1$ are valid binary representations of the natural number $1$.
+
+To be more precise, we inductively define a relation, $\aval{}{}$, that assigns to each binary representation a unique natural number denotation.
+If $\aval{\octx}{n}$, we say that $\octx$ denotes, or represents, natural number $n$ in binary.
+\begin{inferences}
+  \infer[\jrule{$e$-V}]{\aval{e}{0}}{}
+  \and
+  \infer[\jrule{$b_0$-V}]{\aval{\octx \oc b_0}{2n}}{
+    \aval{\octx}{n}}
+  \and
+  \infer[\jrule{$b_1$-V}]{\aval{\octx \oc b_1}{2n+1}}{
+    \aval{\octx}{n}}
+\end{inferences}
+Besides providing a denotational semantics of binary numbers, the $\aval{}{}$ relation also serves to implicitly characterize the well-formed binary numbers as those strings $\octx$ that form the relation's domain of definition.%
+\footnote{Alternatively, the well-formed binary numbers could be described more explicitly by the grammar
+\begin{equation*}
+  \octx \Coloneqq e \mid \octx \oc b_0 \mid \octx \oc b_1
+  \,,
+\end{equation*}
+and then their denotations could be expressed in a more functional manner:
+\begin{equation*}
+  \begin{lgathered}
+    \deno[V]{e} = 0 \\
+    \deno[V]{\octx \oc b_0} = 2 \deno[V]{\octx} \\
+    \deno[V]{\octx \oc b_1} = 2 \deno[V]{\octx} + 1
+    \,.
+  \end{lgathered}
+\end{equation*}%
+}
+
+
+The adequacy of the $\aval{}{}$ relation is proved as the following \lcnamecref{thm:ordered-rewriting:binary-adequacy}.
+%
+\begin{theorem}[Adequacy of binary representations]\label{thm:ordered-rewriting:binary-adequacy}
+  Binary representations and their $\aval{}{}$ relation are:
+  \begin{thmdescription}
+  \item[\emph{Functional}]
+    For each binary number $\octx$, there exists a unique natural number $n$ such that $\aval{\octx}{n}$.
+  \item[\emph{Surjective}]
+    For each natural number $n$, there exists a binary number $\octx$ such that $\aval{\octx}{n}$.
+  \item[\emph{Latent}]
+    If $\aval{\octx}{n}$, then $\octx \nreduces$.
+  \end{thmdescription}
+\end{theorem}
+\begin{proof}
+  The three claims may be proved by induction over the structure of $\octx$, and by induction on $n$, respectively.
+\end{proof}
+
+Notice that the above $\jrule{$e$-V}$ and $\jrule{$b_0$-V}$ rules overlap when the denotation is $0$, giving rise to the leading $b_0$s that make the $\aval{}{}$ relation non-injective:
+for example, both $\aval{e \oc b_1}{1}$ and $\aval{e \oc b_0 \oc b_1}{1}$ hold.
+However, if the rule for $b_0$ is restricted to \emph{nonzero} even numbers, then each natural number has a unique, canonical representation that is free of leading $b_0$s.%
+\footnote{%
+  A restriction of the $b_0$ rule to nonzero even numbers is:
+  \begin{equation*}
+    \infer{\aval{\octx \oc b_0}{2n}}{
+      \aval{\octx}{n} & \text{($n > 0$)}}
+  \,.
+  \end{equation*}
+  The leading-$b_0$-free representations could alternatively be seen as the canonical representatives of the equivalence classes induced by the relation among binary numbers that have the same denotation: $\octx \equiv \octx'$ if $\aval{\octx}{n}$ and $\aval{\octx'}{n}$ for some $n$.}
+
+
+\subsection{An increment operation}
+
+To use string rewriting to describe an increment operation on binary representations, we introduce a new symbol, $i$, that will serve as an increment instruction.
+
+Given a binary number $\octx$ that represents $n$, we may append $i$ to form an active%
+\footnote{The \enquote*{active}, \enquote*{latent}, and \enquote*{passive} terminology is borrowed from \textcite{Pfenning+Simmons:LICS09}.
+  Active strings are immediately rewritable, but latent strings are rewritable only when combined with other, passive strings.
+  The blurry line between latent and passive strings is exploited in \cref{ch:choreographies} when we discuss choreographies.}
+, computational string, $\octx \oc i$.
+For $i$ to adequately represent the increment operation, the string $\octx \oc i$ must meet two conditions, captured by the following global desiderata:
+% \begin{theorem}\label{thm:increment-structural-adequacy}
+%   Let $\octx$ be a binary representation of $n$.
+%   Then:
+  \begin{itemize}% [nosep]
+  \item
+    % \emph{some} computation from $\octx \oc i$ results in a binary representation of $n+1$ -- that is, $\octx \oc i \Reduces\aval{}{n+1}$; and
+    $\octx \oc i \Reduces\aval{}{n+1}$ -- that is, \emph{some} rewriting sequence results in a binary representation of $n+1$; and
+  \item
+    % \emph{any} computation from $\octx \oc i$ results in a binary representation of $n+1$ -- that is, $\octx \oc i \Reduces\aval{}{n'}$ only if $n' = n+1$.%
+    $\octx \oc i \Reduces \octx'$ implies $\octx' \Reduces\aval{}{n+1}$ -- that is, \emph{any} rewriting sequence from $\octx \oc i$ can\fixnote{??} result in a binary representation of $n+1$.
+  \end{itemize}
+% \end{theorem}
+% \noindent
+For example, because $e \oc b_1$ denotes $1$, a computation $e \oc b_1 \oc i \Reduces\aval{}{2}$ must exist; moreover, every computation $e \oc b_1 \oc i \Reduces\aval{}{n'}$ must satisfy $n' = 2$.
+
+\newthought{To achieve these} global desiderata, we introduce three string rewriting axioms that describe how the symbols $e$, $b_0$, and $b_1$ may be rewritten when they encounter $i$, the increment instruction:
+\begin{inferences}
+  \infer{e \oc i \reduces e \oc b_1}{}
+  \and
+  \infer{b_0 \oc i \reduces b_1}{}
+  \and\text{and}\and
+  \infer{b_1 \oc i \reduces i \oc b_0}{}
+  \,.
+\end{inferences}
+These three axioms can be read as follows:
+\begin{itemize}
+\item
+  To increment $e$, append $b_1$ as a new most\fixnote{or least?} significant bit, resulting in $e \oc b_1$.
+\item
+  To increment a binary number ending in $b_0$, flip that bit to $b_1$.
+\item
+  To increment a binary number ending in $b_1$, flip that bit to $b_0$ and carry the increment over to the more significant bits.
+\end{itemize}
+Comfortingly, $1+1 = 2$: a trace $e \oc b_1 \oc i \reduces e \oc i \oc b_0 \reduces e \oc b_1 \oc b_0$ indeed exists.
+
+Owing to the notion of concurrent equality that string rewriting admits, increments may even be performed concurrently.
+For example, there are two rewriting sequences that witness $e \oc b_1 \oc i \oc i \Reduces e \oc b_1 \oc b_1$:
+\begin{equation*}
+  \hphantom{e \oc b_1 \oc i \oc i \reduces e \oc i \oc b_0 \oc {}}%
+  \begin{tikzcd}[
+    cells={inner xsep=0.65ex,
+           inner ysep=0.4ex},
+    row sep=0.2em,
+    column sep=scriptsize
+  ]
+    &[-0.2em]
+    e \oc b_1 \oc b_0 \oc i
+      \drar[reduces, start anchor=base east]%,
+                    % end anchor=north west]
+    &[-0.2em]
+    \\
+    \mathllap{e \oc b_1 \oc i \oc i \reduces e \oc i \oc b_0 \oc {}} i
+      \urar[reduces,% start anchor=north east,
+                     end anchor=base west]
+      \ar[Reduces, gray, dashed, shorten <= .8ex, shorten >= .8ex]{rr}
+      \drar[reduces,% start anchor=base east,
+                     end anchor=west]
+    &&
+    e \mathrlap{{} \oc b_1 \oc b_1}
+    \\
+    &
+    e \oc i \oc b_1
+      \urar[reduces, start anchor=east]%,
+                    % end anchor=base west]
+    &
+  \end{tikzcd}%
+  \hphantom{{} \oc b_1 \oc b_1}
+\end{equation*}
+In other words, once the left most increment is carried past the least significant bit, the two increments can be interleaved, with no observable difference in the outcome.
+
+
+\newthought{These increment axioms} introduce strings that occur as intermediate computational states within traces, such as $e \oc i \oc b_0 \oc i$ and $e \oc i \oc b_1$ in the above diagram.
+To characterize the valid intermediate strings, we define a binary relation, $\ainc{}{}$, that assigns a natural number denotation to each such intermediate string, not only to the terminal values, as $\aval{}{}$ did.%
+\footnote{Like the $\aval{}{}$ relation does for values, the $\ainc{}{}$ relation also serves to implicitly characterize the valid intermediate states as those contexts that form the relation's domain of definition.
+As with values, the valid intermediate states could also be enumerated more explicitly and syntactically with a grammar and denotation function:
+\begin{equation*}
+  \octx \Coloneqq e \mid \octx \oc b_0 \mid \octx \oc b_1 \mid \octx \oc i
+\end{equation*}
+\begin{equation*}
+  \begin{lgathered}
+    \deno[I]{e} = 0 \\
+    \deno[I]{\octx \oc b_0} = 2 \deno[I]{\octx} \\
+    \deno[I]{\octx \oc b_1} = 2 \deno[I]{\octx} + 1 \\
+    \deno[I]{\octx \oc i} = \deno[I]{\octx} + 1
+  \end{lgathered}
+\end{equation*}}%
+%
+\begin{inferences}
+  \infer[\jrule{$e$-I}]{\ainc{e}{0}}{}
+  \and
+  \infer[\jrule{$b_0$-I}]{\ainc{\octx \oc b_0}{2n}}{
+    \ainc{\octx}{n}}
+  \and
+  \infer[\jrule{$b_1$-I}]{\ainc{\octx \oc b_1}{2n+1}}{
+    \ainc{\octx}{n}}
+  \and
+  \infer[\jrule{$i$-I}]{\ainc{\octx \oc i}{n+1}}{
+    \ainc{\octx}{n}}
+\end{inferences}
+Binary values should themselves be valid, terminal computational states, so the first three rules are carried over from the $\aval{}{}$ relation.
+The $\jrule{$i$-I}$ rule allows multiple increment instructions to be interspersed throughout the state.
+
+With this $\ainc{}{}$ relation in hand, we can now prove a stronger, small-step adequacy theorem.
+This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then implies the big-step desiderata from above.
+%
+\begin{theorem}[Small-step adequacy of increments]\label{thm:string-rewriting:inc-small-step-adequacy}
+  \leavevmode
+  \begin{thmdescription}
+  \item[Value soundness]
+    If $\aval{\octx}{n}$, then $\ainc{\octx}{n}$ and $\octx \nreduces$.
+  \item[Preservation]
+    If $\ainc{\octx}{n}$ and $\octx \reduces \octx'$, then $\ainc{\octx'}{n}$.
+  \item[Progress]
+    If $\ainc{\octx}{n}$, then either
+    \begin{itemize*}[
+      mode=unboxed, label=, afterlabel=,
+      before=\unskip:\space,
+      itemjoin=;\space, itemjoin*=; or\space%
+    ]
+    \item $\octx \reduces \octx'$ for some $\octx'$; or
+    \item $\aval{\octx}{n}$.\fixnote{Compare with \enquote{If $\ainc{\octx}{n}$, then $\aval{\octx}{n}$ if, and only if, $\octx \nreduces$.}}
+    \end{itemize*}
+  \item[Termination]
+    If $\ainc{\octx}{n}$, then every rewriting sequence from $\octx$ is finite.
+  \end{thmdescription}
+\end{theorem}
+%
+\begin{proof}
+  Each part is proved separately.
+  \begin{description}[
+    parsep=0pt, listparindent=\parindent,
+    labelsep=0.35em
+  ]
+  \item[Value soundness]
+    can be proved by structural induction on the derivation of $\aval{\octx}{n}$.
+  \item[Preservation and progress]
+    can likewise be proved by structural induction on the derivation of $\ainc{\octx}{n}$.
+  \item[Termination]
+    can be proved using an explicit termination measure, $\card[i]{}$, that is strictly decreasing across each rewriting, $\octx \reduces \octx'$.
+    Specifically, we use a measure (see the adjacent \lcnamecref{fig:string-rewriting:binary-counter:measure}),
+    % For valid states $\octx$, we define a measure $\card{\octx}$ that is strictly decreasing across each rewriting $\octx \reduces \octx'$ (see the adjacent \lcnamecref{fig:ordered-rewriting:binary-counter:measure}).
+    \begin{marginfigure}
+      \begin{equation*}
+        \begin{lgathered}
+          \card[i]{e} = 0 \\
+          \card[i]{\octx \oc b_0} = \card[i]{\octx} \\
+          \card[i]{\octx \oc b_1} = \card[i]{\octx} + 1 \\
+          \card[i]{\octx \oc i} = \card[i]{\octx} + 2
+          % e + i > e + b1  =>  e >= 0
+          % b0 + i > b1
+          % b1 + i > i + b0 > b1  =>  i > 1
+        \end{lgathered}
+      \end{equation*}
+      \caption{A termination measure, adapted from the standard amortized work analysis of increment for binary counters}\label{fig:string-rewriting:binary-counter:measure}
+    \end{marginfigure}%
+    adapted from the standard amortized constant work analysis of increment for binary counters\autocite{??}.
+    The measure $\card[i]{}$ is such that $\octx \reduces \octx'$ implies $\card[i]{\octx} > \card[i]{\octx'}$;
+    % That is, if $\octx$ is a valid state and $\octx \reduces \octx'$, then $\card{\octx} > \card{\octx'}$.
+    because the measure is always nonnegative, only finitely many such rewritings can occur.
+
+    As an example case, consider the intermediate state $\octx \oc b_1 \oc i$ and its rewriting $\octx \oc b_1 \oc i \reduces \octx \oc i \oc b_0$.
+    Indeed, $\card[i]{\octx \oc b_1 \oc i} = \card[i]{\octx} + 3 > \card[i]{\octx} + 2 = \card[i]{\octx \oc i \oc b_0}$.
+  \qedhere
+  \end{description}
+\end{proof}
+
+\begin{corollary}[Big-step adequacy of increments]
+  \leavevmode
+  \begin{thmdescription}
+  \item[Evaluation]
+    If $\ainc{\octx}{n}$, then $\octx \Reduces\aval{}{n}$.
+    In particular, if $\aval{\octx}{n}$, then $\octx \oc i \Reduces\aval{}{n+1}$.
+  \item[Preservation]
+    If $\ainc{\octx}{n}$ and $\octx \Reduces \octx'$, then $\ainc{\octx'}{n}$.
+    In particular, if $\aval{\octx}{n}$ and $\octx \oc i \Reduces \octx'$, then $\octx' \Reduces\aval{}{n+1}$.
+  \end{thmdescription}
+\end{corollary}
+\begin{proof}
+  The two parts are proved separately.
+  \begin{description}[labelsep=0.35em]
+  \item[Evaluation] can be proved by repeatedly appealing to the progress and preservation results~\parencref{thm:string-rewriting:inc-small-step-adequacy}.
+    By the accompanying termination result, a binary value must eventually be reached.
+  \item[Preservation] can be proved by structural induction on the given trace.
+  %
+  \qedhere
+  \end{description}
+\end{proof}
+
+
+\subsection{A decrement operation}
+
+Binary counters may also be equipped with a decrement operation.
+Instead of examining decrements \emph{per se}, we will describe a very closely related operation: the normalization of binary representations to what might be called \vocab{head-unary form}.
+(We will frequently abuse terminology, using \enquote*{head-unary normalization} and \enquote*{decrement operation} interchangably.)
+A string $\octx$ will be said to be in head-unary form if it has one of two forms: $\octx = z$; or $\octx = \octx' \oc s$, for some binary number $\octx'$.
+
+Just as appending the symbol $i$ to a counter $\octx$ initiates an increment, appending a symbol $d$ will cause the counter to begin normalizing to head-unary form.
+For $d$ to adequately represent this operation, the string $\octx \oc d$ must satisfy the following global desiderata when $\adec{\octx}{n}$:
+% The following \lcnamecref{thm:decrement-adequacy} serves as a specification of head-unary normalization, relating a value's head-unary form to its denotation.
+%
+% \begin{theorem}[Structural adequacy of decrements]
+%   If $\aval{\octx}{n}$, then:
+  \begin{itemize}% [nosep]
+  \item $\octx \oc d \Reduces z$ if, and only if, $n=0$;
+  \item $\octx \oc d \Reduces \octx' \oc s$ for some $\octx'$ such that $\aval{\octx'}{n-1}$, if $n > 0$; and
+  \item $\octx \oc d \Reduces \octx' \oc s$ only if $n > 0$ and $\aval{\octx'}{n-1}$.
+  \end{itemize}
+% \end{theorem}
+%
+% \noindent
+For example, because $e \oc b_1$ denotes $1$, a trace $e \oc b_1 \oc d \Reduces \octx' \oc s$ must exist, for some $\aval{\octx'}{0}$.
+
+\newthought{To achieve these} global desiderata, we introduce three additional axioms that describe how the symbols $e$, $b_0$, and $b_1$ may be rewritten when they encounter $d$, the decrement instruction;
+also, an intermediate symbol $b'_0$ and two more axioms are introduced:
+\begin{inferences}
+  \infer{e \oc d \reduces z}{}
+  \and
+  \infer{b_1 \oc d \reduces b_0 \oc s}{}
+  \and
+  \infer{b_0 \oc d \reduces d \oc b'_0}{}
+  \\
+  \infer{z \oc b'_0 \reduces z}{}
+  \and\text{and}\and
+  \infer{s \oc b'_0 \reduces b_1 \oc s}{}
+  \,.
+\end{inferences}
+These five axioms can be read as follows:
+\begin{itemize}
+\item
+  Because $e$ denotes $0$, its head-unary form is simply $z$.
+\item
+  Because $\octx \oc b_1$ denotes $2n+1$ if $\octx$ denotes $n$, its head-unary form, $\octx \oc b_0 \oc s$, can be constructed by flipping the least significant bit to $b_0$ and appending $s$.
+\item
+  Because $\octx \oc b_0$ denotes $2n$ if $\octx$ denotes $n$, its head-unary form can be contructed by recursively putting the more significant bits, $\octx$, into head-unary form and appending $b'_0$ to process that result.
+  \begin{itemize}
+  \item
+    If $\octx$ has head-unary form $z$ and therefore denotes $0$, then $\octx \oc b_0$ also denotes $0$ and has head-unary form $z$.
+  \item
+    Otherwise, if $\octx$ has head-unary form $\octx' \oc s$ and thus denotes $n > 0$, then $\octx \oc b_0$ denotes $2n > 0$ and has head-unary form $\octx' \oc b_1 \oc s$, which can be constructed by replacing $s$ with $b_1 \oc s$.
+  \end{itemize}
+\end{itemize}
+%
+Comfortingly, $(1+1)-1 = 1$: the head-unary form of $e \oc b_1 \oc i$ is $e \oc b_0 \oc b_1 \oc s$:
+\begin{equation*}
+  \hphantom{e \oc b_1 \oc i \oc d \reduces e \oc i \oc b_0 \oc {}}%
+  \begin{tikzcd}[
+    cells={inner xsep=0.65ex,
+           inner ysep=0.4ex},
+    row sep=0em,
+    column sep=scriptsize
+  ]
+    &[-0.2em]
+    e \oc b_1 \oc b_0 \oc d
+      \drar[reduces, start anchor=base east]%,
+                    % end anchor=north west]
+    &[-0.2em]
+    \\
+    \mathllap{e \oc b_1 \oc i \oc d \reduces e \oc i \oc b_0 \oc {}} d
+      \urar[reduces,% start anchor=north east,
+                     end anchor=base west]
+      \ar[Reduces, gray, dashed, shorten <=.8ex, shorten >=.8ex]{rr}
+      \drar[reduces,% start anchor=base east,
+                     end anchor=west]
+    &&
+    e \mathrlap{{} \oc b_1 \oc d \oc b'_0
+      \reduces e \oc b_0 \oc s \oc b'_0
+      \reduces e \oc b_0 \oc b_1 \oc s}
+    \\
+    &
+    e \oc i \oc d \oc b'_0
+      \urar[reduces, start anchor=east]%,
+                     % end anchor=base west]
+    &
+  \end{tikzcd}
+ \hphantom{{} \oc b_1 \oc d \oc b'_0
+      \reduces e \oc b_0 \oc s \oc b'_0
+      \reduces e \oc b_0 \oc b_1 \oc s}
+  .
+\end{equation*}
+Note the concurrency that derives from the independence of the increment and decrement after the initial step of rewriting.
+
+
+\newthought{These decrement axioms} introduce more strings that may occur as intermediate computational states.
+As before, we define a new binary relation, $\adec{}{}$, that assigns a natural number denotation to each string that may appear as an intermediate state during a decrement.
+\begin{inferences}
+  \infer[\jrule{$d$-D}]{\adec{\octx \oc d}{n}}{
+    \ainc{\octx}{n}}
+  \and
+  \infer[\jrule{$b'_0$-D}]{\adec{\octx \oc b'_0}{2n}}{
+    \adec{\octx}{n}}
+  \and
+  \infer[\jrule{$z$-D}]{\adec{z}{0}}{}
+  \and
+  \infer[\jrule{$s$-D}]{\adec{\octx \oc s}{n+1}}{
+    \ainc{\octx}{n}}
+\end{inferences}
+At first glance, the $\jrule{$d$-D}$ rule may look a bit odd:
+Why is the denotation unchanged by a decrement, $\octx \oc d$?
+Because the operation is more accurately characterized as head-unary normalization, it makes sense that the denotation remains unchanged.
+The operation described by $d$ does not change the binary counter's value -- it only expresses that same value in a different form.%
+\footnote{Once again, the valid intermediate states could also be enumerated more explicitly and syntactically with a grammar and denotation function:%
+\begin{align*}
+  \octx &\Coloneqq e \mid \octx \oc b_0 \mid \octx \oc b_1 \mid \octx \oc i \\
+  \lctx &\Coloneqq \octx \oc d \mid \lctx \oc b'_0 \mid z \mid \octx \oc s
+\end{align*}
+\begin{equation*}
+  \begin{lgathered}
+    \deno[D]{\octx \oc d} = \deno[I]{\octx} \\
+    \deno[D]{\lctx \oc b'_0} = 2 \deno[D]{\lctx} \\
+    \deno[D]{z} = 0 \\
+    \deno[D]{\octx \oc s} = \deno[I]{\octx} + 1
+  \end{lgathered}
+\end{equation*}}%
+
+Also, notice that the premises of the $\jrule{$d$-D}$ and $\jrule{$s$-D}$ rules use the increment-only denotation relation, $\ainc{}{}$, not the decrement relation, $\adec{}{}$.
+These choices ensure that each counter has at most one $d$ and may not have any $i$ or $s$ symbols to the right of that $d$.
+But the premise of the $\jrule{$b'_0$-D}$ does use the $\adec{}{}$ relation, so $d$ may have $b'_0$ symbols to its right.
+
+
+% e + i > e + b1
+% e + d > z
+% b0 + i > b1
+% b0 + d > d + b0'
+% b1 + i > i + b0
+% b1 + d > b0 + s
+% z + b0' > z
+% s + b0' > b1 + s
+
+% |O d| = |O| + 1
+% |O b0'| = |O| + 1
+% |z| = 0
+% |O s| = 0
+% |e| = 0
+% |O b0| = |O| + 2
+% |O b1| = |O| + 3
+% |O i| = |O| + 4
+
+% |O d|d = |O|i + 1
+% |O b0'|d = |O|d + 1
+% |z|d = 0
+% |O s|d = 0
+%
+% |O|i = 2L(O) + |O|
+
+% |O d|d = |O| + 3L(O)
+% |O b0'|d = |O|d + 2
+% |z|d = 0
+% |O s|d = |O|
+
+% 3 > 0
+% |O| + 3L(O) + 3 > |O| + 3L(O) + 2
+% |O| + 1 + 3L(O) + 3 > |O|
+% 2 > 0
+% |O| + 2 > |O| + 1
+
+
+% 4 > 3
+% 1 > 0
+% 6 > 3
+% 3 > 2
+% 7 > 6
+% 5 > 0
+% 1 > 0
+% 1 > 0
+
+% e + d > z
+% b0 + d > d + b0'
+% b1 + d > s
+% b0' > 0
+% b0' > 0
+
+% b0' = 1
+
+With this $\adec{}{}$ relation in hand, we can now prove a small-step adequacy \lcnamecref{thm:string-rewriting:dec-small-step-adequacy}.
+This small-step \lcnamecref{thm:string-rewriting:dec-small-step-adequacy} then implies the big-step desiderata from above.
+%
+\begin{theorem}[Small-step adequacy of decrements]\label{thm:string-rewriting:dec-small-step-adequacy}
+  \leavevmode
+  \begin{thmdescription}
+  \item[Preservation]
+    If $\adec{\octx}{n}$ and $\octx \reduces \octx'$, then $\adec{\octx'}{n}$.
+  \item[Progress]
+    If $\adec{\octx}{n}$, then [either]:\fixnote{?}
+    \begin{itemize}[nosep]
+    \item $\octx \reduces \octx'$, for some $\octx'$;
+    \item $n = 0$ and $\octx = z$; or
+    \item $n > 0$ and $\octx = \octx' \oc s$, for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
+    \end{itemize}
+  \item[Termination]
+    If $\adec{\octx}{n}$, then every rewriting sequence from $\octx$ is finite.
+  \end{thmdescription}
+\end{theorem}
+\begin{proof}
+  Each part is proved separately.
+  \begin{description}[
+    parsep=0pt, listparindent=\parindent,
+    labelsep=0.35em
+  ]
+  \item[Preservation and progress]
+    are proved, as before, by structural induction on the given derivation of $\adec{\octx}{n}$.
+  \item[Termination] is proved by exhibiting a measure, $\card[d]{}$, given in the adjacent \lcnamecref{fig:string-rewriting:dec-measure}%
+    \begin{marginfigure}
+      \begin{equation*}
+        \begin{lgathered}
+          \card[d]{\octx \oc d} = \card[i]{\octx} + 3 \card{\octx} \\
+          \card[d]{\octx \oc b'_0} = \card[d]{\octx} + 2 \\
+          \card[d]{z} = 0 \\
+          \card[d]{\octx \oc s} = \card[i]{\octx}
+        \end{lgathered}
+      \end{equation*}
+      \caption{A termination measure for decrements, where $\card{\octx}$ denotes the length of string $\octx$}\label{fig:string-rewriting:dec-measure}
+    \end{marginfigure}%
+, that is strictly decreasing across each rewriting.
+    Unlike the amortized constant work increments~\parencref[see proof of]{thm:string-rewriting:inc-small-step-adequacy}, this measure assigns a linear amount of potential to the decrement instruction.%
+    \footnote{Actually, because the increment and decrement operations are defined only for binary representations, not head-unary forms, there can be at most one $d$.
+      Therefore, it is actually possible to assign a constant amount of potential to each $d$.
+      However, doing so would rely on a somewhat involved lexicographic measure that isn't particularly relevant to our aims in this document, so we use the simpler linear potential.}%
+
+    This measure is strictly decreasing across each rewriting: $\octx \reduces \octx'$ only if $\card[d]{\octx} > \card[d]{\octx'}$.
+    As an example case, consider the intermediate state $\octx \oc b_0 \oc d$ and its rewriting $\octx \oc b_0 \oc d \reduces \octx \oc d \oc b'_0$.
+    Indeed,
+    \begin{equation*}
+      \card[d]{\octx \oc b_0 \oc d}
+        % = \card[i]{\octx \oc b_0} + 3\card{\octx \oc b_0}
+        = \card[i]{\octx} + 3\card{\octx} + 3
+        > \card[i]{\octx} + 3\card{\octx} + 2
+        % = \card[d]{\octx \oc d} + 2
+        = \card[d]{\octx \oc d \oc b'_0}
+      \,.
+    \qedhere
+    \end{equation*}
+  \end{description}
+\end{proof}
+
+\begin{corollary}[Big-step adequacy of decrements]
+  If $\adec{\octx}{n}$, then:
+  \begin{itemize}[nosep]
+  \item $\octx \Reduces z$ if, and only if, $n = 0$;
+  \item $\octx \Reduces \octx' \oc s$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$, if $n > 0$; and
+  \item $\octx \Reduces \octx' \oc s$ only if $n > 0$ and $\ainc{\octx'}{n-1}$.
+  \end{itemize}
+\end{corollary}
+\begin{proof}
+  From the small-step preservation result of \cref{thm:string-rewriting:dec-small-step-adequacy}, it is possible to prove, using a structural induction on the given trace, a big-step preservation result: namely, that $\adec{\octx}{n}$ and $\octx \Reduces \octx'$ only if $\adec{\octx'}{n}$.
+  Each of the above claims then follows from either progress and termination~\parencref{thm:string-rewriting:dec-small-step-adequacy} or big-step preservation together with inversion.
+\end{proof}
+
+% $\adec{z}{n}$
+% $\adec{\octx' \oc s}{n}$  ==>  $\ainc{\octx'}{n'}$ and $n = n'+1$
+% 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End:
