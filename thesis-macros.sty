@@ -63,6 +63,9 @@
 \NewDocumentCommand \srsig { } { \Theta }
 \NewDocumentCommand \srsige { } { \cdot }
 
+\NewDocumentCommand \orsig { } { \Phi }
+\NewDocumentCommand \orsige { } { \cdot }
+
 \DeclareMathOperator{\dom}{dom}
 
 
@@ -409,8 +412,8 @@
 
 
 \NewDocumentCommand \embed { s m } { \IfBooleanT{#1}{(} \tl_if_empty:nTF{#2}{\mathord{-}}{#2} \IfBooleanT{#1}{)} ^{\Box} }
-\NewDocumentCommand \embedp { s m } { \IfBooleanT{#1}{(} #2 \IfBooleanT{#1}{)} ^{\boxplus} }
-\NewDocumentCommand \embedn { s m } { \IfBooleanT{#1}{(} #2 \IfBooleanT{#1}{)} ^{\boxminus} }
+\NewDocumentCommand \embedp { s m } { \IfBooleanT{#1}{(} \tl_if_empty:nTF{#2}{\mathord{-}}{#2} \IfBooleanT{#1}{)} ^{\boxplus} }
+\NewDocumentCommand \embedn { s m } { \IfBooleanT{#1}{(} \tl_if_empty:nTF{#2}{\mathord{-}}{#2} \IfBooleanT{#1}{)} ^{\boxminus} }
 
 \NewDocumentCommand \erase { s m }
   {

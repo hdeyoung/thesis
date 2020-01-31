@@ -152,12 +152,12 @@ This contrasts with, for example, the $\jrule{$\fuse$D}$ rule that decomposes $A
 For these reasons, the above $\jrule{$\limp$D}'$ and $\jrule{$\pmir$D}'$ rules are somewhat undesirable.
 Fortunately, there is an alternative.
 Filling in the $\oseq{\octx |- A}$ premises with the $\jrule{ID}^A$ rule, we arrive at the derivable rules
-\begin{inferences}
+\begin{equation}\label{eq:ordered-rewriting:limp-pmir-decomposition-nullary}
   \infer[\jrule{$\limp$D}]{A \oc (A \limp B) \reduces B}{}
-  \and\text{and}\and
+  \qquad\text{and}\qquad
   \infer[\jrule{$\pmir$D}]{(B \pmir A) \oc A \reduces B}{}
   \,,
-\end{inferences}
+\end{equation}
 which we adopt as decomposition rules in place of those in \cref{eq:ordered-rewriting:limp-pmir-decomposition}.
 The standard $\lrule{\limp}$ and $\lrule{\pmir}$ rules can still be recovered from these more specific decomposition rules, thanks to $\jrule{CUT}$ (see adjacent \lcnamecref{fig:ordered-rewriting:limp-refactoring-2}).%
 \begin{marginfigure}[-10\baselineskip]
@@ -180,9 +180,8 @@ These revised, nullary decomposition rules correct the earlier drawbacks: like t
 Moreover, these rules have the advantage of matching two of the axioms from \citeauthor{Lambek:AMM58}'s original article.\autocite{Lambek:AMM58}
 
 \newthought{%
-For most%
-}
-ordered logical connectives, this approach works perfectly.
+For most
+ordered logical connectives}, this approach works perfectly.
 Unfortunately, the left rules for additive disjunction, $A \plus B$, and its unit, $\zero$, are resistant to this kind of refactoring.
 The difficulty with additive disjunction isn't that its left rule, $\lrule{\plus}$,%
 \marginnote{%
@@ -258,25 +257,26 @@ $A \plus B \reduces A \mid B$
 \newthought{\Cref{fig:ordered-rewriting:decompose-seq-calc} presents} the refactored sequent calculus for ordered logic in its entirety.
 This calculus is sound and complete with respect to the ordered sequent calculus~\parencref{fig:ordered-logic:sequent-calculus}.
 %
-\begin{theorem}[Soundness]
-  If\/ $\oseq{\octx |- A}$ is derivable in the refactored calculus of \cref{fig:ordered-rewriting:decompose-seq-calc}, then $\oseq{\octx |- A}$ is derivable in the usual ordered sequent calculus~\parencref{fig:ordered-logic:sequent-calculus}.
+\begin{theorem}[Soundness and completeness]
+  $\oseq{\octx |- A}$ is derivable in the refactored calculus of \cref{fig:ordered-rewriting:decompose-seq-calc} if, and only if $\oseq{\octx |- A}$ is derivable in the usual ordered sequent calculus~\parencref{fig:ordered-logic:sequent-calculus}.
 \end{theorem}
 %
 \begin{proof}
-  By structural induction on the given derivation.
-  The key lemma is the admissibility of $\jrule{CUT}^{\reduces}$ in the ordered sequent calculus:
+  Soundness, the right-to-left direciton, can be proved by structural induction on the given derivation.
+  The key lemma is the admissibility of $\jrule{CUT}^{\reduces}$ in the usual ordered sequent calculus:
   \begin{quotation}
     \normalsize If $\octx \reduces \octx'$ and $\oseq{\octx'_L \oc \octx' \oc \octx'_R |- C}$, then $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}$.
   \end{quotation}
   This lemma can be proved by case analysis of the decomposition $\octx \reduces \octx'$, reconstituting the corresponding left rule along the lines of the sketches from \cref{fig:ordered-rewriting:fuse-refactoring,fig:ordered-rewriting:limp-refactoring-2}.
-\end{proof}
+
+% \end{proof}
 %
-\begin{theorem}[Completeness]
-  If\/ $\oseq{\octx |- A}$ is derivable in the usual ordered sequent calculus~\parencref{fig:ordered-logic:sequent-calculus}, then $\oseq{\octx |- A}$ is derivable in the refactored calculus of \cref{fig:ordered-rewriting:decompose-seq-calc}.
-\end{theorem}
+% \begin{theorem}[Completeness]
+%   If\/ $\oseq{\octx |- A}$ is derivable in the usual ordered sequent calculus~\parencref{fig:ordered-logic:sequent-calculus}, then $\oseq{\octx |- A}$ is derivable in the refactored calculus of \cref{fig:ordered-rewriting:decompose-seq-calc}.
+% \end{theorem}
 %
-\begin{proof}
-  By structural induction on the given derivation.
+% \begin{proof}
+  Completeness, the left-to-right direction, can be proved by structural induction on the given derivation.
   The critical cases are the left rules; they are resolved along the lines of the sketches shown in \cref{fig:ordered-rewriting:fuse-refactoring,fig:ordered-rewriting:limp-refactoring-2}.
 \end{proof}
 
@@ -285,9 +285,10 @@ This calculus is sound and complete with respect to the ordered sequent calculus
 Thus far, we have used the decomposition judgment, $\octx \reduces \octx'$, and its rules as the basis for a reconfigured sequent-like calculus for ordered logic.
 % But this refactoring also leads naturally to a rewriting system grounded in ordered logic.
 % 
-Instead,
+% Instead,
+Additionally, 
 % of taking the resource decomposition rules as a basis for a reconfigured sequent calculus,
-we can also view decomposition as the foundation of a rewriting system grounded in ordered logic.
+we can instead view decomposition as the foundation of a rewriting system grounded in ordered logic.
 For example, the decomposition of resource $A \fuse B$ into $A \oc B$ by the $\jrule{$\fuse$D}$ rule
 % \marginnote{%
 %   \begin{equation*}
@@ -375,14 +376,14 @@ We prefer the list-based formulation shown in \cref{fig:ordered-rewriting:rewrit
 
 \newthought{A few remarks} about these rewriting relations are in order.
 %
-First, interpreting the resource decomposition rules as rewriting only confirms our preference for the nullary $\jrule{$\limp$D}$ and $\jrule{$\pmir$D}$ rules.
+First, interpreting the resource decomposition rules as rewriting only confirms our preference for the nullary $\jrule{$\limp$D}$ and $\jrule{$\pmir$D}$ rules~(eq.~\ref{eq:ordered-rewriting:limp-pmir-decomposition-nullary}).
 % [over the $\jrule{$\limp$D}'$ and $\jrule{$\pmir$D}'$ rules.]
-The $\jrule{$\limp$D}'$ and $\jrule{$\pmir$D}'$ rules, with their $\oseq{\octx |- A}$ premises, would be problematic as rewriting rules because they would introduce a dependence of ordered rewriting upon general provability%
+The $\jrule{$\limp$D}'$ and $\jrule{$\pmir$D}'$ rules~(eq.~\ref{eq:ordered-rewriting:limp-pmir-decomposition}), with their $\oseq{\octx |- A}$ premises, would be problematic as rewriting rules because they would introduce a dependence of ordered rewriting upon general provability%
 % By instead using the $\jrule{$\limp$D}$ and $\jrule{$\pmir$D}$ rules, we ensures that ordered rewriting is a syntactic procedure that
 % Instead, we want ordered rewriting to be a syntactic procedure, withou 
  and the accompanying proof search would take ordered rewriting too far afield from traditional, syntactic\fixnote{Is this the right word? [mechanical, computational]} notions of string and multiset rewriting.
 
-Second, multi-step rewriting is incomplete with respect to the ordered sequent calculus~\parencref{fig:ordered-logic:sequent-calculus} because all right rules have been discarded.
+Second, multi-step rewriting is incomplete with respect to the usual ordered sequent calculus~\parencref{fig:ordered-logic:sequent-calculus} because all right rules have been discarded.%
 %
  \begin{falseclaim}[Completeness]
   If \kern0.15em$\oseq{\octx |- A}$, then\/ $\octx \Reduces A$.
@@ -393,7 +394,7 @@ Second, multi-step rewriting is incomplete with respect to the ordered sequent c
 \end{proof}
 \noindent
 As expected from the way in which it was developed, ordered rewriting is, however, sound.
-To state and prove soundness, we must first define an operation $\bigfuse \octx$ that reifies an ordered context as a single proposition (see adjacent \lcnamecref{fig:ordered-rewriting:bigfuse}).
+To state and prove soundness, we must first define an operation $\bigfuse \octx$ that reifies an ordered context as a single proposition (see adjacent \lcnamecref{fig:ordered-rewriting:bigfuse}).%
 %
 \begin{marginfigure}
   \begin{align*}
@@ -407,7 +408,14 @@ To state and prove soundness, we must first define an operation $\bigfuse \octx$
     \bigfuse A &= A
   \end{align*}
   \caption{From ordered contexts to propositions}\label{fig:ordered-rewriting:bigfuse}
-\end{marginfigure}
+\end{marginfigure}%
+%
+\begin{lemma}
+  For all $\octx$ and $C$, both $\oseq{\bigfuse \octx |- C}$ if $\oseq{\octx |- C}$, and $\oseq{\octx |- \bigfuse \octx}$.
+\end{lemma}
+\begin{proof}
+  By induction on the structure of the given context, $\octx$.
+\end{proof}
 %
 \begin{theorem}[Soundness]
   If \kern0.15em$\octx \reduces \octx'$, then\/ $\oseq{\octx |- \bigfuse \octx'}$.
@@ -439,7 +447,7 @@ We may then prove the following \lcnamecref{lem:ordered-rewriting:reduction}.%
 %
 \begin{lemma}\label{lem:ordered-rewriting:reduction}
   If \kern0.15em$\octx \reduces \octx'$, then $\card{\octx}_{\star} > \card{\octx'}_{\star}$.
-  Also, if \kern0.15em$\octx \Reduces \octx'$, then $\card{\octx}_{\star} \geq \card{\octx'}_{\star}$.
+  If \kern0.15em$\octx \Reduces \octx'$, then $\card{\octx}_{\star} \geq \card{\octx'}_{\star}$.
 \end{lemma}
 %
 \begin{proof}
@@ -447,12 +455,12 @@ We may then prove the following \lcnamecref{lem:ordered-rewriting:reduction}.%
 \end{proof}
 %
 \noindent
-On the basis of this \lcnamecref{lem:ordered-rewriting:reduction}, we will frequently refer to the rewriting relation, $\reduces$, as reduction.
+On the basis of this \lcnamecref{lem:ordered-rewriting:reduction}, we will frequently refer to the rewriting relation, $\reduces$, as the \vocab{reduction relation}.
 We may use this \lcnamecref{lem:ordered-rewriting:reduction} to prove that ordered rewriting is terminating.
 % 
 % Because each rewriting step reduces the number of logical connectives present in the state~\parencref{lem:ordered-rewriting:reduction}, ordered rewriting is terminating.
 %
-\begin{theorem}[Termination]
+\begin{theorem}[Termination]\label{thm:ordered-rewriting:termination}
   For all ordered contexts $\octx$, every rewriting sequence from $\octx$ is finite.
   % $\octx_0 \reduces \octx_1 \reduces \octx_2 \reduces \dotsb$ exists.
 \end{theorem}
@@ -464,125 +472,7 @@ We may use this \lcnamecref{lem:ordered-rewriting:reduction} to prove that order
 \end{proof}
 
 
-
-\subsection{Concurrency in ordered rewriting}
-
-As an example of multi-step rewriting, observe that
-\begin{equation*}
-  % \octx = 
-  a_1 \oc (a_1 \limp a_2) \oc (b_2 \pmir b_1) \oc b_1 \Reduces a_2 \oc b_2
-  % = \octx''
-  .
-\end{equation*}
-In fact, as shown in the adjacent \lcnamecref{fig:ordered-rewriting:concurrent-example},%
-%
-\begin{marginfigure}
-  \begin{equation*}
-  \begin{tikzcd}[row sep=large, column sep=tiny]
-    &
-    \makebox[1em][c]{$a_1 \oc (a_1 \limp a_2) \oc (b_2 \pmir b_1) \oc b_1$}
-      \dlar \drar \arrow[Reduces]{dd}
-    &
-    \\
-    a_2 \oc (b_2 \pmir b_1) \oc b_1
-      \drar
-    &&
-    a_1 \oc (a_1 \limp a_2) \oc b_2
-      \dlar
-    \\
-    &
-    a_2 \oc b_2
-    &
-  \end{tikzcd}
-\end{equation*}
-  \caption{An example of concurrent ordered rewriting}\label{fig:ordered-rewriting:concurrent-example}
-\end{marginfigure}
-%
-two sequences witness this rewriting: either
-\begin{itemize*}[
-  mode=unboxed,
-  label=, afterlabel=
-]
-\item the initial state's left half, $a_1 \oc (a_1 \limp a_2)$, is first rewritten to $a_2$ and then its right half, $(b_2 \pmir b_1) \oc b_1$, is rewritten to $b_2$; or
-\item \textit{vice versa}, the right half is first rewritten to $b_2$ and then the left half is rewritten to $a_2$
-\end{itemize*}.
-
-Notice that these two sequences differ only in how non-overlapping, and therefore independent, rewritings of the initial state's two halves are interleaved.
-Consequently, the two sequences can be -- and indeed should be -- considered essentially equivalent.
-% In differing only by the order in which the non-overlapping left and right halves are rewritten, these two rewriting sequences are essentially equivalent.
-The details of how the small-step rewrites are interleaved are irrelevant, so that
-conceptually, at least, only the big-step trace from $a_1 \oc (a_1 \limp a_2) \oc (b_2 \pmir b_1) \oc b_1$ to $a_2 \oc b_2$ remains.
-% The details of how the small-step rewrites are interleaved are -- and indeed should be -- swept away, so that conceptually only the big-step trace from $\alpha_1 \oc (\alpha_1 \limp \alpha_2) \oc (\beta_2 \pmir \beta_1) \oc \beta_1$ to $\alpha_2 \oc \beta_2$ remains.
-
-More generally, this idea that the interleaving of independent actions is irrelevant is known as \vocab{concurrent equality}\autocite{Watkins+:CMU02}, and it forms the basis of concurrency.\autocite{??}
-Concurrent equality also endows traces $\octx \Reduces \octx'$ with a free partially commutative monoid structure, \ie, traces form a trace monoid.
-
-
-% Because the two indivisual rewriting steps are independent, 
-% Nothing about the final result, $\alpha_2 \oc \beta_2$, suggests which rewriting sequence 
-
-
-% The rewritings of the left and right halves are not overlapping and therefore independent.
-% Their independence means that we may view the two rewriting sequences as equivalent -- the two rewriting steps
-
-% More generally, any non-overlapping rewritings are independent and may occur in any order.
-% Rewriting sequences that differ only by the order in which independent rewritings occur may be seen as equivalent sequences.
-% This equivalence relation, \vocab{concurrent equality}\autocite{Watkins+:CMU02}
-
-% because the left half of $\octx$ may be rewritten by the $\jrule{$\limp$D}$ rule to $\alpha_2$, and then the right half may be rewritten to $\beta_2$:
-
-\subsection{Other properties of ordered rewriting}
-
-As the relation $\Reduces$ forms a rewriting system, we may evaluate it along several standard dimensions: termination, confluence.
-
-
-Although terminating, ordered rewriting is not confluent.
-Confluence requires that all states with a common ancestor, \ie, states $\octx'_1$ and $\octx'_2$ such that $\octx'_1 \secudeR\Reduces \octx'_2$, be joinable, \ie, $\octx'_1 \Reduces\secudeR \octx'_2$.
-Because ordered rewriting is directional\fixnote{Is this phrasing correct?} and the relation $\Reduces$ is not symmetric, some nondeterministic choices are irreversible.%
-%
-\begin{falseclaim}[Confluence]
-  If\/ $\octx'_1 \secudeR\Reduces \octx'_2$, then $\octx'_1 \Reduces\secudeR \octx'_2$.
-\end{falseclaim}
-%
-\begin{proof}[Counterexamples]
-  Consider the state $\alpha \with \beta$.
-  By the rewriting rules for additive conjunction, $\alpha \secuder \alpha \with \beta \reduces \beta$, and hence $\alpha \secudeR \alpha \with \beta \Reduces \beta$.
-  However, being atoms, neither $\alpha$ nor $\beta$ reduces.
-  And $\alpha \neq \beta$, so $\alpha \Reduces\secudeR \beta$ does \emph{not} hold.
-
-  Even in the $\with$-free fragment, ordered rewriting is not confluent.
-  For example,
-  % consider the state $(\beta_1 \pmir \alpha) \oc \alpha \oc (\alpha \limp \beta_2)$.
-  % By the rewriting rules for right- and left-handed implications,
-  \begin{equation*}
-    \nsecuder b_1 \oc (a \limp b_2) \secudeR (b_1 \pmir a) \oc a \oc (a \limp b_2) \Reduces (b_1 \pmir a) \oc b_2 \nreduces
-    .
-    \qedhere
-  \end{equation*}
-\end{proof}
-
-
-% Viewing the resource decomposition rules for left- and right-handed implications as rewriting rules is slightly problematic, however.%
-% Notice that the premises of these rules both require proofs of $\oseq{\octx |-  A}$.
-% In the refactored sequent calculus of \cref{fig:ordered-rewriting:decompose-seq-calc}, that dependence of judgments is fine.
-% But for a rewriting system, including arbitrary[/general] proofs would be odd -- rewriting should be a syntax-directed process and should not depend on provability.
-
-
-
-% We write the reflexive, transitive closure of $\reduces$ as $\Reduces$.%
-% \footnote{This notation is adopted for its similarity with the standard $\pi$-calculus notation for weak transitions, $\cramped{\Reduces[\alpha]}$.}
-
-% This rewriting system is a proper fragment of ordered logic.
-% \begin{equation*}
-%   \oseq{A \limp (C \pmir B) \dashv|- (A \limp C) \pmir B}
-%   \enspace\text{but}\enspace
-%   A \limp (C \pmir B) \Longarrownot\Reduces (A \limp C) \pmir B
-% \end{equation*}
-
-
-\section{Unbounded ordered rewriting}
-
-\autocite{Aranda+:FMCO06}
+\subsection{Recursively defined propositions and unbounded ordered rewriting}
 
 Although a seemingly pleasant property, termination~\parencref{thm:ordered-rewriting:termination} significantly limits the expressiveness of ordered rewriting.
 For example, without unbounded rewriting, we cannot even give ordered rewriting specifications of producer-consumer systems or finite automata.
@@ -593,20 +483,31 @@ precisely because
 % $\octx_0$
 states
 consist of finitely many finite propositions.
-To admit unbounded rewriting, we therefore choose to permit infinite propositions in the form of mutually recursive definitions, $\defp{p} \defd A$.
+One way to admit unbounded rewriting is therefore to permit circular propositions in the form of mutually recursive definitions, $\defp{p} \defd A$, where the grammar of ordered propositions now includes these recursively defined propositions $\defp{p}$:
+\begin{equation*}
+  A,B \Coloneqq a \mid A \fuse B \mid \one \mid A \limp B \mid B \pmir A \mid A \with B \mid \top \mid \defp{p}
+  \,.
+\end{equation*}
+To rule out definitions like $\defp{p} \defd \defp{p}$ that do not correspond to sensible infinite propositions, we require that definitions be \vocab{contractive}\autocite{Gay+Hole:AI05} -- \ie, that the body of each recursive definition begin with a logical connective (or atom) at the top level.
+
 % could either permit states consisting of infinitely many finite propositions or states consisting of finitely many infinite propositions.
 % We choose the latter route [...].
 %%
 %%
 % Infinite propositions are described by mutually recursive definitions $\alpha \defd A$.
-These definitions are collected into a signature, $\sig = (\defp{p}_i \defd A_i)_i$, which indexes the rewriting relations: $\reduces_{\sig}$ and $\Reduces_{\sig}$.%
-\footnote{We frequently elide the indexing signature, as it is usually clear from context.} 
-To rule out definitions like $\defp{p} \defd \defp{p}$ that do not correspond to sensible infinite propositions, we also require that definitions be \vocab{contractive}\autocite{Gay+Hole:AI05} -- \ie, that the body of each recursive definition begin with a logical connective at the top level.
+The recursive definitions are collected into a signature, $\orsig$, which indexes the rewriting relations: $\reduces_{\orsig}$ and $\Reduces_{\orsig}$.%
+\footnote{We nearly always elide the index, as it is usually clear from context.} 
+These signatures are given by
+\begin{equation*}
+  \orsig \Coloneqq \orsige \mid \orsig , (\defp{p} \defd A)
+  \,.
+\end{equation*}
 
-By analogy with recursive types from functional programming\autocite{??}, we must now decide whether to treat definitions \emph{iso}\-re\-cur\-sively or \emph{equi}\-re\-cur\-sively.
+
+\newthought{By analogy with} recursive types from functional programming\autocite{??}, we must now decide whether to treat definitions \emph{iso}\-re\-cur\-sively or \emph{equi}\-re\-cur\-sively.
 Under an equirecursive interpretation, definitions $\defp{p} \defd A$ may be silently unrolled or rolled at will;
-in other words, $\defp{p}$ is literally \emph{equal} to its unrolling, $A$.
-In contrast, under an isorecursive interpretation, unrolling a recursively defined proposition would count as an explicit step of rewriting -- $\defp{p} \reduces A$, for example.
+in other words, $\defp{p}$ is literally \emph{equal} to its unrolling -- $\defp{p} = A$.
+In contrast, under an isorecursive interpretation, unrolling a recursively defined proposition would count as an explicit step of rewriting -- $\defp{p} \neq A$ but $\defp{p} \reduces A$, for example.
 
 % Under the isorecursive interpretation, unrolling a recursively defined prop\-o\-sition counts as an explicit step of rewriting.
 % We introduce the $\jrule{$\defd$D}$ rule to account for this unrolling:
@@ -637,7 +538,7 @@ Had we chosen
  an isorecursive treatment of the same definition, we would have only the more laborious
 \begin{equation*}
   a \oc a \oc \defp{p} \reduces a \oc a \oc (a \limp \defp{p}) \reduces a \oc \defp{p} \reduces a \oc (a \limp \defp{p}) \reduces \defp{p}
-  .
+  \,.
 \end{equation*}
 
 \begin{figure}
@@ -678,65 +579,205 @@ Had we chosen
   \end{inferences}
 \end{figure}
 
-\subsection{Replication}
+\paragraph*{Replication}
 
 In Milner's development of the $\pi$-calculus, there are two avenues to unbounded process behavior: recursive process definitions and replication.
+
+\autocite{Aranda+:FMCO06}
+
+
+\subsection{Concurrency in ordered rewriting}
+
+As an example of multi-step rewriting, observe that
+\begin{equation*}
+  % \octx = 
+  a \oc (a \limp b) \oc (c \pmir a) \oc a \Reduces b \oc c
+  % = \octx''
+  .
+\end{equation*}
+In fact, as shown in the adjacent \lcnamecref{fig:ordered-rewriting:concurrent-example},%
+%
+\begin{marginfigure}
+  \begin{equation*}
+  \begin{tikzcd}[row sep=large, column sep=tiny]
+    &
+    \makebox[1em][c]{$a \oc (a \limp b) \oc (c \pmir a) \oc a$}
+      \dlar \drar \arrow[Reduces]{dd}
+    &
+    \\
+    b \oc (c \pmir a) \oc a
+      \drar
+    &&
+    a \oc (a \limp b) \oc c
+      \dlar
+    \\
+    &
+    b \oc c
+    &
+  \end{tikzcd}
+\end{equation*}
+  \caption{An example of concurrency in ordered rewriting}\label{fig:ordered-rewriting:concurrent-example}
+\end{marginfigure}
+%
+two sequences witness this rewriting: either
+\begin{itemize*}[
+  mode=unboxed,
+  label=, afterlabel=
+]
+\item the initial state's left half, $a \oc (a \limp b)$, is first rewritten to $b$ and then its right half, $(c \pmir a) \oc a$, is rewritten to $c$; or
+\item \textit{vice versa}, the right half is first rewritten to $c$ and then the left half is rewritten to $b$
+\end{itemize*}.
+
+Notice that these two sequences differ only in how non-overlapping, and therefore independent, rewritings of the initial state's two halves are interleaved.
+Consequently, the two sequences can be -- and indeed should be -- considered essentially equivalent.
+% In differing only by the order in which the non-overlapping left and right halves are rewritten, these two rewriting sequences are essentially equivalent.
+The details of how the small-step rewrites are interleaved are irrelevant, so that
+conceptually, at least, only the big-step trace from $a \oc (a \limp b) \oc (c \pmir a) \oc a$ to $b \oc c$ remains.
+% The details of how the small-step rewrites are interleaved are -- and indeed should be -- swept away, so that conceptually only the big-step trace from $\alpha_1 \oc (\alpha_1 \limp \alpha_2) \oc (\beta_2 \pmir \beta_1) \oc \beta_1$ to $\alpha_2 \oc \beta_2$ remains.
+
+More generally, this idea that the interleaving of independent actions is irrelevant is known as \vocab{concurrent equality}\autocite{Watkins+:CMU02}, and it forms the basis of concurrency.\autocite{??}
+Concurrent equality also endows traces $\octx \Reduces \octx'$ with a free partially commutative monoid structure, \ie, traces form a trace monoid.
+
+
+% Because the two indivisual rewriting steps are independent, 
+% Nothing about the final result, $\alpha_2 \oc \beta_2$, suggests which rewriting sequence 
+
+
+% The rewritings of the left and right halves are not overlapping and therefore independent.
+% Their independence means that we may view the two rewriting sequences as equivalent -- the two rewriting steps
+
+% More generally, any non-overlapping rewritings are independent and may occur in any order.
+% Rewriting sequences that differ only by the order in which independent rewritings occur may be seen as equivalent sequences.
+% This equivalence relation, \vocab{concurrent equality}\autocite{Watkins+:CMU02}
+
+% because the left half of $\octx$ may be rewritten by the $\jrule{$\limp$D}$ rule to $\alpha_2$, and then the right half may be rewritten to $\beta_2$:
+
+\subsection{Other properties of ordered rewriting}
+
+As the relation $\Reduces$ forms a rewriting system, we may evaluate it along several standard dimensions: termination, confluence.
+
+
+Although terminating, ordered rewriting is not confluent.
+Confluence requires that all states with a common ancestor, \ie, states $\octx'_1$ and $\octx'_2$ such that $\octx'_1 \secudeR\Reduces \octx'_2$, be joinable, \ie, $\octx'_1 \Reduces\secudeR \octx'_2$.
+Because ordered rewriting is directional\fixnote{Is this phrasing correct?} and the relation $\Reduces$ is not symmetric, some nondeterministic choices are irreversible.%
+%
+\begin{falseclaim}[Confluence]
+  If\/ $\octx'_1 \secudeR\Reduces \octx'_2$, then $\octx'_1 \Reduces\secudeR \octx'_2$.
+\end{falseclaim}
+%
+\begin{proof}[Counterexamples]
+  Consider the state $a \with b$.
+  By the rewriting rules for additive conjunction, $a \secuder a \with b \reduces b$, and hence $a \secudeR a \with b \Reduces b$.
+  However, being atoms, neither $a$ nor $b$ reduces.
+  And $a \neq b$, so $a \Reduces\secudeR b$ does \emph{not} hold.
+
+  Even in the $\with$-free fragment, ordered rewriting is not confluent:
+  for example,
+  % consider the state $(\beta_1 \pmir \alpha) \oc \alpha \oc (\alpha \limp \beta_2)$.
+  % By the rewriting rules for right- and left-handed implications,
+  \begin{equation*}
+    \nsecuder c \oc (a \limp b) \secudeR (c \pmir a) \oc a \oc (a \limp b) \Reduces (c \pmir a) \oc b \nreduces
+    .
+    \qedhere
+  \end{equation*}
+\end{proof}
+
+
+% Viewing the resource decomposition rules for left- and right-handed implications as rewriting rules is slightly problematic, however.%
+% Notice that the premises of these rules both require proofs of $\oseq{\octx |-  A}$.
+% In the refactored sequent calculus of \cref{fig:ordered-rewriting:decompose-seq-calc}, that dependence of judgments is fine.
+% But for a rewriting system, including arbitrary[/general] proofs would be odd -- rewriting should be a syntax-directed process and should not depend on provability.
+
+
+
+% We write the reflexive, transitive closure of $\reduces$ as $\Reduces$.%
+% \footnote{This notation is adopted for its similarity with the standard $\pi$-calculus notation for weak transitions, $\cramped{\Reduces[\alpha]}$.}
+
+% This rewriting system is a proper fragment of ordered logic.
+% \begin{equation*}
+%   \oseq{A \limp (C \pmir B) \dashv|- (A \limp C) \pmir B}
+%   \enspace\text{but}\enspace
+%   A \limp (C \pmir B) \Longarrownot\Reduces (A \limp C) \pmir B
+% \end{equation*}
+
+
 
 
 \section{Focused ordered rewriting}
 
 The above ordered rewriting framework is based upon decomposition rules that are very fine-grained.
-Each step of rewriting decomposes a proposition into only its immediate subformulas, and no further, such as in the very fine-grained step $a \oc \bigl((a \limp b) \with \top\bigr) \reduces a \oc (a \limp b)$.
+Each step of rewriting decomposes a proposition into only its immediate subformulas, and no further, such as in the very fine-grained step $a \oc \bigl((a \limp b) \with (c \pmir a)\bigr) \reduces a \oc (a \limp b)$.
 \begin{marginfigure}
   \begin{equation*}
     \begin{tikzcd}[sep=small]
       & a \mathrlap{\oc (a \limp b) \reduces b}
       \\
-      \mathllap{a \oc \bigl((a \limp b) \with \top\bigr)}
+      \mathllap{a \oc \bigl((a \limp b) \with (c \pmir a)\bigr)}
         \urar[reduces] \drar[reduces]
       \\
-      & a \mathrlap{\oc \top \nreduces}
+      & a \mathrlap{\oc (c \pmir a) \nreduces}
     \end{tikzcd}
     \hphantom{\oc (a \limp b) \reduces b}
   \end{equation*}
   \caption{}
 \end{marginfigure}%
-It is not possible to rewrite $a \oc \bigl((a \limp b) \with \top\bigr)$ into $b$ in a single step, although it is possible in several steps: $a \oc \bigl((a \limp b) \with \top\bigr) \Reduces b$, because $a \oc \bigl((a \limp b) \with \top\bigr) \reduces a \oc (a \limp b) \reduces b$.
+It is not possible to rewrite the context $a \oc \bigl((a \limp b) \with (c \pmir a)\bigr)$ into $b$ in a single step, although it is possible in several steps: $a \oc \bigl((a \limp b) \with (c \pmir a)\bigr) \Reduces b$, because $a \oc \bigl((a \limp b) \with (c \pmir a)\bigr) \reduces a \oc (a \limp b) \reduces b$.
 
-The decomposition rules are so fine-grained that rewriting may get stuck in many undesirable ways.
-For instance, in the previous example, we might have instead nondeterministically committed to rewriting $a \oc \bigl((a \limp b) \with \top\bigr)$ into $a \oc \top$ as the first step, and then $a \oc \top$ is stuck, with no further rewritings possible.
+The decomposition rules are so fine-grained that rewriting may even get stuck in undesirable and unintended ways.
+For instance, in the previous example, we might have instead nondeterministically committed to rewriting $a \oc \bigl((a \limp b) \with (c \pmir a)\bigr)$ into $a \oc (c \pmir a)$ as the first step, and then $a \oc (c \pmir a)$ is stuck, with no further rewritings possible.
+
+Instead, we would rather have a coarser notion of decomposition so that $a \oc \bigl((a \limp b) \with (c \pmir a)\bigr) \reduces b$ is a single step and $a \oc \bigl((a \limp b) \with (c \pmir a)\bigr) \nreduces a \oc (c \pmir a)$.
+Focusing, as developed by \textcite{Andreoli:??}, provides just the right coarse-grained decomposition through its complementary chaining and inversion strategies.
+ : all the way to a shift or atom.\fixnote{origin of focused (multiset) rewriting?}
 
 
-Chaining and inversion as coarse-grained decomposition: all the way to a shift or atom.\fixnote{origin of focused (multiset) rewriting?}
-
-
-The ordered propositions are polarized into positive and negative classes, or \vocab{polarities}\fixnote{reference?}, according to the invertibility of their sequent calculus rules; two \enquote*{shift} connectives, $\dn$ and $\up$, mediate between the two classes.
-\begin{syntax*}
-  Positive props. &
-    \p{A} & \p{A} \fuse \p{B} \mid \one \mid \p{a} \mid \dn \n{A}
+\newthought{The ordered propositions} are polarized into positive and negative classes, or \vocab{polarities}\fixnote{reference?}, according to the invertibility of their sequent calculus rules; two \enquote*{shift} connectives, $\dn$ and $\up$, mediate between the two classes.
+\begin{align*}
+  % Positive props. &
+    \p{A} &\Coloneqq \p{A} \fuse \p{B} \mid \one \mid \p{a} \mid \dn \n{A}
   \\
-  Negative props. &
-    \n{A} & \p{A} \limp \n{B} \mid \n{B} \pmir \p{A} \mid \n{A} \with \n{B} \mid \top \mid \up \p{A} \mid \n{\defp{p}}
-\end{syntax*}
-The positive propositions are those propositions that have invertible left rules, such as ordered conjunction; the negative propositions are those that have invertible right rules, such as the ordered implications.
-For reasons that will become clear in \cref{ch:choreographies}, we choose to assign the positive polarity to all atomic propositions.
+  % Negative props. &
+    \n{A} &\Coloneqq \p{A} \limp \n{B} \mid \n{B} \pmir \p{A} \mid \n{A} \with \n{B} \mid \top \mid \up \p{A} \mid \n{\defp{p}}
+\end{align*}
+The positive propositions, $\p{A}$, are those propositions that have invertible left rules, such as ordered conjunction; the negative propositions, $\n{A}$, are those that have invertible right rules, such as the ordered implications.
+For reasons that will become clear in \cref{ch:choreographies}, we choose to assign a positive polarity to all atomic propositions, $\p{a}$, and a negative polarity\fixnote{no positive recursive definitions!} to all recursively defined propositions, $\n{\defp{p}}$.
+(\Cref{sec:ordered-rewriting:focused:recursive} discusses in more detail how recursively defined propositions operate in this polarized, focused framework.)
 
-Ordered contexts are formed as the free monoid over negative propositions and positive atoms.
+Ordered contexts are then formed as the free monoid over negative propositions and positive atoms:
 \begin{equation*}
   \np{\octx} \Coloneqq \np{\octx}_1 \oc \np{\octx}_2 \mid \octxe \mid \n{A} \mid \p{a}
+  \,.
 \end{equation*}
 As usual, we do not distinguish those ordered contexts that are equivalent up to the monoid laws.
+We may also reify an ordered context $\octx$ as a positive proposition, $\bigfuse \np{\octx}$, using the operation defined in the neighboring \lcnamecref{fig:ordered-rewriting:bigfuse}%
+%
+\begin{marginfigure}
+  \begin{align*}
+    \bigfuse (\np{\octx}_1 \oc \np{\octx}_2) &= (\bigfuse \np{\octx}_1) \fuse (\bigfuse \np{\octx}_2) \\
+    \bigfuse (\octxe) &= \one \\
+    \bigfuse \n{A} &= \dn \n{A} \\
+    \bigfuse \p{a} &= \p{a}
+  \end{align*}
+  \caption{Reifying an ordered context as a positive proposition}
+\end{marginfigure}%
+%
+.
 
-Each class of propositions is equipped with its own focusing judgment: a \vocab{left-focus judgment}, $\lfocus{\np{\octx}_L}{\n{A}}{\np{\octx}_R}{\p{C}}$, that focuses on a negative proposition, $\n{A}$, that occurs to the left of the turnstile; and a \vocab{right-focus judgment}, $\rfocus{\np{\octx}}{\p{A}}$, that focuses on a positive proposition, $\p{A}$, that occurs to the right of the turnstile.%
+\newthought{Each class of propositions} is then equipped with its own focusing judgment: a \vocab{left-focus judgment}, $\lfocus{\np{\octx}_L}{\n{A}}{\np{\octx}_R}{\p{C}}$, that focuses on a negative proposition, $\n{A}$, that occurs to the left of the turnstile; and a \vocab{right-focus judgment}, $\rfocus{\np{\octx}}{\p{A}}$, that focuses on a positive proposition, $\p{A}$, that occurs to the right of the turnstile.%
 \footnote{We choose to write the turnstile [...].}
 
-Following \textcite{Zeilberger:??}, each of these judgments can be read as [describing] a function that provides a form of extended decomposition -- the in-focus proposition is decomposed beyond its immediate subformulas, until subformulas of the opposite polarity are reached.
+Following \textcite{Zeilberger:??}, each of these judgments can be read as a function that provides a form of extended decomposition -- the in-focus proposition is decomposed beyond its immediate subformulas, until subformulas of the opposite polarity are reached.
 % The judgment $\rfocus{\octx}{\p{A}}$ decomposes the in-focus proposition $\p{A}$ into the ordered context $\octx$ of negative subformulas,
 % and $\lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}}$ decomposes the in-focus proposition $\n{A}$ into the ordered contexts $\octx_L$ and $\octx_R$ and the positive subformula $\p{C}$.
 % 
 The two focusing judgments are defined inductively on the structure of the in-focus proposition, with the left-focus judgment depending on the right-focus judgment (though not vice versa).
 
-The right-focus judgment, $\rfocus{\np{\octx}}{\p{A}}$, decomposes $\p{A}$ into an ordered context $\np{\octx}$ of its [nearest] negative subformulas, and is given by the following rules.
+The right-focus judgment, $\rfocus{\np{\octx}}{\p{A}}$, decomposes $\p{A}$ into the ordered context $\np{\octx}$ of its nearest negative subformulas, treating $\p{A}$ as input and $\np{\octx}$ as output.%
+\footnote{This input/output behavior explains why we choose to write the \emph{right}-focus judgment as $\rfocus{\np{\octx}}{\p{A}}$ with a \emph{left}-facing turnstile:
+  when written this way, the judgment's input is followed by its output.}
+% The right-focus judgment, $\rfocus{\np{\octx}}{\p{A}}$, decomposes $\p{A}$ into the ordered context $\np{\octx}$ of its nearest negative subformulas;
+% this judgment therefore takes an in-focus proposition, $\p{A}$, as an input and produces an ordered context, $\np{\octx}$, as output.
+The judgment is given by the following rules.
 \begin{inferences}
   \infer[\rrule{\fuse}]{\rfocus{\np{\octx}_1 \oc \np{\octx}_2}{\p{A} \fuse \p{B}}}{
     \rfocus{\np{\octx}_1}{\p{A}} & \rfocus{\np{\octx}_2}{\p{B}}}
@@ -749,20 +790,11 @@ The right-focus judgment, $\rfocus{\np{\octx}}{\p{A}}$, decomposes $\p{A}$ into 
 \end{inferences}
 % This right-focus judgment decomposes a positive proposition until its [largest] negative subformulas are reached.
 Ordered conjunctions $\p{A} \fuse \p{B}$ are decomposed into $\np{\octx}_1 \oc \np{\octx}_2$ by inductively decomposing $\p{A}$ and $\p{B}$ into $\np{\octx}_1$ and $\np{\octx}_2$, respectively, and $\one$ is decomposed into the empty context.
-Atoms $\p{a}$ cannot be decomposed further%
-\footnote{Alternatively, $\p{a}$ could be decomposed to a suspension, $\langle\p{a}\rangle$.}%
+Atoms $\p{a}$ are not decomposed further%
+\footnote{Alternatively, following \textcite{Simmons:CMU12}, atoms $\p{a}$ could be decomposed to suspensions $\langle\p{a}\rangle$, but we choose not to do that here.}%
 , and $\dn \n{A}$ is decomposed into its immediate subformula of negative polarity, $\n{A}$.
 
-\begin{marginfigure}
-  \begin{align*}
-    \bigfuse (\np{\octx}_1 \oc \np{\octx}_2) &= (\bigfuse \np{\octx}_1) \fuse (\bigfuse \np{\octx}_2) \\
-    \bigfuse (\octxe) &= \one \\
-    \bigfuse \n{A} &= \dn \n{A} \\
-    \bigfuse \p{a} &= \p{a}
-  \end{align*}
-  \caption{From ordered contexts to propositions}
-\end{marginfigure}
-
+This right-focus judgment is a left inverse of the $\bigfuse (-)$ operation:
 \begin{lemma}
   $\rfocus{\np{\octx}_1}{\bigfuse \np{\octx}_2}$ if, and only if, $\np{\octx}_1 = \np{\octx}_2$.
 \end{lemma}
@@ -770,46 +802,123 @@ Atoms $\p{a}$ cannot be decomposed further%
   Each direction is separately proved by structural induction on the context $\np{\octx}_2$.
 \end{proof}
 
-The left-focus judgment, $\lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}}$, decomposes $\n{A}$ into the ordered contexts $\octx_L$ and $\octx_R$ and positive subformula $\p{C}$, and is given by the following rules.
+The left-focus judgment, $\lfocus{\np{\octx}_L}{\n{A}}{\np{\octx}_R}{\p{C}}$, decomposes $\n{A}$ into the ordered contexts $\np{\octx}_L$ and $\np{\octx}_R$ and positive subformula $\p{C}$, treating $\n{A}$ as input and $\np{\octx}_L$, $\np{\octx}_R$, and $\p{C}$ as outputs.
+The judgment is given by the following rules.
 \begin{inferences}
-  \infer[\lrule{\limp}]{\lfocus{\octx_L \oc \octx_A}{\p{A} \limp \n{B}}{\octx_R}{\p{C}}}{
-    \rfocus{\octx_A}{\p{A}} &
-    \lfocus{\octx_L}{\n{B}}{\octx_R}{\p{C}}}
+  \infer[\lrule{\limp}]{\lfocus{\np{\octx}_L \oc \np{\octx}_A}{\p{A} \limp \n{B}}{\np{\octx}_R}{\p{C}}}{
+    \rfocus{\np{\octx}_A}{\p{A}} &
+    \lfocus{\np{\octx}_L}{\n{B}}{\np{\octx}_R}{\p{C}}}
   \and
-  \infer[\lrule{\pmir}]{\lfocus{\octx_L}{\n{B} \pmir \p{A}}{\octx_A \oc \octx_R}{\p{C}}}{
-    \rfocus{\octx_A}{\p{A}} &
-    \lfocus{\octx_L}{\n{B}}{\octx_R}{\p{C}}}
+  \infer[\lrule{\pmir}]{\lfocus{\np{\octx}_L}{\n{B} \pmir \p{A}}{\np{\octx}_A \oc \np{\octx}_R}{\p{C}}}{
+    \rfocus{\np{\octx}_A}{\p{A}} &
+    \lfocus{\np{\octx}_L}{\n{B}}{\np{\octx}_R}{\p{C}}}
   \\
-  \infer[\lrule{\with}_1]{\lfocus{\octx_L}{\n{A} \with \n{B}}{\octx_R}{\p{C}}}{
-    \lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}}}
-  \and
-  \infer[\lrule{\with}_2]{\lfocus{\octx_L}{\n{A} \with \n{B}}{\octx_R}{\p{C}}}{
-    \lfocus{\octx_L}{\n{B}}{\octx_R}{\p{C}}}
-  \and
+  \infer[\lrule{\with}_1]{\lfocus{\np{\octx}_L}{\n{A} \with \n{B}}{\np{\octx}_R}{\p{C}}}{
+    \lfocus{\np{\octx}_L}{\n{A}}{\np{\octx}_R}{\p{C}}}
+  \quad\enspace%\and\!
+  \infer[\lrule{\with}_2]{\lfocus{\np{\octx}_L}{\n{A} \with \n{B}}{\np{\octx}_R}{\p{C}}}{
+    \lfocus{\np{\octx}_L}{\n{B}}{\np{\octx}_R}{\p{C}}}
+  \quad\enspace%\and\!
   \text{(no $\lrule{\top}$ rule)}
   \\
   \infer[\lrule{\up}]{\lfocus{}{\up \p{A}}{}{\p{A}}}{}
 \end{inferences}
-Unlike the right-focus judgment, this left-focus judgment describes a nondeterministic function (or relation).
+The left-focus judgment's rules parallel the usual sequent calculus rules, maintaining focus on the immediate subformulas -- left focus for subformulas of negative polarity and right focus for subformulas of positive polarity.
+The $\lrule{\up}$ rule ends left focus by decomposing an $\up \p{A}$ antecedent into an $\p{A}$ consequent.
 
-These rules parallel the usual sequent calculus rules, maintaining focus on the immediate subformulas.
-The 
+Unlike the right-focus judgment, the left-focus judgment describes a relation (or nondeterministic function), owing to the two rules, $\lrule{\with}_1$ and $\lrule{\with}_2$, that may apply to alternative conjunctions.
+For example, both 
+\begin{equation*}
+  \lfocus{\p{a}}{(\p{a} \limp \up \p{b}) \with (\up \p{c} \pmir \p{a})}{}{\p{b}}
+  \quad\text{and}\quad
+  \lfocus{}{(\p{a} \limp \up \p{b}) \with (\up \p{c} \pmir \p{a})}{\p{a}}{\p{c}}
+\end{equation*}
+are derivable when focusing on the negative proposition $(\p{a} \limp \up \p{b}) \with (\up \p{c} \pmir \p{a})$.
+
+\newthought{A focused rewriting step} arises when a negative proposition, $\n{A}$, is put into focus and the resulting consequent, $\p{B}$, is subsequently decomposed into the ordered context.\fixnote{name for this rule?}%
+\footnote{Writing the right-focus judgment as $\rfocus{\np{\octx'{}}}{\p{B}}$ gives this rule the flavor of a cut principle.}
+In addition, the compatibility rules $\jrule{$\reduces$C}_{\jrule{L}}$ and $\jrule{$\reduces$C}_{\jrule{R}}$ are retained.
+\begin{inferences}
+  \infer[?]{\np{\octx}_L \oc \n{A} \oc \np{\octx}_R \reduces \np{\octx'{}}}{
+    \lfocus{\np{\octx}_L}{\n{A}}{\np{\octx}_R}{\p{B}} &
+    \rfocus{\np{\octx'{}}}{\p{B}}}
+  \\
+  \infer[\jrule{$\reduces$C}\smash{_{\jrule{L}}}]{\np{\octx}_1 \oc \np{\octx}_2 \reduces \np{\octx'_1{}} \oc \np{\octx}_2}{
+    \np{\octx}_1 \reduces \np{\octx'_1{}}}
+  \and
+  \infer[\jrule{$\reduces$C}\smash{_{\jrule{R}}}]{\np{\octx}_1 \oc \np{\octx}_2 \reduces \np{\octx}_1 \oc \np{\octx'_2{}}}{
+    \np{\octx}_2 \reduces \np{\octx'_2{}}}
+\end{inferences}
+
+With this rule, it is indeed possible to rewrite
+\begin{equation*}
+  \p{a} \oc \bigl((\p{a} \limp \up \p{b}) \with (\up \p{c} \pmir \p{a})\bigr)
+    \reduces \p{b}
+\end{equation*}
+in a single step because $\lfocus{\p{a}}{(\p{a} \limp \up \p{b}) \with (\up \p{c} \pmir \p{a})}{}{\p{b}}$ and $\rfocus{\p{b}}{\p{b}}$ hold.
+Moreover, the larger granularity afforded by the left- and right-focus judgments precludes the small steps that led to unintended stuck states.
+For example:
+\begin{equation*}
+  \p{a} \oc \bigl((\p{a} \limp \up \p{b}) \with (\up \p{c} \pmir \p{a})\bigr)
+    \nreduces \p{a} \oc (\up \p{c} \pmir \p{a})
+  \,.
+\end{equation*}
+
+\subsection{Recursively defined propositions and focused ordered rewriting}\label{sec:ordered-rewriting:focused:recursive}
+
+With the revisions to the granularity of rewriting steps that the focused rewriting framework brings, we should pause to consider how recursively defined propositions interact with focused rewriting.
+
+Previously, in the unfocused rewriting framework, recursively defined propostions such as $\defp{p} \defd (a \limp \defp{p} \fuse a) \with (b \limp \one)$ were permitted.
+With the fine granularity of rewriting imposed in that framework, it took three steps to rewrite $a \oc \defp{p}$ into $\defp{p} \oc a$:
+\begin{equation*}
+  a \oc \defp{p} = a \oc \bigl((a \limp \defp{p} \fuse a) \with (b \limp \one)\bigr) \reduces a \oc (a \limp \defp{p} \fuse a) \reduces \defp{p} \fuse a \reduces \defp{p} \oc a
+  \,.
+\end{equation*}
+% Consider the recursively defined proposition $p \defd (a \limp p \fuse a) \with (b \limp \one)$.
+% Previously, in the unfocused rewriting framework, it took three steps to rewrite $a \oc p$ into $p \oc a$:
+% \begin{equation*}
+%   a \oc p = a \oc \bigl((a \limp p \fuse a) \with (b \limp \one)\bigr) \reduces a \oc (a \limp p \fuse a) \reduces p \fuse a \reduces p \oc a
+%   \,.
+% \end{equation*}
+
+In the polarized, focused rewriting framework, the analogous definition with only the minimally necessary shifts is $\n{\defp{p}} \defd (\p{a} \limp \up (\dn \n{\defp{p}} \fuse \p{a})) \with (\p{b} \limp \up \one)$.
+With the coarser granularity of rewriting now afforded by focusing, it takes only one focused step to rewrite $\p{a} \oc \n{\defp{p}}$ into $\n{\defp{p}} \oc \p{a}$:
+\begin{gather*}
+  \p{a} \oc \n{\defp{p}} = \p{a} \oc \bigl((\p{a} \limp \up (\dn \n{\defp{p}} \fuse \p{a})) \with (\p{b} \limp \up \one)\bigr) \reduces \n{\defp{p}} \oc \p{a}
+\shortintertext{because}
+  \lfocus{\p{a}}{\n{\defp{p}}}{}{\dn \n{\defp{p}} \fuse \p{a}}
+  \qquad\text{and}\qquad
+  \rfocus{\n{\defp{p}} \oc \p{a}}{\dn \n{\defp{p}} \fuse \p{a}}
+  \,.
+\end{gather*}
+
+\newthought{Because the left-focus judgment} is defined inductively, not coinductively, there are some recursively defined negative propositions that cannot successfully be put into focus.
+Under the definition $\n{\defp{p}} \defd \p{a} \limp \n{\defp{p}}$, for example, there are no contexts $\np{\octx}_L$ and $\np{\octx}_R$ and positive consequent $\p{C}$ for which $\lfocus{\np{\octx}_L}{\n{\defp{p}}}{\np{\octx}_R}{\p{C}}$ is derivable.
+To derive a left-focus judgment on $\n{\defp{p}}$, the finite context $\octx_L$ would need to hold an infinite stream of $\p{a}$ atoms, which is impossible in an inductively defined context.
+
+However, by inserting a double shift, $\up \dn$, which allows focus to be blurred at the $\up$, the definition can be revised to one that admits left-focusing: when $\n{\defp{p}}$ is defined by $\n{\defp{p}} \defd \p{a} \limp \up \dn \n{\defp{p}}$, the judgment $\lfocus{\p{a}}{\n{\defp{p}}}{}{\dn \n{\defp{p}}}$ is derivable.
+It follows that $\p{a} \oc \n{\defp{p}} \reduces \n{\defp{p}}$.
+
+More generally, any recursively defined proposition that does not pass through an $\up$ shift along a main branch cannot be successfully put into focus.
 
 
 \begin{equation*}
-  \infer[?]{\octx_L \oc \n{A} \oc \octx_R \reduces \octx'}{
-    \lfocus{\octx_L}{\n{A}}{\octx_R}{\p{B}} &
-    \rfocus{\octx'}{\p{B}}}
+  \defp{p} \defd a \fuse (a \limp \defp{p})
 \end{equation*}
-In addition, the compatibility rules $\jrule{$\reduces$C}_{\jrule{L}}$ and $\jrule{$\reduces$C}_{\jrule{R}}$ are retained:
-\begin{inferences}
-  \infer[\jrule{$\reduces$C}\smash{_{\jrule{L}}}]{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
-    \octx_1 \reduces \octx'_1}
-  \and\text{and}\and
-  \infer[\jrule{$\reduces$C}\smash{_{\jrule{R}}}]{\octx_1 \oc \octx_2 \reduces \octx_1 \oc \octx'_2}{
-    \octx_2 \reduces \octx'_2}
-  \:.
-\end{inferences}
+
+\begin{equation*}
+  \n{\defp{p}} \defd \up (\p{a} \fuse \dn (\p{a} \limp \defp{p}))
+\end{equation*}
+
+\begin{gather*}
+  \p{\defp{q}} \defd \p{a} \fuse \dn (\p{a} \limp \up \defp{q}) \\
+  \n{\defp{p}} = \up \p{\defp{q}}
+\end{gather*}
+
+\begin{equation*}
+  \n{\defp{p}} \reduces \p{a} \oc (\p{a} \limp \n{\defp{p}}) \reduces \p{a} \oc (\p{a} \limp \n{\defp{p}})
+\end{equation*}
+
 
 \begin{figure}
   \begin{syntax*}
@@ -875,39 +984,77 @@ In addition, the compatibility rules $\jrule{$\reduces$C}_{\jrule{L}}$ and $\jru
 \end{figure}
 
 
+\section{Using shifts to control focusing}
+
 \subsection{Minimal polarization}
 
+\fixnote{Remove minimal polarization?}
 Focused ordered rewriting is sound with respect to the unfocused rewriting framework of \cref{??}.
-Given a depolarization function
+The neighboring \lcnamecref{fig:ordered-rewriting:minimal-polarization}%
+%
+\begin{marginfigure}
+  \begin{equation*}
+    \begin{aligned}
+      \embedp{a} &= \p{a} \\
+      \embedp*{A \fuse B}
+        &= \embedp{A} \fuse \embedp{B} \\
+      \embedp{\one} &= \one \\
+      \embedp{A} &= \dn \embedn{A} \quad\text{otherwise}
+    \\[2\jot]
+      \embedn*{A \limp B}
+        &= \embedp{A} \limp \embedn{B} \\
+      \embedn*{B \pmir A}
+        &= \embedn{B} \pmir \embedp{A} \\
+      \embedn*{A \with B}
+        &= \embedn{A} \with \embedn{B} \\
+      \embedn{\top} &= \top \\
+      \embedn{\defp{p}} &= \n{\defp{p}} \\
+      \embedn{A} &= \up \embedp{A} \quad\text{otherwise}
+    \\[2\jot]
+      \embed*{\octx_1 \oc \octx_2}
+        &= \embed{\octx_1} \oc \embed{\octx_2} \\
+      \embed*{\octxe} &= \octxe \\
+      \embed{A} &=
+        \begin{cases*}
+          \p{a} & if $A = a$ \\
+          \embedn{A} & otherwise
+        \end{cases*}
+    \end{aligned}
+  \end{equation*}
+  \caption{A minimal polarization strategy}\label{fig:ordered-rewriting:minimal-polarization}
+\end{marginfigure}%
+%
 
-\begin{equation*}
-  \begin{aligned}
-    \embedp*{A} &=
-      \begin{cases*}
-        \p{a} & if $A = a$ \\
-        \embedp{A_1} \fuse \embedp{A_2} & if $A = A_1 \fuse A_2$ \\
-        \one & if $A = \one$ \\
-        \dn \embedn{A} & otherwise
-      \end{cases*}
-    \\
-    \embedn*{A} &=
-      \begin{cases*}
-        \embedp{A_1} \limp \embedn{A_2} & if $A = A_1 \limp A_2$ \\
-        \embedn{A_2} \pmir \embedp{A_1} & if $A = A_2 \pmir A_1$ \\
-        \embedn{A_1} \with \embedn{A_2} & if $A = A_1 \with A_2$ \\
-        \top & if $A = \top$ \\
-        \up \embedp{A} & otherwise
-      \end{cases*}
-    \\
-    \embed{\octx} &=
-      \begin{cases*}
-        \embed{\octx_1} \oc \embed{\octx_2} & if $\octx = \octx_1 \oc \octx_2$ \\
-        \octxe & if $\octx = \octxe$ \\
-        \embedn{A} & if $\octx = A \neq a$ \\
-        \p{a} & if $\octx = a$
-      \end{cases*}
-  \end{aligned}
-\end{equation*}
+
+
+% \begin{equation*}
+%   \begin{aligned}
+%     \embedp*{A} &=
+%       \begin{cases*}
+%         \p{a} & if $A = a$ \\
+%         \embedp{A_1} \fuse \embedp{A_2} & if $A = A_1 \fuse A_2$ \\
+%         \one & if $A = \one$ \\
+%         \dn \embedn{A} & otherwise
+%       \end{cases*}
+%     \\
+%     \embedn*{A} &=
+%       \begin{cases*}
+%         \embedp{A_1} \limp \embedn{A_2} & if $A = A_1 \limp A_2$ \\
+%         \embedn{A_2} \pmir \embedp{A_1} & if $A = A_2 \pmir A_1$ \\
+%         \embedn{A_1} \with \embedn{A_2} & if $A = A_1 \with A_2$ \\
+%         \top & if $A = \top$ \\
+%         \up \embedp{A} & otherwise
+%       \end{cases*}
+%     \\
+%     \embed{\octx} &=
+%       \begin{cases*}
+%         \embed{\octx_1} \oc \embed{\octx_2} & if $\octx = \octx_1 \oc \octx_2$ \\
+%         \octxe & if $\octx = \octxe$ \\
+%         \embedn{A} & if $\octx = A \neq a$ \\
+%         \p{a} & if $\octx = a$
+%       \end{cases*}
+%   \end{aligned}
+% \end{equation*}
 
 \begin{theorem}
   If $\embed{\octx_1} \reduces \np{\octx}_2$, then $\octx_1 \Reduces \octx_2$ for some $\octx_2$ such that $\embed{\octx_2} = \np{\octx}_2$.
@@ -916,23 +1063,23 @@ Given a depolarization function
 \subsection{Embedding unfocused ordered rewriting}
 
 With careful placement of shifts, it is possible to embed unfocused ordered rewriting within the focused ordered rewriting framework in a operationally faithful way.
-Specifically, we define a mapping, $\embed*{}$, from contexts of unpolarized propositions to contexts of negative propositions in a way that strongly respects the operational behavior of unfocused ordered rewriting:
+Specifically, we can define a mapping, $\embed*{}$, from contexts of unpolarized propositions to contexts of negative propositions in a way that strongly respects the operational behavior of unfocused ordered rewriting:
 \begin{itemize}[noitemsep]
-\item $\octx \reduces \octx'$ implies $\embed{\octx} \reduces \embed*{\octx'}$; and
-\item $\embed{\octx} \reduces \lctx'$ implies $\octx \reduces \octx'$, for some $\octx'$ such that $\lctx' = \embed*{\octx'}$.%
-  \footnote{That is, $\embed*{}$ is a strong reduction bisimulation\textcite{Sangiorgi+Walker:CUP03}.}
+\item $\octx \reduces \octx'$ implies $\embed{\octx} \reduces \embed{\octx'{}}$; and
+\item $\embed{\octx} \reduces \np{\lctx'{}}$ implies $\octx \reduces \octx'$, for some $\octx'$ such that $\np{\lctx'{}} = \embed{\octx'{}}$.
 \end{itemize}
+That is, $\embed*{}$ is a strong reduction bisimulation\textcite{Sangiorgi+Walker:CUP03}.
+% By appropriately placing double shifts, $\dn \up$ or $\up \dn$, between each pair of 
 
-By appropriately placing double shifts, $\dn \up$ or $\up \dn$, between each pair of 
+Essentially, this embedding inserts a double shift, $\dn \up$, in front of each proper, nonatomic subformula.
+These double shifts cause chaining and inversion to be interrupted after each step, forcing the focused rewriting to mimic the small-step behavior of unfocused rewriting.
 
-Essentially, this embedding inserts a double shift, $\dn \up$, in front of each proper nonatomic subformula.
-These double shifts cause chaining and inversion to be interupted after each step, forcing the focused rewriting to mimic the small-step behavior of unfocused rewriting.
-
-The mapping $\embed*{}$ relies on three auxiliary mappings: $\embed*{}$, from unpolarized propositions to negative propositions and positive atoms; $\embedn*{}$, from unplarized propositions to negative propositions; and $\embedp*{}$, from unpolarized propositions to 
-
-$\embedn{A}$ and $\embedp{A}$ produce negative and positive polrizations of $A$, respectively, that insert a $\dn \up$ shift in front of every proper nonatomic subformula of $A$.
-In addition, $\embedn{A}$ prepends an $\up$ shift when the top-level connective of $A$ has positive polarity, whereas $\embedn{A}$ prepends a $\dn$ shift when $A$ is not atomic.
-$\embed{A}$ produces either a positive atom or a negative polarization of $A$, according to wheter $A$ is atomic.
+The mapping $\embed*{}$ relies on two auxiliary mappings:
+% $\embed*{}$, from unpolarized propositions to negative propositions and positive atoms;
+$\embedn*{}$ and $\embedp*{}$, from unpolarized propositions to negative and positive propositions, respectively.
+$\embedn{A}$ and $\embedp{A}$ produce negative and positive polarizations of $A$, respectively, that insert a $\dn \up$ shift in front of every proper, nonatomic subformula of $A$.
+In addition, $\embedn{A}$ prepends an $\up$ shift whenever the top-level connective of $A$ has positive polarity, whereas $\embedn{A}$ prepends a $\dn$ shift whenever $A$ is not atomic.
+% $\embed{A}$ produces either a positive atom or a negative polarization of $A$, according to wheter $A$ is atomic.
 %
 % \begin{marginfigure}
 % \begin{equation*}
@@ -996,33 +1143,33 @@ $\embed{A}$ produces either a positive atom or a negative polarization of $A$, a
 \begin{theorem}
   The embedding $\embed{(-)}$ satisfies the following properties.
   \begin{itemize}[nosep]
-  \item If $\octx \reduces \octx'$, then $\embed{\octx} \reduces \embed*{\octx'}$.
-  \item If $\embed{\octx} = \lctx \reduces \lctx'$, then $\octx \reduces \octx'$ and $\lctx' = \embed*{\octx'}$, for some $\octx'$.
+  \item If $\octx \reduces \octx'$, then $\embed{\octx} \reduces \embed{\octx'{}}$.
+  \item If $\embed{\octx} = \np{\lctx} \reduces \np{\lctx'{}}$, then $\octx \reduces \octx'$ and $\np{\lctx'{}} = \embed{\octx'{}}$, for some $\octx'$.
   \end{itemize}
 \end{theorem}
 \begin{proof}
   The proofs of these properties require a straightforward lemma:
-  for all propositions $A$, 
+  for all unpolarized propositions $A$, 
   \begin{equation*}
-    \rfocus{\octx}{\embedp{A}} \text{\ if, and only if, } \octx = \embed{A}
+    \rfocus{\np{\lctx}}{\embedp{A}} \text{\ if, and only if, } \np{\lctx} = \embed{A}
     \,.
   \end{equation*}
 
   The first property is then proved by induction over the structure of the given rewriting step, $\octx \reduces \octx'$.
-  As an example, consider the case in which $\octx = A_1 \oc (A_1 \limp A_2) \reduces A_2 = \octx'$.
-  By definition, $\embed{\octx} = \embed{A_1} \oc (\embedp{A_1} \limp \up \embedp{A_2})$ and $\embed*{\octx'} = \embed{A_2}$, and we may derive $\lfocus{\embed{A_1}}{\embedp{A_1} \limp \up \embedp{A_2}}{}{\embedp{A_2}}$ and $\rfocus{\embed{A_2}}{\embedp{A_2}}$.
-  So, indeed, $\embed{\octx} = \embed{A_1} \oc (\embedp{A_1} \limp \up \embedp{A_2}) \reduces \embed{A_2} = \embed*{\octx'}$.
+  As an example, consider the case in which $\octx = A \oc (A \limp B) \reduces B = \octx'$.
+  By definition, $\embed{\octx} = \embed{A} \oc (\embedp{A} \limp \up \embedp{B})$ and $\embed{\octx'{}} = \embed{B}$, and we can indeed derive $\lfocus{\embed{A}}{\embedp{A} \limp \up \embedp{B}}{}{\embedp{B}}$ and $\rfocus{\embed{B}}{\embedp{B}}$.
+  So, as required, $\embed{\octx} = \embed{A} \oc (\embedp{A} \limp \up \embedp{B}) \reduces \embed{B} = \embed{\octx'{}}$.
 
-  The second property is also proved by induction over the structure of the given rewriting step, this time $\embed{\octx} = \lctx \reduces \lctx'$.
-  As an example, consider the case in which $\lfocus{\embed{\octx_L}}{\embedp{A_1} \limp \up \embedp{A_2}}{\embed{\octx_R}}{\p{B}}$ and $\rfocus{\lctx'}{\p{B}}$, for some $\octx_L$, $A_1$, $A_2$, and $\octx_R$ such that $\octx = \octx_L \oc (A_1 \limp A_2) \oc \octx_R$.
-  By inversion, $\octx_L = A_1$, $\octx_R = \octxe$, $\p{B} = \embedp{A_2}$, and $\lctx' = \embed{A_2}$.
-  Indeed, $\octx = A_1 \oc (A_1 \limp A_2) \reduces A_2 = \octx'$ and $\lctx' = \embed*{\octx'}$.
+  The second property is also proved by induction over the structure of the given rewriting step, this time $\embed{\octx} = \np{\lctx} \reduces \np{\lctx'{}}$.
+  As an example, consider the case in which $\lfocus{\embed{\octx_L}}{\embedp{A} \limp \up \embedp{B}}{\embed{\octx_R}}{\p{C}}$ and $\rfocus{\np{\lctx'{}}}{\p{C}}$, for some $\octx_L$, $A$, $B$, $\octx_R$, and $\p{C}$ such that $\octx = \octx_L \oc (A \limp B) \oc \octx_R$.
+  By inversion and the aforementioned lemma, we have $\octx_L = A$, $\octx_R = \octxe$, $\p{C} = \embedp{B}$, and $\np{\lctx'{}} = \embed{B}$.
+  Indeed, as required, $\octx = A \oc (A \limp B) \reduces B = \octx'$ and $\np{\lctx'{}} = \embed{\octx'{}}$.
 \end{proof}
 
 \subsection{Embedding weakly focused ordered rewriting}
 
-It is similarly possible to embed weakly focused ordered rewriting, a rewriting discipline that lies between unfocused ordered rewriting and fully focused ordered rewriting.
-In weakly focused rewriting, chaining of negative propositions is retained, but positive propositions are not eagerly inverted like they are in fully focused rewriting.
+It is similarly possible to embed weakly focused ordered rewriting, a rewriting discipline based on weak focusing\autocite{??} in which the granularity of steps lies between that of the unfocused and fully focused ordered rewriting frameworks.
+In weakly focused rewriting, chaining of negative propositions is retained, but positive propositions are handled in an unfocused way not eagerly inverted like they are in fully focused rewriting.\fixnote{chain positive propositions?}
 For example, 
 \begin{equation*}
   \p{a} \oc \dn \n{\hat{p}} = \p{a} \oc \dn \bigl((\p{a} \limp \up (\dn \n{\hat{p}} \fuse \p{a})) \with (\p{b} \limp \up \one)\bigr) \reduces \dn \n{\hat{p}} \fuse \p{a} \reduces \dn \n{\hat{p}} \oc \p{a}
@@ -1045,99 +1192,148 @@ This weak focusing discipline can be achieved
 \end{inferences}
 
 \begin{inferences}
+  \infer[\lrule{\limp}]{\lfocus{\p{\octx}_L \oc \p{\octx}_A}{\p{A} \limp \n{B}}{\p{\octx}_R}{\p{C}}}{
+    \rfocus{\p{\octx}_A}{\p{A}} &
+    \lfocus{\p{\octx}_L}{\n{B}}{\p{\octx}_R}{\p{C}}}
+  \and
+  \infer[\lrule{\pmir}]{\lfocus{\p{\octx}_L}{\n{B} \pmir \p{A}}{\p{\octx}_A \oc \p{\octx}_R}{\p{C}}}{
+    \rfocus{\p{\octx}_A}{\p{A}} &
+    \lfocus{\p{\octx}_L}{\n{B}}{\p{\octx}_R}{\p{C}}} 
+  \\
+  \infer[\lrule{\with}_1]{\lfocus{\p{\octx}_L}{\n{A} \with \n{B}}{\p{\octx}_R}{\p{C}}}{
+    \lfocus{\p{\octx}_L}{\n{A}}{\p{\octx}_R}{\p{C}}}
+  \and
+  \infer[\lrule{\with}_2]{\lfocus{\p{\octx}_L}{\n{A} \with \n{B}}{\p{\octx}_R}{\p{C}}}{
+    \lfocus{\p{\octx}_L}{\n{B}}{\p{\octx}_R}{\p{C}}}
+  \and
+  \text{(no $\lrule{\top}$ rule)}
+  \\
+  \infer[\lrule{\up}]{\lfocus{}{\up \p{A}}{}{\p{A}}}{}
+\end{inferences}
+
+\begin{inferences}
+  \infer[\rrule{\fuse}]{\rfocus{\p{\octx}_1 \oc \p{\octx}_2}{\p{A} \fuse \p{B}}}{
+    \rfocus{\p{\octx}_1}{\p{A}} &
+    \rfocus{\p{\octx}_2}{\p{B}}}
+  \and
+  \infer[\rrule{\one}]{\rfocus{\octxe}{\one}}{}
+  \\
+  \infer[\jrule{ID}\smash{^{\p{a}}}]{\rfocus{\p{a}}{\p{a}}}{}
+  \and
+  \infer[\rrule{\dn}?]{\rfocus{\dn \n{A}}{\dn \n{A}}}{}
+\end{inferences}
+
+Or, are we instead forced into
+\begin{inferences}
   \infer[\lrule{\limp}']{\lfocus{\p{\octx}_L \oc \p{A}}{\p{A} \limp \n{B}}{\p{\octx}_R}{\p{C}}}{
     \lfocus{\p{\octx}_L}{\n{B}}{\p{\octx}_R}{\p{C}}}
   \and
   \infer[\lrule{\pmir}']{\lfocus{\octx_L}{\n{B} \pmir \p{A}}{\p{A} \oc \octx_R}{\p{C}}}{
     \lfocus{\octx_L}{\n{B}}{\octx_R}{\p{C}}}
 \end{inferences}
+and no right-focus judgment at all?
+But, strictly speaking, that is not weak focusing but something else altogether.
+(When implications are restricted to positive atomic premises, it does coincide with weak focusing.)
+It consistently treats positive propositions in a wholly unfocused way (neither chaining nor inversion), and it chains negative propositions (and could invert them on the right, but rewriting does not use a sequent's right-hand side).
 
 \begin{equation*}
   \begin{aligned}
-    \embedp*{\p{A}} &= \begin{cases*}
-                    \p{a} & if $\p{A} = \p{a}$ \\
-                    \dn \up (\embedp*{\p{A}_1} \fuse \embedp*{\p{A}_2}) & if $\p{A} = \p{A}_1 \fuse \p{A}_2$ \\
-                    \dn \up \one & if $\p{A} = \one$ \\
-                    \dn \embedn*{\n{A}_0} & if $\p{A} = \dn \n{A}_0$
-               \end{cases*}
-    \\
-    \embedn*{\n{A}} &= \begin{cases*}
-                         \embedp*{\p{A}_1} \limp \embedn*{\n{A}_2} & if $\n{A} = \p{A}_1 \limp \n{A}_2$ \\
-                    \embedn*{\n{A}_2} \pmir \embedp*{\p{A}_1} & if $\n{A} = \n{A}_2 \pmir \p{A}_1$ \\
-                    \embedn*{\n{A}_1} \with \embedn*{\n{A}_2} & if $\n{A} = \n{A}_1 \with \n{A}_2$ \\
-                    \top & if $\n{A} = \top$ \\
-                    \up \embedp*{\p{A}_0} & if $\n{A} = \up \p{A}_0$
-                  \end{cases*}
-    \\
-    \embed*{\p{A}} &=
-      \begin{cases*}
-        \p{a} & if $\p{A} = \p{a}$ \\
-        \up (\embedp*{\p{A}_1} \fuse \embedp*{\p{A}_2}) & if $\p{A} = \p{A}_1 \fuse \p{A}_2$ \\
-        \up \one & if $\p{A} = \one$ \\
-        \embedn*{\n{A}_0} & if $\p{A} = \dn \n{A}_0$
-      \end{cases*}
-    \\
-    \embed*{\p{\octx}} &=
-      \begin{cases*}
-        \embed*{\p{\octx}_1} \oc \embed*{\p{\octx}_2} & if $\p{\octx} = \p{\octx}_1 \oc \p{\octx}_2$ \\
-        (\octxe) & if $\octx = \octxe$ \\
-        \embed*{\p{A}} & if $\octx = \p{A}$
-      \end{cases*}
+    \embedp*{\p{a}} &= \p{a} \\
+    \embedp*{\p{A} \fuse \p{B}}
+      &= \dn \up (\embedp*{\p{A}} \fuse \embedp*{\p{B}}) \\
+    \embedp{\one} &= \dn \up \one \\
+    \embedp*{\dn \n{A}} &= \dn \embedn*{\n{A}}
+  \\
+    \embedn*{\p{A} \limp \n{B}}
+      &= \embedp*{\p{A}} \limp \embedn*{\n{B}} \\
+    \embedn*{\n{B} \pmir \p{A}}
+      &= \embedn*{\n{B}} \pmir \embedp*{\p{A}} \\
+    \embedn*{\n{A} \with \n{B}}
+      &= \embedn*{\n{A}} \with \embedn*{\n{B}} \\
+    \embedn{\top} &= \top \\
+    \embedn*{\n{\defp{p}}} &= \n{\defp{p}} \\
+    \embedn*{\up \p{A}} &= \up \embedp*{\p{A}}
+  \\
+    \embed*{\p{\octx}_1 \oc \p{\octx}_2}
+      &= \embed*{\p{\octx}_1} \oc \embed*{\p{\octx}_2} \\
+    \embed*{\octxe} &= \octxe \\
+    \embed*{\p{a}} &= \p{a} \\
+    \embed*{\p{A} \fuse \p{B}} &= \up (\embedp*{\p{A}} \fuse \embedp*{\p{B}}) \\
+    \embed{\one} &= \up \one \\
+    \embed*{\dn \n{A}} &= \embedn*{\n{A}}
   \end{aligned}
 \end{equation*}
+
+% \begin{equation*}
+%   \begin{aligned}
+%     \embedp*{\p{A}} &= \begin{cases*}
+%                     \p{a} & if $\p{A} = \p{a}$ \\
+%                     \dn \up (\embedp*{\p{A}_1} \fuse \embedp*{\p{A}_2}) & if $\p{A} = \p{A}_1 \fuse \p{A}_2$ \\
+%                     \dn \up \one & if $\p{A} = \one$ \\
+%                     \dn \embedn*{\n{A}_0} & if $\p{A} = \dn \n{A}_0$
+%                \end{cases*}
+%     \\
+%     \embedn*{\n{A}} &= \begin{cases*}
+%                          \embedp*{\p{A}_1} \limp \embedn*{\n{A}_2} & if $\n{A} = \p{A}_1 \limp \n{A}_2$ \\
+%                     \embedn*{\n{A}_2} \pmir \embedp*{\p{A}_1} & if $\n{A} = \n{A}_2 \pmir \p{A}_1$ \\
+%                     \embedn*{\n{A}_1} \with \embedn*{\n{A}_2} & if $\n{A} = \n{A}_1 \with \n{A}_2$ \\
+%                     \top & if $\n{A} = \top$ \\
+%                     \up \embedp*{\p{A}_0} & if $\n{A} = \up \p{A}_0$
+%                   \end{cases*}
+%     \\
+%     \embed*{\p{A}} &=
+%       \begin{cases*}
+%         \p{a} & if $\p{A} = \p{a}$ \\
+%         \up (\embedp*{\p{A}_1} \fuse \embedp*{\p{A}_2}) & if $\p{A} = \p{A}_1 \fuse \p{A}_2$ \\
+%         \up \one & if $\p{A} = \one$ \\
+%         \embedn*{\n{A}_0} & if $\p{A} = \dn \n{A}_0$
+%       \end{cases*}
+%     \\
+%     \embed*{\p{\octx}} &=
+%       \begin{cases*}
+%         \embed*{\p{\octx}_1} \oc \embed*{\p{\octx}_2} & if $\p{\octx} = \p{\octx}_1 \oc \p{\octx}_2$ \\
+%         (\octxe) & if $\octx = \octxe$ \\
+%         \embed*{\p{A}} & if $\octx = \p{A}$
+%       \end{cases*}
+%   \end{aligned}
+% \end{equation*}
 
 \begin{theorem}
   The embedding $\embed{(-)}$ satisfies the following properties.
   \begin{itemize}[nosep]
   \item If $\p{\octx} \reduces \p{\octx'{}}$, then $\embed*{\p{\octx}} \reduces \embed*{\p{\octx'{}}}$.
-  \item If $\embed*{\p{\octx}} \reduces \n{\octx'{}}$, then $\p{\octx} \reduces \p{\octx'{}}$ and $\n{\octx'{}} = \embed*{\p{\octx'{}}}$, for some $\p{\octx'{}}$.
+  \item If $\embed*{\p{\octx}} \reduces \np{\lctx'{}}$, then $\p{\octx} \reduces \p{\octx'{}}$ and $\np{\lctx'{}} = \embed*{\p{\octx'{}}}$, for some $\p{\octx'{}}$.
   \end{itemize}
 \end{theorem}
 \begin{proof}
-  The first property is proved by induction over the structure of the given weakly focused rewriting step, $\p{\octx} \reduces \p{\octx'}$, with the inductive hypothesis generalized to include 
+  The proofs of these properties require two relatively straightforward lemmas:
+  for all polarized propositions $\p{A}$ and $\n{A}$,
   \begin{itemize}
-  \item If $\lfocus{\p{\octx}_L}{\n{A}}{\p{\octx}_R}{\p{C}}$, then $\lfocus{\embed*{\p{\octx}_L}}{\embedn*{\n{A}}}{\embed*{\p{\octx}_R}}{\embedp*{\p{C}}}$.
+  \item $\rfocus{\np{\lctx}}{\embedp*{\p{A}}}$ if, and only if, $\np{\lctx} = \embed*{\p{A}}$; and
+  \item $\lfocus{\np{\lctx}_L}{\embedn*{\n{A}}}{\np{\lctx}_R}{\p{B}}$ if, and only if,
+    $\lfocus{\p{\octx}_L}{\n{A}}{\p{\octx}_R}{\p{C}}$ and
+    $\np{\lctx}_L = \embed*{\p{\octx}_L}$,
+    $\np{\lctx}_R = \embed*{\p{\octx}_R}$, and
+    $\p{B} = \embedp*{\p{C}}$.
   \end{itemize}
-  As an example, consider the case in which $\p{\octx}_L \oc \dn \n{A} \oc \p{\octx}_R \reduces \p{C}$ because $\lfocus{\p{\octx}_L}{\n{A}}{\p{\octx}_R}{\p{C}}$.
-  By the inductive hypothesis, $\lfocus{\embed*{\p{\octx}_L}}{\embedn*{\n{A}}}{\embed*{\p{\octx}_R}}{\embedp*{\p{C}}}$ and so $\embed*{\p{\octx}_L} \oc \embed*{\dn \n{A}} \oc \embed*{\p{\octx}_R} \reduces \embed*{\p{C}}$.
+  Both lemmas are proved by structural induction on the polarized proposition, $\p{A}$ and $\n{A}$, respectively.
 
-  \begin{itemize}
-  \item If $\lfocus{\n{\octx}_L}{\embedn*{\n{A}}}{\n{\octx}_R}{\p{B}}$, then $\n{\octx}_L = \embed*{\p{\octx}_L}$ and $\n{\octx}_R = \embed*{\p{\octx}_R}$ and $\p{B} = \embedp*{\p{C}}$ and $\lfocus{\p{\octx}_L}{\n{A}}{\p{\octx}_R}{\p{C}}$.
-  \end{itemize}
-  The second property is also proved by induction over the structure of the given rewriting step, this time the fully focused $\embed*{\p{\octx}} \reduces \n{\octx}'$.
-  As an example, consider the case in which $\lfocus{\n{\octx}_L}{\embedp*{\p{A}_1} \limp \embedn*{\n{A}_2}}{\n{\octx}_R}{\p{B}}$ and $\rfocus{\n{\octx}'}{\embedp*{\p{B}}}$.
-  By the inductive hypothesis, $\lfocus{\p{\octx}_L}{\n{A}_2}{\p{\octx}_R}{\p{C}}$ such that $\n{\octx}_L = \embed*{\p{\octx}_L}$, $\n{\octx}_R = \embed*{\p{\octx}_R}$, and $\p{B} = \embedp*{\p{C}}$.
-  It follows that $\lfocus{\p{\octx}_L \oc \p{A}_1}{\p{A}_1 \limp \n{A}_2}{\p{\octx}_R}{\p{C}}$, and so $\p{\octx}_L \oc \dn (\p{A}_1 \limp \n{A}_2) \oc \p{\octx}_R \reduces ?$
+  The first of the above properties is then proved by induction over the structure of the given weakly focused rewriting step, $\p{\octx} \reduces \p{\octx'}$.
+  As an example, consider the case in which $\p{\octx}_L \oc \dn \n{A} \oc \p{\octx}_R \reduces \p{C}$ because $\lfocus{\p{\octx}_L}{\n{A}}{\p{\octx}_R}{\p{C}}$.
+  By the above lemma, $\lfocus{\embed*{\p{\octx}_L}}{\embedn*{\n{A}}}{\embed*{\p{\octx}_R}}{\embedp*{\p{C}}}$ holds in the fully focused calculus.
+  And so, as required, $\embed*{\p{\octx}_L} \oc \embed*{\dn \n{A}} \oc \embed*{\p{\octx}_R} \reduces \embed*{\p{C}}$.
+
+  The second property is also proved by induction over the structure of the given rewriting step, this time the fully focused $\embed*{\p{\octx}} \reduces \np{\lctx'{}}$.
+  As an example, consider the case in which $\lfocus{\np{\lctx}_L}{\embedp*{\p{A}_1} \limp \embedn*{\n{A}_2}}{\np{\lctx}_R}{\p{B}}$ and $\rfocus{\np{\lctx'{}}}{\p{B}}$.
+  Inversion yields $\lfocus{\np{\lctx'_L{}}}{\embedn*{\n{A}_2}}{\np{\lctx}_R}{\p{B}}$ for some $\np{\lctx'_L{}}$ such that $\np{\lctx}_L = \np{\lctx'_L{}} \oc \embed*{\p{A}_1}$.
+  Then, by the above lemma, $\lfocus{\p{\octx}_L}{\n{A}_2}{\p{\octx}_R}{\p{C}}$ holds in the weakly focused calculus, with $\np{\lctx'_L{}} = \embed*{\p{\octx}_L}$, $\np{\lctx}_R = \embed*{\p{\octx}_R}$, and $\p{B} = \embedp*{\p{C}}$.
+  It follows that $\lfocus{\p{\octx}_L \oc \p{A}_1}{\p{A}_1 \limp \n{A}_2}{\p{\octx}_R}{\p{C}}$, and so $\p{\octx}_L \oc \p{A}_1 \oc \dn (\p{A}_1 \limp \n{A}_2) \oc \p{\octx}_R \reduces \p{C}$.
+  Also notice that $\np{\lctx}_L = \embed*{\p{\octx}_L \oc \p{A}_1}$ and $\np{\lctx'{}} = \embed*{\p{C}}$, as required.
 \end{proof}
 
 
-\subsection{Recursively defined propositions and focused ordered rewriting}
-
-Consider the recursively defined proposition $p \defd (a \limp p \fuse a) \with (b \limp \one)$.
-Previously, in the unfocused rewriting framework, it took three steps to rewrite $a \oc p$ into $p \oc a$:
-\begin{equation*}
-  a \oc p = a \oc \bigl((a \limp p \fuse a) \with (b \limp \one)\bigr) \reduces a \oc (a \limp p \fuse a) \reduces p \fuse a \reduces p \oc a
-  \,.
-\end{equation*}
-Now, in the polarized, focused rewriting framework, the analogous recursive definition with only the necessary shifts is $\n{\hat{p}} \defd (\p{a} \limp \up (\dn \n{\hat{p}} \fuse \p{a})) \with (\p{b} \limp \up \one)$, and it takes only one focused step to rewrite $\p{a} \oc \n{\hat{p}}$ into $\n{\hat{p}} \oc \p{a}$:
-\begin{gather*}
-  \p{a} \oc \n{\hat{p}} = \p{a} \oc \bigl((\p{a} \limp \up (\dn \n{\hat{p}} \fuse \p{a})) \with (\p{b} \limp \up \one)\bigr) \reduces \n{\hat{p}} \oc \p{a}
-\intertext{because}
-  \lfocus{\p{a}}{\n{\hat{p}}}{}{\dn \n{\hat{p}} \fuse \p{a}}
-  \qquad\text{and}\qquad
-  \rfocus{\n{\hat{p}} \oc \p{a}}{\dn \n{\hat{p}} \fuse \p{a}}
-  \,.
-\end{gather*}
-
-Because the left-focus judgment is defined inductively, not coinductively, there are some recursively defined negative propositions that cannot successfully be put in focus.
-For example, under the definition $\n{\hat{p}} \defd \p{a} \limp \n{\hat{p}}$, there are no contexts $\octx_L$ and $\octx_R$ and positive consequent $\p{C}$ for which $\lfocus{\octx_L}{\n{\hat{p}}}{\octx_R}{\p{C}}$ is derivable.
-To derive a left-focus judgment on $\n{\hat{p}}$, the finite context $\octx_L$ would need to hold an infinite stream of $\p{a}$ atoms, which is impossible in an inductively defined context.
-
-However, by inserting a double shift, $\up \dn$, which allows focus to be blurred at the $\up$, the definition can be revised to one that admits left-focusing: when $\n{\hat{p}}$ is defined by $\n{\hat{p}} \defd \p{a} \limp \up \dn \n{\hat{p}}$, the judgment $\lfocus{\p{a}}{\n{\hat{p}}}{}{\dn \n{\hat{p}}}$ is derivable.
-It follows that $\p{a} \oc \n{\hat{p}} \reduces \n{\hat{p}}$.
-
-More generally, any recursively defined proposition that does not pass through an $\up$ shift along a main branch cannot be successfully put in focus.
-
+\clearpage
+\clearpage
 
 \section{Choreographies}
 
