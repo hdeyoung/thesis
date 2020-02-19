@@ -1,13 +1,12 @@
 \chapter{String rewriting for concurrent specifications}\label{ch:string-rewriting}
 
-In this \lcnamecref{ch:string-rewriting}, we consider abstract rewriting as a framework for specifying the behavior\fixnote{operational semantics?} of concurrent systems.
+In this \lcnamecref{ch:string-rewriting}, we consider abstract rewriting as a framework for specifying the dynamics of concurrent systems.
 This is not, of course, a new idea.
-Multiset rewriting\autocite{??}, and other state-transformation models such as Petri nets\autocite{??}, 
-[...]\fixnote{fix}
-Unlike the application domain for multiset rewriting, we are particularly interested in concurrent systems whose components are arranged in a linear topology and have a monoidal structure.
-Given that finite strings over an alphabet $\ialph$ form a monoid, string rewriting is a good match for this structure.
+Multiset rewriting\autocites{Cervesato+Scedrov:IC09}{Meseguer:TCS92}, as a state-transformation model of concurrency, has been used to describe security protocols\autocites{Cervesato+:CSFW99}{Durgin+:JCS04}, for example.
+Unlike in multiset rewriting, we are particularly interested in concurrent systems whose components are arranged in a linear topology and have a monoidal structure.
+Given that finite strings over an alphabet $\ialph$ form a monoid, string rewriting, rather than multiset rewriting, is a good match for the structure we are interested in.
 
-For a broad sketch of string rewriting, consider the finite strings over the alphabet $\Set{a,b}$, and let $\reduces$ be the least compositional\fixnote{compatible?} binary relation over those strings that satisfies the axioms
+For a broad sketch of string rewriting, consider the finite strings over the alphabet $\Set{a,b}$, and let $\reduces$ be the least compatible binary relation over those strings that satisfies the axioms
 \begin{equation}\label{eq:string-rewriting:ends-b-nondeterministic}
   \infer{a \wc b \reduces b}{}
   \qquad\text{and}\qquad
@@ -38,18 +37,20 @@ For example, although $abb$ certainly ends with $b$, the string $abb$ can be rew
   \,\!.
 \end{equation*}
 % even though $abb$ certainly ends with $b$.
-No backtracking is performed to reconsider the choices.
+No backtracking is performed to reconsider these choices.
 \fixnote{Bring up concurrency here?}
 
-\newthought{The remainder of this \lcnamecref{ch:string-rewriting}} describes the string rewriting framework in more detail~\parencref{sec:string-rewriting:framework} and examines its properties, most importantly concurrent rewritings.
-Then we present two extended examples of how string rewriting may be used to specify concurrent systems: \aclp*{NFA}~\parencref{sec:string-rewriting:nfa} and binary representations of natural numbers~\parencref{sec:string-rewriting:binary-counter}.
+\newthought{The remainder of this \lcnamecref{ch:string-rewriting}} describes a string rewriting framework, \acs{SR}, in more detail~\parencref{sec:string-rewriting:framework} and examines its properties, most importantly concurrent rewritings.
+Then we present two extended examples of how \acl{SR} in \acs{SR} may be used to specify concurrent systems: \aclp*{NFA}~\parencref{sec:string-rewriting:nfa} and binary representations of natural numbers~\parencref{sec:string-rewriting:binary-counter}.
 These will serve as recurring examples throughout the remainder of this document.
 
-\section{String rewriting}\label{sec:string-rewriting:framework}
+\section{A \acl*{SR} framework}\label{sec:string-rewriting:framework}
+
+In this \lcnamecref{sec:string-rewriting:framework}, we present a string rewriting framework that we dub \acs{SR}.
 
 \subsection{Symbols and strings}
 
-String rewriting presupposes an alphabet, $\sralph$, of symbols $a$ from which finite strings are constructed.
+\Acl{SR} in \acs{SR} presupposes an alphabet, $\sralph$, of symbols $a$ from which finite strings are constructed.
 This alphabet is usually, but need not be, finite.
 
 Strings, $w$, are then finite lists of symbols: $w = a_1 \wc a_2 \dotsb a_n$.
@@ -58,13 +59,8 @@ Algebraically, strings form a free (noncommutative) monoid over symbols $a \in \
   w \Coloneqq w_1 \wc w_2 \mid \emp \mid a
   \,,
 \end{equation*}
-where the monoid operation is string concatenation, denoted by $w_1 \wc w_2$, and the unit element is the empty string, denoted by $\emp$.%
+where the monoid operation is string concatenation, denoted by $w_1 \wc w_2$, and the unit element is the empty string, denoted by $\emp$.
 % and $a$ is a symbol drawn from the alphabet $\ialph$.%
-\footnote{As usual for a free monoid, the alternative grammar,
-  % \begin{equation*}
-    $w \Coloneqq \emp \mid a \wc w$,
-  % \end{equation*}
-  describes the same strings.}
 As a monoid, strings are equivalent up to associativity and unit laws (see adjacent \lcnamecref{fig:string-rewriting:monoid-laws}).%
 \begin{marginfigure}
   \begin{gather*}
@@ -73,7 +69,13 @@ As a monoid, strings are equivalent up to associativity and unit laws (see adjac
   \end{gather*}
   \caption{The monoid laws for strings}\label{fig:string-rewriting:monoid-laws}
 \end{marginfigure}
-We choose to keep this equivalence implicit, however, treating equivalent strings as syntactically indistinguishable.
+We choose to keep this equivalence implicit, however, treating equivalent strings as syntactically indistinguishable.%
+\footnote{As usual for a free monoid, the alternative grammar,
+  % \begin{equation*}
+    $w \Coloneqq \emp \mid a \wc w$,
+  % \end{equation*}
+  describes the same strings.}
+
 
 % The reason for the change of notation -- from $w$ and $\emp$ at the outset to $\octx$ and $(\emp$ here -- will become clear in the subsequent \lcnamecref{ch:ordered-rewriting}.
 
@@ -81,7 +83,7 @@ We choose to keep this equivalence implicit, however, treating equivalent string
 
 At the heart of string rewriting is a binary relation, $\reduces$, over strings.
 When $w \reduces w'$, we say that $w$ can be rewritten to $w'$.
-This relation is defined as the least compositional\fixnote{compatible?} relation satisfying a collection of rewriting axioms, chosen on a per-application basis%
+This relation is defined as the least compatible relation satisfying a collection of rewriting axioms, chosen on a per-application basis%
 , such as the axioms
 % For example, in the new notation, the axioms of \cref{eq:string-rewriting:ends-b-nondeterministic} are
 \begin{equation}\label{eq:string-rewriting:ends-b-simpler}
@@ -90,7 +92,7 @@ This relation is defined as the least compositional\fixnote{compatible?} relatio
   \infer{b \reduces \emp}{}
 \end{equation}
 shown earlier.
-More generally, an axiom is any pair of concrete, finite strings, $w \reduces w'$, although axioms of the form $\emp \reduces w'$ are forbidden.
+More generally, an axiom is any pair of concrete, finite strings, $w \reduces w'$, although axioms of the form $\emp \reduces w'$ are expressly forbidden.
 % Axioms $w \reduces w'$ may only rewrite a \emph{nonempty} concrete string $w$ into another, possibly empty concrete string $w'$.
 
 To be more formal, these axioms are collected into a signature, $\srsig$, that indexes the rewriting relation:
@@ -106,24 +108,12 @@ The axioms of this signature may then be used via a $\jrule{$\reduces$AX}$ rule,
 Aside from this rule, all of the other rules for the rewriting relation simply pass on the signature $\srsig$ untouched; for this reason, we nearly always elide the signature index on the rewriting relation, writing $\reduces$ instead of $\reduces_{\srsig}$.
 
 In addition to the application-specific axioms contained within the signature, rewriting is always permitted within substrings,
-so we adopt two compatibility rules.
-Together, the rules
-\begin{inferences}
-  \infer[\jrule{$\reduces$C}\smash{_{\jrule{L}}}]{w_1 \wc w_2 \reduces w'_1 \wc w_2}{
-    w_1 \reduces w'_1}
-  \and\text{and}\and
-  \infer[\jrule{$\reduces$C}\smash{_{\jrule{R}}}]{w_1 \wc w_2 \reduces w_1 \wc w'_2}{
-    w_2 \reduces w'_2}
-  \,.
-\end{inferences}
-ensure that the rewriting relation is compatible with the [free]\fixnote{fix} monoidal structure of strings.%
-\footnote{Because strings form a monoid, these compatibility rules are equivalent to the unified rule
-  \begin{equation*}
-    \infer[\jrule{$\reduces$C}]{w_L \wc w \wc w_R \reduces w_L \wc w' \wc w_R}{
-      w \reduces w'}
-    \:.
-  \end{equation*}
-  However, we prefer the two-rule formulation because it aligns more closely with the free monoid's syntactic structure.}
+so we adopt the rule
+\begin{equation*}
+  \infer[\jrule{$\reduces$C}]{w_1 \wc w_0 \wc w_2 \reduces w_1 \wc w'_0 \wc w_2}{
+    w_0 \reduces w'_0}
+\end{equation*}
+to ensure that the rewriting relation is compatible with the monoidal structure of strings.
 
 % With these compatibility rules, the axioms of \cref{eq:string-rewriting:ends-b-simpler} can be streamlined: they are derivable from the simpler rules
 % \begin{equation}\label{eq:string-rewriting:ends-b-simplest}
@@ -133,13 +123,13 @@ ensure that the rewriting relation is compatible with the [free]\fixnote{fix} mo
 %   \:.
 % \end{equation}
 
-The $\reduces$ relation describes the rewritings that are possible in a single step: exactly one axiom, perhaps embellished by the compatibility rules.
+The $\reduces$ relation thus describes the rewritings that are possible in a single step: exactly one axiom, perhaps embellished by the compatibility rules.
 In addition to these single-step rewritings, it will frequently be useful to describe the rewritings that are possible in some finite number of steps.
 For this, we construct a multi-step rewriting relation, $\Reduces$, from the reflexive, transitive closure of $\reduces$.%
-\footnote{Usually written as $\reduces^*$, we instead chose $\Reduces$ for the reflexive, transitive closure because of its similarity with standard process calculus notation for weak transitions, $\Reduces[\alpha]$.
-  Our reasons for this choice of notation will become clear in subsequent \lcnamecrefs{ch:ordered-rewriting}.}
+\footnote{Usually written as $\reduces^*$, we instead chose $\Reduces$ for the reflexive, transitive closure because of its similarity with standard process calculus notation for weak transitions, $\Reduces[\smash{\raisebox{-0.25ex}{$\scriptstyle\alpha$}}]$.
+  Our reasons for this choice of notation will become clearer in subsequent \lcnamecrefs{ch:ordered-rewriting}.}
 
-Consistent with its [free]\fixnote{fix} monoidal structure, there are two equivalent formulations of this reflexive, transitive closure: each rewriting sequence $w \Reduces w'$ can be viewed as either a list or tree of individual rewriting steps.
+Consistent with its monoidal structure, there are two equivalent formulations of this reflexive, transitive closure: each rewriting sequence $w \Reduces w'$ can be viewed as either a list or tree of individual rewriting steps.
 We prefer the list-based formulation,
 \begin{inferences}
   \infer[\jrule{$\Reduces$R}]{w \Reduces w}{}
@@ -188,23 +178,20 @@ A summary of string rewriting is shown in \cref{fig:string-rewriting:summary}.
     \infer[\jrule{$\reduces$AX}]{w \reduces_{\srsig} w'}{
       w \reduces w' \in \srsig}
     \and
-    \infer[\jrule{$\reduces$C}\smash{_{\jrule{L}}}]{w_1 \wc w_2 \reduces w'_1 \wc w_2}{
-      w_1 \reduces w'_1}
-    \and
-    \infer[\jrule{$\reduces$C}\smash{_{\jrule{R}}}]{w_1 \wc w_2 \reduces w_1 \wc w'_2}{
-      w_2 \reduces w'_2}
+    \infer[\jrule{$\reduces$C}]{w_1 \wc w_0 \wc w_2 \reduces w_1 \wc w'_0 \wc w_2}{
+      w_0 \reduces w'_0}
     \\
     \infer[\jrule{$\Reduces$R}]{w \Reduces w}{}
     \and
     \infer[\jrule{$\Reduces$T}]{w \Reduces w''}{
       w \reduces w' & w' \Reduces w''}
   \end{inferences}
-  \caption{A string rewriting framework}\label{fig:string-rewriting:summary}
+  \caption{The \acs*{SR} framework for \acl*{SR}}\label{fig:string-rewriting:summary}
 \end{figure}
 
-\subsection{Properties of string  rewriting}
+\subsection{Properties of the \acs*{SR} string rewriting framework}
 
-As an abstract rewriting system, string rewriting can be evaluated for several [standard]\fixnote{fix} properties: confluence, termination, and, of particular interest to us, concurrency.
+As an abstract rewriting system, \ac{SR} can be evaluated for several properties: confluence, termination, and, of particular interest to us, concurrency.
 
 \paragraph*{Concurrency}
 As an example multi-step rewriting sequence, observe that $a \wc b \wc b \Reduces \emp$, under the axioms of our running example~(\cref{eq:string-rewriting:ends-b-simplest}).
@@ -293,7 +280,7 @@ With the partial commutativity endowed by concurrent equality, the [free] monoid
 As such, we will frequently refer to rewriting sequences as \vocab{traces}.
 
 \paragraph*{Non-confluence}
-We may also evaluate string rewriting for confluence.
+We may also evaluate \ac{SR} for confluence.
 Confluence requires that all strings with a common ancestor be joinable, \ie, that $w'_1 \secudeR\Reduces w'_2$ implies $w'_1 \Reduces\secudeR w'_2$, for all strings $w'_1$ and $w'_2$.
 
 Because string rewriting is an asymmetric, committed-choice relation, some nondeterministic choices are irreversible.
@@ -327,12 +314,12 @@ For a simple example, consider rewriting of strings over the alphabet $\Set{a,b}
   \infer{b \reduces a}{}
   \:.
 \end{inferences}
-Every finite trace from a nonempty string can always be extended by applying one of these axioms, so rewriting never terminates.
+Every finite trace from a nonempty string can always be extended by applying one of these axioms, so rewriting in \ac{SR} never terminates.
 
 
 \section{Extended example: \Aclp*{NFA}}\label{sec:string-rewriting:nfa}
 
-As an extended example of string rewriting, we will specify how \iac{NFA} processes its input.
+As an extended example of string rewriting in \ac{SR}, we will specify how \iac{NFA} processes its input.
 Beginning with this specification, \acp{NFA} will serve as a recurring example throughout the remainder of this document.
  
 Given \iac{NFA} $\aut{A} = (Q, ?, F)$\fixnote{fix} over an input alphabet $\ialph$, the idea is to introduce a string rewriting axiom for each transition that the \ac{NFA} can make:
@@ -706,6 +693,7 @@ This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then i
   \qedhere
   \end{description}
 \end{proof}
+
 
 
 \subsection{A decrement operation}

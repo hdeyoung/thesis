@@ -165,6 +165,37 @@
     long = Concurrent~Logical~Framework
   }
 
+
+\DeclareAcronym { SR }
+  {
+    short = sr ,
+    short-format = \scshape ,
+    long = string~rewriting
+  }
+
+\DeclareAcronym { OR }
+  {
+    short = or ,
+    short-format = \scshape ,
+    long = ordered~rewriting
+  }
+
+\DeclareAcronym { FOR }
+  {
+    short = for ,
+    short-format = \scshape ,
+    long = focused~ordered~rewriting
+  }
+
+\DeclareAcronym { PFOR }
+  {
+    short = pfor ,
+    short-format = \scshape ,
+    long = formula-as-process focused~ordered~rewriting
+  }
+
+\NewDocumentCommand \foreigntext { m } { \emph{#1} }
+
 \NewDocumentCommand \wc { s }
   {
     \IfBooleanTF {#1}
