@@ -57,7 +57,7 @@
 \NewDocumentCommand \symrej { } { \mathit{n} }
 \NewDocumentCommand \bin { m } { \hat{#1} }
 \NewDocumentCommand \defp { m } { \hat{#1} }
-\NewDocumentCommand \np { m } { #1^{\mp} }
+\NewDocumentCommand \np { m } { #1 }
 
 \NewDocumentCommand \sralph { } { \Sigma }
 \NewDocumentCommand \srsig { } { \Theta }
@@ -76,6 +76,7 @@
 \NewDocumentCommand \chorarrow { } { \rightsquigarrow }
 \NewDocumentCommand \chorsig { m m m } { #1 \vdash #2 \chorarrow #3 }
 \NewDocumentCommand \chorax { m m m m m } { #1 \vdash #2 \oc [#3] \oc #4 \chorarrow #5 }
+\NewDocumentCommand \qimp { m m m m } { #1 \limp #2 \pmir #3 \chorarrow #4 }
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -405,7 +406,8 @@
   reduces / .style = { rightarrow } ,
   Reduces / .style = { Rightarrow } ,
   relation / .style = { dash } ,
-  exists / .style = { dashed }
+  exists / .style = { dashed } ,
+  subscript / .style = { shorten~> = 0.45em , "#1" { below=-0.2em, at~end } } 
 }
 
 
