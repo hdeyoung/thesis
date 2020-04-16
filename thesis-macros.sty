@@ -209,6 +209,9 @@
 \NewDocumentCommand \emp { } { \__thesis_emp: }
 \cs_new:Npn \__thesis_emp: { \epsilon }
 
+\NewDocumentCommand \eow { } { \__thesis_eow: }
+\cs_new:Npn \__thesis_eow: { \$ }
+
 \NewDocumentCommand \aut { m } { \__thesis_aut:n {#1} }
 \cs_new:Npn \__thesis_aut:n #1
   { \mathord { \mathcal {#1} } }
@@ -583,8 +586,14 @@
 \NewDocumentCommand \union { } { \__thesis_union: }
 \cs_new:Npn \__thesis_union: { \mathbin { \cup } }
 
+\NewDocumentCommand \dunion { } { \__thesis_dunion: }
+\cs_new:Npn \__thesis_dunion: { \mathbin { \uplus } }
+
 \NewDocumentCommand \bigunion { } { \__thesis_bigunion: }
 \cs_new:Npn \__thesis_bigunion: { \bigcup }
+
+\NewDocumentCommand \oante { } { \__thesis_oante: }
+\cs_new:Npn \__thesis_oante: { \omega }
 
 
 

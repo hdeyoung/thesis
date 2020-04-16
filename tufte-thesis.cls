@@ -301,6 +301,13 @@
 
 \declaretheorem
   [ sibling = theorem ,
+    refname = { proposition , propositions } ,
+    Refname = { Proposition , Propositions } ,
+    style = smallcaps-plain ]
+  { proposition }
+
+\declaretheorem
+  [ sibling = theorem ,
     name = False~claim ,
     refname = { false~claim , false~claims } ,
     Refname = { False~claim , False~claims } ,
