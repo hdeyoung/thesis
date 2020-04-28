@@ -137,41 +137,41 @@ Even though this \lcnamecref{ch:formula-as-process} introduces a notion of proce
 Only in \lcnamecref{part:proof-reduction} will we begin to examine a proof-reduction account of concurrency.
 
 
-\newthought{In process calculi} like the $\pi$-calculus, a reduction semantics often plays a lesser role than a labeled transition semantics does.
-But here the roles are reversed, with the labeled transition semantics taking a back seat, because of the reduction semantics's clearer connection to rewriting.
+% \newthought{In process calculi} like the $\pi$-calculus, a reduction semantics often plays a lesser role than a labeled transition semantics does.
+% But here the roles are reversed, with the labeled transition semantics taking a back seat, because of the reduction semantics's clearer connection to rewriting.
 
-The other contribution of this \lcnamecref{ch:choreographies} is the idea of choreographing string rewriting specifications into this formula-as-process refinement of ordered rewriting.
+% The other contribution of this \lcnamecref{ch:choreographies} is the idea of choreographing string rewriting specifications into this formula-as-process refinement of ordered rewriting.
 
-This formula-as-process interpretation nudges ordered rewriting away from a state-transformation model of concurrency toward a process-based model.
-Computation is still driven by derivability
-
-
-
-\newthought{As shown in} \cref{ch:string-rewriting}, string rewriting is a suitable framework for describing the dynamics of concurrent systems whose components have a monoidal structure.
-But these string rewriting descriptions are only abstract specifications from a state-transformation perspective -- they lack a clear notion of local, decentralized execution and therefore give only a global characterization of the interactions between components.
-
-String rewriting axioms $w \reduces w'$ are strictly global in their phrasing, stating merely that any substring of the form $w$ may be replaced, en masse, with $w'$ -- nothing is said about how this replacement is achieved.
-The string rewriting framework therefore implicitly suggests that a meta-level actor is responsible for coordinating and conducting the rewriting, with substrings and their constituent symbols as mere passive accessories\fixnote{word choice?}.
-
-In this \lcnamecref{ch:choreographies}, our goal is to move toward a lower level of abstraction.
+% This formula-as-process interpretation nudges ordered rewriting away from a state-transformation model of concurrency toward a process-based model.
+% Computation is still driven by derivability
 
 
-As an example, recall from \cref{ch:string-rewriting} the string rewriting specification of a system that may transform strings that end with $b$ into the empty string:
-\begin{equation}
-  \infer{a \wc b \reduces b}{}
-  \qquad
-  \infer{b \reduces \emp}{}
-\end{equation}
+
+% \newthought{As shown in} \cref{ch:string-rewriting}, string rewriting is a suitable framework for describing the dynamics of concurrent systems whose components have a monoidal structure.
+% But these string rewriting descriptions are only abstract specifications from a state-transformation perspective -- they lack a clear notion of local, decentralized execution and therefore give only a global characterization of the interactions between components.
+
+% String rewriting axioms $w \reduces w'$ are strictly global in their phrasing, stating merely that any substring of the form $w$ may be replaced, en masse, with $w'$ -- nothing is said about how this replacement is achieved.
+% The string rewriting framework therefore implicitly suggests that a meta-level actor is responsible for coordinating and conducting the rewriting, with substrings and their constituent symbols as mere passive accessories\fixnote{word choice?}.
+
+% In this \lcnamecref{ch:choreographies}, our goal is to move toward a lower level of abstraction.
 
 
-Accordingly, we refine the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} into one that can be given a \vocab{formula-as-process} interpretation in which [ordered] rewriting faithfully represents message-passing communication among processes that are arranged in a linear topology.
-Then, in \cref{??}, we describe how a string rewriting specification may be transformed into an ordered rewriting \vocab{choreography}.
+% As an example, recall from \cref{ch:string-rewriting} the string rewriting specification of a system that may transform strings that end with $b$ into the empty string:
+% \begin{equation}
+%   \infer{a \wc b \reduces b}{}
+%   \qquad
+%   \infer{b \reduces \emp}{}
+% \end{equation}
 
-In this \lcnamecref{ch:choreographies}, we refine the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} into one that can be given a \vocab{formula-as-process} interpretation in which rewriting faithfully represents message-passing communication among 
 
-As argued 
+% Accordingly, we refine the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} into one that can be given a \vocab{formula-as-process} interpretation in which [ordered] rewriting faithfully represents message-passing communication among processes that are arranged in a linear topology.
+% Then, in \cref{??}, we describe how a string rewriting specification may be transformed into an ordered rewriting \vocab{choreography}.
 
-Then we show how, given a mapping of symbols to either [...], choreographies can be generated from a string rewriting specification.
+% In this \lcnamecref{ch:choreographies}, we refine the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} into one that can be given a \vocab{formula-as-process} interpretation in which rewriting faithfully represents message-passing communication among 
+
+% As argued 
+
+% Then we show how, given a mapping of symbols to either [...], choreographies can be generated from a string rewriting specification.
 
 
 
@@ -239,26 +239,26 @@ Left-directed atoms, $\p{\atmL{a}}$, are messages that are being sent to the lef
   \caption{A formula-as-process interpretation of negative propositions}\label{fig:choreographies:negprop-table}
 \end{margintable}%
 %
-\begin{itemize}
-\item
+% \begin{itemize}
+% \item
   Instead of the more general $\p{A} \limp \n{B}$ and $\n{B} \pmir \p{A}$, left- and right-handed implications are now restricted to be only $\p{\atmR{a}} \limp \n{B}$ and $\n{B} \pmir \p{\atmL{a}}$.
   These propositions are then interpreted as input processes:
   $\p{\atmR{a}} \limp \n{B}$ is a process that waits to receive a message, $\p{\atmR{a}}$, from its left-hand neighbor and then continues as $\n{B}$; symmetrically, $\n{B} \pmir \p{\atmL{a}}$ is a process that awaits message $\p{\atmL{a}}$ from its right-hand neighbor.
+  Because implications are restricted to atoms with \emph{complementary} direction, processes cannot re-capture messages that they just sent to other processes.%
+\footnote{See \cpageref{??} for more discussion.}
 
-Because implications are restricted to atoms with \emph{complementary}
-
-\item
+% \item
   The proposition $\n{A} \with \n{B}$ is interpreted as a process that branches nondeterministically, continuing as either $\n{A}$ or $\n{B}$.
   And $\top$, as the nullary form of $\with$, is a stuck process that cannot continue.
 
-\item
+% \item
   The proposition $\up \p{A}$ is interpreted as a process that holds a suspended, or quoted, configuration.
   When the process $\up \p{A}$ is executed, it unfolds to that configuration.
 
-\item
+% \item
   Lastly, $\n{\defp{p}}$ is a coinductively defined negative proposition that is interpreted as a recursive process.
   We will discuss these coinductive definitions in more detail in \cref{sec:??}.
-\end{itemize}
+% \end{itemize}
 
 \newthought{Ordered contexts}, $\np{\octx}$, are interpreted as linear-topology run-time configurations of processes and the messages that pass between them.
 \begin{equation*}
@@ -283,9 +283,9 @@ The monoid operation is now parallel, end-to-end composition of process configur
 The empty context, $(\octxe)$, is now the empty configuration.
 
 As usual, we do not distinguish configurations that are equivalent up to the monoid's associativity and unit laws.
-This equivalence acts as an implicit structural congruence, of the sort found explicitly in the $\pi$-calculus's definition.
+This equivalence acts as an implicit structural congruence, of the sort found more explicitly in the $\pi$-calculus.
 
-With the introduction of atom directions, it will often be useful to describe contexts that contain only atoms of one direction or the other.
+With the introduction of atom directions, it will often be useful to describe \emph{message contexts}, contexts that contain only atoms of one direction or the other.
 We will use the metavariables $\atmL{\octx}$ and $\atmR{\octx}$ for those contexts that contain only left- and right-directed atoms, respectively.
 More explicitly:
 \begin{equation*}
@@ -317,7 +317,7 @@ The propositions $\p{\atmL{a}}$ and $\p{\atmR{a}}$ are the expressions for left-
 The proposition $\p{A} \fuse \p{B}$ reifies parallel, end-to-end composition of configurations: $\p{A} \fuse \p{B}$ is now interpreted as the expression for a process that spawns a new process, $\p{A}$, and then continues as $\p{B}$.
 And $\one$ is interpreted as the expression for a process that immediately terminates, thereby reifying the empty configuration, $(\octxe)$.
 
-The proposition $\dn \n{A}$ is interpreted as the expression for a quoted process: executing that expression will result in the running process $\n{A}$.
+Lastly, the proposition $\dn \n{A}$ is interpreted as the expression for a quoted process: executing that expression will result in the running process $\n{A}$.
 %
 \begin{margintable}
   \begin{center}
@@ -337,7 +337,7 @@ The proposition $\dn \n{A}$ is interpreted as the expression for a quoted proces
 \subsection{Focused ordered rewriting as message-passing communication}
 
 The three tweaks introduced by the formula-as-process interpretation to the structure of propositions -- especially atom directions and atomic premises for implications -- trickle down through the right- and left-focus judgments used to define rewriting:
-\begin{itemize}
+\begin{itemize}[listparindent=\parindent, itemsep=\dimexpr\itemsep+\parsep\relax, parsep=0pt]
 \item
 First, because each positive atom is now marked with a direction, the $\jrule{ID}\smash{^{\p{a}}}$ rule%
 \marginnote{\qquad%
@@ -353,31 +353,32 @@ that was previously part of the right-focus judgment's definition is replaced by
 The other right-focusing rules remain unchanged.
 
 \item
-Second, because implications $\p{\atmR{a}} \limp \p{B}$ and $\n{B} \pmir \p{\atmL{a}}$ are the only valid forms of implications, the left-focus judgement and its rules may be refined.
+Second, because implications $\p{\atmR{a}} \limp \p{B}$ and $\n{B} \pmir \p{\atmL{a}}$ are now the only valid forms of implications, the left-focus judgment and its rules may be refined.
 % left-handed implications now have only right-directed atoms as premises and right-handed implications have only left-directed atoms as premises, the left-focus judgment and its rules must be revised.
 Instead of $\lfocus{\np{\octx}_L}{\n{A}}{\np{\octx}_R}{\p{C}}$, which has arbitrary contexts to the left and right of $\n{A}$, the judgment is now $\lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}$ -- the left-hand context consists only of right-directed atoms, hence $\atmR{\octx}_L$; symmetrically, the right-hand context consists only of left-directed atoms, hence $\atmL{\octx}_R$.
 The left-focus rules for the left- and right-handed implications are also revised to
 \begin{inferences}
   \infer[\lrule{\limp}']{\lfocus{\atmR{\octx}_L \oc \p{\atmR{a}}}{\p{\atmR{a}} \limp \n{B}}{\atmL{\octx}_R}{\p{C}}}{
     \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
-  \and\text{and}\and
+  \and\!\raisebox{1.25ex}{and}\and
   \infer[\lrule{\pmir}']{\lfocus{\atmR{\octx}_L}{\n{B} \pmir \p{\atmL{a}}}{\p{\atmL{a}} \oc \atmL{\octx}_R}{\p{C}}}{
     \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
   \,,
 \end{inferences}
-which are the derivable from the earlier $\lrule{\limp}$ and $\lrule{\pmir}$ rules~\parencref{??}.
-\marginnote{$\!
-  \begin{gathered}
-    \infer[\lrule{\limp}]{\lfocus{\atmR{\octx}_L \oc \p{\atmR{a}}}{\p{\atmR{a}} \limp \n{B}}{\atmL{\octx}_R}{\p{C}}}{
+which are the derivable from the earlier $\lrule{\limp}$ and $\lrule{\pmir}$ rules.%
+\begin{marginfigure}
+  \begin{gather*}
+    \infer[\mathrlap{\lrule{\limp}}]{\lfocus{\atmR{\octx}_L \oc \p{\atmR{a}}}{\p{\atmR{a}} \limp \n{B}}{\atmL{\octx}_R}{\p{C}}}{
       \infer[\jrule{ID}\smash{^{\p{\atmR{a}}}}]{\rfocus{\p{\atmR{a}}}{\p{\atmR{a}}}}{} &
       \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
     %
     \\\downsquigarrow\\
     %
-    \infer[\lrule{\limp}']{\lfocus{\atmR{\octx}_L \oc \p{\atmR{a}}}{\p{\atmR{a}} \limp \n{B}}{\atmL{\octx}_R}{\p{C}}}{
+    \infer[\mathrlap{\lrule{\limp}'}]{\lfocus{\atmR{\octx}_L \oc \p{\atmR{a}}}{\p{\atmR{a}} \limp \n{B}}{\atmL{\octx}_R}{\p{C}}}{
       \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
-  \end{gathered}
-$}
+  \end{gather*}
+  \caption{Deriving the $\lrule{\limp}'$ left focus rule}
+\end{marginfigure}
 
 % With the restriction to atomic premises, we need to reconsider the left-focus rules for the left- and right-handed implications.
 % By inversion under the previous set of left-focus rules, any derivation focused on $\atmR{a} \limp \n{B}$ would end with
@@ -390,7 +391,7 @@ The other rules for the left-focus judgment remain fundamentally unchanged, save
 \end{itemize}
 % \Cref{fig:??} summarizes the revised rules for the right- and left-focus judgments.
 % 
-Having refined the left-focus judgment to use input message contexts, we may similarly refine the principal reduction rule, $\jrule{$\reduces$I}$:
+Having refined the left-focus judgment to use message contexts, we may similarly refine the principal reduction rule, $\jrule{$\reduces$I}$:
 % and $\jrule{$\reduces$C}$:
 \begin{equation*}
   \infer[\jrule{$\reduces$I}]{\atmR{\octx}_L \oc \n{A} \oc \atmL{\octx}_R \reduces \np{\octx'{}}}{
@@ -402,7 +403,7 @@ Having refined the left-focus judgment to use input message contexts, we may sim
   \,.
 \end{equation*}
 The compatibility rule, $\jrule{$\reduces$C}$, remains unchanged.
-\Cref{fig:??} summarizes the revised rules for the formula-as-process ordered rewriting framework.
+\Cref{fig:formula-as-process:framework} summarizes the revised rules for the formula-as-process ordered rewriting framework.
 
 \begin{figure}[tbp]
   \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
@@ -462,12 +463,11 @@ The compatibility rule, $\jrule{$\reduces$C}$, remains unchanged.
     \infer[\jrule{$\Reduces$T}]{\octx \Reduces \octx''}{
       \octx \reduces \octx' & \octx' \Reduces \octx''}
   \end{inferences}
-  \caption{A formula-as-process ordered rewriting framework}
-  \label{fig:formula-as-process:framework}
+  \caption{A formula-as-process ordered rewriting framework}\label{fig:formula-as-process:framework}
 \end{figure}
 
 
-\subsection{Comments}
+\subsection{Comments}\label{sec:formula-as-process:comments}
 
 Now we are in a position to understand how the two principal syntactic changes -- atom directions and atomic premises for implications -- combine to endow the otherwise untyped processes with a modicum of static typing.
 
@@ -481,20 +481,11 @@ If the premises of left- and right-handed implications were \emph{not} restricte
 \end{equation*}
 However, because the premises of left- and right-handed implications are indeed restricted to atoms of complementary direction, this scenario is impossible -- $\up \dn \n{B} \pmir \p{\atmR{a}}$ is not even a well-formed proposition!%
 
-(Even with the restriction of left- and right-handed implication premises to atoms of complementary direction, it is nevertheless possible for a process to send \emph{itself} a message, as in
-\begin{equation*}
-  \up \bigl(\dn (\up \dn \n{B} \pmir \p{\atmL{a}}) \fuse \p{\atmL{a}}\bigr)
-    \reduces (\up \dn \n{B} \pmir \p{\atmL{a}}) \oc \p{\atmL{a}}
-    \reduces \n{B}
-  \,,
-\end{equation*}
-but this is not troubling because the intended recipient -- the process itself -- does indeed receive the message.)
-
 As a related consequence of these syntactic restrictions, there is no contention for messages.
 Without these restrictions, the above trace could be adapted to one in which a race could arise between two processes contending for the same message:
 \begin{equation*}
   \hphantom{(\up \dn \n{B} \pmir \p{a}) \oc \p{a} \oc (\p{a} \limp \up \dn \n{C})}
-  \begin{tikzcd}
+  \begin{tikzcd}[row sep=tiny, column sep=small]
     & \n{B} \\
     \mathllap{(\up \dn \n{B} \pmir \p{\atmR{a}}) \oc \p{\atmR{a}} \oc (\p{\atmR{a}} \limp \up \dn \n{C})}
       \urar[reduces] \drar[reduces] \\
@@ -508,12 +499,24 @@ However, with these restrictions in place, there is no message -- neither $\p{\a
   \item $(\up \n{B} \pmir \p{\atmL{a}}) \oc \p{\atmL{a}} \oc (\p{\atmR{a}} \limp \up \n{C}) \reduces \np{\octx'{}}$ only if $\np{\octx'{}} = \n{B} \oc (\p{\atmR{a}} \limp \up \n{C})$; and
   \item $(\up \n{B} \pmir \p{\atmL{a}}) \oc \p{\atmR{a}} \oc (\p{\atmR{a}} \limp \up \n{C}) \reduces \np{\octx'{}}$ only if $\np{\octx'{}} = (\up \n{B} \pmir \p{\atmL{a}}) \oc \n{C}$.
   \end{itemize}}
-Other forms of nondeterminism still exist in the form of $\n{A} \with \n{B}$.
 
-One might think that ordered conjunctions ought to be restricted to those of the form $\p{\atmL{a}} \fuse \p{B}$ and $\p{B} \fuse \p{\atmR{a}}$, as a kind of dual restriction to those placed on left- and right-handed implications.
+(Even with the restriction of left- and right-handed implication premises to atoms of complementary direction, it is nevertheless possible for a process to send \emph{itself} a message, as in
+\begin{equation*}
+  \up \bigl(\dn (\up \dn \n{B} \pmir \p{\atmL{a}}) \fuse \p{\atmL{a}}\bigr)
+    \reduces (\up \dn \n{B} \pmir \p{\atmL{a}}) \oc \p{\atmL{a}}
+    \reduces \n{B}
+  \,,
+\end{equation*}
+but this is not troubling because the intended recipient -- the process itself -- does indeed receive the message.)
+
+\newthought{Ordered conjunctions} are dual to the left- and right-handed implications.
+So one might think that ordered conjunctions ought to be restricted to those of the form $\p{\atmL{a}} \fuse \p{B}$ and $\p{B} \fuse \p{\atmR{a}}$, as a kind of dual restriction to those placed on implications.
+Just as the implications are restricted to receive only incoming messages, these ordered conjunctions would restrict processes to sending only outgoing messages.
+
 Although certainly possible, such restrictions would limit the expressiveness of formula-as-process ordered rewriting by precluding a process from sending itself a message -- $\dn (\up \dn \n{B} \pmir \p{\atmL{a}}) \fuse \p{\atmL{a}}$ would not be well-formed, for example.
+Moreover, in \cref{??}, we will present a correspondence between ordered propositions and the not-yet-introduced singleton proofs, which will turn out to be most direct if we retain the general $\p{A} \fuse \p{B}$ form for ordered conjunctions.
+For both of these reasons, we choose not to impose any restrictions on ordered conjunctions.
 
-$\p{\atmL{A}}$ and $\p{\atmR{A}}$
 
 % \subsection{Left- and right-directed atoms as directed messages}
 
@@ -557,7 +560,7 @@ Syntactically, these signatures are given by
   \,.
 \end{equation*}
 
-\newthought{By analogy with} recursive types from functional programming\autocite{??}, we must then decide whether to treat definitions \emph{iso}\-recursively or \emph{equi}\-recursively.
+\newthought{By analogy with} recursive types from functional programming\autocite{??}, we must then decide whether to treat the coinductive definitions \emph{iso}\-recursively or \emph{equi}\-recursively.\fixnote{equi-coinductively?}
 Under an equirecursive treatment, definitions may be silently unrolled or rolled at will;
 in other words, $\n{\defp{p}}$ is literally \emph{equal} to its unrolling: $\n{\defp{p}} = \n{A}$.
 In contrast, under an isorecursive treatment, unrolling a coinductively defined proposition would count only as an explicit rule for the left-focus judgment: $\n{\defp{p}} \neq \n{A}$ but the adjacent $\lrule{\defd}$ rule would be present.%
@@ -575,11 +578,14 @@ We choose an equirecursive treatment of definitions simply because the accompany
 %     \reduces \p{\atmR{a}} \oc \n{\defp{p}}
 % \end{equation*}
 
-How do these equi-coinductive negative propositions interact with the left-focus judgment, which is defined inductively?
-Not all coinductively defined propositions can be successfully put into focus.
-The proposition $\n{\defp{p}}$ given by $\n{\defp{p}} \defd \p{\atmR{a}} \limp \n{\defp{p}}$ is certainly a well-defined coinductive proposition, owing to the existence of $(\p{\atmR{a}} \limp \mathord{-})$ along the cycle.
+\newthought{How do these} equi-coinductive negative propositions interact with the left-focus judgment, which is defined inductively?
+The answer is that not all coinductively defined propositions can be successfully put into focus.
+As previously mentioned, the proposition $\n{\defp{p}}$ given by $\n{\defp{p}} \defd \p{\atmR{a}} \limp \n{\defp{p}}$ is certainly a well-defined coinductive proposition, owing to the existence of $(\p{\atmR{a}} \limp \mathord{-})$ along the cycle.
 Yet it cannot be successfully put into left focus -- there are no contexts $\atmR{\octx}_L$ and $\atmL{\octx}_R$ and positive consequent $\p{C}$ for which $\lfocus{\atmR{\octx}_L}{\n{\defp{p}}}{\atmL{\octx}_R}{\p{C}}$ is derivable.
-To derive a left-focus judgment on $\n{\defp{p}}$, the finite context $\atmR{\octx}_L$ would need to hold an infinite stream of $\p{\atmR{a}}$ atoms -- an impossible feat for an inductively defined, and hence finite, context like $\atmR{\octx}_L$.
+To derive a left-focus judgment on $\n{\defp{p}}$, the finite context $\atmR{\octx}_L$ would need to hold an infinite stream of $\p{\atmR{a}}$ atoms -- an impossible feat for the inductively defined, and hence finite, contexts like $\atmR{\octx}_L$ that we consider here.%
+\footnote{%
+  \Textcite{Miller:??} presents a system with infinite focusing phases, which would certainly permit definitions $\n{\defp{p}} \defd \p{\atmR{a}} \limp \n{\defp{p}}$ to be put into focus.
+  We do not pursue that generalization here because we want rewriting to occur on finite contexts only.}
 
 % However, because the left-focus judgment is defined inductively, not coinductively, there are some recursively defined negative propositions that cannot successfully be put into focus.
 % Under the definition $\n{\defp{p}} \defd \p{\atmR{a}} \limp \n{\defp{p}}$, for example, there are no contexts $\atmR{\octx}_L$ and $\atmL{\octx}_R$ and positive consequent $\p{C}$ for which $\lfocus{\atmR{\octx}_L}{\n{\defp{p}}}{\atmL{\octx}_R}{\p{C}}$ is derivable.
@@ -589,6 +595,9 @@ However, by inserting $\up \dn$ as a double shift to blur focus -- in a way simi
 Specifically, if $\n{\defp{p}}$ is instead given by $\n{\defp{p}} \defd \p{\atmR{a}} \limp \up \dn \n{\defp{p}}$, then $\lfocus{\p{\atmR{a}}}{\n{\defp{p}}}{}{\dn \n{\defp{p}}}$ is derivable, and so $\p{\atmR{a}} \oc \n{\defp{p}} \reduces \n{\defp{p}}$.
 More generally, any coinductively defined proposition that has an $\up$ shift along \emph{some} cycle can be successfully put into focus.
 
+One might consider elevating the $\up$ shift property to a requirement on coinductively defined propositions -- \ie, demanding that every coinductively proposition have an $\up$ shift along some cycle.
+This would forbid any definitions that cannot be put into left focus, such as $\n{\defp{p}} \defd \p{\atmR{a}} \limp \n{\defp{p}}$.
+Although perhaps well-intentioned, such a requirement seems somewhat under-motivated after observing that even the proposition $\top$ cannot be successfully put into focus.
 
 % \clearpage
 % \section{}
@@ -744,21 +753,22 @@ More generally, any coinductively defined proposition that has an $\up$ shift al
 %     \np{\octx} \reduces \np{\octx'{}}}
 % \end{inferences}
 
-\subsection{}
+\clearpage
+% \subsection{}
 
-In unfocused and focused ordered rewriting of the \ac{OR}~\parencref{??} and \ac{FOR}~\parencref{??} frameworks, the rewriting relation, $\reduces$, described a purely internal operation: $\octx \reduces \octx'$ held independently of any environment that might surround $\octx$.
-Ordered rewriting's isolationism was affirmed by its compatibility rule, $\jrule{$\reduces$C}$%
-\marginnote{%
-$\infer[\jrule{$\reduces$C}]{\octx_L \oc \octx \oc \octx_R \reduces \octx_L \oc \octx' \oc \octx_R}{
-  \octx \reduces \octx'}$}%
-, which shows that the environment remains unaffected by the rewriting of its [...].
+% In unfocused and focused ordered rewriting of the \ac{OR}~\parencref{??} and \ac{FOR}~\parencref{??} frameworks, the rewriting relation, $\reduces$, described a purely internal operation: $\octx \reduces \octx'$ held independently of any environment that might surround $\octx$.
+% Ordered rewriting's isolationism was affirmed by its compatibility rule, $\jrule{$\reduces$C}$%
+% \marginnote{%
+% $\infer[\jrule{$\reduces$C}]{\octx_L \oc \octx \oc \octx_R \reduces \octx_L \oc \octx' \oc \octx_R}{
+%   \octx \reduces \octx'}$}%
+% , which shows that the environment remains unaffected by the rewriting of its [...].
 
-Now that we have a formula-as-process interpretation to ordered rewriting, we should reconsider this strict isolationism.
-Under our formula-as-process reading, this isolationist rewriting judgment corresponds to a reduction semantics for processes.
-But now, messages, as represented by the directed $\p{\atmL{a}}$ and $\p{\atmR{a}}$ atoms, make it possible to describe the interactions that a configuration $\octx$ offers to its surroundings. 
+% Now that we have a formula-as-process interpretation to ordered rewriting, we should reconsider this strict isolationism.
+% Under our formula-as-process reading, this isolationist rewriting judgment corresponds to a reduction semantics for processes.
+% But now, messages, as represented by the directed $\p{\atmL{a}}$ and $\p{\atmR{a}}$ atoms, make it possible to describe the interactions that a configuration $\octx$ offers to its surroundings. 
 
 
-\subsection{Input transitions}
+\section{A local interaction semantics}
 
 For the formula-as-process interpretation, we have thus far examined the rewriting judgement, $\octx \reduces \octx'$, and suggested that it represents a kind of reduction semantics for the underlying processes.
 % Now that we are ascribing a formula-as-process interpretation to ordered rewriting, this judgment characterizes internal reductions.
@@ -895,12 +905,21 @@ This is because these rules pass $\oante$ through the input transition unaffecte
 
 The full complement of input transition rules is summarized in \cref{??}.
 
-\newthought{Now we} may prove the previously stated claim of soundness for input transitions -- that each input transition has a coresponding reduction.
+\newthought{Now we} may prove the previously stated claim of soundness for input transitions -- that each input transition has a corresponding reduction.
 %
 \ireducessoundness
 \begin{proof}
   By induction on the structure of the given input transition.
 \end{proof}
+
+
+\paragraph*{Tau transitions}
+
+In labeled transition systems for process calculi, there is usually a third kind of transition: the internal $\tau$-transition.
+In the $\pi$-calculus, these internal transitions coincide with the notion of reduction but are defined in such a way that the explicit and sometimes cumbersome structural congruence is not needed, thereby simplifying proofs.
+
+In our setting, the implicit monoid laws do not complicate proofs, so we can get away without defining a notion of internal $\tau$-transition.
+Wherever we want to describe an internal transition, the $\reduces$ reduction relation can be used instead.
 
 Output and input transitions are together complete, in the sense that each reduction can be broken down into an input transition with complementary output transitions:
 \begin{theorem}[Completeness]
@@ -941,57 +960,73 @@ Together, these soundness and completeness results may also be thought of as est
 % \end{proof}
 
 \clearpage
-\section{}
+\section{Choreographing string rewriting specifications}
 
-So far in this \lcnamecref{ch:formula-as-process}, we have presented a formula-as-process refinement of the focused orderd rewriting framework and given it a local interaciton semantics based on an implicit labeled transition system for output and input transitions.
+So far in this \lcnamecref{ch:formula-as-process}, we have presented a formula-as-process refinement of the focused ordered rewriting framework and given it a local interaction semantics based on an implicit labeled transition system for output and input transitions.
 With this local interaction semantics in hand, [...].
 
 To choreograph a string rewriting specification $(\sralph, \srsig)$, we would like to map each symbol $a \in \sralph$ to a proposition such that the string rewriting axioms $\srsig$ are mapped to derivable rewritings in our formula-as-process ordered rewriting framework.
-In other words, to choreograph $(\sralph, \srsig)$, we would like to find a map $\theta$ from symbols to propositions and a signature $\orsig$ of coinductive definitions such that $\theta$ is a witness to the bisimilarity of string rewriting under the axioms $\srsig$ and formula-as-process ordered rewriting under the definitions $\orsig$:
+In other words, to choreograph $(\sralph, \srsig)$, we would like to find a map $\theta$ from symbols to propositions and a signature $\orsig$ of coinductive definitions such that $\theta$ is a witness to the (strong) bisimilarity of string rewriting under the axioms $\srsig$ and formula-as-process ordered rewriting under the definitions $\orsig$.
+That is, we would like to find a pair $(\theta, \orsig)$ for which we can complete the diagrams
 \begin{equation*}
   \begin{tikzcd}
     w \rar[reduces, subscript=\srsig] \dar[relation][swap]{\theta}
       & w\mathrlap{'} \dar[relation, exists]{\theta}
     \\
-    \theta(w) \rar[reduces, exists, subscript=\orsig]
-      & \theta(w')
+    \octx \rar[reduces, exists, subscript=\orsig]
+      & \octx\mathrlap{'}
   \end{tikzcd}
+  \hphantom{'}
   \qquad\text{and}\qquad
   \begin{tikzcd}
     w \rar[reduces, exists, subscript=\srsig] \dar[relation][swap]{\theta}
       & w\mathrlap{'} \dar[relation, exists]{\theta}
     \\
-    \theta(w) \rar[reduces, subscript=\orsig]
-      & \octx\mathrlap{' = \theta(w') \,.}
+    \octx \rar[reduces, subscript=\orsig]
+      & \octx\mathrlap{' % = \theta(w') 
+\,,}
   \end{tikzcd}
-  \hphantom{' = \theta(w') \,.}
+   \hphantom{' % = \theta(w')
+ \,,}
 \end{equation*}
-Because ordered rewriting in our formula-as-process framework permits only sensibly local interactions, we can be sure that the pair $(\theta, \orsig)$ explains \emph{how}, not just what, the concurrent system behaves.
+where $\begin{tikzcd}[cramped, sep=small] w \rar[relation]{\smash{\theta}} & \octx \end{tikzcd}$ holds when $\octx = \theta(w)$.
+Only if the pair $(\theta, \orsig)$ satisfies these diagrams does it constitute a \emph{choreography} of the specification $(\sralph, \srsig)$.%
+\footnote{An arbitrary pair $(\theta, \orsig)$ might be called a \emph{pre-choreography}.}
 
-This map, $\theta$, serves as a \emph{role assignment} for the symbols $\sralph$.
-It casts each symbol $a \in \sralph$ in the role of either a message, $\atmL{a}$ or $\atmR{a}$, or a coinductively defined process, $\defp{a}$.
-Not all such role assignments lead to meaningful choreographies, but we will show that all meaningful choregraphies adequately reflect their underlying string rewriting specifications.
+Because ordered rewriting in our formula-as-process framework permits only sensibly local interactions, we can be sure that the choreography $(\theta, \orsig)$ explains the \emph{how}, not just the what, of the concurrent system's dynamics.
+The map $\theta$ is key to the how.
+It 
+% This map, $\theta$,
+serves as a \emph{role assignment} for the string rewriting symbols, casting each symbol $a \in \sralph$ in the role of either a message, $\atmL{a}$ or $\atmR{a}$, or a coinductively defined process, $\defp{a}$.
+
+For a given specification, there will often be several role assignments that give rise to distinct choreographies, each one implying a different message-passing operationalization of the specification.
+Without applying other, external criteria, no one choreography has more desirable lower-level behavior than another -- only the programmer is in a position to choose among choreographies.
+
+Most of the $3^{\lvert\sralph\rvert}$ role assignments for a specification's alphabet do not lead to adequate choreographies.
+Sometimes none of the possible role assignments produce a choreography.
 
 \subsection{}
 
-Given a string rewriting alphabet $\sralph$, we say that a (total) mapping $\theta\colon \finwds{\sralph} \to {?}$ is a \emph{role assignment} for $\sralph$ if it is an injective monoid homomorphism from the finite strings over $\sralph$ to ordered contexts that casts each symbol $a$ in the role of either a message, $\atmL{a}$ or $\atmR{a}$, or a coinductively defined process, $\defp{a}$.
+Given a string rewriting alphabet $\sralph$, we say that a (total) map $\theta$ from finite strings over $\sralph$ to ordered contexts is a \emph{role assignment} for $\sralph$ if it is an injective monoid homomorphism from the finite strings over $\sralph$ to ordered contexts that casts each symbol $a$ in the role of either a message, $\atmL{a}$ or $\atmR{a}$, or a coinductively defined process, $\defp{a}$.
 
-Recall from \cref{ch:string-rewriting} the string rewriting specification $(\sralph, \srsig)$ of a system that can rewrite strings over $\sralph = \Set{a,b}$ into the empty string if the initial string ends in $b$.
+\newthought{Recall from \cref{ch:string-rewriting}} the string rewriting specification $(\sralph, \srsig)$ of a system that can rewrite strings over $\sralph = \Set{a,b}$ into the empty string if the initial string ends in $b$.
 \begin{equation*}
   \begin{lgathered}
     \sralph = \Set{a,b} \\
-    \srsig = (a \wb \reduces b) \,, (b \reduces \emp)
+    \srsig = (a \wc \reduces b) \,, (b \reduces \emp)
   \end{lgathered}
 \end{equation*}
 
-Let $\theta\colon \finwds{\sralph} \to {?}$ be the injective monoid homomorphism generated by mapping $a$ to the right-directed message $\atmR{a}$ and $b$ to the coinductively defined process $\defp{b}$.
+Let $\theta$ be the injective monoid homomorphism generated by mapping $a$ to the right-directed message $\atmR{a}$ and $b$ to the coinductively defined process $\defp{b}$.
 The map $\theta$ is indeed a role assignment, but does it yield a meaningful choreography for the specification $(\sralph, \srsig)$?
 
-We must determine if $\defp{b}$ can be given a definition $\orsig = (\defp{b} \defd \n{B})$ such that the following diagrams can be completed:
+We must determine if $\defp{b}$ can be given a definition $\orsig = (\defp{b} \defd \n{B})$ such that the above, strong bisimulaiton diagrams can be completed.
+Because $\theta$ is injective, those diagrams are equivalent to the following ones:
+In the first diagram, the right-hand edge $\begin{tikzcd}[cramped, sep=small] w' \rar[relation, exists]{\theta} & \octx' \end{tikzcd}$ can be replaced with $\begin{tikzcd}[cramped, sep=small] w' \rar[relation]{\theta} & \theta(w') \end{tikzcd}$, but we cannot make a similar replacement for the second diagram because $\theta$ is not bijective.
 \begin{equation*}
   \begin{tikzcd}
     w \rar[reduces, subscript=\srsig] \dar[relation][swap]{\theta}
-      & w\mathrlap{'} \dar[relation, exists]{\theta}
+      & w\mathrlap{'} \dar[relation]{\theta}
     \\
     \theta(w) \rar[reduces, exists, subscript=\orsig]
       & \theta(w')
@@ -999,59 +1034,94 @@ We must determine if $\defp{b}$ can be given a definition $\orsig = (\defp{b} \d
   \qquad\text{and}\qquad
   \begin{tikzcd}
     w \rar[reduces, exists, subscript=\srsig] \dar[relation][swap]{\theta}
-      & w\mathrlap{'} \dar[relation, exists]{\theta}
+      & w\mathrlap{'}
+      \dar[relation, exists]{\theta}
     \\
     \theta(w) \rar[reduces, subscript=\orsig]
-      & \octx\mathrlap{' = \theta(w') \,.}
+      & \octx\mathrlap{' \,.} % = \theta(w') \,.}
   \end{tikzcd}
-  \hphantom{' = \theta(w') \,.}
+  \hphantom{' \,.}
 \end{equation*}
+
 
 The first diagram gives us a way forward: for each axiom $(w \reduces w') \in \srsig$, the rewriting $\theta(w) \reduces_{\orsig} \theta(w')$ must be derivable under the definitions $\orsig$.
 In other words, these rewritings serve as constraints upon the definitions $\orsig$ that must be fulfilled if $(\theta, \orsig)$ is to be a meaningful choreography for the specification $(\sralph, \srsig)$.
 
-In this example, 
+In this example, the axioms $a \wc b \reduces b$ and $b \reduces \emp$ induce the constraints
 \begin{equation*}
-  \!\begin{aligned}
-    a \wc b &\reduces_{\srsig} b \\
-    \atmR{a} \oc \defp{b} &\reduces_{\orsig} \defp{b}
-  \end{aligned}
+  \begin{tikzcd}[cramped]
+    \atmR{a} \oc \defp{b} \rar[reduces, exists, subscript=\orsig] & \defp{b}
+  \end{tikzcd}
   \qquad\text{and}\qquad
-  \!\begin{aligned}
-    b &\reduces_{\srsig} \emp \\
-    \defp{b} &\reduces_{\orsig} (\octxe)
-  \end{aligned}
+  \begin{tikzcd}[cramped]
+    \defp{b} \rar[reduces, exists, subscript=\orsig] & (\octxe)
+  \end{tikzcd}
+  \,.
 \end{equation*}
-Well, a definition $\defp{b} \defd \atmR{a} \limp \up \dn \defp{b}$ would satisfy the first constraint but not the second, whereas a definition $\defp{b} \defd \up \one$ would satisfy the second constraint but not the first.
-Fortunately, we can form a kind of greatest lower bound of these definitions using alternative conjunction: the definition $\defp{b} \defd (\atmR{a} \limp \up \dn \defp{b}) \with \up \one$ satisfies \emph{both} constraints.
-\fixnote{Universal properties?}
+\begin{marginfigure}
+\begin{equation*}
+  \begin{tikzcd}
+    a \wc b \arrow[reduces, subscript=\srsig]{rrr} \dar[relation][swap]{\theta}
+      &[-2.4em] &&[-2.4em] b \dar[relation]{\theta}
+    \\
+    \theta(a \wc b) & = \atmR{a} \oc \defp{b} \rar[reduces, exists, subscript=\orsig]
+      & \defp{b} = & \theta(b)
+  \end{tikzcd}
+\end{equation*}
+\begin{equation*}
+\begin{tikzcd}
+    b \arrow[reduces, subscript=\srsig]{rrr} \dar[relation][swap]{\theta}
+      &[-2.4em] &&[-2.4em] \emp \dar[relation]{\theta}
+    \\
+    \theta(b) & = \defp{b} \rar[reduces, exists, subscript=\orsig]
+      & (\octxe) = & \theta(\emp)
+  \end{tikzcd}
+\end{equation*}
+\caption{Axioms induce rewritings as constraints on a choreography}\label{fig:formula-as-process:induced-constraints}
+\end{marginfigure}%
+Well, a definition $\defp{b} \defd \atmR{a} \limp \up \dn \defp{b}$ would satisfy the first constraint but not the second, because $\atmR{a} \oc \defp{b} = \atmR{a} \oc (\atmR{a} \limp \up \dn \defp{b}) \reduces_{\orsig} \defp{b}$.
+And a definition $\defp{b} \defd \up \one$ would satisfy the second constraint but not the first, because $\defp{b} = \up \one \reduces_{\orsig} (\octxe)$.
+Fortunately, we can form a kind of greatest lower bound of these definitions using alternative conjunction%
+\footnote{This is possible because the left-focus rule for alternative conjunction preserves focus.}%
+: the definition $\defp{b} \defd (\atmR{a} \limp \up \dn \defp{b}) \with \up \one$ satisfies \emph{both} constraints,
+\begin{equation*}
+  \atmR{a} \oc \defp{b} = \atmR{a} \oc ((\atmR{a} \limp \up \dn \defp{b}) \with \up \one) \reduces_{\orsig} \defp{b}
+  \qquad\text{and}\qquad
+  \defp{b} = (\atmR{a} \limp \up \dn \defp{b}) \with \up \one \reduces_{\orsig} (\octxe)
+  \,.
+\end{equation*}
+\fixnote{dashed for constraints?}
+And the second diagram holds because of the universal properties.
 
-\newthought{Not all} role assignments yield meaningful choreographies, however.
+\newthought{Not all role assignments} yield meaningful choreographies, however.
 This happens when there is no solution to the constraints on $\orsig$ induced by the axioms and chosen role assignment.
+For a set of constraints to be satisfiable, three conditions must hold.
 \begin{itemize}
 \item
   \emph{Each induced rewriting must have at least one process in its premise.}
   In the above example, for instance, role assignments $\theta'$ such that $b \mapsto \atmL{b}$ or $b \mapsto \atmR{b}$ do not yield meaningful choreographies.
-  Under such assignments, the axiom $b \reduces_{\srsig} \emp$ induces either $\atmL{b} \reduces_{\orsig'} (\octxe)$ or $\atmR{b} \reduces_{\orsig'} (\octxe)$ as constraints.
+  Under such assignments, the axiom $b \reduces_{\srsig} \emp$ induces either $\ereduces[\orsig']{\atmL{b}}{(\octxe)}$ or $\ereduces[\orsig']{\atmR{b}}{(\octxe)}$ as constraints.
   There are, however, no definitions that satisfy either constraint because the formula-as-process framework has no rules that permit an atom alone to be rewritten: messages are passive objects.
 
 \item
   \emph{Each induced rewriting must have at most one process in its premise.}
   In the above example, for instance, the role assignment $\theta'$ such that $a \mapsto \defp{a}$ and $b \mapsto \defp{b}$ does not yield a meaningful choreography.
-  The axiom $a \wc b \reduces b$ induces the constraint $\defp{a} \oc \defp{b} \reduces_{\orsig'} \defp{b}$.
+  The axiom $a \wc b \reduces b$ induces the constraint $\ereduces[\orsig']{\defp{a} \oc \defp{b}}{\defp{b}}$.
   There are, however, no definitions for $\defp{a}$ and $\defp{b}$ that satisfy this constraint because the formula-as-process framework proscribes implications from having non-atomic premises: a process can input only messages, not other processes.
 
 \item
   \emph{Each message in a premise must be directed inward, toward the premise's process.}
   In the above example, for instance, the role assignment $\theta'$ such that $a \mapsto \atmL{a}$ and $b \mapsto \defp{b}$ does not yield a meaningful choreography.
-  The axiom $a \wc b \reduces b$ induces the constraint $\atmL{a} \oc \defp{b} \reduces_{\orsig'} \defp{b}$.
+  The axiom $a \wc b \reduces b$ induces the constraint $\ereduces[\orsig']{\atmL{a} \oc \defp{b}}{\defp{b}}$.
   There is, however, no defintion for $\defp{b}$ that satisfies this constraint because the formula-as-process framework requires that implications have atomic premises of \emph{complementary} direction: a process can only receive messages intended for itself.
 \end{itemize}
 
-More generally, these observations suggest that only constraints of the form $\atmR{\octx}_L \oc \defp{a} \oc \atmL{\octx}_R \reduces_{\orsig} \octx'$ are satisfiable, and that these constraints are induced by axioms of the form $w_1 \wc a \wc w_2 \reduces w'$.
-In this \lcnamecref{??}, we leverage these ideas to present a more formal description of the above procedure for choreographing string rewriting specifications within the formula-as-process ordered rewriting framework.
+More generally, these observations suggest that only constraints of the form $\ereduces[\orsig]{\atmR{\octx}_L \oc \defp{a} \oc \atmL{\octx}_R}{\octx'}$ are satisfiable, and that these constraints are induced by axioms of the form $w_1 \wc a \wc w_2 \reduces w'$.
+In the following \lcnamecref{??}, we leverage these ideas to present a more formal description of the above procedure for choreographing string rewriting specifications within the formula-as-process ordered rewriting framework.
 
-We define a judgment $\chorsig{\theta}{\srsig}{\orsig}$ that, when given a string rewriting specification $(\sralph, \srsig)$ and a role assignment $\theta$, yields formula-as-process definitions $\orsig$ that make string rewriting under $\srsig$ and formula-as-process ordered rewriting under $\orsig$ bisimilar, if such definitions exist:
+\subsection{A formal description of choreographing specifications}\label{sec:formula-as-process:choreograph-formal}
+
+To give a formal description of choreographing specifications, we define a judgment $\chorsig{\theta}{\srsig}{\orsig}$ that, when given a string rewriting specification $(\sralph, \srsig)$ and a role assignment $\theta$, yields formula-as-process definitions $\orsig$ that make string rewriting under $\srsig$ and formula-as-process ordered rewriting under $\orsig$ bisimilar, if such definitions exist:
 % \begin{equation*}
 %   ??
 % \end{equation*}
@@ -1059,28 +1129,30 @@ We define a judgment $\chorsig{\theta}{\srsig}{\orsig}$ that, when given a strin
 % 
 \begin{equation*}
   \chorsig{\theta}{\srsig}{\orsig}
-  \quad\text{implies}\quad
+  \quad\text{implies}\enspace
   \begin{tikzcd}
     w \rar[reduces, subscript=\srsig] \dar[relation][swap]{\theta}
-     & w\mathrlap{'} \dar[relation, exists]{\theta}
+     & w\mathrlap{'} \dar[relation]{\theta}
     \\
-    \octx \rar[reduces, exists, subscript=\orsig]
-     & \octx\mathrlap{'}
+    \theta(w) \rar[reduces, exists, subscript=\orsig]
+     & \theta(w')
   \end{tikzcd}
   \hphantom{'}
-  \quad\text{and}\quad
+  \enspace\text{and}\quad
   \begin{tikzcd}
     w \rar[reduces, exists, subscript=\srsig] \dar[relation][swap]{\theta}
-     & w\mathrlap{'} \dar[relation, exists]{\theta}
+     & w\mathrlap{'}
+         \dar[relation, exists]{\theta}
     \\
-    \octx \rar[reduces, subscript=\orsig]
-     & \octx\mathrlap{' \,.}
+    \theta(w) \rar[reduces, subscript=\orsig]
+     & \octx\mathrlap{' \,.% \footnote{Once again, the injectivity of $\theta$ simplifies these diagrams.}
+}
   \end{tikzcd}
   \hphantom{' \,.}
 \end{equation*}
 This principal judgment
 % is $\chorsig{\theta}{\srsig}{\orsig}$, and it
-also relies on an auxiliary judgment, $\qimp{\atmR{\octx}_L}{\up \p{A}}{\atmL{\octx}_R}{\n{B}}$, which we describe first.
+also relies on an auxiliary elaboration judgment, $\qimp{\atmR{\octx}_L}{\up \p{A}}{\atmL{\octx}_R}{\n{B}}$, which we describe first.
 % Before giving the rules for the principal judgment, we will [...].
 
 \newthought{The auxiliary} judgment $\qimp{\atmR{\octx}_L}{\up \p{A}}{\atmL{\octx}_R}{\n{B}}$ elaborates\fixnote{word choice?} the quasi-propo\-si\-tion $\atmR{\octx}_L \limp \up \p{A} \pmir \atmL{\octx}_R$ into a well-formed proposition $\n{B}$ by nondeterministically abstracting one-by-one from either the left or right contexts.%
@@ -1091,22 +1163,22 @@ We would expect the quasi-proposition to satisfy $\lfocus{\atmR{\octx}_L}{\atmR{
 $\lfocus{\atmR{\lctx}_L}{\n{B}}{\atmL{\lctx}_R}{\p{C}}$ if, and only if, $\atmR{\lctx}_L = \atmR{\octx}_L$ and $\atmL{\lctx}_R = \atmL{\octx}_R$ and $\p{C} = \p{A}$.
 This is proved below as \cref{lem:qimp-correct}.
 
-The auxiliary judgment is defined inductively by the following rules.
+This auxiliary judgment is defined inductively by the following rules.
 \begin{inferences}
-  \infer[\jrule{$\up$Q}]{\qimp{(\octxe)}{\up \p{A}}{(\octxe)}{\up \p{A}}}{}
+  \infer[\jrule{$\up$ELAB}]{\qimp{(\octxe)}{\up \p{A}}{(\octxe)}{\up \p{A}}}{}
   \\
-  \infer[\jrule{$\limp$Q}]{\qimp{(\atmR{\octx}_L \oc \p{\atmR{a}})}{\up \p{A}}{\atmL{\octx}_R}{\p{\atmR{a}} \limp \n{B}}}{
+  \infer[\jrule{$\limp$ELAB}]{\qimp{(\atmR{\octx}_L \oc \atmR{a})}{\up \p{A}}{\atmL{\octx}_R}{\atmR{a} \limp \n{B}}}{
     \qimp{\atmR{\octx}_L}{\up \p{A}}{\atmL{\octx}_R}{\n{B}}}
   \and
-  \infer[\jrule{$\pmir$Q}]{\qimp{\atmR{\octx}_L}{\up \p{A}}{(\p{\atmL{a}} \oc \atmL{\octx}_R)}{\n{B} \pmir \p{\atmL{a}}}}{
+  \infer[\jrule{$\pmir$ELAB}]{\qimp{\atmR{\octx}_L}{\up \p{A}}{(\atmL{a} \oc \atmL{\octx}_R)}{\n{B} \pmir \atmL{a}}}{
     \qimp{\atmR{\octx}_L}{\up \p{A}}{\atmL{\octx}_R}{\n{B}}}
 \end{inferences}
-The $\jrule{$\limp$Q}$ rule states that the quasi-proposition $(\atmR{\octx}_L \oc \p{\atmR{a}}) \limp \up \p{A} \pmir \atmL{\octx}_R$ is equivalent to $\p{\atmR{a}} \limp \n{B}$ if $\atmR{\octx}_L \limp \up \p{A} \pmir \atmL{\octx}_R$ is equivalent to $\n{B}$.
-Notice that the $\jrule{$\limp$Q}$ rule moves $\p{\atmR{a}}\!\!$ from the right of $\atmR{\octx}_L$ to the left of $\n{B}$;
+The $\jrule{$\limp$ELAB}$ rule states that the quasi-proposition $(\atmR{\octx}_L \oc \atmR{a}) \limp \up \p{A} \pmir \atmL{\octx}_R$ is equivalent to $\atmR{a} \limp \n{B}$ if $\atmR{\octx}_L \limp \up \p{A} \pmir \atmL{\octx}_R$ is equivalent to $\n{B}$.
+Notice that the $\jrule{$\limp$ELAB}$ rule moves $\atmR{a}$ from the right of $\atmR{\octx}_L$ to the left of $\n{B}$;
 this is admittedly counterintuitive, but it is closely related to the equally counterintuitive currying law for left-handed implication in ordered logic:
 % Likewise, the quasi-proposition $\atmR{\octx}_L \limp \up \p{A} \pmir (\p{\atmL{a}} \oc \atmL{\octx}_R)$ is equivalent to $(\atmR{\octx}_L \limp \up \p{A} \pmir \atmL{\octx}_R) \pmir \p{\atmL{a}}$.
 $(A \fuse B) \limp C \dashv\vdash B \limp (A \limp C)$.
-Symmetrically, the $\jrule{$\pmir$Q}$ rule is closely related to the currying law for right-handed implication: $C \pmir (A \fuse B) \dashv\vdash (C \pmir B) \pmir A$.
+Symmetrically, the $\jrule{$\pmir$ELAB}$ rule is closely related to the currying law for right-handed implication: $C \pmir (A \fuse B) \dashv\vdash (C \pmir B) \pmir A$.
 
 This intuition is captured in the proof of the following \lcnamecref{lem:qimp-correct}.
 \begin{lemma}\label{lem:qimp-correct}
@@ -1130,7 +1202,7 @@ This intuition is captured in the proof of the following \lcnamecref{lem:qimp-co
   % 
   % \item Consider the case in which
     \begin{equation*}
-      \infer{\qimp{(\atmR{\octx}_L \oc \p{\atmR{a}})}{\up \p{A}}{\atmL{\octx}_R}{\p{\atmR{a}} \limp \n{B}}}{
+      \infer[\jrule{$\limp$ELAB}]{\qimp{(\atmR{\octx}_L \oc \p{\atmR{a}})}{\up \p{A}}{\atmL{\octx}_R}{\p{\atmR{a}} \limp \n{B}}}{
         \qimp{\atmR{\octx}_L}{\up \p{A}}{\atmL{\octx}_R}{\n{B}}}
       \,.
     \end{equation*}
@@ -1154,15 +1226,15 @@ This intuition is captured in the proof of the following \lcnamecref{lem:qimp-co
 
 
 
-\newthought{The principal} judgment is $\chorsig{\theta}{\srsig}{\orsig}$.
-Given a string rewriting specification $(\sralph, \srsig)$ and a role assignment $\theta$, this judgment produces formula-as-process definitions $\orsig$ that, together with $\theta$, constitutes a meaningful choreography of $(\sralph, \srsig)$.
-
-In other words, $\orsig$ is a solution to the constraints induced by axioms $\srsig$ under the role assignment $\theta$.
-That is, if $\chorsig{\theta}{\srsig}{\orsig}$, then $\theta$ is a (strong) bisimulation between $\reduces_{\srsig}$ and $\reduces_{\orsig}$.
+\newthought{The principal} judgment is $\chorsig{\theta}{_{\sralph} \srsig}{\orsig}$.%
+\footnote{Because the alphabet $\sralph$ never changes within a derivation, we nearly always elide it.}
+Given a string rewriting specification $(\sralph, \srsig)$ and a role assignment $\theta$, this judgment produces formula-as-process definitions $\orsig$ that, together with $\theta$, constitute a choreography of $(\sralph, \srsig)$.
+%
+In other words, when $\chorsig{\theta}{_{\sralph} \srsig}{\orsig}$ holds, the definitions $\orsig$ are a solution to the constraints induced by axioms $\srsig$ under the role assignment $\theta$, such that $\theta$ is a (strong) bisimulation between $\reduces_{\srsig}$ and $\reduces_{\orsig}$.%
 \marginnote{$\!
   \begin{tikzcd}[ampersand replacement=\&]
     w \rar[reduces, subscript=\srsig] \dar[relation][swap]{\theta}
-     \& w\mathrlap{'} \dar[relation, exists]{\theta}
+     \& w\mathrlap{'} \dar[relation]{\theta}
     \\
     \theta(w) \rar[reduces, exists, subscript=\orsig]
      \& \theta(w')
@@ -1173,15 +1245,14 @@ That is, if $\chorsig{\theta}{\srsig}{\orsig}$, then $\theta$ is a (strong) bisi
      \& w\mathrlap{'} \dar[relation, exists]{\theta}
     \\
     \theta(w) \rar[reduces, subscript=\orsig]
-     \& \octx \mathrlap{' = \theta(w')}
-  \end{tikzcd}
-  %\hphantom{' = \theta(w')}
-  $}
+     \& \octx \mathrlap{'}
+  \end{tikzcd}\hphantom{'}
+  $}%
 \footnote{%
   Actually, we end up proving a stronger soundness result in \cref{??}.}
 % The exact converse -- that $\theta(w) \reduces_{\orsig} \theta(w')$ implies $w \reduces_{\srsig} w'$ -- does hold, but we can prove an even stronger soundness result.
 %
-If $\chorsig{\theta}{\srsig}{\orsig}$ is not derivable for any $\orsig$, then the role assignment $\theta$ does not yield a meaningful choreography of the specification $(\sralph, \srsig)$.
+If $\chorsig{\theta}{_{\sralph} \srsig}{\orsig}$ does not hold for any $\orsig$, then the role assignment $\theta$ yields no choreography of the specification $(\sralph, \srsig)$.
 
 % This judgment relies on an auxiliary judgment, $\qimp{\atmR{\octx}_L}{\up \p{A}}{\atmL{\octx}_R}{\n{B}}$, that transforms the quasi-proposition $\atmR{\octx}_L \limp \up \p{A} \pmir \atmL{\octx}_R$ into a well-formed proposition $\n{B}$ by nondeterministically abstracting atoms one-by-one from either the left or right contexts.
 % The proposition $\n{B}$ is semantically equivalent to the quasi-proposition $\atmR{\octx}_L \limp \up \p{A} \pmir \atmL{\octx}_R$ in the sense that $\n{B}$ satisfies $\atmR{\octx}_L \oc \n{B} \oc \atmL{\octx}_R \reduces \octx'$ if, and only if, $\rfocus{\octx'}{\p{A}}$.
@@ -1202,7 +1273,7 @@ This principal choreographing judgment is defined by just two rules:
         \qimp{\atmR{\octx}^L_i}{\up \bigfuse \theta(w'_i)}{\atmL{\octx}^R_i}{\n{A}_i}}
     \end{array}}
 \end{gather*}
-The first of these rules is straightforward: an empty \acl{SR} signature choreographs as an empty ordered rewriting signature.
+The first of these rules is straightforward: an empty set of string rewriting axioms choreographs as an empty set of coinductive formula-as-process definitions.
 The second rule is quite a lot to parse and needs to be broken down step by step:
 \begin{enumerate}
 \item
@@ -1217,37 +1288,35 @@ The second rule is quite a lot to parse and needs to be broken down step by step
   Symmetrically, check, using the side condition $\theta(w^R_i) = \atmL{\octx}^R_i$, that each $w^R_i$ contains only symbols that map to left-directed atoms.
 \item
   Elaborate each quasi-proposition $\atmR{\octx}^L_i \limp \up \bigfuse \theta(w'_i) \pmir \atmL{\octx}^R_i$ into a semantically equivalent proposition $\n{A}_i$.
-  Based on \cref{??}, $\lfocus{\theta(w^L_i)}{\n{A}_i}{\theta(w^R_i)}{\bigfuse \theta(w'_i)}$ holds, and so this proposition acts as the image of the axiom $w^L_i \wc a \wc w^R_i \reduces w'_i$ under $\theta$ -- that is, $\theta(w^L_i) \oc \n{A}_i \oc \theta(w^R_i) \reduces \theta(w'_i)$.
+  Based on \cref{lem:qimp-correct}, the left-focus judgment $\lfocus{\theta(w^L_i)}{\n{A}_i}{\theta(w^R_i)}{\bigfuse \theta(w'_i)}$ holds, and so this proposition acts as the image of the axiom $w^L_i \wc a \wc w^R_i \reduces w'_i$ under the role assignment $\theta$ -- that is, $\theta(w^L_i) \oc \n{A}_i \oc \theta(w^R_i) \reduces \theta(w'_i)$.
 \item
-  Collect the $\n{A}_i$s into a single definition, $\defp{a} \defd \bigwith_{i \in \mathcal{I}} \n{A}_i$, which, based on steps 2 and 4, describes all of the axioms from $\srsig$ that contain $a$ in their premises -- that is, $\theta(w^L_i) \oc \defp{a} \oc \theta(w^R_i) \reduces \theta(w'_i)$.
+  Collect the $\n{A}_i$s into a single definition, $\defp{a} \defd \bigwith_{i \in \mathcal{I}} \n{A}_i$, which, based on steps 2 and 4, describes all of the axioms from $\srsig$ that contain $a$ in their premises -- that is, $\theta(w^L_i) \oc \defp{a} \oc \theta(w^R_i) \reduces_{\Set{\defp{a} \defd \with_{i \in \mathcal{I}} \n{A}_i}} \theta(w'_i)$.
 \end{enumerate}
 
-If $\chorsig{\theta}{\srsig}{\orsig}$, then $\theta$ is a bisimulation.
-That is, $\chorsig{\theta}{\srsig}{\orsig}$ implies
+We shall now prove that this judgment produces definitions $\orsig$ that constitute a formula-as-process choreography $(\theta, \orsig)$ of the string rewriting specification $(\sralph, \srsig)$ -- that is, that $\chorsig{\theta}{\srsig}{\orsig}$ implies that $\theta$ is a (strong) bisimulation between $\reduces_{\srsig}$ and $\reduces_{\orsig}$.
+As previously mentioned, because $\theta$ is injective, this amounts to proving that
 \begin{equation*}
+  \chorsig{\theta}{\srsig}{\orsig}
+  \quad\text{implies}\enspace
   \begin{tikzcd}
     w \rar[reduces, subscript=\srsig] \dar[relation][swap]{\theta}
-      & w\mathrlap{'} \dar[relation, exists]{\theta}
+      & w\mathrlap{'} \dar[relation]{\theta}
     \\
     \theta(w) \rar[reduces, exists, subscript=\orsig] & \theta(w')
   \end{tikzcd}
-  \quad\text{and}\quad
+  \enspace\text{and}\quad
   \begin{tikzcd}
     w \rar[reduces, exists, subscript=\srsig] \dar[relation][swap]{\theta}
       & w\mathrlap{'} \dar[relation, exists]{\theta}
     \\
-    \theta(w) \rar[reduces, subscript=\orsig] & \octx \mathrlap{' = \theta(w') \,.}
+    \theta(w) \rar[reduces, subscript=\orsig] & \octx \mathrlap{' \,.}
   \end{tikzcd}
-  \hphantom{' = \theta(w') \,.}
+  \hphantom{' \,.}
 \end{equation*}
+% As stated earlier, when $\chorsig{\theta}{\srsig}{\orsig}$, the string rewriting step $w \reduces_{\srsig} w'$ holds if, and only if, the ordered rewriting step $\theta(w) \reduces_{\orsig} \theta(w')$ holds.
+We prove the first diagram as the following completeness \lcnamecref{thm:formula-as-process:choreograph-completeness} and then prove a stronger soundness \lcnamecref{thm:formula-as-process:choreograph-soundness} that implies the second diagram.
 
-
-
-As stated earlier, when $\chorsig{\theta}{\srsig}{\orsig}$, the string rewriting step $w \reduces_{\srsig} w'$ holds if, and only if, the ordered rewriting step $\theta(w) \reduces_{\orsig} \theta(w')$ holds.
-We prove the left-to-right direction as the following completeness \lcnamecref{thm:chor-complete} and then prove a stronger soundness \lcnamecref{thm:chor-sound} that implies the right-to-left direction.
-
-
-\begin{lemma}[Weakening]
+\begin{lemma}[Definition weakening]\label{lem:formula-as-process:definition-weakening}
   If $\octx \reduces_{\orsig} \octx'$ and $\dom{\orsig} \cap \dom{\orsig'} = \emptyset$, then $\octx \reduces_{\orsig, \orsig'} \octx'$.
   % Similarly, if $\octx \reduces_{\orsig, (\defp{a} \defd \n{A})} \octx'$ or $\octx \reduces_{\orsig, (\defp{a} \defd \n{B})} \octx'$, then $\octx \reduces_{\orsig, (\defp{a} \defd \n{A} \with \n{B})} \octx'$.
 \end{lemma}
@@ -1299,20 +1368,24 @@ We prove the left-to-right direction as the following completeness \lcnamecref{t
 %   \end{itemize}
 % \end{proof}
 
-\begin{theorem}[Completeness]\leavevmode
+\begin{theorem}[Completeness]\label{thm:formula-as-process:choreograph-completeness}\leavevmode
   If $\chorsig{\theta}{\srsig}{\orsig}$, then $w \reduces_{\srsig} w'$ implies $\theta(w) \reduces_{\orsig} \theta(w')$.%
-  \marginnote{If $\chorsig{\theta}{\srsig}{\orsig}$, then $
+  \marginnote{%
+    \begin{tabular}{@{}c@{}}
+      $\chorsig{\theta}{\srsig}{\orsig}$
+      \\implies\\
     \begin{tikzcd}[ampersand replacement=\&]
       w \rar[reduces, subscript=\srsig] \dar[relation][swap]{\theta}
-       \& w\mathrlap{'} \dar[relation, exists]{\theta}
+       \& w\mathrlap{'} \dar[relation]{\theta}
       \\
       \theta(w) \rar[reduces, exists, subscript=\orsig]
        \& \theta(w')
-    \end{tikzcd}$}%
+    \end{tikzcd}
+    \end{tabular}}%
 \end{theorem}
 \begin{proof}
   By simultaneous structural induction on the given choreographing derivation, $\chorsig{\theta}{\srsig}{\orsig}$, and ordered rewriting step, $w \reduces_{\srsig} w'$.
-  \begin{itemize}
+  \begin{itemize}[listparindent=\parindent, itemsep=\dimexpr\itemsep+\parsep\relax, parsep=0pt]
   \item
     Consider the case in which
     \begin{equation*}
@@ -1350,11 +1423,12 @@ We prove the left-to-right direction as the following completeness \lcnamecref{t
     %
       w = \infer[\jrule{$\reduces$AX}]{w^L_k \wc a \wc w^R_k \reduces_{\srsig} w'_k}{(w^L_k \wc a \wc w^R_k \reduces w'_k) \in \srsig} = w'
     \end{gather*}
-    for some $k \in \mathcal{I}$, where $\srsig = \srsig_0, (w^L_i \wc a \wc w^R_i \reduces w'_i)_{i \in \mathcal{I}}$ and $\orsig = \orsig_0 , (\bigwith_{i \in \mathcal{I}} \n{A}_i)$.
+    for some $k \in \mathcal{I}$, where the axioms are $\srsig = \srsig_0, (w^L_i \wc a \wc w^R_i \reduces w'_i)_{i \in \mathcal{I}}$, and the definitions are $\orsig = \orsig_0 , (\bigwith_{i \in \mathcal{I}} \n{A}_i)$.
 
-    By \cref{??}, $\lfocus{\theta(w^L_k)}{\n{A}_k}{\theta(w^R_k)}{\bigfuse \theta(w'_k)}$.
+    By \cref{lem:qimp-correct}, $\lfocus{\theta(w^L_k)}{\n{A}_k}{\theta(w^R_k)}{\bigfuse \theta(w'_k)}$ holds.
+    Appending a $\lrule{\with}$ rule, we have 
     $\lfocus{\theta(w^L_k)}{\bigwith_{i \in \mathcal{I}} \n{A}_i}{\theta(w^R_k)}{\bigfuse \theta(w'_k)}$.
-    Because $\rfocus{\theta(w'_k)}{\bigfuse \theta(w'_k)}$~\parencref{??}, it follows by the $\jrule{$\reduces$I}$ rule that $\theta(w^L_k) \oc \bigl(\bigwith_{i \in \mathcal{I}} \n{A}_i\bigr) \oc \theta(w^R_k) \reduces_{\orsig} \theta(w'_k)$, and so $\theta(w) = \theta(w^L_k) \oc \defp{a} \oc \theta(w^R_k) \reduces_{\orsig} \theta(w'_k) = \theta(w')$.
+    Because $\rfocus{\theta(w'_k)}{\bigfuse \theta(w'_k)}$, it follows by the $\jrule{$\reduces$I}$ rule that $\theta(w^L_k) \oc \bigl(\bigwith_{i \in \mathcal{I}} \n{A}_i\bigr) \oc \theta(w^R_k) \reduces_{\orsig} \theta(w'_k)$, and so $\theta(w) = \theta(w^L_k) \oc \defp{a} \oc \theta(w^R_k) \reduces_{\orsig} \theta(w'_k) = \theta(w')$.
 
   \item
     Consider the case in which
@@ -1376,10 +1450,10 @@ We prove the left-to-right direction as the following completeness \lcnamecref{t
       \infer[\jrule{$\reduces$AX}]{w \reduces_{\srsig} w'}{
         (w \reduces w') \in \srsig_0}
     \end{gather*}
-    where $(w \reduces w') \in \srsig_0$ and $\srsig = \srsig_0, (v^L_i \wc a \wc v^R_i \reduces v'_i)_{i \in \mathcal{I}}$ and $\orsig = \orsig_0 , (\bigwith_{i \in \mathcal{I}} \n{A}_i)$.
+    where $(w \reduces w') \in \srsig_0$; the axioms are $\srsig = \srsig_0, (v^L_i \wc a \wc v^R_i \reduces v'_i)_{i \in \mathcal{I}}$; and the definitions are $\orsig = \orsig_0 , (\bigwith_{i \in \mathcal{I}} \n{A}_i)$.
 
     By the inductive hypothesis, $\theta(w) \reduces_{\orsig_0} \theta(w')$.
-    It follows from weakening~\parencref{??} that $\theta(w) \reduces_{\orsig} \theta(w')$.    
+    It follows from weakening~\parencref{lem:formula-as-process:definition-weakening} that $\theta(w) \reduces_{\orsig} \theta(w')$.    
 
   \item 
     The case in which
@@ -1390,6 +1464,7 @@ We prove the left-to-right direction as the following completeness \lcnamecref{t
         (w \reduces w') \in \srsig}
     \end{equation*}
     where $\srsig = \srsige$ and $\orsig = \orsige$ is vacuous.
+  \qedhere
   % \item
   %   Consider the case in which
   %   \begin{gather*}
@@ -1471,7 +1546,6 @@ We prove the left-to-right direction as the following completeness \lcnamecref{t
   %   \end{gather*}
   %   where $\srsig = \srsig_0, (v_1 \wc b \wc v_2 \reduces v')$ and $\orsig = \orsig_0 , (\defp{b} \defd \n{B})$ is similar to the previous one.
     %
-  \qedhere
   \end{itemize}
 \end{proof}
 
@@ -1596,7 +1670,7 @@ We prove the left-to-right direction as the following completeness \lcnamecref{t
       \lfocus{\atmR{\octx}_L}{\defp{a}}{\atmL{\octx}_R}{_{\orsig} \p{C}}
     \end{equation*}
     where $\srsig = \srsige$ and $\orsig = \orsige$ is vacuous because there is no definition for $\defp{a}$ in the signature $\orsig$.
-
+  \qedhere
 
   % \item
   %   Consider the case in which
@@ -1746,11 +1820,10 @@ We prove the left-to-right direction as the following completeness \lcnamecref{t
   % % \end{equation*}
   % % Because $\chorax{\theta}{w_1}{\bigfuse \theta(w')}{w_2}{\n{A}_2}$, it follows from \cref{??} that $\atmR{\octx}_L = \theta(w_1)$ and $\atmL{\octx}_R = \theta(w_2)$ and $\p{C} = \bigfuse \theta(w')$.
   %
-  \qedhere
   \end{itemize}
 \end{proof}
 
-\begin{theorem}[Soundness]
+\begin{theorem}\label{thm:formula-as-process:choreograph-soundness}
   If $\chorsig{\theta}{\srsig}{\orsig}$ and $\theta(a) = \defp{a}$ and $\octx_L \oc \defp{a} \oc \octx_R \reduces_{\orsig} \octx'$, then either:
   \begin{itemize}
   \item $\octx_L = \octx'_L \oc \theta(w_1)$ and $\octx_R = \theta(w_2) \oc \octx'_R$ and $\octx' = \octx'_L \oc \theta(w') \oc \octx'_R$ for some contexts $\octx'_L$ and $\octx'_R$ and some strings $w_1$, $w_2$, and $w'$ such that $(w_1 \wc a \wc w_2 \reduces w') \in \srsig$ and $\lfocus{\theta(w_1)}{\defp{a}}{\theta(w_2)}{\bigfuse \theta(w')}$;
@@ -1768,10 +1841,892 @@ We prove the left-to-right direction as the following completeness \lcnamecref{t
   It follows that $\lctx' = \theta(w')$.
 \end{proof}
 
-\begin{corollary}[Soundness]
-  If $\chorsig{\theta}{\srsig}{\orsig}$ and $\theta(w) \reduces_{\orsig} \octx'$, then $\octx' = \theta(w')$ for some $w'$ such that $w \reduces_{\srsig} w'$.
+\begin{corollary}[Soundness]\label{cor:formula-as-process:choreograph-soundness}
+  If $\chorsig{\theta}{\srsig}{\orsig}$ and $\theta(w) \reduces_{\orsig} \octx'$, then there exists $w'$ such that $\octx' = \theta(w')$ and $w \reduces_{\srsig} w'$.%
+  \marginnote{%
+    \begin{tabular}{@{}c@{}}
+      $\chorsig{\theta}{\srsig}{\orsig}$
+      \\implies\\
+      $\begin{tikzcd}[ampersand replacement=\&]
+      w \rar[reduces, exists, subscript=\srsig] \dar[relation][swap]{\theta}
+       \& w\mathrlap{'} \dar[relation, exists]{\theta}
+      \\
+      \theta(w) \rar[reduces, subscript=\orsig]
+       \& \octx\mathrlap{'}
+    \end{tikzcd}
+    \hphantom{'}$
+    \end{tabular}}%
 \end{corollary}
 
+
+
+\section{Extended example: Choreographing binary counters}\label{sec:formula-as-process:counters}
+
+In this \lcnamecref{sec:formula-as-process:counters}, we revisit binary counters, \ie, binary representations of natural numbers equipped with increment and decrement operations.
+Here we use them as an extended example of choreographing string rewriting specifications.
+
+Recall from \cref{??} a string rewriting specification $(\sralph, \srsig)$ of binary counters where the alphabet $\sralph$ and the axioms $\srsig$ are:
+\begin{equation*}
+  \begin{lgathered}
+    \sralph = \Set{e, b_0, b_1, i, d, z, s, b'_0}
+    \\
+    \srsig
+      = \begin{array}[t]{@{}l@{}l@{}l@{}}
+          (e \wc i \reduces e \wc b_1) \,, {} &
+          (b_0 \wc i \reduces b_1) \,, &
+          (b_1 \wc i \reduces i \wc b_0) \,, \\
+          %
+          (e \wc d \reduces z) \,, &
+          (b_0 \wc d \reduces b'_0) \,, {} &
+          (b_1 \wc d \reduces b_0 \wc s) \,, \\
+          % 
+          (z \wc b'_0 \reduces z) \,, &
+          (s \wc b'_0 \reduces b_1 \wc s)
+        \end{array}
+  \end{lgathered}
+\end{equation*}
+% In this \lcnamecref{sec:formula-as-process:counters},
+We will present several distinct choreographies of this specification, including an object-oriented choreography that treats the increment and decrement operations as messages, and a functional choreography that instead treats those operations as processes. 
+
+\clearpage
+\subsection{An object-oriented choreography}
+
+Let $\theta$ be the role assignment that maps the bits $e$, $b_0$, and $b_1$ to coinductively defined processes $\defp{e}$, $\defp{b}_0$, and $\defp{b}_1$; increments $i$ and decrements $d$ to left-directed messages $\atmL{i}$ and $\atmL{d}$; unary constructors $z$ and $s$ to right-directed messages $\atmR{z}$ and $\atmR{s}$; and $b'_0$ to coinductively defined process $\defp{b}'_0$.%
+\marginnote{$
+  \theta = \{
+    \begin{lgathered}[t]
+      e \mapsto \smash{\defp{e}} , b_0 \mapsto \smash{\defp{b}_0} , b_1 \mapsto \smash{\defp{b}_1} , \\
+      i \mapsto \atmL{i} , d \mapsto \atmL{d} , \\
+      z \mapsto \atmR{z} , s \mapsto \atmR{s} , b'_0 \mapsto \smash{\defp{b}'_0} \}
+    \end{lgathered}
+$}
+
+Two axioms in $\srsig$ mention $e$ in their premises: $e \wc i \reduces e \wc b_1$ and $e \wc d \reduces z$.
+Under the role assignment $\theta$, these axioms induce the rewritings
+\begin{equation*}
+  \ereduces[\orsig]{\defp{e} \oc \atmL{i}}{\defp{e} \oc \defp{b}_1}
+  \qquad\text{and}\qquad
+  \ereduces[\orsig]{\defp{e} \oc \atmL{d}}{\atmR{z}}
+\end{equation*}
+as constraints on $\orsig$ that must be satisfied if $(\theta, \orsig)$ is to be a meaningful choreography of the binary counter specification.
+Solving these for $\defp{e}$, we obtain the definition
+\begin{equation*}
+  \defp{e} \defd (\defp{e} \fuse \defp{b}_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d})
+  \,.
+\end{equation*}
+Similar reasoning allows us to construct coinductive definitions for $\defp{b}_0$, $\defp{b}_1$, and $\smash{\defp{b}'_0}\vphantom{b}$ as the solutions of the other constraints induced from the axioms $\srsig$ by $\theta$.
+(See \cref{tbl:formula-as-process:deriving-oo-counter} for a sketch.)
+%
+\begin{table*}[tbp]
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{@{}l@{\qquad}l@{\qquad}l@{}}
+    \toprule
+    \emph{Axioms, $\srsig$} &
+    \emph{Rewriting constraints on $\orsig$} & \emph{Solution, $\orsig$}
+    \\ \midrule
+    $e \wc i \reduces e \wc b_1$ and $e \wc d \reduces z$ &
+    $\ereduces[\orsig]{\defp{e} \oc \atmL{i}}{\defp{e} \oc \defp{b}_1}$ and $\ereduces[\orsig]{\defp{e} \oc \atmL{d}}{\atmR{z}}$
+      & $\defp{e} \defd (\defp{e} \fuse \defp{b}_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d})$
+    \\
+    $b_0 \wc i \reduces b_1$ and $b_0 \wc d \reduces d \wc b'_0$ &
+    $\ereduces[\orsig]{\defp{b}_0 \oc \atmL{i}}{\defp{b}_1}$ and $\ereduces[\orsig]{\defp{b}_0 \oc \atmL{d}}{\atmL{d} \oc \defp{b}'_0}$
+      & $\defp{b}_0 \defd (\up \dn \defp{b}_1 \pmir \atmL{i}) \with (\atmL{d} \fuse \defp{b}'_0 \pmir \atmL{d})$
+    \\
+    $b_1 \wc i \reduces i \wc b_0$ and $b_1 \wc d \reduces b_0 \wc s$ &
+    $\ereduces[\orsig]{\defp{b}_1 \oc \atmL{i}}{\atmL{i} \oc \defp{b}_0}$ and $\ereduces[\orsig]{\defp{b}_1 \oc \atmL{d}}{\defp{b}_0 \oc \atmR{s}}$
+      & $\defp{b}_1 \defd (\atmL{i} \fuse \defp{b}_0 \pmir \atmL{i}) \with (\defp{b}_0 \fuse \atmR{s} \pmir \atmL{d})$
+    \\
+    $z \wc b'_0 \reduces z$ and $s \wc b'_0 \reduces b_1 \wc s$ &
+    $\ereduces[\orsig]{\atmR{z} \oc \defp{b}'_0}{\atmR{z}}$ and $\ereduces[\orsig]{\atmR{s} \oc \defp{b}'_0}{\defp{b}_1 \oc \atmR{s}}$
+      & $\defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \defp{b}_1 \fuse \atmR{s})$
+    \\ \addlinespace \bottomrule
+  \end{tabular}
+  \caption{Deriving an object-oriented choreography of binary counters}\label{tbl:formula-as-process:deriving-oo-counter}
+\end{table*}
+%
+In full, the solution to these constraints is the definitions $\orsig$:
+\begin{equation*}
+  \orsig =
+  \begin{lgathered}[t]
+    \bigl(\defp{e} \defd (\defp{e} \fuse \defp{b}_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d})\bigr) \,, \\
+    \bigl(\defp{b}_0 \defd (\up \dn \defp{b}_1 \pmir \atmL{i}) \with (\atmL{d} \fuse \defp{b}'_0 \pmir \atmL{d})\bigr) \,, \\
+    \bigl(\defp{b}_1 \defd (\atmL{i} \fuse \defp{b}_0 \pmir \atmL{i}) \with (\defp{b}_0 \fuse \atmR{s} \pmir \atmL{d})\bigr) \,, \\
+    \bigl(\defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \defp{b}_1 \fuse \atmR{s})\bigr)
+  \,.
+  \end{lgathered}
+\end{equation*}
+
+
+
+In other words, under the role assignment $\theta$, the string rewriting axioms for the binary counter are choreographed to the coinductive propositions defined in $\orsig$.
+It is easy, if tedious, to verify that 
+% the judgment $\chorsig{\theta}{\srsig}{\orsig}$ holds -- 
+the formal construction described in \lcnamecref{sec:formula-as-process:choreograph-formal} generates the same definitions, $\orsig$:
+%
+\begin{proposition}
+  For the above string rewriting specification $(\sralph, \srsig)$ and role assignment $\theta$, the judgment $\chorsig{\theta}{\srsig}{\orsig}$ holds.
+\end{proposition}
+
+\newthought{This choreography} might be called \emph{object-oriented} for its similarity to the eponymous\fixnote{?} programming paradigm.
+In that paradigm, computation is centered around message exchange between stateful objects -- data are stored by objects, and those data are manipulated by exchanging messages with the relevant objects.
+
+This choreography of the binary counter specification behaves similarly:
+its data -- the bits $e$, $b_0$, and $b_1$ -- are represented as processes, and its operations -- the increments $i$ and decrements $d$ -- are represented as messages exchanged with the processes.
+%
+% We refer to this choreography as \emph{object-oriented} for its similarity to the object-oriented progamming paradigm: because its data -- the bits $e$, $b_0$, and $b_1$ -- are represented as processes and its operations -- the increments $i$ and decrements $d$ -- are represented as messages.
+%
+For example, $\defp{e}$ is the coinductively defined process that waits to receive either the increment message $\atmL{i}$ or the decrement message $\atmL{d}$ from its right-hand neighbor.
+If $\atmL{i}$ is received, then $\defp{e}$ spawns a new process, $\defp{b}_1$, to its right and then continues recursively as $\defp{e}$.
+Otherwise, if $\atmL{d}$ is received, then $\defp{e}$ sends the message $\atmR{z}$ as a response.
+
+
+\newthought{The adeq{}uacy} of this choreography can be established by 
+
+Recall from \cref{??} that \fixnote{?}
+
+Combining this with \cref{thm:chor-complete}, we have the immediate \lcnamecref{??}
+\begin{corollary}
+  \begin{itemize}
+  \item If $\adec{\octx}{n}$, then $\theta(\octx) \Reduces_{\orsig} \atmR{z}$ if, and only if, $n = 0$.
+  \item If $\ainc{\octx}{n}$, then $\theta(\octx) \Reduces_{\orsig} \aval{\theta(\octx')}{n}$.
+  \end{itemize}
+\end{corollary}
+
+
+
+\subsection{A functional choreography}
+
+The object-oriented choreography is not the only choreography possible for the binary counter specification, however.
+
+Let $\theta'$ be a role assignment that is (roughly) dual to $\theta$ -- that is, let $\theta'$ map the bits $e$, $b_0$, and $b_1$ to right-directed messages $\atmR{e}$, $\atmR{b}_0$, and $\atmR{b}_1$; increments $i$ and decrements $d$ to coinductively defined processes $\defp{\imath}$ and $\defp{d}$; unary constructors $z$ and $s$ to right-directed messages $\atmR{z}$ and $\atmR{s}$; and $b'_0$ to the coinductively defined process $\defp{b}'_0$.%
+\marginnote{$
+  \theta' = \{
+    \begin{lgathered}[t]
+      e \mapsto \atmR{e} , b_0 \mapsto \atmR{b}_0 , b_1 \mapsto \atmR{b}_1 , \\
+      i \mapsto \smash{\defp{\imath}} , d \mapsto \smash{\defp{d}} , \\
+      z \mapsto \atmR{z} , s \mapsto \atmR{s} , b'_0 \mapsto \smash{\defp{b}'_0} \}
+    \end{lgathered}
+$}
+
+Once again, we can construct a choreography from the string rewriting axioms $\srsig$ by solving constraints in the form of rewritings. 
+Three axioms from $\srsig$ mention $i$ in their premises: $e \wc i \reduces e \wc b_1$, $b_0 \wc i \reduces b_1$, and $b_1 \wc i \reduces i \wc b_0$.
+Under the role assignment $\theta'$, these axioms induce the rewritings
+\begin{equation*}
+  \ereduces[\orsig']{\atmR{e} \oc \defp{\imath}}{\atmR{e} \oc \atmR{b}_1}
+  \qquad\text{and}\qquad
+  \ereduces[\orsig']{\atmR{b}_0 \oc \defp{\imath}}{\atmR{b}_1}
+  \qquad\text{and}\qquad
+  \ereduces[\orsig']{\atmR{b}_1 \oc \defp{\imath}}{\defp{\imath} \oc \atmR{b}_0}
+\end{equation*}
+as constraints on $\orsig'$ that must be satisfied if $(\theta', \orsig')$ is to be a choreography of the binary counter specification.
+Solving these constraints for $\defp{\imath}$, we obtain the definition
+\begin{equation*}
+  \defp{\imath} \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp \defp{\imath} \fuse \atmR{b}_0)
+  \,.
+\end{equation*}
+Upon solving the remaining constraints for the other coinductively defined propositions, $\defp{d}$ and $\defp{b}'_0$,%
+%
+\begin{table*}[tbp]
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{@{}l@{\qquad\enspace}l@{\qquad\enspace}l@{}}
+    \toprule
+    \emph{Axioms, $\srsig$} &
+    \emph{Rewriting constraints on $\orsig'$} & \emph{Solution, $\orsig'$}
+    \\ \midrule
+    $e \wc i \reduces e \wc b_1$ and $b_0 \wc i \reduces b_1$ &
+    $\ereduces[\orsig']{\atmR{e} \oc \defp{\imath}}{\atmR{e} \oc \atmR{b}_1}$ and $\ereduces[\orsig']{\atmR{b}_0 \oc \defp{\imath}}{\atmR{b}_1}$
+    & $\defp{\imath} \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1)$
+    \\[-0.75ex]
+    \quad and $b_1 \wc i \reduces i \wc b_0$ &
+    \quad and $\ereduces[\orsig']{\atmR{b}_1 \oc \defp{\imath}}{\defp{\imath} \oc \atmR{b}_0}$ &
+    $\hphantom{\defp{\imath} \defd {}} \with (\atmR{b}_1 \limp \defp{\imath} \fuse \atmR{b}_0)$
+    \\
+    $e \wc d \reduces z$ and $b_0 \wc d \reduces d \wc b'_0$ &
+    $\ereduces[\orsig']{\atmR{e} \oc \defp{d}}{\atmR{z}}$ and $\ereduces[\orsig']{\atmR{b}_0 \oc \defp{d}}{\defp{d} \oc \defp{b}'_0}$
+      & $\defp{d} \defd (\atmR{e} \limp \atmR{z}) \with (\atmR{b}_0 \limp \defp{d} \fuse \defp{b}'_0)$
+    \\[-0.75ex]
+    \quad and $b_1 \wc d \reduces b_0 \wc s$ &
+    \quad and $\ereduces[\orsig']{\atmR{b}_1 \oc \defp{d}}{\atmR{b}_0 \oc \atmR{s}}$ &
+    $\hphantom{\defp{d} \defd {}} \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse \atmR{s})$
+    \\
+    $z \wc b'_0 \reduces z$ and $s \wc b'_0 \reduces b_1 \wc s$ &
+    $\ereduces[\orsig']{\atmR{z} \oc \defp{b}'_0}{\atmR{z}}$ and $\ereduces[\orsig']{\atmR{s} \oc \defp{b}'_0}{\defp{b}_1 \oc \atmR{s}}$
+      & $\defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \atmR{b}_1 \fuse \atmR{s})$
+    \\ \addlinespace \bottomrule
+  \end{tabular}
+  \caption{Deriving a functional choreography of binary counters}\label{tbl:formula-as-process:deriving-functional-choreography}
+\end{table*}%
+%
+\footnote{See \cref{tbl:formula-as-process:deriving-functional-choreography} for a sketch.}
+we arrive at the definitions
+\begin{equation*}
+  \orsig' =
+  \begin{lgathered}[t]
+    \bigl(\defp{\imath} \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp \defp{\imath} \fuse \atmR{b}_0)\bigr) \,, \\
+    \bigl(\defp{d} \defd (\atmR{e} \limp \atmR{z}) \with (\atmR{b}_0 \limp \defp{d} \fuse \defp{b}'_0) \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse \atmR{s})\bigr) \,, \\
+    \bigl(\defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \defp{b}_1 \fuse \atmR{s})\bigr)
+    \,.
+  \end{lgathered}
+\end{equation*}
+Again, it is easy to verify that these definitions are exactly those that are constructed by the formal description of the choreographing algorithm:
+\begin{proposition}
+  For the above string rewriting specification $(\sralph, \srsig)$ and role assignment $\theta'$, the judgment $\chorsig{\theta'}{\srsig}{\orsig'}$ holds.
+\end{proposition}
+
+In contrast with the previous, object-oriented choreography, this choreography treats its data -- the bits $e$, $b_0$, and $b_1$ -- as messages that are manipulated by processes that represent the operations -- increments $i$ and decrements $d$.
+For this reason, the choreography $(\theta', \orsig')$ might be called \emph{functional} for its similarity to functional programming.
+
+\clearpage
+\subsection{Duality and other choreographies}
+
+These two (roughly) dual object-oriented and functional choreographies hint at a fundamental duality between the object-oriented and functional programming paradigms.
+
+It is briefly tempting to think that a general duality theorem for choreographies might exist.
+Perhaps if $(\theta, \orsig)$ is a choreography of the specification $(\sralph, \srsig)$, there exists a dual choreography $(\theta^{\bot}, \orsig^{\bot})$ in which $\theta^{\bot}$ maps a symbol $a$ to a message exactly when $\theta$ mapped it to a process?
+
+Such a theorem does not exist.
+As a counterexample, recall the string rewriting specification $(\sralph, \srsig)$ and choreography $(\theta, \orsig)$ given by
+\begin{equation*}
+  \begin{lgathered}
+    \sralph = \Set{a, b} \\
+    \srsig = (a \wc b \reduces b) \,, (b \reduces \emp)
+  \end{lgathered}
+  \qquad\text{and}\qquad
+  \begin{lgathered}
+    \theta = \Set{ a \mapsto \atmR{a} , b \mapsto \defp{b} } \\
+    \orsig = \bigl(\defp{b} \defd (\atmR{a} \limp \up \dn \defp{b}) \with \up \one\bigr)
+    \,.
+  \end{lgathered}
+\end{equation*}
+For this choreography, the dual role assignment, $\theta^{\bot}$, would map $b$ to a message, either $\atmL{b}$ or $\atmR{b}$.
+And, the axiom $b \reduces \emp$ would, under $\theta^{\bot}$, induce either $\ereduces[\orsig^{\bot}]{\atmL{b}}{(\octxe)}$ or $\ereduces[\orsig^{\bot}]{\atmR{b}}{(\octxe)}$ as a constraint.
+Neither of these possible constraints is satisfiable in the formula-as-process ordered rewriting framework because the premises contain only passive messages.%
+\footnote{See \cref{??}.}
+
+One might also ask if a theorem is possible if some additional conditions are imposed on the specification.
+% It appeasr that the conditions necessary for such a theorem are so extremely narrow as to make any obtained theorem of little value.
+For instance, at first glance, a duality theorem might seem possible for those specifications in which all axioms' premises contain exactly two symbols.
+Unfortunately, this is not the case.
+Consider, as a counterexample, the string rewriting specification $(\sralph, \srsig)$ and the choreography $(\theta, \orsig)$ given by
+\begin{equation*}
+  \begin{lgathered}
+    \sralph = \Set{ a, b, c} \\
+    \srsig = (a \wc b \reduces b) \,, (b \wc c \reduces b)
+  \end{lgathered}
+  \qquad\text{and}\qquad
+  \begin{lgathered}
+    \theta = \Set{ a \mapsto \atmR{a} , b \mapsto \defp{b} , c \mapsto \atmL{c} } \\
+    \orsig = \bigl(\defp{b} \defd (\atmR{a} \limp \up \dn \defp{b}) \with (\up \dn \defp{b} \pmir \atmL{c})\bigr)
+    \,.
+  \end{lgathered}
+\end{equation*}
+For this choreography, the dual role assignment, $\theta^{\bot}$, would map $b$ to a message, either $\atmL{b}$ or $\atmR{b}$.
+But either choice leads to unsatisfiable constraints.
+Depending on whether $\theta^{\bot}$ maps $b$ to $\atmL{b}$ or $\atmR{b}$, the induced constraints are either:
+\begin{equation*}
+  \ereduces[\orsig^{\bot}]{\defp{a} \oc \atmL{b}}{\atmL{b}}
+  \enspace\text{and}\enspace
+  \ereduces[\orsig^{\bot}]{\atmL{b} \oc \defp{c}}{\atmL{b}}
+  \qquad\text{or}\qquad
+  \ereduces[\orsig^{\bot}]{\defp{a} \oc \atmR{b}}{\atmR{b}}
+  \enspace\text{and}\enspace
+  \ereduces[\orsig^{\bot}]{\atmR{b} \oc \defp{c}}{\atmR{b}}
+  \,,
+\end{equation*}
+respectively.
+In either case, the constraints are unsatisfiable because one premise in each group involves a message directed outward, away from the premise's process.%
+\footnote{See \cref{??}.}
+
+We will return to this idea of a duality theorem in \cref{??}, where we will see that session types provide just the right conditions for such a theorem.
+% a b --> ...
+% b c --> ...
+
+% b = (a \ ..) & (... / c)
+
+% Suppose that $\theta$ induces $\atmR{a} \oc \defp{b} \oc \atmL{c} \reduces_{\orsig} \mathord{\dotsm}$ as a constraint.
+% Then $\theta^{\bot}$ would assign the symbols $a$ and $c$ process roles and the symbol $b$ a message role, resulting in either $\defp{a} \oc \atmL{b} \oc \defp{c} \reduces_{\orsig^{\bot}} \mathord{\dotsm}$ or $\defp{a} \oc \atmR{b} \oc \defp{c} \reduces_{\orsig^{\bot}} \mathord{\dotsm}$ as a constraint.
+% Neither of these possible constraints is satisfiable in the formula-as-process ordered rewriting framework because the premises contain more than one process.%
+% \footnote{See \cref{??}.}
+
+% A general duality theorem does not exist: even if the constraint $\atmR{a} \oc \defp{b} \oc \atmL{c} \reduces_{\orsig} \theta(w')$ is satisfiable, the dual\fixnote{?} $\defp{a} \oc \atmL{b} \oc \defp{c} \reduces \theta^{\bot}(w')$ nor $\defp{a} \oc \atmR{b} \oc \defp{c} \reduces \theta^{\bot}(w')$ are [...].
+
+
+\newthought{Besides these} object-oriented and functional choreographies, the binary counter specification has two other, related choreographies.
+The two alternatives are broadly similar to the object-oriented and functional choreographies, with two exceptions: the unary constructors $z$ and $s$ are treated as processes, not messages; and $b'_0$ is treated as a message, not a process.
+Instead of responding to a decrement with either a $\atmR{z}$ or $\atmR{s}$ message, these choreographies transform
+
+\begin{table*}[tb]
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    \emph{Object-oriented--like alternative}
+    & \emph{Functional-like alternative}
+    \\ \midrule
+    $\begin{aligned}[t]
+       \theta^* &= \theta[z \mapsto \defp{z} , s \mapsto \defp{s} , b'_0 \mapsto \atmL{b}'_0]
+       \\
+       \orsig^* &=
+       \begin{lgathered}[t]
+         \bigl(\proc{e} \defd (\proc{e} \fuse \proc{b}_1 \pmir \atmL{i}) \with (\up \dn \proc{z} \pmir \atmL{d})\bigr) \,, \\
+         \bigl(\proc{b}_0 \defd (\up \dn \proc{b}_1 \pmir \atmL{i}) \with (\atmL{d} \fuse \atmL{b}'_0 \pmir \atmL{d})\bigr) \,, \\
+         \bigl(\proc{b}_1 \defd (\atmL{i} \fuse \proc{b}_0 \pmir \atmL{i}) \with (\proc{b}_0 \fuse \proc{s} \pmir \atmL{d})\bigr) \,, \\
+         \bigl(\proc{z} \defd \up \dn \proc{z} \pmir \atmL{b}'_0\bigr) \,, \\
+         \bigl(\proc{s} \defd \proc{b}_1 \fuse \proc{s} \pmir \atmL{b}'_0\bigr)
+       \end{lgathered}
+     \end{aligned}$
+    &
+    $\begin{aligned}[t]
+       \theta^\dag &= \theta'[z \mapsto \defp{z} , s \mapsto \defp{s} , b'_0 \mapsto \atmL{b}'_0]
+       \\
+       \orsig^\dag &=
+       \begin{lgathered}[t]
+         \bigl(\defp{\imath} \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp \defp{\imath} \fuse \atmR{b}_0)\bigr) \,, \\
+         \bigl(\defp{d} \defd (\atmR{e} \limp \up \dn \defp{z}) \with (\atmR{b}_0 \limp \defp{d} \fuse \atmL{b}'_0) \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse \defp{s})\bigr) \,, \\
+         \bigl(\defp{z} \defd \up \dn \defp{z} \pmir \atmL{b}'_0\bigr) \,, \\
+         \bigl(\defp{s} \defd \atmR{b}_1 \fuse \defp{s} \pmir \atmL{b}'_0\bigr)
+       \end{lgathered}
+     \end{aligned}$
+    \\ \addlinespace \bottomrule
+  \end{tabular}
+  \caption{Two other choreographies for the binary counter specification}
+\end{table*}
+
+
+\section{Extended example: Choreographing \aclp*{NFA}}
+
+Recall from \cref{??} our string rewriting specification of how \iac{NFA} processes its input.
+Given \iac{NFA} $\aut{A} = (Q, \nfapow, F)$\fixnote{symbol?} over an input alphabet $\ialph$, the \ac{NFA}'s operational semantics is adequately captured by the string rewriting specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$, where the axioms $\srsig$ are given by
+\begin{equation*}
+  \!\begin{aligned}
+    \srsig = {}
+      &\Set{ a \wc q \reduces q'_a \given (a \in \ialph) \land (q \in Q) \land (q'_a \in \nfapow(q, a)) } \\
+      &{} \union \Set{ \eow \wc q \reduces F(q) \given q \in Q }
+  \end{aligned}
+\text{ where }
+  F(q) = \begin{cases*}
+           \emp & if $q \in F$ \\
+           \symrej & if $q \notin F$\,.
+         \end{cases*}
+\end{equation*}
+As a second extended example of a choreography, we would now like to choreograph this specification in the formula-as-process ordered rewriting framework.
+As with the binary counter specification, there are, in fact, two distinct choreographies for this string rewriting specification of \acp{NFA} -- one functional and one object-oriented.
+
+\subsection{A functional choreography}
+
+Let $\theta$ be the role assignment that maps each input symbol $a \in \ialph$ to a right-directed message, $\atmR{a}$; the end-of-word marker, $\eow$, to a right-directed message, $\atmR{\eow}$; each state $q \in Q$ to a coinductively defined proposition, $\defp{q}$; and the rejection symbol, $\symrej$, to a right-directed message, $\atmR{\symrej}$.
+In other words, the input word is transmitted as a sequence of messages to a process $\defp{q}$ that tracks the \ac{NFA}'s current state.
+\marginnote{$
+  \theta =
+    \!\begin{lgathered}[t]
+      \Set{ a \mapsto \atmR{a} \given a \in \ialph } \union \Set{ \eow \mapsto \atmR{\eow} } \\
+      {} \union \Set{ q \mapsto \defp{q} \given q \in Q } \\
+      {} \union \Set{ \symrej \mapsto \atmR{\symrej} }
+    \end{lgathered}
+$}
+
+% One possible choreography for this specification interprets each input symbol $a \in \ialph$ as a right-directed atom, $\atmR{a}$; each state $q \in Q$ as a recursively defined proposition, $\defp{q}$; and the end-of-word marker, $\emp$, as a right-directed atom, $\atmR{\emp}$.
+% In other words, the input string is transmitted as a sequence of messages to a process $\defp{q}$ that tracks the \ac{NFA}'s current state.
+
+% In other words, the \ac{NFA}'s input is treated as a sequence of messages, $\atmR{\emp} \oc \atmR{a}_n \dotsm \atmR{a}_2 \oc \atmR{a}_1$, and the \ac{NFA}'s states are treated as [recursive] processes.
+
+Choose an arbitrary state $q \in Q$.
+Under the role assignment $\theta$, the axioms in $\srsig$ that mention $q$ in their premises induce the rewritings
+\begin{equation*}
+  \begin{lgathered}
+    \Set{ \ereduces[\orsig]{\atmR{\eow} \oc \defp{q}}{\atmR{F}(q)} } \\
+    \,{} \union {\textstyle \bigunion_{a \in \ialph} \Set{ \ereduces[\orsig]{\atmR{a} \oc \defp{q}}{\defp{q}'_a} \given q'_a \in \nfapow(q, a) }}
+  \end{lgathered}
+  \enspace\text{ where }
+  \atmR{F}(q) = \begin{cases*}
+                  (\octxe) & if $q \in F$ \\
+                  \atmR{\symrej} & if $q \notin F$
+                \end{cases*}
+\end{equation*}
+as constraints on $\orsig$ that must be satisfied if $(\theta, \orsig)$ is to be a meaningful choreography of the \ac{NFA} specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$.
+Solving these constraints for $\defp{q}$, we obtain the definition
+\begin{gather*}
+  \defp{q} \defd
+    (\atmR{\eow} \limp \up \bigfuse \atmR{F}(q)) \with
+    \bigwith_{a \in \ialph} \bigl(\atmR{a} \limp (
+      \textstyle \bigwith_{q'_a \in \nfapow(q, a)} \up \dn \defp{q}'_a)
+    \bigr)
+  \,,
+\intertext{and therefore the full choreographing signature is}
+  \orsig = \left(
+    \defp{q} \defd
+      (\atmR{\eow} \limp \up \bigfuse \atmR{F}(q)) \with
+      \bigwith_{a \in \ialph} \bigl(\atmR{a} \limp (
+        \textstyle \bigwith_{q'_a \in \nfapow(q, a)} \up \dn \defp{q}'_a)
+      \bigr)
+    \right)_{q \in Q}
+\end{gather*}
+As a concrete example, the adjacent \lcnamecref{fig:formula-as-process:nfa-example}
+%
+\begin{marginfigure}
+  \centering
+  \begin{tikzpicture}
+    \graph [automaton] {
+      q_0
+       -> ["a,b", loop above]
+      q_0
+       -> ["b"]
+      q_1 [accepting]
+       -> ["a,b"]
+      q_2
+       -> ["a,b", loop above]
+      q_2;
+    };
+  \end{tikzpicture}
+
+  \begin{equation*}
+    \orsig =
+    \begin{lgathered}[t]
+      \bigl(\defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0) \with (\atmR{b} \limp (\up \dn \defp{q}_0 \with \up \dn \defp{q}_1)) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
+      \bigl(\defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \one)\bigr) \,, \\
+      \bigl(\defp{q}_2 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr)
+    \end{lgathered}
+  \end{equation*}
+
+  \caption{\Iac*{NFA} that accepts exactly those words, over the alphabet $\ialph = \set{a,b}$, that end with $b$; and a choreography}\label{fig:formula-as-process:nfa-example}
+\end{marginfigure}%
+%
+recalls from \cref{??} \iac{NFA} that accepts those words, over the alphabet $\ialph = \Set{a,b}$, that end with $b$, and also gives a choreographing signature for that \ac{NFA}.
+
+% \begin{equation*}
+%   \orsig =
+%     \bigl(
+%       \defp{q} \defd
+%         (\atmR{\eow} \limp \atmR{F}(q)) \with
+%         \bigwith_{a \in \ialph} \bigl(
+%           \textstyle \bigwith_{q'_a} (\atmR{a} \limp \up \dn \defp{q}'_a)
+%         \bigr)
+%     \bigr)
+%   \,.
+% \end{equation*}
+
+% Under this choreographing assignment, the string rewriting axioms become rewriting steps that must be derivable:
+% \begin{equation*}
+%   \atmR{a} \oc \defp{q}
+%     \reduces \defp{q}'_a
+%   %
+%   \atmR{\emp} \oc \defp{q}
+%     \reduces \begin{cases*}
+%                & if $q \in F$ \\
+%                & if $q \notin F$
+%              \end{cases*}
+% \end{equation*}
+% These required rewritings are indeed local: each one contains exactly one recursively defined process in its premise, with all remaining propositions in its premise being input messages for that process.
+% For instance, each $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a$
+
+% Solving for each recursively defined proposition, we have one definition, 
+% \begin{equation*}
+%   \defp{q} \defd \bigwith_{a \in \ialph} \bigwith_{q\smash{'_a}} (\atmR{a} \limp \defp{q}'_a) \with (\atmR{\emp} \limp \nfa{F}(q))
+%   \,,
+% \end{equation*}
+% for each \ac{NFA} state $q \in Q$.
+Similarly to one of the binary counter's choreographies, this choreography might be called \enquote*{functional} because the data, an input string, are represented by messages that are acted on in a function-like way by the current state's process, $\defp{q}$.
+
+\begin{proposition}\label{prop:formula-as-process:nfa-functional-chorsig}
+  For the above string rewriting specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$ and role assignment $\theta$, the judgment $\chorsig{\theta}{\srsig}{\orsig}$ holds (up to focusing equivalence).
+\end{proposition}
+% %
+% \noindent
+% The proof of this \lcnamecref{thm:choreographies:nfa-functional-chorsig} is a completely straightforward, if tedious, formalization of the preceding intuition, along the line of \cref{??}.
+
+\begin{corollary}
+  For the above string rewriting specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$ and choreography $(\theta, \orsig)$, the choreography is adequate with respect to the specification:
+  \begin{itemize}[nosep]
+  \item
+    $a \wc q \reduces_{\srsig} q'_a$ only if $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a$.
+    Moreover, if $\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$, then $a \wc q \reduces_{\srsig} q'_a$ for some state $q'_a$ such that $\octx' = \defp{q}'_a$.
+  \item
+    $\eow \wc q \reduces_{\srsig} F(q)$ if, and only if, $\atmR{\eow} \oc \defp{q} \reduces_{\orsig} \atmR{F}(q)$.
+  \item
+    $\rev{w} \wc q \reduces_{\srsig} q'$ only if $\rev{\atmR{a}} \oc \defp{q} \reduces_{\orsig} \defp{q}'$.
+    Moreover, if $\rev{\atmR{w}} \oc \defp{q} \reduces_{\orsig} \octx'$, then $\rev{w} \wc q \reduces_{\srsig} q'$ for some state $q'$ such that $\octx' = \defp{q}'$.
+  \end{itemize}
+\end{corollary}
+
+
+Recall from \cref{sec:string-rewriting:nfa} the adequacy \lcnamecref{thm:nfa-adequacy-string-rewriting} for the string rewriting specification of \acp{NFA}.
+%
+\nfaadequacystringrewriting*
+%
+\noindent Composing this with \cref{??}, the adequacy of formula-as-process choreographies with respect to their underlying string rewriting specifications, we arrive at:
+%
+\begin{marginfigure}
+  \begin{equation*}
+    \rev{\atmR{w}} =
+      \begin{cases*}
+        (\octxe) & if $w = \emp$ \\
+        \rev{\atmR{w}_0} \oc \atmR{a} & if $w = a \wc w_0$
+      \end{cases*}
+  \end{equation*}
+  \caption{An anti-homomorphism from input words to sequences of right-directed messages.
+    Notice that $\rev{\atmR{w}} = \theta(\rev{w})$, where $\rev{}$ is defined in \cref{??}.}\label{fig:formula-as-process:msg-rev}
+\end{marginfigure}%
+%
+\begin{corollary}[Adequacy of \acs*{NFA} choreography]\label{cor:formula-as-process:nfa-fnchor-adequacy}\leavevmode
+  Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over the input alphabet $\ialph$, with choreography $(\theta, \orsig)$ as described above.
+  The following hold.
+  \begin{itemize}[nosep]
+  \item
+    $q \nfareduces[a] q'_a$ only if $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a$.
+    Also, if $\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$, then $q \nfareduces[a] q'_a$ for some state $q'_a$ such that $\octx' = \defp{q}'_a$.
+  \item
+    $q \in F$ if, and only if, $\atmR{\eow} \oc \defp{q} \reduces_{\orsig} (\octxe)$.
+  \item
+    $q \nfareduces[w] q'$ only if $\rev{\atmR{w}} \oc \defp{q} \Reduces_{\orsig} \defp{q}'$.
+    Also, if $\rev{\atmR{w}} \oc \defp{q} \Reduces_{\orsig} \defp{q}'$, then $q \nfareduces[w] q'$ for some state $q'$ such that $\octx' = \defp{q}'$.
+  \end{itemize}
+\end{corollary}
+
+This \lcnamecref{cor:formula-as-process:nfa-fnchor-adequacy} gives -- nearly for free -- an end-to-end adequacy result for the functional \ac{NFA} choreography with respect to the mathematical model of \acp{NFA}.
+The first clause captures the completeness of the choreography: each \ac{NFA} transition is simulated by a corresponding rewriting in the choreography.
+
+The second clause captures soundness, but is not phrased exactly as we might have hoped.
+Its premise is stated in terms of the choreography alone, but its conclusion mixes ideas from the \ac{NFA} model ($q \nfareduces[a] q'_a$) with ideas from the choreography ($\octx' = \defp{q}'_a$).
+It would be much nicer if the conclusion used only ideas native to \acp{NFA}, for then soundness would cleanly relate the chreography, on the one hand, to the \ac{NFA} model, on the other hand.
+
+
+
+Upon examining the definition of $\defp{q}$, we notice that a rewriting $\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$ exists (if and) only if $\octx' = \defp{s}'$ for some state $s' \in Q$.
+This allows us to revise the statement of soundness: 
+\begin{itemize}
+\item
+  If $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{s}'$, then $q \nfareduces[a] q'_a$ for some state $q'_a$ such that $\defp{s}' = \defp{q}'_a$.
+\end{itemize}
+However, this statement is still not quite satisfactory in that its conclusion, with $\defp{s}' = \defp{q}'_a$, still mixes in ideas from the choreography.
+Is it possible to characterize this relationship between $s'$ and $q'_a$ natively on the \ac{NFA}?
+
+
+
+The \lcnamecref{cor:formula-as-process:nfa-fnchor-adequacy} is not phrased exactly how we might have hoped.
+The first clause, completeness of the choreography with respect to the \ac{NFA}, cleanly relates each \ac{NFA} transition to a rewriting
+It would be much nicer if the second clause, soundness of the choreography with respect to the \ac{NFA}, could be stated in terms of the \ac{NFA} and its choreography alone.
+
+Greedily, we might have hoped for slightly more.
+% This \lcnamecref{cor:formula-as-process:nfa-fnchor-adequacy} is [...], but perhaps unsatisfactory in one particular detail.
+The second clause, soundness of the choreography with respect to the \ac{NFA}, drags in an ordered context $\octx'$.
+It would be much nicer if the choreography's soundness could be stated in terms of the \ac{NFA} and its choreography alone.
+
+The first step toward such a rephrasing is to notice that $\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$ \emph{only if} $\octx' = \defp{q}'$ for some state $q'$.
+Thus, the above statement of soundness is equivalent to:
+\begin{itemize}
+\item
+  If $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'$, then $q \nfareduces[a] q'_a$ for some state $q'_a$ such that $\defp{q}' = \defp{q}'_a$.
+\end{itemize}
+Better
+
+
+This \lcnamecref{cor:formula-as-process:nfa-fnchor-adequacy} is [...], but perhaps unsatisfactory in one particular detail.
+The second clause, soundness of the choreography with respect to the \ac{NFA}, drags in an ordered context $\octx'$.
+It would be much nicer if the choreography's soundness were a direct converse of its completeness, as in:
+\begin{itemize}
+\item If $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a$, then $q \nfareduces[a] q'_a$.
+\end{itemize}
+Unfortunately, this claim is, in fact, false.
+%
+\begin{falseclaim}
+  Let $\aut{A} = (Q, ?, F)$ be \iac{NFA} over the input alphabet $\ialph$.
+  If $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a$, then $q \nfareduces[a] q'$.
+\end{falseclaim}
+%
+\begin{marginfigure}
+    \centering
+    % \subfloat[][]{\label{fig:ordered-rewriting:dfa-counterexample:dfa}%
+      \begin{equation*}
+        \aut{A}'_2 = 
+        \begin{tikzpicture}[baseline=(q_0.base)]
+          \graph [automaton] {
+            q_0
+             -> ["a,b", loop above]
+            q_0
+             -> ["b"]
+            q_1 [accepting]
+             -> ["a,b"]
+            q_2
+             -> ["a,b", loop above]
+            q_2;
+            %
+            s_1 [accepting, below = of q_1.south]
+             -> ["a,b" sloped]
+            q_2;
+          };
+        \end{tikzpicture}
+      \end{equation*}
+
+  \begin{equation*}
+    \orsig =
+    \begin{lgathered}[t]
+      \bigl(\defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0) \with (\atmR{b} \limp (\up \dn \defp{q}_0 \with \up \dn \defp{q}_1)) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
+      \bigl(\defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \one)\bigr) \,, \\
+      \bigl(\defp{q}_2 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
+      \bigl(\defp{s}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \one)\bigr)
+    \end{lgathered}
+  \end{equation*}
+    \caption{A slightly modified version of the \ac*{NFA} from \cref{fig:formula-as-process:nfa-example}; and a choreography}\label{fig:formula-as-process:nfa-counterexample}
+  \end{marginfigure}%
+\begin{proof}[Counterexample]
+  Consider the \ac{NFA} and encoding shown in the adjacent \lcnamecref{fig:formula-as-process:nfa-counterexample}; it is the same \ac{NFA} as shown in \cref{fig:formula-as-process:nfa-example}, but with one added state, $s_1$, that is unreachable from $q_0$, $q_1$, and $q_2$.
+    %
+  % When encoded as an ordered rewriting specification, it corresponds to the following definitions:
+  % \begin{equation*}
+  %   \begin{lgathered}
+  %     \dfa{q}_0 \defd (a \limp \dfa{q}_0) \with (b \limp \dfa{q}_1) \with (\emp \limp \top) \\
+  %     \dfa{q}_1 \defd (a \limp \dfa{q}_0) \with (b \limp \dfa{q}_1) \with (\emp \limp \one) \\
+  %     \dfa{s}_1 \defd (a \limp \dfa{q}_0) \with (b \limp \dfa{s}_1) \with (\emp \limp \one)
+  %   \end{lgathered}
+  % \end{equation*}
+  Notice that, as a coinductive consequence of the equirecursive treatment of definitions, $\defp{q}_1 = \defp{s}_1$, and so $\atmR{b} \oc \defp{q}_0 \reduces_{\orsig} \defp{q}_1 = \defp{s}_1$.
+  However, even though $\atmR{b} \oc \defp{q}_0 \reduces_{\orsig} \defp{s}_1$, the \ac{NFA} has no $q_0 \dfareduces[b] s_1$ transition, because $q_1 \neq s_1$ (and $q_0 \neq s_1$, too).
+\end{proof}
+
+As this counterexample shows, the failure of this claim stems from the fact that the choreography of states is not injective -- here, $q_1 \neq s_1$ even though $\defp{q}_1 = \defp{s}_1$.
+In other words, equality of state encodings is a coarser equivalence than equality of the states themselves.
+
+A closer examination of the preceding counterexample reveals that the states $q_1$ and $s_1$, while not equal, are in fact bisimilar~\parencref{??}.
+In other words, although the choreographing of states is not, strictly speaking, injective, it is injective \emph{up to bisimilarity}: $\defp{q} = \defp{s}$ implies $q \asim s$.
+This suggests a more elegant solution to the apparent lack of adequacy: the adequacy should be judged up to \ac{NFA} bisimilarity.
+
+\begin{theorem}
+  
+\end{theorem}
+
+One possible remedy for this lack of adequacy might be to revise the encoding to have a stronger nominal character.
+By tagging each state's encoding with an atom that is unique to that state, we can make the encoding manifestly injective.
+For instance, given the pairwise distinct atoms $\Set{q \given q \in F}$ and $\Set{\bar{q} \given q \in Q - F}$ to tag final and non-final states, respectively, we could define an alternative encoding, $\check{q}$:
+%
+\begin{gather*}
+  \check{q} \defd
+    \parens[size=big]{
+      \bigwith_{a \in \ialph}(a \limp \check{q}'_a)}
+    \with
+    \parens[size=big]{\emp \limp \check{F}(q)}
+  %
+  \shortintertext{where}
+  %
+  q \dfareduces[a] q'_a
+  \text{, for all input symbols $a \in \ialph$,\quad and\quad}
+  \check{F}(q) =
+    \begin{cases*}
+      q & if $q \in F$ \\
+      \bar{q} & if $q \notin F$%
+    \,.
+    \end{cases*}
+\end{gather*}
+%
+Under this alternative encoding, the states $q_1$ and $s_1$ of \cref{fig:ordered-rewriting:dfa-counterexample} are no longer a counterexample to injectivity:
+Because $q_1$ and $s_1$ are distinct states, they correspond to distinct tags, and so $\check{q}_1 \neq \check{s}_1$.
+
+% One possible remedy
+% % for this apparent lack of adequacy
+% might be to revise the encoding to have a stronger nominal character % .
+% by tagging each state's encoding with an atom that is unique to that state.
+% For instance, given the pairwise distinct atoms $\set{q \given q \in F}$ and $\set{\bar{q} \given q \in Q - F}$ to tag final and non-final states, respectively, we could define an alternative encoding, $\check{q}$, that is manifestly injective:
+% %
+% % \begin{marginfigure}
+% \begin{gather*}
+%   \check{q} \defd
+%     \parens[size=big]{
+%       \bigwith_{a \in \ialph}(a \limp \check{q}'_a)}
+%     \with
+%     \parens[size=big]{\emp \limp \check{F}(q)}
+%   %
+%   \shortintertext{where}
+%   %
+%   q \dfareduces[a] q'_a
+%   \text{, for all input symbols $a \in \ialph$,\quad and\quad}
+%   \check{F}(q) =
+%     \begin{cases*}
+%       q & if $q \in F$ \\
+%       \bar{q} & if $q \notin F$%
+%     \,.
+%     \end{cases*}
+% \end{gather*}
+% % \end{marginfigure}%
+% % , the encoding can be made to be injective.
+% % With this change, the alternative encoding is now injective: $\check{q} = \check{s}$ implies $q = s$.
+
+Although such a solution is certainly possible, it seems unsatisfyingly ad~hoc.
+A closer examination of the preceding counterexample reveals that the states $q_1$ and $s_1$, while not equal, are in fact bisimilar~\parencref{??}.
+In other words, although the encoding is not, strictly speaking, injective, it is injective \emph{up to bisimilarity}: $\dfa{q} = \dfa{s}$ implies $q \asim s$.
+This suggests a more elegant solution to the apparent lack of adequacy: the encoding's adequacy should be judged up to \ac{DFA} bisimilarity.
+
+This \lcnamecref{cor:formula-as-process:nfa-fnchor-adequacy} directly relates the automaton to its choreography, with one exception that is arguably unsatisfactory: an ordered context $\octx'$ is dragged into the second statement.
+Thus, we might like to rephrase this result so that the context $\octx'$ and condition $\octx' = \defp{q}'_a$ are replaced with conditions native to the \ac{NFA} itself.
+
+The first step is to notice that the definition of $\defp{q}$ is such that there is a rewriting $\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$ if, and only if, $\octx' = \defp{s}'$ for some state $s'$.
+\begin{itemize}
+\item
+  If $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{s}'$, then $q \nfareduces[a] q'_a$ for some state $q'_a$ such that $\defp{s}' = \defp{q}'_a$.
+\end{itemize}
+
+Can the relationship $\defp{q}' = \defp{q}'_a$ be stated natively on $q'$ and $a'_a$?
+Notice that $\defp{q} = \defp{s}$ implies that $q$ and $s$ are bisimilar states.
+%
+\begin{theorem}
+  Let $\aut{A} = (Q, ?, F)$\fixnote{fix} be \iac{NFA} over the input alphabet $\ialph$.
+  If $\defp{q} = \defp{s}$, then $q \asim s$.
+\end{theorem}
+\begin{proof}
+  We will show that the relation $\mathord{\simu{R}} = \Set{(q,s) \given \defp{q} = \defp{s}}$ is a bisimulation and is therefore included in \ac{NFA} bisimilarity.
+  \begin{itemize}
+  \item
+    All $\simu{R}$-related states have $\simu{R}$-related $a$-successors, for all input symbols $a \in \ialph$.
+
+    Let $q$ and $s$ be $\simu{R}$-related states.
+    Being $\simu{R}$-related, $\defp{q} = \defp{s}$.
+    Because definitions are treated equirecursively, their unrollings are also equal.
+    For each state $q'_a$ that $a$-succeeds $q$, there must therefore exist a state $s'_a$ such that $\defp{q}'_a = \defp{s}'_a$.
+    In other words, each $a$-successor of $q$ is $\simu{R}$-related to an $a$-successor of state $s$.
+
+  \item
+    All $\simu{R}$-related states have matching finalities.
+
+    Let $q$ and $s$ be $\simu{R}$-related states, with $q$ a final state.
+    Being $\simu{R}$-related, $\defp{q} = \defp{s}$.
+    Because definitions are treated equirecursively, their unrollings are also equal.
+    It follows that $\atmR{F}(q) = \atmR{F}(s)$, and so $s$ is also a final state.
+  %
+  \qedhere
+  \end{itemize}
+\end{proof}
+
+
+\begin{theorem}
+  Let $\aut{A} = (Q, ?, F)$ be a \emph{\ac{DFA}} over an input alphabet $\ialph$.
+  For all states $q$ and $s$, if $q \asim s$, then $\defp{q} = \defp{s}$.
+\end{theorem}
+%
+\begin{proof}
+  Being \iac{DFA}, the states $q$ and $s$ have unique $a$-successors for each input symbol $a \in \ialph$.
+  Because $q$ and $s$ are bisimilar, so are their $a$-successors.
+  By the coinductive hypothesis, the unique $a$-successors of $q$ and $s$ have equal encodings: $\defp{q}'_a$
+\end{proof}
+
+
+Unfortunately, the converse is not true.
+\begin{falseclaim}
+  Let $\aut{A} = (Q, ?, F)$ be \iac{NFA} over an input alphabet $\ialph$.
+  For all states $q$ and $s$, if $q \asim s$, then $\defp{q} = \defp{s}$.
+\end{falseclaim}
+%
+\begin{proof}[Counterexample]
+  Consider the \ac{NFA} and choreography depicted in the adjacent \lcnamecref{fig:formula-as-process:nfa-bisim-falseclaim}.%
+  \begin{marginfigure}
+    \begin{equation*}
+      \begin{tikzpicture}[baseline=(q_0.base)]
+        \graph [automaton] {
+          q_0 [accepting]
+           -> ["a", loop above]
+          q_0
+           -> ["a"]
+          q_1 [accepting]
+           -> ["a"]
+          q_1;
+        };
+      \end{tikzpicture}
+    \end{equation*}
+    \begin{equation*}
+      \begin{lgathered}[t]
+        \defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0 \with \up \dn \defp{q}_1) \with (\atmR{\eow} \limp \up \one) \\
+        \defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_1) \with (\atmR{\eow} \limp \up \one)
+      \end{lgathered}
+    \end{equation*}
+    \caption{\Iacs*{NFA} that accepts all finite wordsover the alphabet $\ialph = \Set{a}$}\label{fig:formula-as-process:nfa-bisim-falseclaim}
+  \end{marginfigure}
+\end{proof}
+
+
+\subsection{An object-oriented choreography}
+
+Once again, the above functional choreography is not the only choreography possible for the \ac{NFA} specification.
+As for the binary counter, there is an \enquote*{object-oriented} choreography that treats the states as messages that effect a response from processes that represent symbols of an input word.
+In this way, we may use a role assignment that is roughly dual to the assignment used in the preceding functional choreography.
+
+Specifically, let $\theta'$ be the role assignment that maps each input symbol $a \in \ialph$ and the end-of-word marker, $\eow$, to coinductively defined propositions, $\defp{a}$ and $\defp{\eow}$, respectively; each state $q \in Q$ to a left-directed message, $\atmL{q}$; and the rejection symbol, $\symrej$, to a right-directed message, $\atmR{\symrej}$.%
+\marginnote{$
+    \theta' =
+      \!\begin{lgathered}[t]
+        \Set{ a \mapsto \defp{a} \given a \in \ialph } \union \Set{ \eow \mapsto \defp{\eow} } \\
+        {} \union \Set{ q \mapsto \atmL{q} \given q \in Q } \\
+        {} \union \Set{ \symrej \mapsto \atmR{\symrej} }
+      \end{lgathered}
+$}
+
+Under the role assignment $\theta'$, the axioms in $\srsig$ that mention $a$ and $\eow$ in their premises induce the rewritings
+\begin{equation*}
+  {\textstyle \bigunion_{q \in Q} \Set{ \ereduces[\orsig']{\defp{a} \oc \atmL{q}}{\atmL{q}'_a} \given q'_a \in \nfapow(q, a) } }
+  \quad\text{and}\quad
+  {\textstyle \bigunion_{q \in Q} \Set{ \ereduces[\orsig']{\defp{\eow} \oc \atmL{q}}{\atmR{F}(q)} } }
+  \,,
+\end{equation*}
+respectively,
+as constraints on $\orsig'$ that must be satisfied if $(\theta', \orsig')$ is to be a meaningful choreography of the \ac{NFA} specification.
+Solving these constraints for $\defp{a}$ and $\defp{\eow}$, respectively, we obtain the definitions
+\begin{equation*}
+  \defp{a} \defd \bigwith_{q \in Q} \bigl({\textstyle \bigwith_{q'_a \in \nfapow(q, a)} (\atmL{q}'_a \pmir \atmL{q})}\bigr)
+  \quad\text{and}\quad
+  \defp{\eow} \defd {\textstyle \bigwith_{q \in Q} \bigl(\up \bigfuse \atmR{F}(q) \pmir \atmL{q}\bigr)}
+  \,.
+\end{equation*}
+In full, the choreographing signature $\orsig'$ is therefore
+\begin{equation*}
+  \orsig' =
+  \bigl(\defp{\eow} \defd {\textstyle \bigwith_{q \in Q} (\up \bigfuse \atmR{F}(q) \pmir \atmL{q})}\bigr)
+  \,,
+  \biggl(
+    \defp{a} \defd \bigwith_{q \in Q} \bigl(\textstyle \bigwith_{q'_a \in \nfapow(q, a)} (\atmL{q}'_a \pmir \atmL{q})
+  \bigr)
+  \biggr)_{a \in \ialph}
+\end{equation*}
+
+Indeed, this is the same choreographing signature that is produced by the formal procedure:
+\begin{proposition}
+  For the string rewriting specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$ and role assignment $\theta'$, the judgment $\chorsig{\theta'}{\srsig}{\orsig'}$ holds.
+\end{proposition}
+As for the functional choreography, we may then establish a shortcut adequacy for this object-oriented choreography as a \lcnamecref{??} of earlier results.
+Composing this \lcnamecref{??} with \cref{??}, the adequacy of formula-as-process choreographies with respect to their underlying string rewriting specifications, we arrive at:
+\begin{corollary}\label{cor:formula-as-process:nfa-oochor-adequacy}\leavevmode
+  Let $\aut{A} = (Q, ?, F)$ be \iac{NFA} over the input alphabet $\ialph$, with choreography $(\theta', \orsig')$ as described above.
+  The following hold.
+  \begin{itemize}[nosep]
+  \item
+    If $q \nfareduces[a] q'_a$, then $\defp{a} \oc \atmL{q} \reduces_{\orsig'} \atmL{q}'_a$.
+    More generally, if $q \nfareduces[w] q'$, then $\rev{\defp{w}} \oc \atmL{q} \Reduces_{\orsig'} \atmL{q}'$.
+  \item
+    If $\defp{a} \oc \atmL{q} \reduces_{\orsig'} \octx'$, then $q \nfareduces[a] q'_a$ for some state $q'_a$ such that $\octx' = \atmL{q}'_a$.
+    More generally, if $\rev{\defp{w}} \oc \atmL{q} \Reduces_{\orsig'} \atmL{q}'$, then $q \nfareduces[w] q'$ for some state $q'$ such that $\octx' = \atmL{q}'$.
+  \item
+    $q \in F$ if, and only if, $\defp{\eow} \oc \atmL{q} \reduces_{\orsig'} (\octxe)$.
+  \end{itemize}
+\end{corollary}
+
+Define a relation on input symbols $a$ and $b$ such that $\proc{a} = \proc{b}$.
+Two symbols are then related exactly when they lead to the same successor states.
+
+\subsection{Incorporating \acs*{NFA} bisimilarity}
+
+$q \asim s$
+
+$q \nfareduces[a] q'_a$ if, and only if, $a \wc q \reduces_{\srsig} q'_a$
+
+$a \wc q \reduces_{\srsig} q'_a$ implies $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a$
+
+$\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$ implies $a \wc q \reduces_{\srsig} q'_a$ and $\octx' = \defp{q}'_a$
+
+$q \nfareduces[a] q'_a$ implies $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a$
+
+$\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$ implies $q \nfareduces[a] q'_a$ and $\octx' = \defp{q}'_a$
+
+$\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{s}'$
+
+
+
+
+
+\chapter{GARBAGE?}
 
 \section{}
 
@@ -3136,788 +4091,6 @@ More precisely, there is no choreographing assignment $\theta$ such that $\chors
 For the sake of contradiction, suppose that $\theta$ were such a choreographing assignment.
 Then, for the specification's latter two axioms to be choreographable, both $\theta(a) = \proc{a}$ and $\theta(b) = \proc{b}$ must hold.
 In that case, however, the specification's first axiom cannot be choreographed properly because $\theta$ maps more than one of the axiom's symbols to recursively defined propositions.
-
-
-
-\section{Extended example: Choreographing binary counters}\label{sec:formula-as-process:counters}
-
-In this \lcnamecref{sec:formula-as-process:counters}, we revisit binary counters, \ie, binary representations of natural numbers equipped with increment and decrement operations.
-Here we use them as an extended example of choreographing string rewriting specifications.
-
-Recall from \cref{??} a string rewriting specification $(\sralph, \srsig)$ of binary counters where the alphabet $\sralph$ and the axioms $\srsig$ are:
-\begin{equation*}
-  \begin{lgathered}
-    \sralph = \Set{e, b_0, b_1, i, d, z, s, b'_0}
-    \\
-    \srsig
-      = \begin{array}[t]{@{}l@{}l@{}l@{}}
-          (e \wc i \reduces e \wc b_1) \,, {} &
-          (b_0 \wc i \reduces b_1) \,, &
-          (b_1 \wc i \reduces i \wc b_0) \,, \\
-          %
-          (e \wc d \reduces z) \,, &
-          (b_0 \wc d \reduces b'_0) \,, {} &
-          (b_1 \wc d \reduces b_0 \wc s) \,, \\
-          % 
-          (z \wc b'_0 \reduces z) \,, &
-          (s \wc b'_0 \reduces b_1 \wc s)
-        \end{array}
-  \end{lgathered}
-\end{equation*}
-% In this \lcnamecref{sec:formula-as-process:counters},
-We will present several distinct meaningful choreographies of this specification, including an object-oriented choreography that treats the increment and decrement operations as messages, and a functional choreography that instead treats those operations as processes. 
-
-\subsection{An object-oriented choreography}
-
-Let $\theta$ be the role assignment that maps the bits $e$, $b_0$, and $b_1$ to coinductively defined processes $\defp{e}$, $\defp{b}_0$, and $\defp{b}_1$; increments $i$ and decrements $d$ to left-directed messages $\atmL{i}$ and $\atmL{d}$; unary constructors $z$ and $s$ to right-directed messages $\atmR{z}$ and $\atmR{s}$; and $b'_0$ to coinductively defined process $\defp{b}'_0$.%
-\marginnote{$
-  \theta = \{
-    \begin{lgathered}[t]
-      e \mapsto \smash{\defp{e}} , b_0 \mapsto \smash{\defp{b}_0} , b_1 \mapsto \smash{\defp{b}_1} , \\
-      i \mapsto \atmL{i} , d \mapsto \atmL{d} , \\
-      z \mapsto \atmR{z} , s \mapsto \atmR{s} , b'_0 \mapsto \smash{\defp{b}'_0} \}
-    \end{lgathered}
-$}
-
-Two axioms in $\srsig$ mention $e$ in their premises: $e \wc i \reduces e \wc b_1$ and $e \wc d \reduces z$.
-Under the role assignment $\theta$, these axioms induce the rewritings
-\begin{equation*}
-  \defp{e} \oc \atmL{i} \reduces_{\orsig} \defp{e} \oc \defp{b}_1
-  \qquad\text{and}\qquad
-  \defp{e} \oc \atmL{d} \reduces_{\orsig} \atmR{z}
-\end{equation*}
-as constraints on $\orsig$ that must be satisfied if $(\theta, \orsig)$ is to be a meaningful choreography of the binary counter specification.
-Solving these for $\defp{e}$, we obtain the definition
-\begin{equation*}
-  \defp{e} \defd (\defp{e} \fuse \defp{b}_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d})
-  \,.
-\end{equation*}
-Similar reasoning allows us to construct coinductive definitions for $\defp{b}_0$, $\defp{b}_1$, and $\smash{\defp{b}'_0}\vphantom{b}$ as the solutions of the other constraints induced from the axioms $\srsig$ by $\theta$.
-(See \cref{tbl:formula-as-process:deriving-oo-counter} for a sketch.)
-%
-\begin{table*}[tbp]
-  \renewcommand{\arraystretch}{1.2}
-  \begin{tabular}{@{}l@{\qquad}l@{\qquad}l@{}}
-    \toprule
-    \emph{Axioms, $\srsig$} &
-    \emph{Rewriting constraints on $\orsig$} & \emph{Solution, $\orsig$}
-    \\ \midrule
-    $e \wc i \reduces e \wc b_1$ and $e \wc d \reduces z$ &
-    $\defp{e} \oc \atmL{i} \reduces_{\orsig} \defp{e} \oc \defp{b}_1$ and $\defp{e} \oc \atmL{d} \reduces_{\orsig} \atmR{z}$
-      & $\defp{e} \defd (\defp{e} \fuse \defp{b}_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d})$
-    \\
-    $b_0 \wc i \reduces b_1$ and $b_0 \wc d \reduces d \wc b'_0$ &
-    $\defp{b}_0 \oc \atmL{i} \reduces_{\orsig} \defp{b}_1$ and $\defp{b}_0 \oc \atmL{d} \reduces_{\orsig} \atmL{d} \oc \defp{b}'_0$
-      & $\defp{b}_0 \defd (\up \dn \defp{b}_1 \pmir \atmL{i}) \with (\atmL{d} \fuse \defp{b}'_0 \pmir \atmL{d})$
-    \\
-    $b_1 \wc i \reduces i \wc b_0$ and $b_1 \wc d \reduces b_0 \wc s$ &
-    $\defp{b}_1 \oc \atmL{i} \reduces_{\orsig} \atmL{i} \oc \defp{b}_0$ and $\defp{b}_1 \oc \atmL{d} \reduces_{\orsig} \defp{b}_0 \oc \atmR{s}$
-      & $\defp{b}_1 \defd (\atmL{i} \fuse \defp{b}_0 \pmir \atmL{i}) \with (\defp{b}_0 \fuse \atmR{s} \pmir \atmL{d})$
-    \\
-    $z \wc b'_0 \reduces z$ and $s \wc b'_0 \reduces b_1 \wc s$ &
-    $\atmR{z} \oc \defp{b}'_0 \reduces_{\orsig} \atmR{z}$ and $\atmR{s} \oc \defp{b}'_0 \reduces_{\orsig} \defp{b}_1 \oc \atmR{s}$
-      & $\defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \defp{b}_1 \fuse \atmR{s})$
-    \\ \addlinespace \bottomrule
-  \end{tabular}
-  \caption{Deriving an object-oriented choreography of binary counters}\label{tbl:formula-as-process:deriving-oo-counter}
-\end{table*}
-%
-In full, the solution to these constraints is the signature $\orsig$:
-\begin{equation*}
-  \orsig =
-  \begin{lgathered}[t]
-    \bigl(\defp{e} \defd (\defp{e} \fuse \defp{b}_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d})\bigr) \,, \\
-    \bigl(\defp{b}_0 \defd (\up \dn \defp{b}_1 \pmir \atmL{i}) \with (\atmL{d} \fuse \defp{b}'_0 \pmir \atmL{d})\bigr) \,, \\
-    \bigl(\defp{b}_1 \defd (\atmL{i} \fuse \defp{b}_0 \pmir \atmL{i}) \with (\defp{b}_0 \fuse \atmR{s} \pmir \atmL{d})\bigr) \,, \\
-    \bigl(\defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \defp{b}_1 \fuse \atmR{s})\bigr)
-  \,.
-  \end{lgathered}
-\end{equation*}
-
-
-
-In other words, under the role assignment $\theta$, the string rewriting axioms for the binary counter are choreographed to the coinductive propositions defined in $\orsig$.
-It is easy, if tedious, to verify that 
-% the judgment $\chorsig{\theta}{\srsig}{\orsig}$ holds -- 
-the formal construction described in \lcnamecref{??} generates the same ordered rewriting signature, $\orsig$:
-%
-\begin{proposition}
-  For the above string rewriting specification $(\sralph, \srsig)$ and role assignment $\theta$, the judgment $\chorsig{\theta}{\srsig}{\orsig}$ holds.
-\end{proposition}
-
-\newthought{This choreography} might be called \emph{object-oriented} for its similarity to the eponymous\fixnote{?} programming paradigm.
-In that paradigm, computation is centered around message exchange between stateful objects -- data are stored by objects, and those data are manipulated by exchanging messages with the relevant objects.
-
-This choreography of the binary counter specification behaves similarly:
-its data -- the bits $e$, $b_0$, and $b_1$ -- are represented as processes, and its operations -- the increments $i$ and decrements $d$ -- are represented as messages exchanged with the processes.
-%
-% We refer to this choreography as \emph{object-oriented} for its similarity to the object-oriented progamming paradigm: because its data -- the bits $e$, $b_0$, and $b_1$ -- are represented as processes and its operations -- the increments $i$ and decrements $d$ -- are represented as messages.
-%
-For example, $\defp{e}$ is the coinductively defined process that waits to receive either the increment message $\atmL{i}$ or the decrement message $\atmL{d}$ from its right-hand neighbor.
-If $\atmL{i}$ is received, then $\defp{e}$ spawns a new process, $\defp{b}_1$, to its right and then continues recursively as $\defp{e}$.
-Otherwise, if $\atmL{d}$ is received, then $\defp{e}$ sends the message $\atmR{z}$ as a response.
-
-
-\newthought{The adeq{}uacy} of this choreography can be established by 
-
-Recall from \cref{??} that \fixnote{?}
-
-Combining this with \cref{thm:chor-complete}, we have the immediate \lcnamecref{??}
-\begin{corollary}
-  \begin{itemize}
-  \item If $\adec{\octx}{n}$, then $\theta(\octx) \Reduces_{\orsig} \atmR{z}$ if, and only if, $n = 0$.
-  \item If $\ainc{\octx}{n}$, then $\theta(\octx) \Reduces_{\orsig} \aval{\theta(\octx')}{n}$.
-  \end{itemize}
-\end{corollary}
-
-
-
-\subsection{A functional choreography}
-
-The object-oriented choreography is not the only choreography possible for the binary counter specification, however.
-
-Let $\theta'$ be the role assignment that is (roughly) dual to $\theta$ -- that is, $\theta'$ maps the bits $e$, $b_0$, and $b_1$ to right-directed messages $\atmR{e}$, $\atmR{b}_0$, and $\atmR{b}_1$; increments $i$ and decrements $d$ to coinductively defined processes $\defp{\imath}$ and $\defp{d}$; unary constructors $z$ and $s$ to right-directed messages $\atmR{z}$ and $\atmR{s}$; and $b'_0$ to the coinductively defined process $\defp{b}'_0$.%
-\marginnote{$
-  \theta' = \{
-    \begin{lgathered}[t]
-      e \mapsto \atmR{e} , b_0 \mapsto \atmR{b}_0 , b_1 \mapsto \atmR{b}_1 , \\
-      i \mapsto \smash{\defp{\imath}} , d \mapsto \smash{\defp{d}} , \\
-      z \mapsto \atmR{z} , s \mapsto \atmR{s} , b'_0 \mapsto \smash{\defp{b}'_0} \}
-    \end{lgathered}
-$}
-
-Once again, we can construct a choreography from the string rewriting axioms $\srsig$ by solving constraints in the form of rewritings. 
-Three axioms from $\srsig$ mention $i$ in their premises: $e \wc i \reduces e \wc b_1$, $b_0 \wc i \reduces b_1$, and $b_1 \wc i \reduces i \wc b_0$.
-Under the role assignment $\theta'$, these axioms induce the rewritings
-\begin{equation*}
-  \atmR{e} \oc \defp{\imath} \reduces_{\orsig'} \atmR{e} \oc \atmR{b}_1
-  \qquad\text{and}\qquad
-  \atmR{b}_0 \oc \defp{\imath} \reduces_{\orsig'} \atmR{b}_1
-  \qquad\text{and}\qquad
-  \atmR{b}_1 \oc \defp{\imath} \reduces_{\orsig'} \defp{\imath} \oc \atmR{b}_0
-\end{equation*}
-as constraints on $\orsig'$ that must be satisfied if $(\theta', \orsig')$ is to be a meaningful choreography of the binary counter specification.
-Solving these constraints for $\defp{\imath}$, we obtain the definition
-\begin{equation*}
-  \defp{\imath} \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp \defp{\imath} \fuse \atmR{b}_0)
-  \,.
-\end{equation*}
-Upon solving the remaining constraints for the other coinductively defined propositions, $\defp{d}$ and $\defp{b}'_0$,%
-%
-\begin{table*}[tbp]
-  \renewcommand{\arraystretch}{1.3}
-  \begin{tabular}{@{}l@{\qquad\enspace}l@{\qquad\enspace}l@{}}
-    \toprule
-    \emph{Axioms, $\srsig$} &
-    \emph{Rewriting constraints on $\orsig'$} & \emph{Solution, $\orsig'$}
-    \\ \midrule
-    $e \wc i \reduces e \wc b_1$ and $b_0 \wc i \reduces b_1$ &
-    $\atmR{e} \oc \defp{\imath} \reduces_{\orsig'} \atmR{e} \oc \atmR{b}_1$ and $\atmR{b}_0 \oc \defp{\imath} \reduces_{\orsig'} \atmR{b}_1$
-    & $\defp{\imath} \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1)$
-    \\[-0.75ex]
-    \quad and $b_1 \wc i \reduces i \wc b_0$ &
-    \quad and $\atmR{b}_1 \oc \defp{\imath} \reduces_{\orsig'} \defp{\imath} \oc \atmR{b}_0$ &
-    $\hphantom{\defp{\imath} \defd {}} \with (\atmR{b}_1 \limp \defp{\imath} \fuse \atmR{b}_0)$
-    \\
-    $e \wc d \reduces z$ and $b_0 \wc d \reduces d \wc b'_0$ &
-    $\atmR{e} \oc \defp{d} \reduces_{\orsig'} \atmR{z}$ and $\atmR{b}_0 \oc \defp{d} \reduces_{\orsig'} \defp{d} \oc \defp{b}'_0$
-      & $\defp{d} \defd (\atmR{e} \limp \atmR{z}) \with (\atmR{b}_0 \limp \defp{d} \fuse \defp{b}'_0)$
-    \\[-0.75ex]
-    \quad and $b_1 \wc d \reduces b_0 \wc s$ &
-    \quad and $\atmR{b}_1 \oc \defp{d} \reduces_{\orsig'} \atmR{b}_0 \oc \atmR{s}$ &
-    $\hphantom{\defp{d} \defd {}} \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse \atmR{s})$
-    \\
-    $z \wc b'_0 \reduces z$ and $s \wc b'_0 \reduces b_1 \wc s$ &
-    $\atmR{z} \oc \defp{b}'_0 \reduces_{\orsig'} \atmR{z}$ and $\atmR{s} \oc \defp{b}'_0 \reduces_{\orsig'} \defp{b}_1 \oc \atmR{s}$
-      & $\defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \atmR{b}_1 \fuse \atmR{s})$
-    \\ \addlinespace \bottomrule
-  \end{tabular}
-  \caption{Deriving a functional choreography of binary counters}\label{tbl:formula-as-process:deriving-functional-choreography}
-\end{table*}%
-%
-\footnote{See \cref{tbl:formula-as-process:deriving-functional-choreography} for a sketch.}
-we arrive at the complete signature
-\begin{equation*}
-  \orsig' =
-  \begin{lgathered}[t]
-    \bigl(\defp{\imath} \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp \defp{\imath} \fuse \atmR{b}_0)\bigr) \,, \\
-    \bigl(\defp{d} \defd (\atmR{e} \limp \atmR{z}) \with (\atmR{b}_0 \limp \defp{d} \fuse \defp{b}'_0) \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse \atmR{s})\bigr) \,, \\
-    \bigl(\defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \defp{b}_1 \fuse \atmR{s})\bigr)
-    \,.
-  \end{lgathered}
-\end{equation*}
-Again, it is easy to verify that this signature is exactly what is contructed by the formal description of the choreographing algorithm:
-\begin{proposition}
-  For the above string rewriting specification $(\sralph, \srsig)$ and role assignment $\theta'$, the judgment $\chorsig{\theta'}{\srsig}{\orsig'}$ holds.
-\end{proposition}
-
-In contrast with the previous, object-oriented choreography, this choreography treats its data -- the bits $e$, $b_0$, and $b_1$ -- as messages that are manipulated by processes that represent the operations -- increments $i$ and decrements $d$.
-For this reason, the choreography $(\theta', \orsig')$ might be called \emph{functional} for its similarity to functional programming.
-
-
-\subsection{Duality and other choreographies}
-
-These two (roughly) dual object-oriented and functional choreographies hint at a fundamental duality between the object-oriented and functional programming paradigms.
-
-It is briefly tempting to think that a general duality theorem for choreographies might exist.
-Perhaps if 
-A general duality theorem does not exist: even if the constraint $\atmR{a} \oc \defp{b} \oc \atmL{c} \reduces_{\orsig} \theta(w')$ is satisfiable, the dual\fixnote{?} $\defp{a} \oc \atmL{b} \oc \defp{c} \reduces \theta^{\bot}(w')$ nor $\defp{a} \oc \atmR{b} \oc \defp{c} \reduces \theta^{\bot}(w')$ are [...].
-
-
-Besides the object-oriented and functional choreographies described above, the binary counter specification has two other, related choreographies.
-The two alternatives are broadly similar to the object-oriented and functional choreographies, with two exceptions: the unary constructors $z$ and $s$ are treated as processes, not messages; and $b'_0$ is treated as a message, not a process.
-Instead of replying to a decrement with either a $\atmR{z}$ or $\atmR{s}$ response message, this choreography transforms
-
-\begin{table*}[tb]
-  \renewcommand{\arraystretch}{1.2}
-  \begin{tabular}{@{}ll@{}}
-    \toprule
-    \emph{Object-oriented--like alternative}
-    & \emph{Functional-like alternative}
-    \\ \midrule
-    $\begin{aligned}[t]
-       \theta^* &= \theta[z \mapsto \defp{z} , s \mapsto \defp{s} , b'_0 \mapsto \atmL{b}'_0]
-       \\
-       \orsig^* &=
-       \begin{lgathered}[t]
-         \bigl(\proc{e} \defd (\proc{e} \fuse \proc{b}_1 \pmir \atmL{i}) \with (\up \dn \proc{z} \pmir \atmL{d})\bigr) \,, \\
-         \bigl(\proc{b}_0 \defd (\up \dn \proc{b}_1 \pmir \atmL{i}) \with (\atmL{d} \fuse \atmL{b}'_0 \pmir \atmL{d})\bigr) \,, \\
-         \bigl(\proc{b}_1 \defd (\atmL{i} \fuse \proc{b}_0 \pmir \atmL{i}) \with (\proc{b}_0 \fuse \proc{s} \pmir \atmL{d})\bigr) \,, \\
-         \bigl(\proc{z} \defd \up \dn \proc{z} \pmir \atmL{b}'_0\bigr) \,, \\
-         \bigl(\proc{s} \defd \proc{b}_1 \fuse \proc{s} \pmir \atmL{b}'_0\bigr)
-       \end{lgathered}
-     \end{aligned}$
-    &
-    $\begin{aligned}[t]
-       \theta^\dag &= \theta'[z \mapsto \defp{z} , s \mapsto \defp{s} , b'_0 \mapsto \atmL{b}'_0]
-       \\
-       \orsig^\dag &=
-       \begin{lgathered}[t]
-         \bigl(\defp{\imath} \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp \defp{\imath} \fuse \atmR{b}_0)\bigr) \,, \\
-         \bigl(\defp{d} \defd (\atmR{e} \limp \up \dn \defp{z}) \with (\atmR{b}_0 \limp \defp{d} \fuse \atmL{b}'_0) \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse \defp{s})\bigr) \,, \\
-         \bigl(\defp{z} \defd \up \dn \defp{z} \pmir \atmL{b}'_0\bigr) \,, \\
-         \bigl(\defp{s} \defd \atmR{b}_1 \fuse \defp{s} \pmir \atmL{b}'_0\bigr)
-       \end{lgathered}
-     \end{aligned}$
-    \\ \addlinespace \bottomrule
-  \end{tabular}
-  \caption{Two other choreographies for the binary counter specification}
-\end{table*}
-
-
-\section{Extended example: Choreographing \aclp*{NFA}}
-
-Recall from \cref{??} our string rewriting specification of how \iac{NFA} processes its input.
-Given \iac{NFA} $\aut{A} = (Q, ?, F)$\fixnote{fix} over an input alphabet $\ialph$, the \ac{NFA}'s operational semantics is adequately captured by the string rewriting specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$, where the axioms $\srsig$ are given by
-\begin{equation*}
-  \!\begin{aligned}
-    \srsig = {}
-      &\Set{ a \wc q \reduces q'_a \given (a \in \ialph) \land (q \in Q) \land (q'_a \in \dotsb) } \\
-      &{} \union \Set{ \eow \wc q \reduces F(q) \given q \in Q }
-  \end{aligned}
-\text{ where }
-  F(q) = \begin{cases*}
-           \emp & if $q \in F$ \\
-           \symrej & if $q \notin F$\,.
-         \end{cases*}
-\end{equation*}
-Now we would like to choreograph this string rewriting specification in the formula-as-process ordered rewriting framework.
-As for the binary counter specification, there are, in fact, two distinct choreographies for this string rewriting specification of \acp{NFA} -- one functional and one object-oriented.
-
-\subsection{A functional choreography}
-
-Let $\theta$ be the role assignment that maps each input symbol $a \in \ialph$ to a right-directed message, $\atmR{a}$; the end-of-word marker, $\eow$, to a right-directed message, $\atmR{\eow}$; each state $q \in Q$ to a coinductively defined proposition, $\defp{q}$; and the rejection symbol, $\symrej$, to a right-directed message, $\atmR{\symrej}$.
-In other words, the input word is transmitted as a sequence of messages to a process $\defp{q}$ that tracks the \ac{NFA}'s current state.
-\marginnote{$
-  \theta =
-    \Set{ a \mapsto \atmR{a} \given a \in \ialph }
-      \union \Set{ \eow \mapsto \atmR{\eow} , \symrej \mapsto \atmR{\symrej} }
-      \union \Set{ q \mapsto \defp{q} \given q \in Q }
-$}
-
-% One possible choreography for this specification interprets each input symbol $a \in \ialph$ as a right-directed atom, $\atmR{a}$; each state $q \in Q$ as a recursively defined proposition, $\defp{q}$; and the end-of-word marker, $\emp$, as a right-directed atom, $\atmR{\emp}$.
-% In other words, the input string is transmitted as a sequence of messages to a process $\defp{q}$ that tracks the \ac{NFA}'s current state.
-
-% In other words, the \ac{NFA}'s input is treated as a sequence of messages, $\atmR{\emp} \oc \atmR{a}_n \dotsm \atmR{a}_2 \oc \atmR{a}_1$, and the \ac{NFA}'s states are treated as [recursive] processes.
-
-Choose an arbitrary state $q \in Q$.
-Under the role assignment $\theta$, the axioms in $\srsig$ that mention $q$ in their premises induce the rewritings
-\begin{equation*}
-  \begin{lgathered}
-    \Set{ \atmR{\eow} \oc \defp{q} \reduces_{\orsig} \atmR{F}(q) } \\
-    \,{} \union {\textstyle \bigunion_{a \in \ialph} \Set{ \atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a \given q'_a \in \dotsb }}
-  \end{lgathered}
-  \enspace\text{ where }
-  \atmR{F}(q) = \begin{cases*}
-                  (\octxe) & if $q \in F$ \\
-                  \atmR{\symrej} & if $q \notin F$
-                \end{cases*}
-\end{equation*}
-as constraints on $\orsig$ that must be satisfied if $(\theta, \orsig)$ is to be a meaningful choreography of the \ac{NFA} specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$.
-Solving these constraints for $\defp{q}$, we obtain the definition
-\begin{gather*}
-  \defp{q} \defd
-    (\atmR{\eow} \limp \up \bigfuse \atmR{F}(q)) \with
-    \bigwith_{a \in \ialph} \bigl(\atmR{a} \limp (
-      \textstyle \bigwith_{q'_a} \up \dn \defp{q}'_a)
-    \bigr)
-  \,,
-\intertext{and therefore the full choreographing signature is}
-  \orsig = \left(
-    \defp{q} \defd
-      (\atmR{\eow} \limp \up \bigfuse \atmR{F}(q)) \with
-      \bigwith_{a \in \ialph} \bigl(\atmR{a} \limp (
-        \textstyle \bigwith_{q'_a} \up \dn \defp{q}'_a)
-      \bigr)
-    \right)_{q \in Q}
-\end{gather*}
-As a concrete example, the adjacent \lcnamecref{fig:formula-as-process:nfa-example}
-%
-\begin{marginfigure}
-  \centering
-  \begin{tikzpicture}
-    \graph [automaton] {
-      q_0
-       -> ["a,b", loop above]
-      q_0
-       -> ["b"]
-      q_1 [accepting]
-       -> ["a,b"]
-      q_2
-       -> ["a,b", loop above]
-      q_2;
-    };
-  \end{tikzpicture}
-
-  \begin{equation*}
-    \orsig =
-    \begin{lgathered}[t]
-      \bigl(\defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0) \with (\atmR{b} \limp (\up \dn \defp{q}_0 \with \up \dn \defp{q}_1)) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
-      \bigl(\defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \one)\bigr) \,, \\
-      \bigl(\defp{q}_2 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr)
-    \end{lgathered}
-  \end{equation*}
-
-  \caption{\Iac*{NFA} that accepts exactly those words, over the alphabet $\ialph = \set{a,b}$, that end with $b$; and a choreography}\label{fig:formula-as-process:nfa-example}
-\end{marginfigure}%
-%
-recalls from \cref{??} \iac{NFA} that accepts those words, over the alphabet $\ialph = \Set{a,b}$, that end with $b$, and also gives a choreographing signature for that \ac{NFA}.
-
-% \begin{equation*}
-%   \orsig =
-%     \bigl(
-%       \defp{q} \defd
-%         (\atmR{\eow} \limp \atmR{F}(q)) \with
-%         \bigwith_{a \in \ialph} \bigl(
-%           \textstyle \bigwith_{q'_a} (\atmR{a} \limp \up \dn \defp{q}'_a)
-%         \bigr)
-%     \bigr)
-%   \,.
-% \end{equation*}
-
-% Under this choreographing assignment, the string rewriting axioms become rewriting steps that must be derivable:
-% \begin{equation*}
-%   \atmR{a} \oc \defp{q}
-%     \reduces \defp{q}'_a
-%   %
-%   \atmR{\emp} \oc \defp{q}
-%     \reduces \begin{cases*}
-%                & if $q \in F$ \\
-%                & if $q \notin F$
-%              \end{cases*}
-% \end{equation*}
-% These required rewritings are indeed local: each one contains exactly one recursively defined process in its premise, with all remaining propositions in its premise being input messages for that process.
-% For instance, each $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a$
-
-% Solving for each recursively defined proposition, we have one definition, 
-% \begin{equation*}
-%   \defp{q} \defd \bigwith_{a \in \ialph} \bigwith_{q\smash{'_a}} (\atmR{a} \limp \defp{q}'_a) \with (\atmR{\emp} \limp \nfa{F}(q))
-%   \,,
-% \end{equation*}
-% for each \ac{NFA} state $q \in Q$.
-Similarly to one of the binary counter's choreographies, this choreography might be called \enquote*{functional} because the data, an input string, are represented by messages that are acted on in a function-like way by the current state's process, $\defp{q}$.
-
-\begin{proposition}\label{prop:formula-as-process:nfa-functional-chorsig}
-  For the above string rewriting specification $(\sralph \dunion \Set{\eow, \symrej}, \srsig)$ and role assignment $\theta$, the judgment $\chorsig{\theta}{\srsig}{\orsig}$ holds (up to focusing equivalence).
-\end{proposition}
-% %
-% \noindent
-% The proof of this \lcnamecref{thm:choreographies:nfa-functional-chorsig} is a completely straightforward, if tedious, formalization of the preceding intuition, along the line of \cref{??}.
-
-
-Recall from \cref{??} the adequacy \lcnamecref{??} for the string rewriting specification of \acp{NFA}.
-
-[...]\fixnote{fix}
-
-Composing this with \cref{??}, the adequacy of formula-as-process choreographies with respect to their underlying string rewriting specifications, we arrive at:
-%
-\begin{marginfigure}
-  \begin{equation*}
-    \rev{\atmR{w}} =
-      \begin{cases*}
-        (\octxe) & if $w = \emp$ \\
-        \rev{\atmR{w}_0} \oc \atmR{a} & if $w = a \wc w_0$
-      \end{cases*}
-  \end{equation*}
-  \caption{An anti-homomorphism from input words to sequences of right-directed messages.
-    Notice that $\rev{\atmR{w}} = \theta(\rev{w})$, where $\rev{}$ is defined in \cref{??}.}\label{fig:formula-as-process:msg-rev}
-\end{marginfigure}%
-%
-\begin{corollary}\label{cor:formula-as-process:nfa-fnchor-adequacy}\leavevmode
-  Let $\aut{A} = (Q, ?, F)$ be \iac{NFA} over the input alphabet $\ialph$, with choreography $(\theta, \orsig)$ as described above.
-  The following hold.
-  \begin{itemize}[nosep]
-  \item
-    If $q \nfareduces[a] q'_a$, then $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a$.
-    More generally, if $q \nfareduces[w] q'$, then $\rev{\atmR{w}} \oc \defp{q} \Reduces_{\orsig} \defp{q}'$.
-  \item
-    If $\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$, then $q \nfareduces[a] q'_a$ for some state $q'_a$ such that $\octx' = \defp{q}'_a$.
-    More generally, if $\rev{\atmR{w}} \oc \defp{q} \Reduces_{\orsig} \defp{q}'$, then $q \nfareduces[w] q'$ for some state $q'$ such that $\octx' = \defp{q}'$.
-  \item
-    $q \in F$ if, and only if, $\atmR{\eow} \oc \defp{q} \reduces_{\orsig} (\octxe)$.
-  \end{itemize}
-\end{corollary}
-
-This \lcnamecref{cor:formula-as-process:nfa-fnchor-adequacy} gives -- nearly for free -- an end-to-end adequacy result for the functional \ac{NFA} choreography with respect to the mathematical model of \acp{NFA}.
-The first clause captures the completeness of the choreography: each \ac{NFA} transition is simulated by a corresponding rewriting in the choreography.
-
-The second clause captures soundness, but is not phrased exactly as we might have hoped.
-Its premise is stated in terms of the choreography alone, but its conclusion mixes ideas from the \ac{NFA} model ($q \nfareduces[a] q'_a$) with ideas from the choreography ($\octx' = \defp{q}'_a$).
-It would be much nicer if the conclusion used only ideas native to \acp{NFA}, for then soundness would cleanly relate the chreography, on the one hand, to the \ac{NFA} model, on the other hand.
-
-
-
-Upon examining the definition of $\defp{q}$, we notice that a rewriting $\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$ exists (if and) only if $\octx' = \defp{s}'$ for some state $s' \in Q$.
-This allows us to revise the statement of soundness: 
-\begin{itemize}
-\item
-  If $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{s}'$, then $q \nfareduces[a] q'_a$ for some state $q'_a$ such that $\defp{s}' = \defp{q}'_a$.
-\end{itemize}
-However, this statement is still not quite satisfactory in that its conclusion, with $\defp{s}' = \defp{q}'_a$, still mixes in ideas from the choreography.
-Is it possible to characterize this relationship between $s'$ and $q'_a$ natively on the \ac{NFA}?
-
-
-
-The \lcnamecref{cor:formula-as-process:nfa-fnchor-adequacy} is not phrased exactly how we might have hoped.
-The first clause, completeness of the choreography with respect to the \ac{NFA}, cleanly relates each \ac{NFA} transition to a rewriting
-It would be much nicer if the second clause, soundness of the choreography with respect to the \ac{NFA}, could be stated in terms of the \ac{NFA} and its choreography alone.
-
-Greedily, we might have hoped for slightly more.
-% This \lcnamecref{cor:formula-as-process:nfa-fnchor-adequacy} is [...], but perhaps unsatisfactory in one particular detail.
-The second clause, soundness of the choreography with respect to the \ac{NFA}, drags in an ordered context $\octx'$.
-It would be much nicer if the choreography's soundness could be stated in terms of the \ac{NFA} and its choreography alone.
-
-The first step toward such a rephrasing is to notice that $\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$ \emph{only if} $\octx' = \defp{q}'$ for some state $q'$.
-Thus, the above statement of soundness is equivalent to:
-\begin{itemize}
-\item
-  If $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'$, then $q \nfareduces[a] q'_a$ for some state $q'_a$ such that $\defp{q}' = \defp{q}'_a$.
-\end{itemize}
-Better
-
-
-This \lcnamecref{cor:formula-as-process:nfa-fnchor-adequacy} is [...], but perhaps unsatisfactory in one particular detail.
-The second clause, soundness of the choreography with respect to the \ac{NFA}, drags in an ordered context $\octx'$.
-It would be much nicer if the choreography's soundness were a direct converse of its completeness, as in:
-\begin{itemize}
-\item If $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a$, then $q \nfareduces[a] q'_a$.
-\end{itemize}
-Unfortunately, this claim is, in fact, false.
-%
-\begin{falseclaim}
-  Let $\aut{A} = (Q, ?, F)$ be \iac{NFA} over the input alphabet $\ialph$.
-  If $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a$, then $q \nfareduces[a] q'$.
-\end{falseclaim}
-%
-\begin{marginfigure}
-    \centering
-    % \subfloat[][]{\label{fig:ordered-rewriting:dfa-counterexample:dfa}%
-      \begin{equation*}
-        \aut{A}'_2 = 
-        \begin{tikzpicture}[baseline=(q_0.base)]
-          \graph [automaton] {
-            q_0
-             -> ["a,b", loop above]
-            q_0
-             -> ["b"]
-            q_1 [accepting]
-             -> ["a,b"]
-            q_2
-             -> ["a,b", loop above]
-            q_2;
-            %
-            s_1 [accepting, below = of q_1.south]
-             -> ["a,b" sloped]
-            q_2;
-          };
-        \end{tikzpicture}
-      \end{equation*}
-
-  \begin{equation*}
-    \orsig =
-    \begin{lgathered}[t]
-      \bigl(\defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0) \with (\atmR{b} \limp (\up \dn \defp{q}_0 \with \up \dn \defp{q}_1)) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
-      \bigl(\defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \one)\bigr) \,, \\
-      \bigl(\defp{q}_2 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
-      \bigl(\defp{s}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \one)\bigr)
-    \end{lgathered}
-  \end{equation*}
-    \caption{A slightly modified version of the \ac*{NFA} from \cref{fig:formula-as-process:nfa-example}; and a choreography}\label{fig:formula-as-process:nfa-counterexample}
-  \end{marginfigure}%
-\begin{proof}[Counterexample]
-  Consider the \ac{NFA} and encoding shown in the adjacent \lcnamecref{fig:formula-as-process:nfa-counterexample}; it is the same \ac{NFA} as shown in \cref{fig:formula-as-process:nfa-example}, but with one added state, $s_1$, that is unreachable from $q_0$, $q_1$, and $q_2$.
-    %
-  % When encoded as an ordered rewriting specification, it corresponds to the following definitions:
-  % \begin{equation*}
-  %   \begin{lgathered}
-  %     \dfa{q}_0 \defd (a \limp \dfa{q}_0) \with (b \limp \dfa{q}_1) \with (\emp \limp \top) \\
-  %     \dfa{q}_1 \defd (a \limp \dfa{q}_0) \with (b \limp \dfa{q}_1) \with (\emp \limp \one) \\
-  %     \dfa{s}_1 \defd (a \limp \dfa{q}_0) \with (b \limp \dfa{s}_1) \with (\emp \limp \one)
-  %   \end{lgathered}
-  % \end{equation*}
-  Notice that, as a coinductive consequence of the equirecursive treatment of definitions, $\defp{q}_1 = \defp{s}_1$, and so $\atmR{b} \oc \defp{q}_0 \reduces_{\orsig} \defp{q}_1 = \defp{s}_1$.
-  However, even though $\atmR{b} \oc \defp{q}_0 \reduces_{\orsig} \defp{s}_1$, the \ac{NFA} has no $q_0 \dfareduces[b] s_1$ transition, because $q_1 \neq s_1$ (and $q_0 \neq s_1$, too).
-\end{proof}
-
-As this counterexample shows, the failure of this claim stems from the fact that the choreography of states is not injective -- here, $q_1 \neq s_1$ even though $\defp{q}_1 = \defp{s}_1$.
-In other words, equality of state encodings is a coarser equivalence than equality of the states themselves.
-
-A closer examination of the preceding counterexample reveals that the states $q_1$ and $s_1$, while not equal, are in fact bisimilar~\parencref{??}.
-In other words, although the choreographing of states is not, strictly speaking, injective, it is injective \emph{up to bisimilarity}: $\defp{q} = \defp{s}$ implies $q \asim s$.
-This suggests a more elegant solution to the apparent lack of adequacy: the adequacy should be judged up to \ac{NFA} bisimilarity.
-
-\begin{theorem}
-  
-\end{theorem}
-
-One possible remedy for this lack of adequacy might be to revise the encoding to have a stronger nominal character.
-By tagging each state's encoding with an atom that is unique to that state, we can make the encoding manifestly injective.
-For instance, given the pairwise distinct atoms $\Set{q \given q \in F}$ and $\Set{\bar{q} \given q \in Q - F}$ to tag final and non-final states, respectively, we could define an alternative encoding, $\check{q}$:
-%
-\begin{gather*}
-  \check{q} \defd
-    \parens[size=big]{
-      \bigwith_{a \in \ialph}(a \limp \check{q}'_a)}
-    \with
-    \parens[size=big]{\emp \limp \check{F}(q)}
-  %
-  \shortintertext{where}
-  %
-  q \dfareduces[a] q'_a
-  \text{, for all input symbols $a \in \ialph$,\quad and\quad}
-  \check{F}(q) =
-    \begin{cases*}
-      q & if $q \in F$ \\
-      \bar{q} & if $q \notin F$%
-    \,.
-    \end{cases*}
-\end{gather*}
-%
-Under this alternative encoding, the states $q_1$ and $s_1$ of \cref{fig:ordered-rewriting:dfa-counterexample} are no longer a counterexample to injectivity:
-Because $q_1$ and $s_1$ are distinct states, they correspond to distinct tags, and so $\check{q}_1 \neq \check{s}_1$.
-
-% One possible remedy
-% % for this apparent lack of adequacy
-% might be to revise the encoding to have a stronger nominal character % .
-% by tagging each state's encoding with an atom that is unique to that state.
-% For instance, given the pairwise distinct atoms $\set{q \given q \in F}$ and $\set{\bar{q} \given q \in Q - F}$ to tag final and non-final states, respectively, we could define an alternative encoding, $\check{q}$, that is manifestly injective:
-% %
-% % \begin{marginfigure}
-% \begin{gather*}
-%   \check{q} \defd
-%     \parens[size=big]{
-%       \bigwith_{a \in \ialph}(a \limp \check{q}'_a)}
-%     \with
-%     \parens[size=big]{\emp \limp \check{F}(q)}
-%   %
-%   \shortintertext{where}
-%   %
-%   q \dfareduces[a] q'_a
-%   \text{, for all input symbols $a \in \ialph$,\quad and\quad}
-%   \check{F}(q) =
-%     \begin{cases*}
-%       q & if $q \in F$ \\
-%       \bar{q} & if $q \notin F$%
-%     \,.
-%     \end{cases*}
-% \end{gather*}
-% % \end{marginfigure}%
-% % , the encoding can be made to be injective.
-% % With this change, the alternative encoding is now injective: $\check{q} = \check{s}$ implies $q = s$.
-
-Although such a solution is certainly possible, it seems unsatisfyingly ad~hoc.
-A closer examination of the preceding counterexample reveals that the states $q_1$ and $s_1$, while not equal, are in fact bisimilar~\parencref{??}.
-In other words, although the encoding is not, strictly speaking, injective, it is injective \emph{up to bisimilarity}: $\dfa{q} = \dfa{s}$ implies $q \asim s$.
-This suggests a more elegant solution to the apparent lack of adequacy: the encoding's adequacy should be judged up to \ac{DFA} bisimilarity.
-
-This \lcnamecref{cor:formula-as-process:nfa-fnchor-adequacy} directly relates the automaton to its choreography, with one exception that is arguably unsatisfactory: an ordered context $\octx'$ is dragged into the second statement.
-Thus, we might like to rephrase this result so that the context $\octx'$ and condition $\octx' = \defp{q}'_a$ are replaced with conditions native to the \ac{NFA} itself.
-
-The first step is to notice that the definition of $\defp{q}$ is such that there is a rewriting $\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$ if, and only if, $\octx' = \defp{s}'$ for some state $s'$.
-\begin{itemize}
-\item
-  If $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{s}'$, then $q \nfareduces[a] q'_a$ for some state $q'_a$ such that $\defp{s}' = \defp{q}'_a$.
-\end{itemize}
-
-Can the relationship $\defp{q}' = \defp{q}'_a$ be stated natively on $q'$ and $a'_a$?
-Notice that $\defp{q} = \defp{s}$ implies that $q$ and $s$ are bisimilar states.
-%
-\begin{theorem}
-  Let $\aut{A} = (Q, ?, F)$\fixnote{fix} be \iac{NFA} over the input alphabet $\ialph$.
-  If $\defp{q} = \defp{s}$, then $q \asim s$.
-\end{theorem}
-\begin{proof}
-  We will show that the relation $\mathord{\simu{R}} = \Set{(q,s) \given \defp{q} = \defp{s}}$ is a bisimulation and is therefore included in \ac{NFA} bisimilarity.
-  \begin{itemize}
-  \item
-    All $\simu{R}$-related states have $\simu{R}$-related $a$-successors, for all input symbols $a \in \ialph$.
-
-    Let $q$ and $s$ be $\simu{R}$-related states.
-    Being $\simu{R}$-related, $\defp{q} = \defp{s}$.
-    Because definitions are treated equirecursively, their unrollings are also equal.
-    For each state $q'_a$ that $a$-succeeds $q$, there must therefore exist a state $s'_a$ such that $\defp{q}'_a = \defp{s}'_a$.
-    In other words, each $a$-successor of $q$ is $\simu{R}$-related to an $a$-successor of state $s$.
-
-  \item
-    All $\simu{R}$-related states have matching finalities.
-
-    Let $q$ and $s$ be $\simu{R}$-related states, with $q$ a final state.
-    Being $\simu{R}$-related, $\defp{q} = \defp{s}$.
-    Because definitions are treated equirecursively, their unrollings are also equal.
-    It follows that $\atmR{F}(q) = \atmR{F}(s)$, and so $s$ is also a final state.
-  %
-  \qedhere
-  \end{itemize}
-\end{proof}
-
-
-\begin{theorem}
-  Let $\aut{A} = (Q, ?, F)$ be a \emph{\ac{DFA}} over an input alphabet $\ialph$.
-  For all states $q$ and $s$, if $q \asim s$, then $\defp{q} = \defp{s}$.
-\end{theorem}
-%
-\begin{proof}
-  Being \iac{DFA}, the states $q$ and $s$ have unique $a$-successors for each input symbol $a \in \ialph$.
-  Because $q$ and $s$ are bisimilar, so are their $a$-successors.
-  By the coinductive hypothesis, the unique $a$-successors of $q$ and $s$ have equal encodings: $\defp{q}'_a$
-\end{proof}
-
-
-Unfortunately, the converse is not true.
-\begin{falseclaim}
-  Let $\aut{A} = (Q, ?, F)$ be \iac{NFA} over an input alphabet $\ialph$.
-  For all states $q$ and $s$, if $q \asim s$, then $\defp{q} = \defp{s}$.
-\end{falseclaim}
-%
-\begin{proof}[Counterexample]
-  Consider the \ac{NFA} and choreography depicted in the adjacent \lcnamecref{fig:formula-as-process:nfa-bisim-falseclaim}.%
-  \begin{marginfigure}
-    \begin{equation*}
-      \begin{tikzpicture}[baseline=(q_0.base)]
-        \graph [automaton] {
-          q_0 [accepting]
-           -> ["a", loop above]
-          q_0
-           -> ["a"]
-          q_1 [accepting]
-           -> ["a"]
-          q_1;
-        };
-      \end{tikzpicture}
-    \end{equation*}
-    \begin{equation*}
-      \begin{lgathered}[t]
-        \defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0 \with \up \dn \defp{q}_1) \with (\atmR{\eow} \limp \up \one) \\
-        \defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_1) \with (\atmR{\eow} \limp \up \one)
-      \end{lgathered}
-    \end{equation*}
-    \caption{\Iacs*{NFA} that accepts all finite wordsover the alphabet $\ialph = \Set{a}$}\label{fig:formula-as-process:nfa-bisim-falseclaim}
-  \end{marginfigure}
-\end{proof}
-
-
-\subsection{An object-oriented choreography}
-
-Once again, the above functional choreography is not the only choreography possible for the \ac{NFA} specification.
-As for the binary counter, there is an \enquote*{object-oriented} choreography that treats the states as messages that effect a response from processes that represent symbols of an input word.
-In this way, we may use a role assignment that is roughly dual to the assignment used in the preceding functional choreography.
-
-Specifically, let $\theta'$ be the role assignment that maps each input symbol $a \in \ialph$ and the end-of-word marker, $\eow$, to coinductively defined propositions, $\defp{a}$ and $\defp{\eow}$, respectively; each state $q \in Q$ to a left-directed message, $\atmL{q}$; and the rejection symbol, $\symrej$, to a right-directed message, $\atmR{\symrej}$.%
-\marginnote{%
-  \begin{equation*}
-    \theta' = \Set{ a \mapsto \defp{a} \given a \in \ialph }
-                \union \Set{ \eow \mapsto \defp{\eow} }
-                \union \Set{ q \mapsto \atmL{q} \given q \in Q }
-                \union \Set{ \symrej \mapsto \atmR{\symrej} }
-  \end{equation*}
-}
-
-Under the role assignment $\theta'$, the axioms in $\srsig$ that mention $a$ and $\eow$ in their premises induce the rewritings
-\begin{equation*}
-  {\textstyle \bigunion_{q \in Q} \Set{ \defp{a} \oc \atmL{q} \reduces_{\orsig'} \atmL{q}'_a \given q'_a \in \dotsb } }
-  \quad\text{and}\quad
-  {\textstyle \bigunion_{q \in Q} \Set{ \defp{\eow} \oc \atmL{q} \reduces_{\orsig'} \atmR{F}(q) } }
-  \,,
-\end{equation*}
-respectively,
-as constraints on $\orsig'$ that must be satisfied if $(\theta', \orsig')$ is to be a meaningful choreography of the \ac{NFA} specification.
-Solving these constraints for $\defp{a}$ and $\defp{\eow}$, respectively, we obtain the definitions
-\begin{equation*}
-  \defp{a} \defd \bigwith_{q \in Q} \bigl({\textstyle \bigwith_{q'_a \in \dotsb} (\atmL{q}'_a \pmir \atmL{q})}\bigr)
-  \quad\text{and}\quad
-  \defp{\eow} \defd {\textstyle \bigwith_{q \in Q} \bigl(\up \bigfuse \atmR{F}(q) \pmir \atmL{q}\bigr)}
-  \,.
-\end{equation*}
-In full, the choreographing signature $\orsig'$ is therefore
-\begin{equation*}
-  \orsig' =
-  \bigl(\defp{\eow} \defd {\textstyle \bigwith_{q \in Q} (\up \bigfuse \atmR{F}(q) \pmir \atmL{q})}\bigr)
-  \,,
-  \biggl(
-    \defp{a} \defd \bigwith_{q \in Q} \bigl(\textstyle \bigwith_{q'_a \in \dotsb} (\atmL{q}'_a \pmir \atmL{q})
-  \bigr)
-  \biggr)_{a \in \ialph}
-\end{equation*}
-
-Indeed, this is the same choreographing signature that is produced by the formal procedure:
-\begin{proposition}
-  For the string rewriting specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$ and role assignment $\theta'$, the judgment $\chorsig{\theta'}{\srsig}{\orsig'}$ holds.
-\end{proposition}
-As for the functional choreography, we may then establish a shortcut adequacy for this object-oriented choreography as a \lcnamecref{??} of earlier results.
-Composing this \lcnamecref{??} with \cref{??}, the adequacy of formula-as-process choreographies with respect to their underlying string rewriting specifications, we arrive at:
-\begin{corollary}\label{cor:formula-as-process:nfa-oochor-adequacy}\leavevmode
-  Let $\aut{A} = (Q, ?, F)$ be \iac{NFA} over the input alphabet $\ialph$, with choreography $(\theta', \orsig')$ as described above.
-  The following hold.
-  \begin{itemize}[nosep]
-  \item
-    If $q \nfareduces[a] q'_a$, then $\defp{a} \oc \atmL{q} \reduces_{\orsig'} \atmL{q}'_a$.
-    More generally, if $q \nfareduces[w] q'$, then $\rev{\defp{w}} \oc \atmL{q} \Reduces_{\orsig'} \atmL{q}'$.
-  \item
-    If $\defp{a} \oc \atmL{q} \reduces_{\orsig'} \octx'$, then $q \nfareduces[a] q'_a$ for some state $q'_a$ such that $\octx' = \atmL{q}'_a$.
-    More generally, if $\rev{\defp{w}} \oc \atmL{q} \Reduces_{\orsig'} \atmL{q}'$, then $q \nfareduces[w] q'$ for some state $q'$ such that $\octx' = \atmL{q}'$.
-  \item
-    $q \in F$ if, and only if, $\defp{\eow} \oc \atmL{q} \reduces_{\orsig'} (\octxe)$.
-  \end{itemize}
-\end{corollary}
-
-Define a relation on input symbols $a$ and $b$ such that $\proc{a} = \proc{b}$.
-Two symbols are then related exactly when they lead to the same successor states.
-
-\subsection{Incorporating \acs*{NFA} bisimilarity}
-
-$q \asim s$
-
-$q \nfareduces[a] q'_a$ if, and only if, $a \wc q \reduces_{\srsig} q'_a$
-
-$a \wc q \reduces_{\srsig} q'_a$ implies $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a$
-
-$\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$ implies $a \wc q \reduces_{\srsig} q'_a$ and $\octx' = \defp{q}'_a$
-
-$q \nfareduces[a] q'_a$ implies $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'_a$
-
-$\atmR{a} \oc \defp{q} \reduces_{\orsig} \octx'$ implies $q \nfareduces[a] q'_a$ and $\octx' = \defp{q}'_a$
-
-$\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{s}'$
 
 
 

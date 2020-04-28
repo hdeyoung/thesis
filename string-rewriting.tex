@@ -405,7 +405,10 @@ Given the reversal (anti-)\-homo\-morph\-ism for finite words defined in the adj
   \caption{An (anti-)\-homo\-morph\-ism for reversal of finite words}\label{fig:string-rewriting:reversal}
 \end{marginfigure}%
 , we can prove the following adequacy result.
-\begin{theorem}[Adequacy of \ac*{NFA} specification]\label{thm:nfa-adequacy-string-rewriting}
+\begin{restatable}[
+  name=Adequacy of \ac*{NFA} specification,
+  label=thm:nfa-adequacy-string-rewriting
+]{theorem}{nfaadequacystringrewriting}
   Let $\aut{A} = (Q, ?, F)$\fixnote{fix} be \iac{NFA} over the input alphabet $\ialph$.
   \begin{itemize}[nosep]
   \item
@@ -415,7 +418,7 @@ Given the reversal (anti-)\-homo\-morph\-ism for finite words defined in the adj
   \item
     $q \nfareduces[w] q'$ if, and only if, $\rev{w} \oc q \Reduces q'$, for all finite words $w \in \finwds{\ialph}$.
   \end{itemize}  
-\end{theorem}
+\end{restatable}
 \begin{proof}
   The first two parts follow immediately from the \ac{NFA}'s specification; the third part follows by induction over the structure of the input word $w$.
 \end{proof}
@@ -695,7 +698,7 @@ This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then i
 \end{proof}
 
 
-
+\clearpage
 \subsection{A decrement operation}
 
 Binary counters may also be equipped with a decrement operation.

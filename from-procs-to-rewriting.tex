@@ -5,27 +5,211 @@
 \alertnote{Is this a shallow embedding?
 Is HOAS deep or shallow?}
 
+Here we give a translation, $\trconf{}$, of process configurations into ordered contexts from the formula-as-process rewriting framework of \cref{ch:formula-as-process}.
+% More specifically, we first define two mutually inductive translations, $\trproc[+]{}$ and $\trproc[-]{}$, that map process expressions to positive and negative propositions, respectively, and then define a homomorphism, $\trconf{}$, that maps process configurations to ordered contexts.
+For the translation to be adequate, it should serve as a reduction bisimulation between the reduction semantics for process configurations and formula-as-process rewriting for ordered contexts.
+Ideally, $\trconf{}$ ought to be a strong reduction bisimulation, so that the operational correspondence is as tight as possible.
+Because the translation will be a total function, the strong bisimulation requirement amounts to the diagrams
+\begin{equation*}
+  \begin{tikzcd}
+    \cnf \rar[reduces] \dar[relation][swap]{\trconf{}} & \cnf\mathrlap{'} \dar[relation]{\trconf{}}
+    \\
+    \trconf{\cnf} \rar[reduces, exists] & \trconf{\cnf'}
+  \end{tikzcd}
+  \qquad\text{and}\qquad
+  \begin{tikzcd}
+    \cnf \rar[reduces, exists] \dar[relation][swap]{\trconf{}} & \cnf\mathrlap{'} \dar[relation, exists]{\trconf{}}
+    \\
+    \trconf{\cnf} \rar[reduces] & \octx\mathrlap{'\,.}
+  \end{tikzcd}\hphantom{'\,.}
+\end{equation*}
+
+We expect that $\trconf{}$ be a monoid homomorphism from process configurations to ordered contexts;
+consequently, we will need an auxiliary translation, $\trproc{}$.
 \begin{equation*}
   \begin{aligned}
+    \trconf{\cnfe} &= (\octxe) \\
+    \trconf{\cnf_1 \cc \cnf_2} &= \trconf{\cnf_1} \oc \trconf{\cnf_2} \\
+    \trconf{P} &= \trproc{P}
+  \end{aligned}
+\end{equation*}
+So that $\trconf{\cnf}$ is a well-formed ordered context in the formula-as-process focused ordered rewriting framework, $\trproc{}$ should map process expressions to either atoms or negative propositions.%
+\footnote{Recall from \cref{??} that formula-as-process ordered contexts may not contain non-atomic positive propositions.}
+
+With this definition for $\trconf{}$ in hand, we can then run each process reduction axiom through the first bisimulation diagram to generate constraints on $\trproc{}$ that must be satisfied if $\trconf{}$ is to be a strong bisimulation.
+These axioms and induced constraints are summarized in \cref{tbl:trconf-constraints}.%
+%
+\begin{table}[tb]
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{@{}cc@{\enspace}l@{}}
+    \toprule
+    \emph{Process reduction} & \emph{Formula-as-process rewriting constraint}
+    \\ \midrule
+    $\spawn{P}{Q} \reduces P \cc Q$ & $\trproc{\spawn{P}{Q}} \dreduces \trproc{P} \oc \trproc{Q}$
+    \\
+    $\fwd \reduces (\cnfe)$ & $\trproc{\fwd} \dreduces (\octxe)$
+    \\
+    $\selectR{\kay} \cc \caseL[\ell \in L]{\ell => Q_{\ell}} \reduces Q_{\kay}$ & $\trproc{\selectR{\kay}} \oc \trproc{\caseL[\ell \in L]{\ell => Q_{\ell}}} \dreduces \trproc{Q_{\kay}}$ & $\!(\kay \in L)$
+    \\
+    $\caseR[\ell \in L]{\ell => P_{\ell}} \cc \selectL{\kay} \reduces P_{\kay}$ & $\trproc{\caseR[\ell \in L]{\ell => P_{\ell}}} \oc \trproc{\selectL{\kay}} \dreduces \trproc{P_{\kay}}$ & $\!(\kay \in L)$
+    \\ \addlinespace \bottomrule
+  \end{tabular}
+  \caption{Constraints on $\trproc{}$ that must be satisfied if $\trconf{}$ is to be a strong reduction bisimulation}\label{tbl:trconf-constraints}
+\end{table}
+
+For example, the process reduction axiom $\spawn{P}{Q} \reduces P \cc Q$ induces the constraint $\trproc{\spawn{P}{Q}} \dreduces \trproc{P} \oc \trproc{Q}$.
+In other words, we would like to find a definition for $\trproc{\spawn{P}{Q}}$, compositional in $\trproc{P}$ and $\trproc{Q}$, such that $\trproc{\spawn{P}{Q}}$  decomposes to $\trproc{P} \oc \trproc{Q}$ in a single step.
+
+The obvious candidate is to define
+\begin{equation*}
+  \trproc{\spawn{P}{Q}} = \trproc{P} \fuse \trproc{Q}
+  \,,
+\end{equation*}
+but there are two obstacles to such a definition.
+First, $\trproc{P} \fuse \trproc{Q}$ is not a non-atomic positive proposition.
+But, second and more troublingly, positive propositions are decomposed all at once during the focusing bipole that constitutes a rewriting step in the formula-as-process \emph{focused} ordered rewriting framework.
+This leads to a mismatch between the small-step process reductions and the big-step formula-as-process focused ordered rewriting, as shown in the adjacent \lcnamecref{fig:translation:focused-mismatch}.%
+%
+\begin{marginfigure}
+  \begin{equation*}
+    \begin{tikzcd}
+      \spawn{(\spawn{P}{Q})}{R} \rar[reduces] \arrow[relation]{dd}[swap]{\trconf{}}
+        & (\spawn{P}{Q}) \cc R \dar[relation]{\trconf{}}
+      \\
+        & (\trproc{P} \fuse \trproc{Q}) \oc \trproc{R} \dar[phantom]{\neq}
+      \\[-2ex]
+      (\trproc{P} \fuse \trproc{Q}) \fuse \trproc{R} \rar[reduces]
+        & (\trproc{P} \oc \trproc{Q}) \oc \trproc{R}
+    \end{tikzcd}
+  \end{equation*}
+  \caption{Mismatch between process reduction and big-step decomposition of positive propositions}\label{fig:translation:focused-mismatch}
+\end{marginfigure}%
+
+
+\begin{equation*}
+  \trproc{\caseL[\ell \in L]{\ell => Q_{\ell}}} = \dn \bigwith_{\ell \in L} \bigl(\trproc{\selectR{\ell}} \limp \up \trproc{Q_{\ell}}\bigr)
+  \,.
+\end{equation*}
+
+\begin{equation*}
+  \trproc{\selectR{\kay}} = \atmR{\kay}
+\end{equation*}
+
+
+\begin{equation*}
+  \!\begin{aligned}[b]
+    \trproc{\spawn{P}{Q}} &= \trproc{P} \fuse \trproc{Q} \\
+    \trproc{\fwd} &= \one \\
+    \trproc{\selectR{\kay}} &= \atmR{\kay} \\
+    \trproc{\selectL{\kay}} &= \atmL{\kay} \\
+    \trproc{\defp{p}} &= \dn \n{\defp{p}}
+  \end{aligned}
+  \quad
+  \!\begin{aligned}[b]
+    \trproc{\caseL[\ell \in L]{\ell => Q_{\ell}}} &= \dn {\textstyle \bigwith_{\ell \in L}\bigl(\atmR{\ell} \limp \up \trproc{Q_{\ell}}\bigr)} \\
+    \trproc{\caseR[\ell \in L]{\ell => P_{\ell}}} &= \dn {\textstyle \bigwith_{\ell \in L}\bigl(\up \trproc{P_{\ell}} \pmir \atmL{\ell}\bigr)} \\\\
+  \end{aligned}
+\end{equation*}
+
+
+\begin{equation*}
+  \begin{lgathered}
+    \defp{e} \defd \caseR{i => \spawn{\defp{e}}{\defp{b}_1}
+                        | d => \selectR{z}}
+    \\
+    \defp{b}_0 \defd \caseR{i => \defp{b}_1
+                          | d => \spawn{\selectL{d}}{\defp{b}'_0}}
+    \\
+    \defp{b}_1 \defd \caseR{i => \spawn{\selectL{i}}{\defp{b}_0}
+                          | d => \spawn{\defp{b}_0}{\selectR{s}}}
+    \\
+    \defp{b}'_0 \defd \caseL{z => \selectR{z}
+                           | s => \spawn{\defp{b}_1}{\selectR{s}}}
+  \end{lgathered}
+  \qquad
+  \begin{lgathered}
+    \n{\defp{e}} \defd \dn \bigl((\up (\dn \n{\defp{e}} \fuse \dn \n{\defp{b}_1}) \pmir \atmL{i}) \with (\up \atmR{z} \pmir \atmL{d})\bigr)
+    \\
+    \n{\defp{b}_0} \defd \dn \bigl((\up \dn \n{\defp{b}_1} \pmir \atmL{i}) \with (\up (\atmL{d} \fuse \dn \n{\defp{b}'_0{}}) \pmir \atmL{d})\bigr)
+    \\
+    \n{\defp{b}_1} \defd \dn \bigl((\up (\atmL{i} \fuse \dn \n{\defp{b}_1}) \pmir \atmL{i}) \with (\up (\dn \n{\defp{b}_0} \fuse \atmR{s}) \pmir \atmL{d})\bigr)
+    \\
+    \n{\defp{b}'_0{}} \defd \dn \bigl((\atmR{z} \limp \up \atmR{z}) \with (\atmR{s} \limp \up (\dn \n{\defp{b}_1} \fuse \atmR{s})\bigr)
+  \end{lgathered}
+  \qquad
+  \begin{lgathered}
+    \n{\defp{e}} \defd \dn \bigl(\n{\defp{e}} \fuse \n{\defp{b}_1} \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d})\bigr)
+    \\
+    \n{\defp{b}_0} \defd \dn \bigl((\up \dn \n{\defp{b}_1} \pmir \atmL{i}) \with (\atmL{d} \fuse \n{\defp{b}'_0{}} \pmir \atmL{d})\bigr)
+    \\
+    \n{\defp{b}_1} \defd \dn \bigl((\atmL{i} \fuse \n{\defp{b}_1} \pmir \atmL{i}) \with (\n{\defp{b}_0} \fuse \atmR{s} \pmir \atmL{d})\bigr)
+    \\
+    \n{\defp{b}'_0{}} \defd \dn \bigl((\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \n{\defp{b}_1} \fuse \atmR{s}\bigr)
+  \end{lgathered}
+\end{equation*}
+
+
+\begin{equation*}
+  \!\begin{aligned}[b]
+    \trproc{\spawn{P}{Q}} &= \trproc{P} \fuse \trproc{Q} \\
+    \trproc{\fwd} &= \one \\
+    \trproc{\selectR{\kay}} &= \atmR{\kay} \\
+    \trproc{\selectL{\kay}} &= \atmL{\kay} \\
+    \trproc{P} &= \dn \trproc[-]{P}
+  \end{aligned}
+  \quad
+  \!\begin{aligned}[b]
+    \trproc[-]{\defp{p}} &= \n{\defp{p}} \\
+    \trproc[-]{\caseL[\ell \in L]{\ell => Q_{\ell}}} &= {\textstyle \bigwith_{\ell \in L}\bigl(\atmR{\ell} \limp \up \trproc{Q_{\ell}}\bigr)} \\
+    \trproc[-]{\caseR[\ell \in L]{\ell => P_{\ell}}} &= {\textstyle \bigwith_{\ell \in L}\bigl(\up \trproc{P_{\ell}} \pmir \atmL{\ell}\bigr)} \\
+    \trproc[-]{P} &= \up \trproc{P}
+  \end{aligned}
+\end{equation*}
+
+
+
+
+
+\begin{equation*}
+  \!\begin{aligned}[t]
     \trproc[+]{\spawn{P}{Q}} &= \trproc[+]{P} \fuse \trproc[+]{Q} \\
     \trproc[+]{\fwd} &= \one \\
     \trproc[+]{\selectR{\kay}} &= \atmR{\kay} \\
     \trproc[+]{\selectL{\kay}} &= \atmL{\kay} \\
     \trproc[+]{P} &= \dn \trproc[-]{P}
-    \\
+  \end{aligned}
+  \qquad
+  \!\begin{aligned}[t]
+    \trproc[-]{\caseL[\ell \in L]{\ell => Q_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\atmR{\ell} \limp \up \trproc[+]{Q_{\ell}}\bigr) \\
+    \trproc[-]{\caseR[\ell \in L]{\ell => P_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\up \trproc[+]{P_{\ell}} \pmir \atmL{\ell}\bigr) \\
+    \trproc[-]{P} &= \up \trproc[+]{P}
+  \end{aligned}
+  \qquad
+  \!\begin{aligned}[t]
+    \trproc{P} &= \trproc[-]{\caseL[\ell \in L]{\ell => Q_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\atmR{\ell} \limp \up \trproc[+]{Q_{\ell}}\bigr) \\
+    \trproc[-]{\caseR[\ell \in L]{\ell => P_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\up \trproc[+]{P_{\ell}} \pmir \atmL{\ell}\bigr) \\
+    \trproc[-]{P} &= \up \trproc[+]{P}
+  \end{aligned}
+\end{equation*}
+
+
+
+\begin{equation*}
+  \!\begin{aligned}[t]
+    \trproc[+]{\spawn{P}{Q}} &= \trproc[+]{P} \fuse \trproc[+]{Q} \\
+    \trproc[+]{\fwd} &= \one \\
+    \trproc[+]{\selectR{\kay}} &= \atmR{\kay} \\
+    \trproc[+]{\selectL{\kay}} &= \atmL{\kay} \\
+    \trproc[+]{P} &= \dn \trproc[-]{P}
+  \end{aligned}
+  \qquad
+  \!\begin{aligned}[t]
     \trproc[-]{\caseL[\ell \in L]{\ell => Q_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\atmR{\ell} \limp \up \trproc[+]{Q_{\ell}}\bigr) \\
     \trproc[-]{\caseR[\ell \in L]{\ell => P_{\ell}}} &= \bigwith_{\ell \in L}\bigl(\up \trproc[+]{P_{\ell}} \pmir \atmL{\ell}\bigr) \\
     \trproc[-]{P} &= \up \trproc[+]{P}
   \end{aligned}
 \end{equation*}
 
-\begin{equation*}
-  \begin{aligned}
-    \trconf{\cnfe} &= \cnfe \\
-    \trconf{\cnf_1 \cc \cnf_2} &= \trconf{\cnf_1} \oc \trconf{\cnf_2} \\
-    \trconf{P} &= \trproc[+]{P}
-  \end{aligned}
-\end{equation*}
 
 \begin{theorem}
   $\trconf{}$ constitutes a (strong) reduction bisimulation.
@@ -213,7 +397,7 @@ The relation $\simu{R}\simu{S}^{-1} \union \simu{R} \union \simu{S}^{-1}$ is a l
 % $a \sim b$ if $q \dfareduces[a] q'_a$ if and only if $q \dfareduces[b] q'_a$ for all $q$.
 
 
-
+\clearpage
 \section{}
 
 % \section{Open bisimilarity}
