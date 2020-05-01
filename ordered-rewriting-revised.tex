@@ -1031,18 +1031,22 @@ Specifically, we can define a mapping, $\embed*{}$, from contexts of unpolarized
 \item $\octx \reduces \octx'$ implies $\embed{\octx} \reduces \embed{\octx'{}}$; and
 \item $\embed{\octx} \reduces \np{\lctx'{}}$ implies $\octx \reduces \octx'$, for some $\octx'$ such that $\np{\lctx'{}} = \embed{\octx'{}}$.
 \end{itemize}
-That is, $\embed*{}$ will be a \emph{strong reduction bisimulation}\autocite{Sangiorgi+Walker:CUP03}.
+Because $\embed*{}$ is a total function, these properties thus establish it as a \emph{strong reduction bisimulation}\autocite{Sangiorgi+Walker:CUP03}.
 % By appropriately placing double shifts, $\dn \up$ or $\up \dn$, between each pair of 
 
 Essentially, this embedding inserts a double shift, $\dn \up$, in front of each proper, nonatomic subformula.
 These double shifts cause chaining and inversion to be interrupted after each step, forcing the focused rewriting to mimic the small-step behavior of unfocused rewriting.
 
-The mapping $\embed*{}$ relies on two auxiliary mappings:
-% $\embed*{}$, from unpolarized propositions to negative propositions and positive atoms;
-$\embedn*{}$ and $\embedp*{}$, from unpolarized propositions to negative and positive propositions, respectively.
-$\embedn{A}$ and $\embedp{A}$ produce negative and positive polarizations of $A$ that insert a $\dn \up$ shift in front of every proper, nonatomic subformula of $A$.
-In addition, $\embedn{A}$ prepends an $\up$ shift whenever the top-level connective of $A$ has positive polarity, whereas $\embedn{A}$ prepends a $\dn$ shift whenever $A$ is not atomic.
-% $\embed{A}$ produces either a positive atom or a negative polarization of $A$, according to wheter $A$ is atomic.
+More specifically, $\embed{A}$ prepends an $\up$ shift whenever the top-level connective of $A$ has positive polarity.
+Consequently, $\embed{A}$ is either: a positive atom, exactly when $A$ is atomic; or otherwise a negative proposition.
+Also, the mapping $\embed*{}$ relies on the $\bigfuse$ operation -- $\bigfuse \embed{A}$ inserts a $\dn$ shift in front of $\embed{A}$ exactly when $\embed{A}$ and hence $A$ are nonatomic.
+Together, these features serve to insert a double shift, $\dn \up$, in front of each proper, nonatomic subformula of $A$.
+
+% % $\embed*{}$, from unpolarized propositions to negative propositions and positive atoms;
+% $\embedn*{}$ and $\embedp*{}$, from unpolarized propositions to negative and positive propositions, respectively.
+% $\embedn{A}$ and $\embedp{A}$ produce negative and positive polarizations of $A$ that insert a $\dn \up$ shift in front of every proper, nonatomic subformula of $A$.
+% In addition, $\embedn{A}$ prepends an $\up$ shift whenever the top-level connective of $A$ has positive polarity, whereas $\embedn{A}$ prepends a $\dn$ shift whenever $A$ is not atomic.
+% % $\embed{A}$ produces either a positive atom or a negative polarization of $A$, according to wheter $A$ is atomic.
 %
 % \begin{marginfigure}
 % \begin{equation*}
@@ -1076,30 +1080,17 @@ In addition, $\embedn{A}$ prepends an $\up$ shift whenever the top-level connect
 % % \caption{An embedding of unfocused ordered rewriting within the focused ordered rewriting framework}
 % \end{marginfigure}
 \begin{marginfigure}
-  \begin{equation*}
-    \begin{aligned}
-      \embedn*{A \fuse B} &= \up (\embedp{A} \fuse \embedp{B}) \\
-      \embedn{\one} &= \up \one \\
-      \embedn*{A \limp B} &= \embedp{A} \limp \up \embedp{B} \\
-      \embedn*{B \pmir A} &= \up \embedp{B} \pmir \embedp{A} \\
-      \embedn*{A \with B} &= \up \embedp{A} \with \up \embedp{B} \\
-      \embedn{\top} &= \top
-      \\
-      \embedp{A} &=
-        \begin{cases*}
-          \p{a} & if $A = a$ \\
-          \dn \embedn{A} & otherwise
-        \end{cases*}
-      \\
-      \embed*{\octx_1 \oc \octx_2} &= \embed{\octx_1} \oc \embed{\octx_2} \\
-      \embed*{\octxe} &= \octxe \\
-      \embed{A} &=
-        \begin{cases*}
-          \p{a} & if $A = a$ \\
-          \embedn{A} & otherwise
-        \end{cases*}
-    \end{aligned}
-  \end{equation*}
+  \begin{align*}
+    \embed*{\octx_1 \oc \octx_2} &= \embed{\octx_1} \oc \embed{\octx_2} \\
+    \embed*{\octxe} &= \octxe \\
+    \embed{a} &= \p{a} \\
+    \embed*{A \fuse B} &= \up ((\bigfuse \embed{A}) \fuse (\bigfuse \embed{B})) \\
+    \embed{\one} &= \up \one \\
+    \embed*{A \limp B} &= (\bigfuse \embed{A}) \limp \up (\bigfuse \embed{B}) \\
+    \embed*{B \pmir A} &= \up (\bigfuse \embed{B}) \pmir (\bigfuse \embed{A}) \\
+    \embed*{A \with B} &= \up (\bigfuse \embed{A}) \with \up (\bigfuse \embed{B}) \\
+    \embed{\top} &= \top
+  \end{align*}
   \caption{An embedding of unfocused ordered rewriting (\ie, \acs*{OR}) within \acs*{FOR}}
 \end{marginfigure}
 
@@ -1114,18 +1105,18 @@ In addition, $\embedn{A}$ prepends an $\up$ shift whenever the top-level connect
   The proofs of these properties require a straightforward lemma:
   for all unpolarized propositions $A$, 
   \begin{equation*}
-    \rfocus{\np{\lctx}}{\embedp{A}} \text{\ if, and only if, } \np{\lctx} = \embed{A}
+    \rfocus{\np{\lctx}}{\bigfuse \embed{A}} \text{\ if, and only if, } \np{\lctx} = \embed{A}
     \,.
   \end{equation*}
 
   The first property is then proved by induction over the structure of the given rewriting step, $\octx \reduces \octx'$.
   As an example, consider the case in which $\octx = A \oc (A \limp B) \reduces B = \octx'$.
-  By definition, $\embed{\octx} = \embed{A} \oc (\embedp{A} \limp \up \embedp{B})$ and $\embed{\octx'{}} = \embed{B}$, and we can indeed derive $\lfocus{\embed{A}}{\embedp{A} \limp \up \embedp{B}}{}{\embedp{B}}$ and $\rfocus{\embed{B}}{\embedp{B}}$.
-  So, as required, $\embed{\octx} = \embed{A} \oc (\embedp{A} \limp \up \embedp{B}) \reduces \embed{B} = \embed{\octx'{}}$.
+  By definition, $\embed{\octx} = \embed{A} \oc ((\bigfuse \embed{A}) \limp \up (\bigfuse \embed{B}))$ and $\embed{\octx'{}} = \embed{B}$; we can indeed derive $\lfocus{\embed{A}}{(\bigfuse \embed{A}) \limp \up (\bigfuse \embed{B})}{}{\bigfuse \embed{B}}$ and $\rfocus{\embed{B}}{\bigfuse \embed{B}}$.
+  So, as required, $\embed{\octx} = \embed{A} \oc ((\bigfuse \embed{A}) \limp \up (\bigfuse \embed{B})) \reduces \embed{B} = \embed{\octx'{}}$.
 
   The second property is also proved by induction over the structure of the given rewriting step, this time $\embed{\octx} = \np{\lctx} \reduces \np{\lctx'{}}$.
-  As an example, consider the case in which $\lfocus{\embed{\octx_L}}{\embedp{A} \limp \up \embedp{B}}{\embed{\octx_R}}{\p{C}}$ and $\rfocus{\np{\lctx'{}}}{\p{C}}$, for some $\octx_L$, $A$, $B$, $\octx_R$, and $\p{C}$ such that $\octx = \octx_L \oc (A \limp B) \oc \octx_R$.
-  By inversion and the aforementioned lemma, we have $\octx_L = A$, $\octx_R = \octxe$, $\p{C} = \embedp{B}$, and $\np{\lctx'{}} = \embed{B}$.
+  As an example, consider the case in which $\lfocus{\embed{\octx_L}}{(\bigfuse \embed{A}) \limp \up (\bigfuse \embed{B})}{\embed{\octx_R}}{\p{C}}$ and $\rfocus{\np{\lctx'{}}}{\p{C}}$, for some $\octx_L$, $A$, $B$, $\octx_R$, and $\p{C}$ such that $\octx = \octx_L \oc (A \limp B) \oc \octx_R$.
+  By inversion and the aforementioned lemma, we have $\octx_L = A$, $\octx_R = \octxe$, $\p{C} = \bigfuse \embed{B}$, and $\np{\lctx'{}} = \embed{B}$.
   Indeed, as required, $\octx = A \oc (A \limp B) \reduces B = \octx'$ and $\np{\lctx'{}} = \embed{\octx'{}}$.
 \end{proof}
 
@@ -1185,12 +1176,17 @@ From here on, we will exclusively use this embedding when weakly focused ordered
 \begin{marginfigure}
 \begin{equation*}
   \begin{aligned}
-    \embedp*{\p{A}} &=
-      \begin{cases*}
-        \p{a} & if $\p{A} = \p{a}$ \\
-        \dn \embed*{\p{A}} & otherwise
-      \end{cases*}
-  \\
+    \embed*{\p{\octx}_1 \oc \p{\octx}_2}
+      &= \embed*{\p{\octx}_1} \oc \embed*{\p{\octx}_2} \\
+    \embed*{\octxe} &= \octxe \\
+    \embed*{\p{A}} &= \embedp*{\p{A}}
+  \\[\jot] \midrule
+    \embedp*{\p{a}} &= \p{a} \\
+    \embedp*{\p{A} \fuse \p{B}}
+      &= \up ((\bigfuse \embedp*{\p{A}}) \fuse (\bigfuse \embedp*{\p{B}})) \\
+    \embedp{\one} &= \up \one \\
+    \embedp*{\dn \n{A}} &= \embedn*{\n{A}}
+  \\[\jot] \midrule
     \embedn*{\p{a} \limp \n{B}}
       &= \p{a} \limp \embedn*{\n{B}} \\
     \embedn*{\n{B} \pmir \p{a}}
@@ -1198,15 +1194,7 @@ From here on, we will exclusively use this embedding when weakly focused ordered
     \embedn*{\n{A} \with \n{B}}
       &= \embedn*{\n{A}} \with \embedn*{\n{B}} \\
     \embedn{\top} &= \top \\
-    \embedn*{\up \p{A}} &= \up \embedp*{\p{A}}
-  \\
-    \embed*{\p{\octx}_1 \oc \p{\octx}_2}
-      &= \embed*{\p{\octx}_1} \oc \embed*{\p{\octx}_2} \\
-    \embed*{\octxe} &= \octxe \\
-    \embed*{\p{a}} &= \p{a} \\
-    \embed*{\p{A} \fuse \p{B}} &= \up (\embedp*{\p{A}} \fuse \embedp*{\p{B}}) \\
-    \embed{\one} &= \up \one \\
-    \embed*{\dn \n{A}} &= \embedn*{\n{A}}
+    \embedn*{\up \p{A}} &= \up (\bigfuse \embedp*{\p{A}})
   \end{aligned}
 \end{equation*}
   \caption{An embedding of weakly focused ordered rewriting (\ie, \acs*{OR}) within \acs*{FOR}}
@@ -1257,25 +1245,25 @@ From here on, we will exclusively use this embedding when weakly focused ordered
   The proofs of these properties require two relatively straightforward lemmas:
   for all polarized propositions $\p{A}$ and $\n{A}$,
   \begin{itemize}
-  \item $\rfocus{\np{\lctx}}{\embedp*{\p{A}}}$ if, and only if, $\np{\lctx} = \embed*{\p{A}}$; and
+  \item $\rfocus{\np{\lctx}}{\bigfuse \embedp*{\p{A}}}$ if, and only if, $\np{\lctx} = \embed*{\p{A}}$; and
   \item $\lfocus{\np{\lctx}_L}{\embedn*{\n{A}}}{\np{\lctx}_R}{\p{B}}$ if, and only if,
     $\lfocus{\p{\octx}_L}{\n{A}}{\p{\octx}_R}{\p{C}}$ and
     $\np{\lctx}_L = \embed*{\p{\octx}_L}$,
     $\np{\lctx}_R = \embed*{\p{\octx}_R}$, and
-    $\p{B} = \embedp*{\p{C}}$.
+    $\p{B} = \bigfuse \embedp*{\p{C}}$.
   \end{itemize}
   Both lemmas are proved by structural induction on the polarized proposition, $\p{A}$ and $\n{A}$, respectively.
 
   The first of the above properties is then proved by induction over the structure of the given weakly focused rewriting step, $\p{\octx} \reduces \p{\octx'}$.
   As an example, consider the case in which $\p{\octx}_L \oc \dn \n{A} \oc \p{\octx}_R \reduces \p{C}$ because $\lfocus{\p{\octx}_L}{\n{A}}{\p{\octx}_R}{\p{C}}$.
-  By the above lemma, $\lfocus{\embed*{\p{\octx}_L}}{\embedn*{\n{A}}}{\embed*{\p{\octx}_R}}{\embedp*{\p{C}}}$ holds in the fully focused calculus.
-  And so, as required, $\embed*{\p{\octx}_L} \oc \embed*{\dn \n{A}} \oc \embed*{\p{\octx}_R} \reduces \embed*{\p{C}}$.
+  By the above lemmas, $\lfocus{\embed*{\p{\octx}_L}}{\embedn*{\n{A}}}{\embed*{\p{\octx}_R}}{\bigfuse \embedp*{\p{C}}}$ and $\rfocus{\embed*{\p{C}}}{\bigfuse \embedp*{\p{C}}}$ hold in the fully focused calculus.
+  And so, $\embed*{\p{\octx}_L} \oc \embed*{\dn \n{A}} \oc \embed*{\p{\octx}_R} \reduces \embed*{\p{C}}$.
 
   The second property is also proved by induction over the structure of the given rewriting step, this time the fully focused $\embed*{\p{\octx}} \reduces \np{\lctx'{}}$.
   As an example, consider the case in which $\lfocus{\np{\lctx}_L}{\p{a}_1 \limp \embedn*{\n{A}_2}}{\np{\lctx}_R}{\p{B}}$ and $\rfocus{\np{\lctx'{}}}{\p{B}}$.
   Inversion yields $\lfocus{\np{\lctx'_L{}}}{\embedn*{\n{A}_2}}{\np{\lctx}_R}{\p{B}}$ for some $\np{\lctx'_L{}}$ such that $\np{\lctx}_L = \np{\lctx'_L{}} \oc \p{a}_1$.
-  Then, by the above lemma, $\lfocus{\p{\octx}_L}{\n{A}_2}{\p{\octx}_R}{\p{C}}$ holds in the weakly focused calculus, with $\np{\lctx'_L{}} = \embed*{\p{\octx}_L}$, $\np{\lctx}_R = \embed*{\p{\octx}_R}$, and $\p{B} = \embedp*{\p{C}}$.
-  It follows that $\lfocus{\p{\octx}_L \oc \p{a}_1}{\p{a}_1 \limp \n{A}_2}{\p{\octx}_R}{\p{C}}$, and so $\p{\octx}_L \oc \p{a}_1 \oc \dn (\p{a}_1 \limp \n{A}_2) \oc \p{\octx}_R \reduces \p{C}$.
+  Then, by the above lemma, $\lfocus{\p{\octx}_L}{\n{A}_2}{\p{\octx}_R}{\p{C}}$ holds in the weakly focused calculus, with $\np{\lctx'_L{}} = \embed*{\p{\octx}_L}$, $\np{\lctx}_R = \embed*{\p{\octx}_R}$, and $\p{B} = \bigfuse \embedp*{\p{C}}$.
+  Appending the $\lrule{\limp}$ rule, it follows that $\lfocus{\p{\octx}_L \oc \p{a}_1}{\p{a}_1 \limp \n{A}_2}{\p{\octx}_R}{\p{C}}$, and so $\p{\octx}_L \oc \p{a}_1 \oc \dn (\p{a}_1 \limp \n{A}_2) \oc \p{\octx}_R \reduces \p{C}$.
   Also notice that $\np{\lctx}_L = \embed*{\p{\octx}_L \oc \p{a}_1}$ and $\np{\lctx'{}} = \embed*{\p{C}}$, as required.
 \end{proof}
 
