@@ -400,13 +400,41 @@ With the above
   \infer[\rrule{\plus}']{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
     \text{($\kay \in L$)}}
   \and
-  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \dn \bigwith_{\ell \in L} (\selectR{\ell} \limp \up \p{A}_{\ell}) : C}}{
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \dn {\textstyle \bigwith_{\ell \in L} (\selectR{\ell} \limp \up \p{A}_{\ell})} : C}}{
     \multipremise{\ell \in L}{\slof{A_{\ell} |- \p{A}_{\ell} : C}}}
   \\
-  \infer[\rrule{\with}]{\slof{A |- \dn \bigwith_{\ell \in L} (\p{A}_{\ell} \pmir \selectL{\ell}) : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+  \infer[\rrule{\with}]{\slof{A |- \dn {\textstyle \bigwith_{\ell \in L} (\up \p{A}_{\ell} \pmir \selectL{\ell})} : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
     \multipremise{\ell \in L}{\slof{A |- \p{A}_{\ell} : B_{\ell}}}}
   \and
-  \infer[\lrule{\with},]{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \selectL{\kay} : B_{\kay}}}{
+  \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \selectL{\kay} : B_{\kay}}}{
+    \text{($\kay \in L$)}}
+  \\
+  \infer[\jrule{C-CUT}\smash{^B}]{\slcof{A |- \octx_1 \oc \octx_2 : C}}{
+    \slcof{A |- \octx_1 : B} & \slcof{B |- \octx_2 : C}}
+  \and
+  \infer[\jrule{C-ID}\smash{^A}] {\slcof{A |- \octxe : A}}{}
+  \and
+  \infer[\jrule{C-PROC}]{\slcof{A |- \p{A} : B}}{
+    \slof{A |- \p{A} : B}}
+\end{inferences}
+
+\begin{inferences}
+  \infer[\jrule{CUT}\smash{^B}]{\slof{A |- \up (\p{A}_1 \fuse \p{A}_2) : C}}{
+    \rfocus{\omega_1}{\p{A}_1} & \rfocus{\omega_2}{\p{A}_2} &
+    \slof{A |- \omega_1 : B} & \slof{B |- \omega_2 : C}}
+  \and
+  \infer[\jrule{ID}\smash{^A}]{\slof{A |- \up \one : A}}{}
+  \\
+  \infer[\rrule{\plus}']{\slof{A_{\kay} |- \selectR{\kay} : \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}}}{
+    \text{($\kay \in L$)}}
+  \and
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- {\textstyle \bigwith_{\ell \in L} (\selectR{\ell} \limp \up \p{A}_{\ell})} : C}}{
+    \multipremise{\ell \in L}{\rfocus{\omega_{\ell}}{\p{A}_{\ell}} \quad \slof{A_{\ell} |- \omega_{\ell} : C}}}
+  \\
+  \infer[\rrule{\with}]{\slof{A |- {\textstyle \bigwith_{\ell \in L} (\up \p{A}_{\ell} \pmir \selectL{\ell})} : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+    \multipremise{\ell \in L}{\rfocus{\omega_{\ell}}{\p{A}_{\ell}} \quad \slof{A |- \omega_{\ell} : B_{\ell}}}}
+  \and
+  \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \selectL{\kay} : B_{\kay}}}{
     \text{($\kay \in L$)}}
   \\
   \infer[\jrule{C-CUT}\smash{^B}]{\slcof{A |- \octx_1 \oc \octx_2 : C}}{
@@ -414,17 +442,15 @@ With the above
   \and
   \infer[\jrule{C-ID}\smash{^A}]{\slcof{A |- \octxe : A}}{}
   \and
-  \infer[\jrule{C-PROC}]{\slcof{A |- \p{A} : B}}{
-    \slof{A |- \p{A} : B}}
+  \infer[\jrule{C-PROC}]{\slcof{A |- \omega : B}}{
+    \slof{A |- \omega : B}}
 \end{inferences}
 
 \footnote{Careful with the 0-ary forms because you could end up with $\slof{\zero |- \top : C}$ and \emph{also} $\slof{A |- \top : \top}$.}
 
 \begin{theorem}
-  If $\slof{A |- P : B}$, then $\slof{A |- \trproc[+]{P} : B}$.
-  Conversely, if $\slof{A |- \p{A} : B}$, then $\slof{A |- P : B}$ for some process $P$ such that $\trproc[+]{P} = \p{A}$.
-
-  Similarly, if $\slcof{A |- \cnf : B}$, then $\slcof{A |- \trconf{\cnf} : B}$.
+  If $\slcof{A |- \cnf : B}$, then $\slcof{A |- \trconf{\cnf} : B}$.
+  If $\slof{A |- P : B}$, then $\slof{A |- \trproc{P} : B}$.
   Conversely, if $\slcof{A |- \octx : B}$, then $\slcof{A |- \cnf : B}$ for some configuration $\cnf$ such that $\trconf{\cnf} = \octx$.
 \end{theorem}
 

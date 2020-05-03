@@ -614,18 +614,6 @@
   #1
 }
 
-\NewDocumentCommand \bigwith { } { \__thesis_bigwith: }
-\cs_new:Npn \__thesis_bigwith:
-  {
-    \mathop {
-      \mathchoice { \__thesis_bigwith:N \LARGE }
-                  { \__thesis_bigwith:N \large }
-                  { \__thesis_bigwith:N \normalsize }
-                  { \__thesis_bigwith:N \small } }
-  }
-\cs_new:Npn \__thesis_bigwith:N #1
-  { \vcenter { #1 \kern.2ex \hbox:n {$\mathord{\binampersand}$} \kern.2ex } }
-
 \NewDocumentCommand \simu { m } { \__thesis_simu:n {#1} }
 \cs_new:Npn \__thesis_simu:n #1
   { \mathrel { \mathcal {#1} } }

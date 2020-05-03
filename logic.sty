@@ -183,14 +183,27 @@
 \NewDocumentCommand \zero { } { \__logic_zero: }
 \cs_new:Npn \__logic_zero: { \mathord { \mathbf { 0 } } }
 
+\cs_new:Npn \__logic_bigplus:
+  {
+    \mathop {
+      \mathchoice { \__logic_bigplus:N \LARGE }
+                  { \__logic_bigplus:N \large }
+                  { \__logic_bigplus:N \normalsize }
+                  { \__logic_bigplus:N \small } }
+  }
+\cs_new:Npn \__logic_bigplus:N #1
+  { \vcenter { #1 \kern.2ex \hbox:n {$\mathord{\__logic_plus:}$} \kern.2ex } }
+
 \NewDocumentCommand \plus { s }
   { \IfBooleanTF {#1} \__logic_plus:wn \__logic_plus: }
 
 \cs_new:Npn \__logic_plus: { \mathbin { \oplus } }
+\NewDocumentCommand \__logic_plus:wn { O{} m }
+  { { \textstyle \__logic_plus_delim:wn [#1] {#2} } }
 
-\DeclarePairedDelimiterKV \__logic_plus:wn
+\DeclarePairedDelimiterKV \__logic_plus_delim:wn
   {
-    pre = \mathord { \__logic_plus: } , % Prefix operator
+    pre = \mathord { \__logic_bigplus: } , % Prefix operator
     delimiters = \lbrace \rbrace , % Delimiters
     post = ,
     body = \tl_set:Nn \l_tmpa_tl {#1}
@@ -198,14 +211,28 @@
            \tl_use:N \l_tmpa_tl
   }
 
+\NewDocumentCommand \bigwith { } { \__logic_bigwith: }
+\cs_new:Npn \__logic_bigwith:
+  {
+    \mathop {
+      \mathchoice { \__logic_bigwith:N \LARGE }
+                  { \__logic_bigwith:N \large }
+                  { \__logic_bigwith:N \normalsize }
+                  { \__logic_bigwith:N \small } }
+  }
+\cs_new:Npn \__logic_bigwith:N #1
+  { \vcenter { #1 \kern.2ex \hbox:n {$\mathord{\__logic_with:}$} \kern.2ex } }
+
 \NewDocumentCommand \with { s }
   { \IfBooleanTF {#1} \__logic_with:wn \__logic_with: }
 
 \cs_new:Npn \__logic_with: { \mathbin { \binampersand } }
+\NewDocumentCommand \__logic_with:wn { O{} m }
+  { { \textstyle \__logic_with_delim:wn [#1] {#2} } }
 
-\DeclarePairedDelimiterKV \__logic_with:wn
+\DeclarePairedDelimiterKV \__logic_with_delim:wn
   {
-    pre = \mathord { \__logic_with: } , % Prefix operator
+    pre = \mathord { \__logic_bigwith: } , % Prefix operator
     delimiters = \lbrace \rbrace , % Delimiters
     post = ,
     body = #1 ,
