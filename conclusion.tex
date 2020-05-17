@@ -1,0 +1,111 @@
+\chapter{Conclusion}\label{ch:conclusion}
+
+\section{Avenues for future work}
+
+\subsection{From ordered rewriting to multiset rewriting, singleton processes to linear processes}
+
+One obvious avenue for future work is to extend the ideas in this document to linear logic.
+We conjecture that the string rewriting specifications of \cref{??} would be replaced with multiset rewriting specifications\autocite{??}; the formula-as-process ordered rewriting of \cref{??}, with formula-as-process linear rewriting based on the focused linear sequent calculus\autocite{??}; and the singleton processes of \cref{??}, with \textsc{sill} processes\autocite{??}.
+
+% For the proof construction and rewriting perspective on concurrency, this would involve a shift from ordered rewriting to multiset rewriting, as understood logically in terms of the focused linear sequent calculus.
+
+For instance, in the formula-as-process ordered rewriting choreography of the binary counter~\parencref{??}, we used the coinductively defined proposition $\defp{b}_0$ given by 
+\begin{equation*}
+  \defp{b}_0 \defd (\up \dn \defp{b}_1 \pmir \atmL{i}) \with (\up (\atmL{d} \fuse \dn \defp{b}'_0) \pmir \atmL{d})
+  \,,
+\end{equation*}
+where here all of the shifts have been made explicit.
+With a move to rewriting based on linear logic, rather than ordered logic, we would likely use the coinductively defined proposition $\defp{b}_0(x, y)$ given by
+\begin{equation*}
+  \defp{b}_0(x, y) \defd
+    \begin{lgathered}[t]
+      \bigl(\forall y'.\, i(y, y') \lolli \up \dn \defp{b}_1(x, y')\bigr) \\
+      {} \with \bigl(\forall y'.\, d(y, y') \lolli \up \exists x'.\, d(x, x') \tensor \dn \defp{b}'_0(x', y')\bigr)
+    \,,
+    \end{lgathered}
+\end{equation*}
+together with similar defined linear propositions $\defp{e}(x, y)$, $\defp{b}_1(x, y)$, and $\defp{b}'_0(x, y)$.
+Here the first-order parameters $x$ and $y$ thread together propositions in the context in a way that maintains the binary counter's essential structure.
+In line with work by \textcite{Simmons+Pfenning:??}, $\defp{b}_0(x, y)$ is the \emph{destination-passing} embedding of $\defp{b}_0$.
+In a formula-as-process interpretation, the destinations $x$ and $y$ can be viewed as channels that connect processes.
+
+This example, however, does not fully exploit the expressive power of first-order linearity because the binary counter still has a linear topology.
+Because \textsc{sill} processes admit tree topologies, defined propositions that use destinations in a tree topology should be allowed.
+But a judgment for checking that destinations do not form cycles would likely be needed, for otherwise a destinations-as-channels interpretation would lead to ill-formed \textsc{sill} processes.
+
+We would also need to characterize a general procedure for choreographing multiset rewriting specifications.%
+\fixnote{??}
+
+
+\subsection{First-order extension}
+
+Another avenue for future work would be to extend the results contained in this document to first-order, not propositional, ordered rewriting and first-order polymorphic session-typed processes.
+For example, we might embed sending and receiving processes by 
+\begin{equation*}
+  \begin{lgathered}[t]
+    \trproc{a \shortleftarrow \mathsf{recvR}; P} = \dn \forall a.\, (\up \trproc{P} \pmir \atmL{\mathsf{tm}}(a)) \\
+    \trproc{\mathsf{sendL}\:t} = \atmL{\mathsf{tm}}(t)
+  \,,
+  \end{lgathered}
+\end{equation*}
+and similarly for $\mathsf{sendR}$ and $\mathsf{recvL}$.
+It would be nice if the extralogical $\atmL{\mathsf{tm}}$ and $\atmR{\mathsf{tm}}$ predicates could be done away with, but that appears to be impossible.
+It seems that, even in an asynchronous calculus, the $\atmL{\mathsf{tm}}$ and $\atmR{\mathsf{tm}}$ atoms provide the small but necessary amount of synchronization to ensure that the intended term $t$ is used to instantiate the receiving proposition's universal quantifier.
+However, it does seem plausible that terms could be packaged with the transmission of other labels, such as $\atmL{\kay}(t)$, which would hide  $\atmL{\mathsf{tm}}$ and $\atmR{\mathsf{tm}}$.
+
+It would also be interesting to consider how session-typed processes with second-order polymorphism\autocite{??} would be embedded in the rewriting framework.
+A conjecture is that second-order polymorphism would be needed in the rewriting framework so that the embedding could be something like 
+\begin{equation*}
+  \begin{lgathered}[t]
+    \trproc{\alpha \shortleftarrow \mathsf{recvR}; P} = \dn \forall \alpha.\, (\up \trproc{P} \pmir \atmL{\mathsf{proc}}(\alpha)) \\
+    \trproc{\mathsf{sendL}\:P} = \atmL{\mathsf{proc}}(\trproc{P})
+  \,.
+  \end{lgathered}
+\end{equation*}
+
+
+\subsection{Session-typed nondeterministic choice}
+
+In \cref{sec:??}, we leveraged the bisimilarity of process expressions and their embedding within formula-as-process ordered rewriting to reverse-engineer a session type system for ordered rewriting.
+In particular, from the session-typing rules for $\caseL[\ell \in L]{\ell => P_{\ell}}$ and $\caseR[\ell \in L]{\ell => P_{\ell}}$, we arrived at rules for typing deterministic choices:
+\begin{inferences}
+  \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \dn {\textstyle \bigwith_{\ell \in L}(\atmR{\ell} \limp \up \p{A}_{\ell})} : C}}{
+    \multipremise{\ell \in L}{\slof{B_{\ell} |- \p{A}_{\ell} : C}}}
+  \\\text{and}\\
+  \infer[\rrule{\with}]{\slof{A |- \dn {\textstyle \bigwith_{\ell \in L}(\up \p{A}_{\ell} \pmir \atmL{\ell})} : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
+    \multipremise{\ell \in L}{\slof{A |- \p{A}_{\ell} : B_{\ell}}}}
+\end{inferences}
+Focusing in combination with the left- or right-handed implicaiton ensures that the choices embodied by the alternative conjunction here are determinstic, not nondeterministic, choices.
+
+However, in terms of the ordered propositions alone, it would seem more natural to have a typing rule for $\n{A}_1 \with \n{A}_2$.
+A rule something like
+\begin{equation*}
+  \infer{\slof{A |- \n{A}_1 \with \n{A}_2 : C}}{\vdots}
+  \,.
+\end{equation*}
+Finding such a rule for the ordered proposition $\n{A}_1 \with \n{A}_2$ might then allow us, by leveraging the ideas behind the bisimilar embedding of \cref{ch:??}, to reverse-engineer a process expression for some form of well-behaved, well-typed nondeterministic choice.
+
+\Textcite{??} has begun to look into incorporating nondeterministic choice into session-typed processes.
+It would be interesting to consider how his ideas might carry over to the formula-as-process ordered rewriting framework.
+
+
+\subsection{Induction and coinduction, termination and productivity}
+
+\Textcite{??} have developed an infinitary calculus in which inductive and coinductive session types can be used to guarantee the termination and productivity of well-typed processes in a Curry--Howard interpretation of singleton logic.
+An interesting question is how similar ideas might be applied to (formula-as-process) ordered rewriting.
+
+Can their validity condition on circular proofs be mapped to a condition on ordered propositions?
+That condition very much relies on the unfolding of inductive and coinductive types, but ordered rewriting is untyped, at least natively.
+Yet productivity is about observable progress and even untyped ordered rewriting has a notion of observation, as embodied in ordered bisimilarity~\parencref{??}.
+So it does not seem unreasonable to hope for some kind of validity condition in spite of the absence of types.
+
+Also, unlike proofs, rewriting traces are inherently open-ended.
+Does that open-endedness in any way affect the shape of the validity condition?
+
+\section{Conclusion}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "thesis"
+%%% End:

@@ -137,6 +137,13 @@
     long-plural-form = deterministic~finite~automata
   }
 
+\DeclareAcronym { dfa }
+  {
+    short = DFA ,
+    long = deterministic~finite~automaton ,
+    long-plural-form = deterministic~finite~automata
+  }
+
 \DeclareAcronym { SFT }
   {
     short = SFT ,
@@ -263,6 +270,9 @@
 
 \NewDocumentCommand \nfapow { } { \__thesis_nfapow: }
 \cs_new:Npn \__thesis_nfapow: { \Delta }
+
+\NewDocumentCommand \pow { m } { \__thesis_pow: {#1} }
+\cs_new:Npn \__thesis_pow: #1 { \mathcal{P}(#1) }
 
 \NewDocumentCommand \nfamv { } { \__thesis_nfamv: }
 \cs_new:Npn \__thesis_nfamv: { \Delta }
@@ -725,6 +735,8 @@
 
 \NewDocumentCommand \trconf { m } { \__thesis_trconf:n {#1} }
 \cs_new:Npn \__thesis_trconf:n #1 { \llbracket \tl_if_empty:nTF {#1} { \mathord{-} } {#1} \rrbracket }
+
+\NewDocumentCommand \trsig { m } { \__thesis_trconf:n {#1} }
 
 \NewDocumentCommand \vocab { m } { \emph {#1} }
 
