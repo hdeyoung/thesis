@@ -751,7 +751,7 @@ To construct such a type system, we can simply apply the embedding to session ty
 For instance, the typing rule for a process expression $\spawn{P}{Q}$ suggests that ordered conjunctions $\p{A}_1 \fuse \p{A}_2$ be typed with a cut-like rule, as shown in the adjacent \lcnamecref{fig:embed-spawn-typing}.
 \begin{marginfigure}
 \begin{gather*}
-  \left\trproc{%
+  \left.\trproc{%
     \infer{\slof{A |- \spawn{P}{Q} : C}}{
       \slof{A |- P : B} & \slof{B |- Q : C}}%
   \right}

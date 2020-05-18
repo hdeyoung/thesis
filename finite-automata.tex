@@ -120,8 +120,10 @@ Here, \ac{NFA} bisimilarity is a relation on states, and the observer may only o
   An \emph{\acs{NFA} bisimulation} between $\aut{A}_1$ and $\aut{A}_2$ is a binary relation on states, $\mathord{\simu{R}} \subseteq Q_1 \times Q_2$, that satisfies the following conditions.
   \begin{description}[labelindent=\parindent, leftmargin=\dimexpr\leftmargin+\parindent\relax]
   \item[Input bisimilarity]
-    If $s \simu{R}^{-1}\nfareduces[a] q'$, then $s \nfareduces[a]\simu{R}^{-1} q'$.
-    Moreover, if $q \simu{R}\nfareduces[a] s'$, then $q \nfareduces[a]\simu{R} s'$.%
+    If $s \simu{R}^{-1}\nfareduces[a] q'$, then $s \nfareduces[a]\simu{R}^{-1} q'$;
+    symmetrically, if $q \simu{R}\nfareduces[a] s'$, then $q \nfareduces[a]\simu{R} s'$.
+    (See the adjacent \lcnamecref{fig:nfa-bisim:diagrams}.)% 
+    \fixnote{Names for properties?}%
     \begin{marginfigure}
       \begin{equation*}
         \begin{tikzcd}
@@ -138,7 +140,7 @@ Here, \ac{NFA} bisimilarity is a relation on states, and the observer may only o
           s \rar[reduces]{a} & s\smash{\mathrlap{'}}
         \end{tikzcd}
       \end{equation*}
-      \caption{\Acs*{NFA} bisimilarity, in diagram form}
+      \caption{\Acs*{NFA} input bisimilarity, in diagrams}\label{fig:nfa-bisim:diagrams}
     \end{marginfigure}%
 
   \item[Finality]
@@ -239,11 +241,11 @@ However, if both automata are \acp{DFA}, then language equivalence does imply bi
     Assume that $s \simu{R}^{-1}\dfareduces[a] q'_a$; we must show that $s \dfareduces[a]\simu{R}^{-1} q'_a$.
     Because $\aut{A}_2$ is deterministic, it suffices to show that $\autlang{\aut{A}_1}{q'_a} = \autlang{\aut{A}_2}{s'_a}$, where $s'_a$ is the unique $a$-successor of $s$.
 
-    Choose an arbitrary word $w$ accepted from state $q'_a$.
-    Then $a \wc w$ is in the language accepted from $q$, and hence also in the language accepted from state $s$.
-    Because $\aut{A}_2$ is deterministic, this can be only if $w$ is accepted from state $s'_a$.
-    Thus $\autlang{\aut{A}_1}{q} \subseteq \autlang{\aut{A}_2}{s}$.
-    By symmetric reasoning, $\autlang{\aut{A}_1}{q} \supseteq \autlang{\aut{A}_2}{s}$.
+    Choose an arbitrary word $w$ from the language accepted from state $q'_a$.
+    Then $a \wc w$ is in the language accepted from state $q$, and hence also in the language accepted from state $s$.
+    Because $\aut{A}_2$ is deterministic, this can be only if $w$ is in the language accepted from state $s'_a$.
+    Thus $\autlang{\aut{A}_1}{q'_a} \subseteq \autlang{\aut{A}_2}{s'_a}$.
+    By symmetric reasoning, $\autlang{\aut{A}_1}{q'_a} \supseteq \autlang{\aut{A}_2}{s'_a}$.
 
   \item[Finality]
     Assume that $q \simu{R} s$; we must show that $q \in F_1$ if, and only if, $s \in F_2$.
@@ -280,6 +282,7 @@ However, if both automata are \acp{DFA}, then language equivalence does imply bi
 % \end{marginfigure}
 
 \section{Finite transducers}
+\fixnote{Remove these?}
 
 \begin{definition}
   \Iac{SFT} over a finite input alphabet $\ialph$ and a finite output alphabet $\oalph$ is a tuple $\aut{T} = (Q, \sftnext, \sftout, \sftterm)$ consisting of:
@@ -387,6 +390,7 @@ However, if both automata are \acp{DFA}, then language equivalence does imply bi
 
 
 \section{Chains of communicating automata}
+\fixnote{Remove these?}
 
 \begin{definition}
   A \emph{chain of communicating automata} over a finite alphabet $\ialph$ is a tuple $\aut{C} = (Q, (\ialph_q)_{q \in Q}, (\oalph_q)_{q \in Q})$ consisting of:
