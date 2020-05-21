@@ -1,6 +1,8 @@
 \chapter{Conclusion}\label{ch:conclusion}
 
-\section{Avenues for future work}
+In this \lcnamecref{ch:conclusion}, we discuss a few avenues for future work and then summarize the main contributions of this document.
+
+\section{Potential avenues for future work}
 
 \subsection{From ordered rewriting to multiset rewriting, singleton processes to linear processes}
 
@@ -57,8 +59,8 @@ It would also be interesting to consider how session-typed processes with second
 A conjecture is that second-order polymorphism would be needed in the rewriting framework so that the embedding could be something like 
 \begin{equation*}
   \begin{lgathered}[t]
-    \trproc{\alpha \shortleftarrow \mathsf{recvR}; P} = \dn \forall \alpha.\, (\up \trproc{P} \pmir \atmL{\mathsf{proc}}(\alpha)) \\
-    \trproc{\mathsf{sendL}\:P} = \atmL{\mathsf{proc}}(\trproc{P})
+    \trproc{\alpha \shortleftarrow \mathsf{recvR}; P} = \dn \forall \alpha.\, (\up \trproc{P} \pmir \atmL{\mathsf{pr}}(\alpha)) \\
+    \trproc{\mathsf{sendL}\:P} = \atmL{\mathsf{pr}}(\trproc{P})
   \,.
   \end{lgathered}
 \end{equation*}
@@ -68,39 +70,44 @@ A conjecture is that second-order polymorphism would be needed in the rewriting 
 
 In \cref{sec:??}, we leveraged the bisimilarity of process expressions and their embedding within formula-as-process ordered rewriting to reverse-engineer a session type system for ordered rewriting.
 In particular, from the session-typing rules for $\caseL[\ell \in L]{\ell => P_{\ell}}$ and $\caseR[\ell \in L]{\ell => P_{\ell}}$, we arrived at rules for typing deterministic choices:
-\begin{inferences}
+\begin{gather*}
   \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \dn {\textstyle \bigwith_{\ell \in L}(\atmR{\ell} \limp \up \p{A}_{\ell})} : C}}{
     \multipremise{\ell \in L}{\slof{B_{\ell} |- \p{A}_{\ell} : C}}}
-  \\\text{and}\\
+  \shortintertext{and}
   \infer[\rrule{\with}]{\slof{A |- \dn {\textstyle \bigwith_{\ell \in L}(\up \p{A}_{\ell} \pmir \atmL{\ell})} : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
     \multipremise{\ell \in L}{\slof{A |- \p{A}_{\ell} : B_{\ell}}}}
-\end{inferences}
-Focusing in combination with the left- or right-handed implicaiton ensures that the choices embodied by the alternative conjunction here are determinstic, not nondeterministic, choices.
+\end{gather*}
+Focusing in combination with the left- or right-handed implication ensures that the choices embodied by the alternative conjunction here are determinstic, not nondeterministic, choices.
 
-However, in terms of the ordered propositions alone, it would seem more natural to have a typing rule for $\n{A}_1 \with \n{A}_2$.
-A rule something like
+However, in terms of the ordered propositions alone, it would seem more natural to have a typing rule for $\n{A}_1 \with \n{A}_2$ -- that is, a rule something like
 \begin{equation*}
   \infer{\slof{A |- \n{A}_1 \with \n{A}_2 : C}}{\vdots}
   \,.
 \end{equation*}
 Finding such a rule for the ordered proposition $\n{A}_1 \with \n{A}_2$ might then allow us, by leveraging the ideas behind the bisimilar embedding of \cref{ch:??}, to reverse-engineer a process expression for some form of well-behaved, well-typed nondeterministic choice.
 
-\Textcite{??} has begun to look into incorporating nondeterministic choice into session-typed processes.
-It would be interesting to consider how his ideas might carry over to the formula-as-process ordered rewriting framework.
+\Textcite{Stock:JUB20} has begun to look into incorporating nondeterministic choice into session-typed processes, emphasizing the operational considerations.
+It would be interesting to consider whether his ideas can be adapted to the formula-as-process ordered rewriting framework.
 
 
 \subsection{Induction and coinduction, termination and productivity}
 
-\Textcite{??} have developed an infinitary calculus in which inductive and coinductive session types can be used to guarantee the termination and productivity of well-typed processes in a Curry--Howard interpretation of singleton logic.
-An interesting question is how similar ideas might be applied to (formula-as-process) ordered rewriting.
+\Textcite{Derakhshan+Pfenning:??} have developed an infinitary calculus in which inductive and coinductive session types can be used to guarantee the termination and productivity of well-typed processes in a Curry--Howard interpretation of singleton logic.
+Leveraging types, their validity condition on circular proofs is locally and effectively decidable.
+An interesting question is whether their ideas might be applied to (formula-as-process) ordered rewriting.
 
-Can their validity condition on circular proofs be mapped to a condition on ordered propositions?
-That condition very much relies on the unfolding of inductive and coinductive types, but ordered rewriting is untyped, at least natively.
-Yet productivity is about observable progress and even untyped ordered rewriting has a notion of observation, as embodied in ordered bisimilarity~\parencref{??}.
-So it does not seem unreasonable to hope for some kind of validity condition in spite of the absence of types.
+Productivity is about observable progress and even untyped ordered rewriting has a notion of observation, as embodied in ordered bisimilarity~\parencref{??}.
+So it seems likely that productive ordered rewriting systems can be characterized.
 
-Also, unlike proofs, rewriting traces are inherently open-ended.
-Does that open-endedness in any way affect the shape of the validity condition?
+What is unclear is whether there is an locally and effectively decidable condition on ordered propositions that can guarantee productivity.
+The local decidability of condition on circular proofs introduced by \citeauthor{Derakhshan+Pfenning:??}
+% Can their validity condition on circular proofs be mapped to a condition on ordered propositions?
+very much relies on the unrolling of inductive and coinductive types.
+But ordered rewriting is untyped, at least natively, so whether productivity can be characterized in a locally decidable way is unclear.
+% Yet productivity
+% So it does not seem unreasonable to hope for some kind of validity condition in spite of the absence of types.
+Also, unlike proofs, rewriting traces are constructed from open-ended derivations.
+Does that open-endedness in any way affect the existence or shape of the productivity condition?
 
 \section{Conclusion}
 

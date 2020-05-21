@@ -455,6 +455,9 @@
 {\printtext[linked]{#1}}
 
 
+% \renewcommand*{\Textcite}[1]{\Citeauthor{#1}\autocite{#1}}
+% \renewcommand*{\textcite}[1]{\citeauthor{#1}\autocite{#1}}
+
 \setlength{\bibhang}{2em}
 
 

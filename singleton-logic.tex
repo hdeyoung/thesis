@@ -28,9 +28,9 @@ Together, the cut elimination and identity elimination metatheorems identify the
 % Together, the cut elimination and identity expansion metatheorems identify the cut-free, $\eta$-long proofs as analytic verifications that exhibit a subformula property.
 
 Yet there are certainly other presentations of logics besides sequent calculi, so, in \cref{sec:singleton-logic:hilbert}, we develop a Hilbert-style axiomatization of singleton logic.
-This Hilbert system can also be viewed as a variant of the sequent calculus.\fixnote{, so we dub it a \emph{semi-axiomatic sequent calculus}.}
+This Hilbert system can also be viewed as a variant of the sequent calculus, so we dub it a \emph{semi-axiomatic sequent calculus}.
 % Our interest in a Hilbert system is not, however, zoological;
-An analysis of the its basic metatheory~\parencref{sec:singleton-logic:hilbert:metatheory} begins to suggest the basis of a Curry--Howard interpretation of Hilbert-style proofs as chains of well-typed, asynchronously communicating processes.
+An analysis of its basic metatheory~\parencref{sec:singleton-logic:hilbert:metatheory} begins to suggest the basis of a Curry--Howard interpretation of Hilbert-style proofs as chains of well-typed, asynchronously communicating processes.
 \Cref{ch:singleton-processes} will be devoted to developing that observation more fully.
 
 % Although the single-antecedent restriction precludes a true Hilbert system, we are able to consruct a Hilbert-like system that can also be viewed as a variant of the singleton sequent calculus.
@@ -103,7 +103,7 @@ In addition to providing sequents with an elegant symmetry between antecedents a
   % Under this restriction, there can be no binary operation to join contexts, so singleton contexts form only the degenerate algebraic structure of a set.
 
   Singleton logic is a natural object of investigation, precisely because it takes the idea of rejecting structural properties to its extreme.
-  In adopting the single-antecedent restriction, singleton logic rejects the very idea that contexts have any structure whatsoever; there can be no binary operation to join contexts, so singleton contexts form only the degenerate algebraic structure of a set.\fixnote{Singleton set?  Sets have union.}
+  In adopting the single-antecedent restriction, singleton logic rejects the very idea that contexts have any structure whatsoever; there can be no binary operation to join contexts.
 
 \item[Category theory]
   Each morphism in a category, $f\colon X \rightarrow Y$, has exactly one object -- no more and no less -- as its domain.
@@ -427,8 +427,8 @@ A simple structural induction proves this:
   If\/ $\oseq{\octx |- B}$ in the $\plus$,$\with$-fragment of the ordered sequent calculus, then there exists a proposition $A$ such that $\octx = A$ and $\slseq{A |- B}$ in the $\plus$,$\with$-frag\-ment of the singleton sequent calculus.
 \end{theorem}
 
-In substructural logics and systems built upon them, the logical constants $\top$ and $\zero$ are often problematic because they indiscriminately consume any and all resources placed in front of them.\autocites{Schack-Nielsen:??}{Cervesato+:TCS00}
-Interestingly, because the single-antecedent restriction exactly constrains the resources that those logical constants may consume, working in singleton logic is one possible way to sanitize $\top$ and $\zero$.
+In substructural logics and systems built upon them, the logical constants $\zero$ and $\top$ are often problematic because they indiscriminately consume any and all resources placed in front of them.\autocites{Schack-Nielsen:??}{Cervesato+:TCS00}
+Interestingly, because the single-antecedent restriction exactly constrains the resources that those logical constants may consume, working in singleton logic is one possible way to sanitize $\zero$ and $\top$.
 
 % Second, it is worth reiterating that singleton logic, peculiarly, has no form of implication.
 % % as mentioned previously, singleton logic contains no multipicative connectives and, most peculiarly, no form of implication.
@@ -445,12 +445,11 @@ Because it coincides exactly with a fragment of the ordered sequent calculus~\pa
 However, for our subsequent development, it will prove useful to examine the singleton sequent calculus's metatheory, especially cut elimination, natively.
 
 \newthought{In the tradition} of \citeauthor{Gentzen:MZ35}, \citeauthor{Dummett:WJ76}, and \citeauthor{Martin-Lof:Siena83}\autocites{Gentzen:MZ35}{Dummett:WJ76}{Martin-Lof:Siena83}, a sequent calculus is well-defined if it rests on the solid foundation of a verificationist meaning-explanation.
-That is, the meaning of each logical connective must be given entirely by its right (and left) inference rules, and those rules must exist in harmony with the left rules.%
-\alertnote{Right rules only, because it is verificationist?}
+That is, the meaning of each logical connective must be given entirely by its right (and left) inference rules, and those rules must exist in harmony with the left rules.
 
-A \emph{verification}, then, is a proof that relies only on the right and left inference rules and the $\jrule{ID}^{p}$ rule for propositional variables $p$\fixnote{Difference between propositional variables and atoms?} -- stated differently, verifications may not contain instances of the $\jrule{CUT}$ or general $\jrule{ID}^A$ rules.
+A \emph{verification}, then, is a proof that relies only on the right and left inference rules and the $\jrule{ID}^{p}$ rule for propositional variables $p$ -- stated differently, verifications may not contain instances of the $\jrule{CUT}$ or general $\jrule{ID}^A$ rules.
 
-If every proof has a corresponding verification, then we can be sure that neither the $\jrule{CUT}$ nor $\jrule{ID}$ rules play any role in defining the logical co%nnectives.
+If every proof has a corresponding verification, then we can be sure that neither the $\jrule{CUT}$ nor $\jrule{ID}$ rules play any role in defining the logical connectives.
 
 %
 % In the tradition of \citeauthor{Gentzen:??}, \citeauthor{Dummett:??}, and \citeauthor{Martin-Lof:??}\autocites{Gentzen:??}{Dummett:??}{Martin-Lof:??}, a sequent calculus is well-defined if it rests on the solid foundation of a verificationist meaning-theory.
@@ -461,15 +460,15 @@ If every proof has a corresponding verification, then we can be sure that neithe
 % A \emph{verification}, then, is a proof that relies only on the right and left inference rules and the $\jrule{ID}^{\alpha}$ rule for propositional variables $\alpha$ -- stated differently, verifications may not contain instances of the $\jrule{CUT}$ or general $\jrule{ID}^A$ rules.
 %
 %
-% For this program to succeed, we need to be sure that for every proof there is a corresponding verification -- we need a weak 
+For this program to succeed, we need to be sure that for every proof there is a corresponding verification -- 
 %
-In this sense, the usual cut elimination metatheorem states a weak normalization result.
+in this sense, the usual cut elimination metatheorem states a weak normalization result.
 %
 \begin{restatable*}[
   name=Cut elimination,
   label=thm:singleton-logic:seq-calc:cut-elimination
 ]{theorem}{thmsingletoncutelim}
-  If a proof of $\slseq{A |- C}$ exists, then there exists a cut-free proof of $\slseq{A |- C}$.
+  If a proof of $\slseq{A |- C}$ exists, then there exists a \emph{cut-free} proof of $\slseq{A |- C}$.
 \end{restatable*}
 %
 As usual, the cut elimination \lcnamecref{thm:singleton-logic:seq-calc:cut-elimination} may be proved by a straightforward induction on the structure of the given proof, provided that a cut principle for cut-free proofs is admissible:
@@ -478,22 +477,22 @@ As usual, the cut elimination \lcnamecref{thm:singleton-logic:seq-calc:cut-elimi
   name=Admissibility of cut,
   label=lem:singleton-logic:cut-admissibility
 ]{lemma}{lemsingletoncutadmissible}
-  If cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ exist, then there exists a cut-free proof of $\slseq{A |- C}$.
+  If cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ exist, then there exists a \emph{cut-free} proof of $\slseq{A |- C}$.
 \end{restatable*}
 
-\newthought{Before proceeding} to this \lcnamecref{lem:singleton-logic:seq-calc:cut-admissibility}'s proof, it is worth emphasizing a subtle distinction between the singleton sequent calculus's primitive $\jrule{CUT}$ rule and the admissible cut principle that this \lcnamecref{lem:singleton-logic:seq-calc:cut-admissibility} establishes.
+\newthought{Before proceeding} to this \lcnamecref{lem:singleton-logic:cut-admissibility}'s proof, it is worth emphasizing a subtle distinction between the singleton sequent calculus's primitive $\jrule{CUT}$ rule and the admissible cut principle that this \lcnamecref{lem:singleton-logic:cut-admissibility} establishes.
 
 To be completely formal, we could treat cut-freeness as an extrinsic, Curry-style property of proofs%
 \footnote{Contrast this with a separate, intrinsically cut-free sequent calculus in the style of Church~\parencite{Pfenning:Andrews??}.}
 and indicate cut-freeness by decorating the turnstile, so that $\cfslseq{A |- C}$ denotes a cut-free proof of $\slseq{A |- C}$.
-The admissible cut principle stated in \cref{lem:singleton-logic:seq-calc:cut-admissibility} could then be expressed as the rule
+The admissible cut principle stated in \cref{lem:singleton-logic:cut-admissibility} could then be expressed as the rule
 \begin{equation*}
   \infer-[\jrule{A-CUT}\smash{^B}]{\cfslseq{A |- C}}{
     \cfslseq{A |- B} & \cfslseq{B |- C}}
   ,
 \end{equation*}
 with the dotted line indicating that it is an admissible, not primitive, rule.
-Writing it in this way emphasizes that proving \cref{lem:singleton-logic:seq-calc:cut-admissibility} amounts to defining a meta-level function that takes cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ and produces a \emph{cut-free} proof of $\slseq{A |- C}$.
+Writing it in this way emphasizes that proving \cref{lem:singleton-logic:cut-admissibility} amounts to defining a meta-level function that takes cut-free proofs of $\slseq{A |- B}$ and $\slseq{B |- C}$ and produces a \emph{cut-free} proof of $\slseq{A |- C}$.
 % Moreover, the decorated turnstile makes it clear that all three proofs are cut-free by construction.
 % 
 Contrast this with the primitive $\jrule{CUT}$ rule of the singleton sequent calculus%
@@ -644,8 +643,29 @@ From here on, however, we won't bother to be quite so pedantic, instead often om
 \end{proof}
 
 
+In addition to cut elimination, we can also prove identity eliminiation.
+An identity-long proof is one in which all applications of the $\jrule{ID}$ occur at propositional variables.
+Identity elimination -- a slight misnomer -- transforms a proof into an identity-long proof of the same sequent by replacing instances of the $\jrule{ID}^A$ rule with an identity-long proof of $\slseq{A |- A}$.%
+\footnote{Identity eliminiation is a slight misnomer because instances of the $\jrule{ID}$ rule at propositional variables will remain.}
 
-\section{A Hilbert-style axiomatization of singleton logic}\label{sec:singleton-logic:hilbert}
+\begin{lemma}[Admissibility of identity]
+  For all propositions $A$, an identity-long proof of $\slseq{A |- A}$ exists.
+  Moreover, this proof is cut-free.
+\end{lemma}
+\begin{proof}
+  As usual\fixnote{Best reference?}, by induction on the structure of the proposition $A$.
+\end{proof}
+
+\begin{theorem}[Identity elimination]
+  If a proof of $\slseq{A |- C}$ exists, then there exists an \emph{identity-long} proof of $\slseq{A |- C}$.
+  Moreover, if the given proof is cut-free, so is the identity-long proof.
+\end{theorem}
+\begin{proof}
+  As usual\fixnote{Best reference?}, by structural induction on the proof of $\slseq{A |- C}$.
+\end{proof}
+
+
+\section{A semi-axiomatic sequent calculus for singleton logic}\label{sec:singleton-logic:hilbert}
 
 Sequent calculi are not the only way to present logics, so
 % natural deduction calculi and Hilbert systems are also commonly used, for instance.
@@ -1459,36 +1479,36 @@ But many of the choices that would be made in breaking ties, such as between the
 % \end{equation*}
 
 
-\section{}
+% \section{}
 
-\begin{equation*}
-  \begin{lgathered}
-    \eta(\alpha) = \fwd \\
-    \eta(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseL[\ell \in L]{\ell => \selectR{\ell}} \\
-    \eta(\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseR[\ell \in L]{\ell => \selectL{\ell}}
-  \end{lgathered}
-\end{equation*}
+% \begin{equation*}
+%   \begin{lgathered}
+%     \eta(\alpha) = \fwd \\
+%     \eta(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseL[\ell \in L]{\ell => \selectR{\ell}} \\
+%     \eta(\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseR[\ell \in L]{\ell => \selectL{\ell}}
+%   \end{lgathered}
+% \end{equation*}
 
-\begin{equation*}
-  \begin{lgathered}
-    \eta(\alpha) = \fwd \\
-    \eta(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseL[\ell \in L]{\ell => \spawn{\eta(A_{\ell})}{\selectR{\ell}}} \\
-    \eta(\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseR[\ell \in L]{\ell => \spawn{\selectL{\ell}}{\eta(A_{\ell})}}
-  \end{lgathered}
-\end{equation*}
+% \begin{equation*}
+%   \begin{lgathered}
+%     \eta(\alpha) = \fwd \\
+%     \eta(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseL[\ell \in L]{\ell => \spawn{\eta(A_{\ell})}{\selectR{\ell}}} \\
+%     \eta(\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}) = \caseR[\ell \in L]{\ell => \spawn{\selectL{\ell}}{\eta(A_{\ell})}}
+%   \end{lgathered}
+% \end{equation*}
 
-\begin{equation*}
-  \begin{lgathered}
-    n(A, \spawn{P}{^B Q}, C) = \nspawn{n(A, P, B)}{n(B, Q, C)} \\
-    n(A, \fwd, A) = \eta(A) \\
-    n(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}, \caseL[\ell \in L]{\ell => P_{\ell}}, C) = \caseL[\ell \in L]{\ell => n(A_{\ell}, P_{\ell}, C)}
-  \end{lgathered}
-\end{equation*}
-
-
+% \begin{equation*}
+%   \begin{lgathered}
+%     n(A, \spawn{P}{^B Q}, C) = \nspawn{n(A, P, B)}{n(B, Q, C)} \\
+%     n(A, \fwd, A) = \eta(A) \\
+%     n(\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}, \caseL[\ell \in L]{\ell => P_{\ell}}, C) = \caseL[\ell \in L]{\ell => n(A_{\ell}, P_{\ell}, C)}
+%   \end{lgathered}
+% \end{equation*}
 
 
 
+
+\clearpage
 \section{Extensions of singleton logic}\label{sec:singleton-logic:extensions}
 
 The singleton sequent calculus and singleton Hilbert system support various extensions.
