@@ -118,7 +118,7 @@ Here, \ac{NFA} bisimilarity is a relation on states, and the observer may only o
 \begin{definition}% [\ac*{NFA} bisimilarity]
   Let $\aut{A}_1 = (Q_1, \nfapow_1, F_1)$ and $\aut{A}_2 = (Q_2, \nfapow_2, F_2)$ be \acp{NFA} over an input alphabet $\ialph$.
   An \emph{\acs{NFA} bisimulation} between $\aut{A}_1$ and $\aut{A}_2$ is a binary relation on states, $\mathord{\simu{R}} \subseteq Q_1 \times Q_2$, that satisfies the following conditions.
-  \begin{description}[labelindent=\parindent, leftmargin=\dimexpr\leftmargin+\parindent\relax]
+  \begin{thmdescription}
   \item[Input bisimilarity]
     If $s \simu{R}^{-1}\nfareduces[a] q'$, then $s \nfareduces[a]\simu{R}^{-1} q'$;
     symmetrically, if $q \simu{R}\nfareduces[a] s'$, then $q \nfareduces[a]\simu{R} s'$.
@@ -144,7 +144,7 @@ Here, \ac{NFA} bisimilarity is a relation on states, and the observer may only o
 
   \item[Finality]
     If $q \simu{R} s$, then $q \in F_1$ if, and only if, $s \in F_2$.
-  \end{description}
+  \end{thmdescription}
   \vocab{\ac{NFA} bisimilarity} between $\aut{A}_1$ and $\aut{A}_2$, written $\asim_{\aut{A}_1,\aut{A}_2}$, is the largest bisimulation between $\aut{A}_1$ and $\aut{A}_2$.
   We will usually omit the subscripts because the automata are nearly always clear from context.
 \end{definition}

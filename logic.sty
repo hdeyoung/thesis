@@ -244,7 +244,21 @@
 %% Exponentials
 
 \NewDocumentCommand \bang { } { \__logic_bang: }
-\cs_new:Npn \__logic_bang: { \mathord { ! } }
+\cs_new:Npn \__logic_bang: { \mathord { \mathrm { ! } } }
+
+
+\DeclareMathSymbol{\mathinvertedexclamationmark}{\mathord}{operators}{'074}
+\DeclareMathSymbol{\mathexclamationmark}{\mathord}{operators}{'041}
+
+\newcommand{\raisedmathinvertedexclamationmark}{%
+  \mathord{\mathpalette\raised@mathinvertedexclamationmark\relax}%
+}
+\newcommand{\raised@mathinvertedexclamationmark}[2]{%
+  \raisebox{\depth}{$\m@th#1\mathinvertedexclamationmark$}%
+}
+
+\NewDocumentCommand \gnab { } { \__logic_gnab: }
+\cs_new:Npn \__logic_gnab: { \mathord { \raisedmathinvertedexclamationmark } }
 
 %%%%%%%%%%%%%%%%%%%
 %% Ordered logic %%

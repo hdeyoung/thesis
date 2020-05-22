@@ -363,7 +363,12 @@
 \RequirePackage { enumitem }
 
 \newlist { thmdescription } { description } { 1 }
-\setlist [ thmdescription ] { nosep , leftmargin=1.25em , font=\normalfont\emph }
+\setlist [ thmdescription ] { % nosep ,
+labelindent=\parindent, leftmargin=\dimexpr\leftmargin+\parindent\relax ,
+% leftmargin=1.25em ,
+font=\normalfont\emph }
+\newlist { thinthmdescription } { description } { 1 }
+\setlist [ thinthmdescription ] { nosep , leftmargin = 1.25em , font = \normalfont\emph }
 
 
 %%%%%%%%%%%%%%%%%%%%%%
