@@ -436,7 +436,8 @@ Here we present a string rewriting specification of these \emph{binary counters}
 \subsection{Binary representations}
 
 In this setting, we represent a natural number in binary by a string that consists of a big-endian sequence of symbols $b_0$ and $b_1$, prefixed by the symbol $e$; leading $b_0$s are permitted.
-For example, both $\octx = e \oc b_1$ and $\octx' = e \oc b_0 \oc b_1$ are valid binary representations of the natural number $1$.
+For example, both $\octx = e \oc b_1$ and $\octx' = e \oc b_0 \oc b_1$ are valid binary representations of the natural number $1$.%
+\footnote{Replace $\octx$ with $w$ or $c$?}
 
 To be more precise, we inductively define a relation, $\aval{}{}$, that assigns to each binary representation a unique natural number denotation.
 If $\aval{\octx}{n}$, we say that $\octx$ denotes, or represents, natural number $n$ in binary.
@@ -535,7 +536,8 @@ For example, because $e \oc b_1$ denotes $1$, a computation $e \oc b_1 \oc i \Re
 These three axioms can be read as follows:
 \begin{itemize}
 \item
-  To increment $e$, append $b_1$ as a new most\fixnote{or least?} significant bit, resulting in $e \oc b_1$.
+  To increment $e$, replace $e$ (and $i$) with $e \oc b_1$.
+  % append $b_1$ as a new most\fixnote{or least?} significant bit, resulting in $e \oc b_1$.
 \item
   To increment a binary number ending in $b_0$, flip that bit to $b_1$.
 \item
@@ -887,7 +889,10 @@ But the premise of the $\jrule{$b'_0$-D}$ does use the $\adec{}{}$ relation, so 
 With this $\adec{}{}$ relation in hand, we can now prove a small-step adequacy \lcnamecref{thm:string-rewriting:dec-small-step-adequacy}.
 This small-step \lcnamecref{thm:string-rewriting:dec-small-step-adequacy} then implies the big-step desiderata from above.
 %
-\begin{theorem}[Small-step adequacy of decrements]\label{thm:string-rewriting:dec-small-step-adequacy}
+\begin{restatable}[
+  name=Small-step adequacy of decrements,
+  label=thm:string-rewriting:dec-small-step-adequacy
+]{theorem}{thmadequacysmalldecstring}
   \leavevmode
   \begin{thinthmdescription}[leftmargin=0em]
   \item[Preservation]
@@ -902,7 +907,7 @@ This small-step \lcnamecref{thm:string-rewriting:dec-small-step-adequacy} then i
   \item[Termination]
     If $\adec{\octx}{n}$, then every rewriting sequence from $\octx$ is finite.
   \end{thinthmdescription}
-\end{theorem}
+\end{restatable}
 \begin{proof}
   Each part is proved separately.
   \begin{description}[
@@ -945,14 +950,17 @@ This small-step \lcnamecref{thm:string-rewriting:dec-small-step-adequacy} then i
   \end{description}
 \end{proof}
 
-\begin{corollary}[Big-step adequacy of decrements]
+\begin{restatable}[
+  name=Big-step adequacy of decrements,
+  label=cor:string-rewriting:dec-big-step-adequacy
+]{corollary}{coradequacydecstring}
   If $\adec{\octx}{n}$, then:
   \begin{itemize}[nosep]
   \item $\octx \Reduces z$ if, and only if, $n = 0$;
   \item $\octx \Reduces \octx' \oc s$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$, if $n > 0$; and
   \item $\octx \Reduces \octx' \oc s$ only if $n > 0$ and $\ainc{\octx'}{n-1}$.
   \end{itemize}
-\end{corollary}
+\end{restatable}
 \begin{proof}
   From the small-step preservation result of \cref{thm:string-rewriting:dec-small-step-adequacy}, it is possible to prove, using a structural induction on the given trace, a big-step preservation result: namely, that $\adec{\octx}{n}$ and $\octx \Reduces \octx'$ only if $\adec{\octx'}{n}$.
   Each of the above claims then follows from either progress and termination~\parencref{thm:string-rewriting:dec-small-step-adequacy} or big-step preservation together with inversion.

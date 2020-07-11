@@ -1,6 +1,12 @@
-\chapter{From ordered rewriting to message-passing concurrency}\label{ch:ordered-bisimilarity}
+\chapter{Ordered bisimilarity}\label{ch:ordered-bisimilarity}
 
-The previous \lcnamecref{ch:ordered-rewriting} introduced a process-as-formula view of the Lambek calculus, used to provide local, message-passing choreographies of the global, string rewriting specifications seen in \cref{ch:string-rewriting}.
+The previous \lcnamecref{ch:??} introduced a formula-as-process view of the focused ordered rewriting framework, and showed how to use it to provide local, message-passing choreographies of the global, string rewriting specifications seen in \cref{ch:string-rewriting}.
+The formula-as-process ordered rewriting framework brings (focused) ordered rewriting more in line with process calculi -- [...].
+
+But process calculi are usually equipped with a notion of observational equivalence, which formula-as-process ordered rewriting does not yet enjoy.
+In this \lcnamecref{ch:ordered-bisimilarity}, we [...].
+
+To construct 
 
 With the notion of process identity uninterpreted atomic propositions as messages and 
 
@@ -12,8 +18,24 @@ Messages are observable, but processes are opaque.
 
 \section{}
 
+With the shift from a global, state-transformation view of ordered rewriting put forth in \cref{ch:ordered-rewriting} to the local, formula-as-process view developed in the preceding \lcnamecref{ch:??}, we are now in a position to examine how individual propositions or contexts behave and interact.
+Because each proposition has its own local thread of control, we can describe its behavior only to the extent that its behavior can be witnessed by an external observer.
 
+Intuitively, for example, the contexts $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ and $\atmR{b}$ should have the same observable behavior: an internal reduction transforms $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ into $\atmR{b}$, and no other interactions -- reductions, input transitions, nor output transitions -- are possible from $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$.
+As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ ought to be behaviorally equivalent, intuitively because they are logically equivalent\footnote{$\oseq{\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \dashv|- (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}}$}.
 
+Following the vast literature on various forms of bisimilarity\footnote{See \textcite{??} for a survey.}, we will develop a notion of \emph{ordered rewriting bisimilarity} on ordered contexts, $\octx \osim \lctx$.
+In \cref{sec:??}, we define rewriting bisimilarity and present a few examples of contexts that are \emph{not} bisimilar under this definition.
+
+However, it will prove to be cumbersome to use only the definition of rewriting bisimilarity to establish that contexts are bisimilar, a problem that is familiar from process calculi notions of bisimilarity.
+Therefore, in \cref{sec:??}, we present \emph{labeled bisimilarity}, a sound proof technique for rewriting bisimilarity -- ordered contexts that are labeled bisimilar are also rewriting bisimilar.
+Unlike the $\pi$-calculus's labeled bisimilarity, our labeled bisimilarity is surprisingly complete for rewriting bisimilarity -- ordered contexts that are rewriting bisimilar are also labeled bisimilar.
+
+This \lcnamecref{ch:ordered-bisimilarity} concludes with several applications of ordered rewriting bisimilarity to our now-familiar running examples, binary counters and \aclp*{NFA}.
+\Cref{sec:??} proves that \ac{NFA}-bisimilar states have ordered-bisimilar encodings under the functional choreography described in \cref{sec:??}, which allows us to finally rephrase the choreography's adequacy in a clean and stratified form.
+And \cref{sec:??} proves that binary counters are ordered-bisimilar if, and only if, they have the same denotation.
+
+Our rewriting bisimilarity is inspired by and related to the contextual bisimilarity for linear contexts put forth by \textcite{Deng+:MSCS16}.
 
 
 \section{Ordered rewriting bisimilarity}
@@ -409,17 +431,21 @@ related to Deng et al.
 
 
 
-
+In this \lcnamecref{sec:??}, we define \emph{ordered rewriting bisimilarity}, a notion of observational equivalence for ordered contexts.
+Before that, however, we must define a few auxiliary relations on contexts.
+%
 \begin{definition}[Framed binary relations]
-  Let $\simu{R}$ be a binary relation over ordered contexts.
+  Let $\simu{R}$ be a binary relation on ordered contexts.
   Given ordered contexts $\lctx_L$ and $\lctx_R$, let $\lrframe{\lctx_L}{\simu{R}}{\lctx_R}$ be the least binary relation such that:
   \begin{inferences}
-    \infer{\lctx_L \oc \octx \oc \lctx_R \lrframe{\lctx_L}{\simu{R}}{\lctx_R} \lctx_L \oc \octx' \oc \lctx_R}{
-      \octx \simu{R} \octx'}
+    \infer{\octx \lrframe{\lctx_L}{\simu{R}}{\lctx_R} \octx'}{
+      \text{($\octx = \lctx_L \oc \octx_0 \oc \lctx_R$)} & 
+      \octx_0 \simu{R} \octx'_0 &
+      \text{($\lctx_L \oc \octx'_0 \oc \lctx_R = \octx'$)}}
   \end{inferences}
+  In other words, $\lrframe{\lctx_L}{\simu{R}}{\lctx_R}$ relates contexts consisting of $\simu{R}$-related middles that are each surrounded by $\lctx_L$ and $\lctx_R$.
 
-  Furthermore, let $\ctxc{\simu{R}}$ be the input contextual closure of $\simu{R}$ -- that is, $\octx \ctxc{\simu{R}} \lctx$ if and only if $\octx \lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R} \lctx$ for some $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$.
-  Equivalently, $\ctxc{\simu{R}}$ is the least binary relation such that:
+  Furthermore, let $\ctxc{\simu{R}}$ be the input contextual closure of $\simu{R}$ -- that is, $\ctxc{\simu{R}}$ is the least binary relation such that:
   \begin{inferences}
     \infer{\octx \ctxc{\simu{R}} \lctx}{
       \octx \simu{R} \lctx}
@@ -430,16 +456,42 @@ related to Deng et al.
     \infer{\octx \oc \atmL{a} \ctxc{\simu{R}} \lctx \oc \atmL{a}}{
       \octx \ctxc{\simu{R}} \lctx}
   \end{inferences}
+  Equivalently, $\octx \ctxc{\simu{R}} \lctx$ if, and only if, there exist input contexts $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$ such that $\octx \lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R} \lctx$.
 \end{definition}
+\noindent
+With these auxiliary relations in hand, we can now turn to defining ordered rewriting bisimilarity.
 
-Processes should be equivalent only if they have the same input/output behavior.
-In this setting, there is a single type of observable behavior: output of outward-directed messeges.
-and input of inward-directed messeges.
- 
+\newthought{Contexts should be} equivalent only if they are not observably distinguishable by a single type of experiment: provide the contexts with some incoming messages (or none at all) and observe any outgoing messages that are eventually produced.%
+% We take the position that outgoing messages are observable.
+If two contexts may eventually produce different outgoing messages, then observing those messages will allow us to distinguish the two contexts.
+% We may also perform simple experiments on contexts: provide the contexts with some incoming messages (or none at all) and observe any outgoing messages that are eventually produced.%
+In particular, we do not allow the time or number of computational steps to be observed -- all that matters is whether the same outputs are eventually produced from the same inputs.
+The resulting bisimilarity will therefore be a weak bisimilarity.
+\footnote{We could equivalently combine these into one monolithic condition: If $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+  \begin{equation*}
+    \begin{tikzcd}[ampersand replacement=\&, sep=large]
+      \atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R
+        \rar[relation, "\lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}"]
+        \dar[Reduces, exists]
+      \&
+      \atmR{\lctx}_L \oc \lctx \oc \atmL{\lctx}_R
+        \dar[Reduces]
+      \\
+      \atmL{\lctx}'_L \oc \octx' \oc \atmL{\lctx}'_R
+        \rar[relation, exists, "\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmL{\lctx}'_R}"]
+      \&
+      \atmL{\lctx}'_L \oc \lctx' \oc \atmL{\lctx}'_R
+    \end{tikzcd}
+  \end{equation*}
+  However, this formulation is unwieldy, so we prefer the seperate output and input bisimulation conditions.}
 
+ they have the same input and output behavior.
+Based on this principle, we arrive at the following notion of rewriting bisimilarity.
+We will state its definition first and then justify that definition on the basis of observable indistinguishability.
+%
 \begin{definition}
   A \vocab{rewriting bisimulation}, $\simu{R}$, is a symmetric binary relation among contexts that satisfies the following conditions.
-  \begin{thmdescription}
+  \begin{thmdescription}[nosep]
   \item[Output bisimulation]
     If $\octx \simu{R}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
   \item[Input bisimulation]
@@ -463,7 +515,7 @@ and input of inward-directed messeges.
         \end{tikzcd}
         \\
         \emph{Output bisimulation}
-        \\
+        \\[2ex]
         \begin{tikzcd}[sep=large]
           \atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R
             \rar[relation, "\lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}"]
@@ -472,10 +524,10 @@ and input of inward-directed messeges.
           \atmR{\lctx}_L \oc \lctx \oc \atmL{\lctx}_R
             \dar[Reduces]
           \\
-          \octx'
+          \octx\mathrlap{'}
             \rar[relation, exists, "\simu{R}"]
           &
-          \lctx'
+          \lctx\mathrlap{'}
         \end{tikzcd}
         \\
         \emph{Input bisimulation}
@@ -483,90 +535,218 @@ and input of inward-directed messeges.
     \end{center}
     \caption{Rewriting bisimulation conditions, in diagrams}
   \end{marginfigure}
-  \vocab{Rewriting bisimilarity}, $\osim$, is the largest rewriting bisimulation.
+  Then \vocab{rewriting bisimilarity}, $\osim$, is the largest rewriting bisimulation.
 \end{definition}
-
-These are very strong conditions -- arbitrary traces and quantify over all output/input contexts.
-
+\noindent
 Notice that a third, reduction bisimulation property is a trivial instance of the output and input bisimulation conditions -- namely when the output and input contexts, $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ and $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$, respectively, are empty:
 \begin{theorem}\label{thm:bisim-reduction-closure}
-  If $\simu{R}$ is a rewriting bisimulation, then $\simu{R}$ satisifies:
-  \begin{thmdescription}
+  If $\simu{R}$ is a rewriting bisimulation, then $\simu{R}$ satisifies
+  \begin{thmdescription}[nosep]
   \item[Reduction bisimulation]
     If $\octx \simu{R}\Reduces \lctx'$, then $\octx \Reduces\simu{R} \lctx'$.
   \end{thmdescription}
 \end{theorem}
 
-Because rewriting bisimilarity is defined coinductively, with very strong conditions, the \lcnamecref{??} itself is [...].
+% Both the output and input bisimulation conditions serve to ensure that related contexts are not observably distinguishable.
+
+The clauses of \cref{def:ordered-bisimilarity:bisim} could do with some explanation.
+Let's begin with the output bisimulation condition.
+
+Expanding slightly, we are given that $\octx \simu{R} \lctx \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, for some context $\lctx$.
+Based on the local interaction semantics~\parencref{sec:??}, this means
+\begin{enumerate*}[label=\emph{(\roman*)}]
+\item that $\lctx$ can eventually output $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ and then continue as $\lctx'$; and
+\item that $\octx$ is $\simu{R}$-related to $\lctx$
+\end{enumerate*}.
+For $\simu{R}$ to be a rewriting bisimulation, the context $\octx$ ought to be able to simulate $\lctx$'s eventual output of $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$, otherwise the $\simu{R}$-related contexts $\octx$ and $\lctx$ could be distinguished based on their (eventual) output behaviour.
+Moreover, the continuations ought to be $\simu{R}$-related as well.
+Formally, we ought to have $\octx \Reduces \atmL{\lctx}'_L \oc \octx' \oc \atmR{\lctx}'_R$ (\ie, $\octx$ eventualy outputs $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$) and $\octx' \simu{R} \lctx'$, for some context $\octx'$, which is all neatly packaged up as $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+
+Input bisimulation is dual to output bisimulation.
+Unpacking the given $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}\Reduces \lctx'$, we see that $\octx \simu{R} \lctx$ and $\atmR{\lctx}_L \oc \lctx \oc \atmL{\lctx}_R \Reduces \lctx'$, for some context $\lctx$.
+In other words, once provided with the incoming messages $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$, the context $\lctx$ can eventually reach $\lctx'$.
+Being $\simu{R}$-related to $\lctx$, the context $\octx$, when provided with the same incoming messages, must be able to reach a context that is $\simu{R}$-related to $\lctx'$, otherwise $\octx$ and $\lctx$ could be distinguished by how they react to $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$.
+That is, we must have $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces \octx' \simu{R} \lctx'$ for some $\octx'$, which is neatly packaged as $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$.
+
+
+\newthought{The other way} to understand rewriting bisimilarity is by analogy with the asynchronous \ac{CCS}'s notion of weak bisimilarity.\autocites{Amadio+:INRIA96}{Boreale+:IC02}
+There, a weak bisimulation can be described as a symmetric relation $\simu{R}$ on processes that satisfies three conditions:%
+\footnote{%
+  The premises of these conditions are usually stated with strong transitions.
+  We will return to this point shortly.}
+\begin{itemize}[noitemsep]% [label=\emph{(\roman*)}]
+\item If $P \simu{R}\overset{\smash{\bar{c}}}{\Reduces} Q'$, then $P \overset{\smash{\bar{c}}}{\Reduces}\simu{R} Q'$.
+\item If $P \simu{R}\overset{\tau}{\Reduces} Q'$, then $P \overset{\tau}{\Reduces}\simu{R} Q'$.
+\item If $P \simu{R}\overset{c}{\Reduces} Q'$, then either $P \overset{c}{\Reduces}\simu{R} Q'$ or there exists a process $P'$ such that $P \overset{\tau}{\Reduces} P'$ and $\bar{c} \mid P' \simu{R} Q'$.
+\end{itemize}
+
+When the output and input contexts $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ and $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$ are empty, rewriting bisimilarity's output and input bisimulation conditions amount to a reduction bisimulation property~\parencref{thm:??} and correspond to the second of these \ac{CCS} conditions.
+
+For nonempty output contexts, rewriting bisimilarity's output bisimulation condition corresponds to the first of the asynchronous \ac{CCS} weak bisimilarity's conditions.
+As mentioned in \cref{sec:??}, $\lctx \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ functions as an implicit weak output transition from $\lctx$ to $\lctx'$.
+Therefore, $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ is analogous to $P \overset{\smash{\bar{c}}}{\Reduces}\simu{R} Q'$.
+
+Rewriting bisimilarity's input bisimulation condition corresponds to the third of the asynchronous \ac{CCS} weak bisimilarity's conditions.
+The \ac{CCS} condition is equivalent to \enquote{If $P \simu{R}\overset{c}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.}
+Because asynchronous \ac{CCS} bisimilarity is a congruence, that condition can be rephrased as \enquote{If $P \simu{R} Q$ and $\bar{c} \mid Q \overset{\tau}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$} without affecting the resulting bisimilarity.%
+\footnote{See \cref{??} for a proof sketch.}
+And, in that form, the correspondence with rewriting bisimilarity's input bisimulation condition becomes apparent.
+
+
+
+
+% As described in \cref{sec:??}, our formula-as-process rewriting framework does not use an explicit internal transition judgment, but instead relies on reduction, so that $\reduces$ and $\Reduces$ are analogous to the \ac{CCS} $\overset{\tau}{\reduces}$ and $\overset{\tau}{\Reduces}$ strong and weak internal transition relations, respectively.
+% Thus, the above \cref{thm:bisim-reduction-closure} roughly plays the role of the condition imposed on an asynchronous \ac{CCS} bisimulation that $P \simu{R}\overset{\tau}{\reduces} Q'$ implies $P \overset{\tau}{\Reduces}\simu{R} Q'$.
+
+% \Cref{sec:??} also describes how the formula-as-process rewriting framework uses context equality, like $\lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$
+
+
+% In the asynchronous CCS, a weak bisimulation is a symmetric binary relation on processes that, among other conditions, satisfies:
+% \begin{itemize}
+% \item If $P \simu{R}\overset{\bar{c}}{\reduces} Q'$, then $P \overset{\bar{c}}{\Reduces}\simu{R} Q'$.
+% \end{itemize}
+% where $\overset{\bar{c}}{\reduces}$ and $\overset{\bar{c}}{\Reduces}$ are the strong and weak output transition relations on channel $c$.
+
+
+
+% As described in \cref{sec:??}, our formula-as-process rewriting framework does not use an explicit output transition judgment, but instead handles output transitions implicitly with context equalities like $\lctx = \atmL{\lctx}'_L \oc \lctx'_0 \oc \atmR{\lctx}'_R$.
+% In this implicit setting, there would be a weak output transition from $\lctx$ to $\atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ if $\lctx \Reduces \atmL{\lctx}'_L \oc \lctx'_0 \oc \atmR{\lctx}'_R$ and $\lctx'_0 \Reduces \lctx'$
+
+% In the asynchronous CCS, a weak bisimulation is a symmetric binary relation on processes that satisfies:
+% \begin{itemize}
+% \item If $P \simu{R}\overset{\bar{c}}{\reduces} Q'$, then $P \overset{\bar{c}}{\Reduces}\simu{R} Q'$.
+% \item If $P \simu{R}\overset{\tau}{\reduces} Q'$, then $P \overset{\tau}{\Reduces}\simu{R} Q'$.
+% \item If $P \simu{R}\overset{c}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.%
+%   \footnote{Sometimes this is presented as the equivalent \enquote{If $P \simu{R}\overset{c}{\reduces} Q'$, then $P \overset{c}{\Reduces}\simu{R} Q'$ or there exists a process $P'$ such that $P \overset{\tau}{\Reduces} P'$ and $\bar{c} \mid P' \simu{R} Q'$.}}
+% \end{itemize}
+% In the presence of contextuality, the third condition is equivalent to 
+% \begin{itemize}
+% \item If $P \simu{R} Q$ and $\bar{c} \mid Q \overset{\tau}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.
+% \end{itemize}
+
+% These correspond roughly to three conditions found in asynchronous CCS bisimilarity.
+% \begin{itemize}
+% \item If $P \simu{R}\overset{\bar{c}}{\reduces} Q'$, then $P \overset{\bar{c}}{\reduces}\simu{R} Q'$.
+% \item If $P \simu{R}\overset{\bar{c}}{\reduces} Q'$, then $P \overset{\bar{c}}{\reduces}\simu{R} Q'$.
+% \end{itemize}
+
+% Allowing the local interaction semantics of \cref{sec:??}, an output of $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ on the left and right respectively occurs at context $\lctx$ if $\lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+% In $\pi$-calculus terms, $\lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ describes a strong output barb on the context $\lctx$.
+% But because we are interested in a weak bisimilarity, we generalize this to a weak output barb: $\lctx \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, \ie, after finitely many internal reductions, an output of $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ is eventually reached.
+% Thus the above output bisimulation condition -- that $\octx \simu{R}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ implies $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ -- corresponds to the kind of (weak) output barb preservation familiar from asynchronous $\pi$-calculus bisimilarity.
+
+% The above input bisimulation condition can be understood as merely the dual of the output bisimulation condition.
+% But it can also be understood by analogy with asynchronous $\pi$-calculus bisimilarity.
+% In the asynchronous $\pi$-calculus, 
+% \begin{itemize}
+% \item If $P \simu{R}\overset{\bar{c}}{\reduces} Q'$, then $P \overset{\bar{c}}{\reduces}\simu{R} Q'$.
+% \item If $P \simu{R}\overset{c}{\reduces} Q'$, then either $P \overset{c}{\reduces} \simu{R} Q'$ or there exists $P'$ such that $P \overset{\tau}{\reduces} P'$ and $\bar{c} \mid P' \simu{R} Q'$.
+% \item If $P \simu{R}\overset{c}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\reduces}\simu{R} Q'$.
+% \item If $P \simu{R} Q$ and $\bar{c} \mid Q \overset{\tau}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\reduces}\simu{R} Q'$.
+% \end{itemize}
+
+
+
+% where $\overset{x(y)}{\Reduces}$ and $\overset{\tau}{\Reduces}$ are weak input and internal transitions, respectively.
+% Because the judgment $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$ is a kind of input transition, we might adopt the condition that 
+% \begin{itemize}
+% \item If $\octx \simu{R} \lctx$ and $\ireduces{\atmR{\lctx}_L \#1 \oc \atmL{\lctx}_2}{\lctx}{\lctx'}$, then either: $\octx \Reduces \octx^*$ and $\ireduces{\atmR{\lctx}_L \#1 \oc \atmL{\lctx}_2}{\octx^'}{\octx'} \simu{R} \lctx'$; or there exists a process $P'$ such that $P \overset{\tau}{\Reduces} P'$ and $\bar{x}\langle y\rangle \mid P' \simu{R} Q'$.
+% \end{itemize}
+
+
+% Input barbs can also be described using
+
+% $x(y).P' \simu{R} Q$ implies $\bar{x}\langle y\rangle \mid Q \Reduces Q' \simu{R}^{-1} P'$
+
+% If $\octx \simu{R} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$, then either: $\octx \Reduces \octx^*$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\octx^*}{\octx'} \Reduces\simu{R} \lctx'$; or $\octx \Reduces \octx'$ and $\atmR{\lctx}_L \oc \octx' \oc \atmL{\lctx}_R \simu{R} \lctx'$.
+
+% If $\octx \simu{R} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$, then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$.
+
+
+
+\newthought{Rewriting bisimilarity imposes} very strong conditions upon bisimilar contexts, quantifying over all traces % (not just individual rewriting steps) and also over
+and
+all output and input contexts.
+Combined with the coinductive nature of bisimilarity, this results in a rather fine-grained equivalence.
+Some contexts that might, at first glance, seem like they ought to be equivalent are, in fact, not bisimilar.
 \begin{itemize}
-\item The contexts $\atmL{a} \pmir \atmL{a}$ and $\octxe$ are \emph{not} bisimilar.
-  Suppose, for the sake of contradiction, that they are bisimilar and so, framing $\atmL{b}$ onto the right, we have $(\atmL{a} \pmir \atmL{a}) \oc \atmL{b} \rframe{\osim}{\atmL{b}} \atmL{b}$.
+\item The contexts $\atmL{a} \pmir \atmL{a}$ and $(\octxe)$ are \emph{not} bisimilar.
+  Suppose, for the sake of contradiction, that they are bisimilar.
+  Framing $\atmL{b}$ onto the right, we have $(\atmL{a} \pmir \atmL{a}) \oc \atmL{b} \rframe{\osim}{\atmL{b}} \atmL{b}$.
   Composing the input and ouput bisimulation conditions, $(\atmL{a} \pmir \atmL{a}) \oc \atmL{b} \Reduces\lframe{\atmL{b}}{\osim} \atmL{b}$ must follow.
   However, this is impossible: $(\atmL{a} \pmir \atmL{a}) \oc \atmL{b}$ is irreducible and does not expose $\atmL{b}$ at its left end.
-  Therefore, $\atmL{a} \pmir \atmL{a}$ and $\octxe$ \emph{cannot} be bisimilar.
+  Therefore, $\atmL{a} \pmir \atmL{a}$ and $(\octxe)$ \emph{cannot} be bisimilar.
 
 \item The contexts $\atmR{a}$ and $\atmR{a} \with \atmR{b}$ are not bisimilar.
   The context $\atmR{a} \with \atmR{b}$ can output $\atmR{b}$ at its right end: $\atmR{a} \with \atmR{b} \reduces \atmR{b}$.
-  But $\atmR{a}$ cannot simulate that output: the output bisimulation condition demands $\atmR{a} \Reduces\rframe{\osim}{\atmR{b}} \atmR{b}$, which is impossible.
+  But $\atmR{a}$ cannot simulate that output -- the output bisimulation condition demands $\atmR{a} \Reduces\rframe{\osim}{\atmR{b}} \atmR{b}$, which is impossible.
+
+\item If we were working in an unfocused framework, the contexts $\atmR{a}$ and $\atmR{a} \with \top$ would not be bisimilar.
+  The context $\atmR{a} \with \top$ would reduce (\ie, $\atmR{a} \with \top \reduces \top$), and so the input bisimulation condition and the irreducibility of $\atmR{a}$ would imply $\atmR{a} \osim \top$.
+  The output bisimulation condition would then demand that $\top$ expose $\atmL{a}$ at its left end, which is impossible.
+  As we will see later, $\atmR{a}$ and $\atmR{a} \with \top$ are bisimilar in a focused framework.
 \end{itemize}
 
 Now we would like to confirm our earlier intuition about the equivalence of $\atmR{a} \oc (\atmR{a} \pmir \atmR{b})$ and $\atmR{b}$ by proving that $\atmR{a} \oc (\atmR{a} \pmir \atmR{b}) \osim \atmR{b}$.
 Unfortunately, the definition of rewriting bisimilarity is not immediately suitable for establishing that two contexts are bisimilar.
-The output and input bisimulation conditions are so strong [...].
-
-For instance,
-\begin{description}
-\item[Input bisimulation]
-  $\atmR{\lctx}_L \oc \atmR{a} \oc (\atmR{a} \limp \atmR{b}) \oc \atmL{\lctx}_R \Reduces \lctx'$ implies $\atmR{\lctx}_L \oc \atmR{b} \oc \atmL{\lctx}_R \osim \lctx'$; and % , for all $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$; and
-  $\atmR{\lctx}_L \oc \atmR{b} \oc \atmL{\lctx}_R \Reduces \lctx'$ implies $\atmR{\lctx}_L \oc \atmR{a} \oc (\atmR{a} \limp \atmR{b}) \oc \atmL{\lctx}_R \osim \lctx'$; and % , for all $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$; and
-
-\item[Output bisimulation]
-  $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ implies $\atmR{b} \Reduces\lrframe{\atmL{\lctx}'_L}{\osim}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$; and
-  $\atmR{b} \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ implies $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \Reduces\lrframe{\atmL{\lctx}'_L}{\osim}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+The output and input bisimulation conditions are so strong that they become difficult to prove directly.
+For instance, to establish $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \osim \atmR{b}$, we would need to prove that:
+\begin{description}[noitemsep]% [leftmargin=0pt]
+\item[Input bisimulation]% \leavevmode
+ $\atmR{\lctx}_L \oc \atmR{a} \oc (\atmR{a} \limp \atmR{b}) \oc \atmL{\lctx}_R \Reduces \lctx'$ implies $\atmR{\lctx}_L \oc \atmR{b} \oc \atmL{\lctx}_R \osim \lctx'$; and % , for all $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$; and
+ symmetrically, $\atmR{\lctx}_L \oc \atmR{b} \oc \atmL{\lctx}_R \Reduces \lctx'$ implies $\atmR{\lctx}_L \oc \atmR{a} \oc (\atmR{a} \limp \atmR{b}) \oc \atmL{\lctx}_R \osim \lctx'$; % , for all $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$; and
+%  \end{itemize}
+  
+\item[Output bisimulation]% \leavevmode
+ % \begin{itemize}[nosep]
+   $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ implies $\atmR{b} \Reduces\lrframe{\atmL{\lctx}'_L}{\osim}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$; and
+   symmetrically, $\atmR{b} \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ implies $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \Reduces\lrframe{\atmL{\lctx}'_L}{\osim}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+  % \end{itemize}
 \end{description}
 In this small example, it is possible to imagine tediously proving these statements -- after all, there are not that many traces involving $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$.
-However, in general, a proof technique for rewriting bisimilarity is needed.
+However, in general, a proof technique for rewriting bisimilarity is sorely needed.
 
 
-Simple examples of bisimilar (or non-bisimilar) contexts
-\begin{itemize}
-\item $\atmL{a} \pmir \atmL{a} \nosim \octxe$ because input bisimulation followed by output bisimulation demands that $\atmR{b} \oc (\atmL{a} \pmir \atmL{a}) \Reduces\lrframe{}{\osim}{\atmR{b}} \atmR{b}$, which is impossible because $\atmR{b} \oc (\atmL{a} \pmir \atmL{a})$ has no nontrivial reductions and does not expose $\atmR{b}$ at its right.
-\item $\atmR{a} \with \atmR{b} \nosim \atmR{a}$ because $\atmR{a} \Reduces\lrframe{}{\osim}{\atmR{b}} \atmR{b}$ is impossible.
-\item {[$\atmR{a} \with \top \osim \atmR{a}$, but only because rewriting is (weakly) focused.]}
-\item $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \osim \atmR{b}$ intuitively because $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ has no input transitions and reduces to $\atmR{b}$.
-  Need a proof technique to establish this.
-\item $\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \osim (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ intuitively because the two propositions are logically equivalent.
-  Both have the same input transitions.
-  Also, $\atmR{a} \limp \up \dn (\atmR{c} \pmir \atmL{b}) \osim \up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$.
-\end{itemize}
+% Simple examples of bisimilar (or non-bisimilar) contexts
+% \begin{itemize}
+% \item $\atmL{a} \pmir \atmL{a} \nosim \octxe$ because input bisimulation followed by output bisimulation demands that $\atmR{b} \oc (\atmL{a} \pmir \atmL{a}) \Reduces\lrframe{}{\osim}{\atmR{b}} \atmR{b}$, which is impossible because $\atmR{b} \oc (\atmL{a} \pmir \atmL{a})$ has no nontrivial reductions and does not expose $\atmR{b}$ at its right.
+% \item $\atmR{a} \with \atmR{b} \nosim \atmR{a}$ because $\atmR{a} \Reduces\lrframe{}{\osim}{\atmR{b}} \atmR{b}$ is impossible.
+% \item {[$\atmR{a} \with \top \osim \atmR{a}$, but only because rewriting is (weakly) focused.]}
+% \item $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \osim \atmR{b}$ intuitively because $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ has no input transitions and reduces to $\atmR{b}$.
+%   Need a proof technique to establish this.
+% \item $\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \osim (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ intuitively because the two propositions are logically equivalent.
+%   Both have the same input transitions.
+%   Also, $\atmR{a} \limp \up \dn (\atmR{c} \pmir \atmL{b}) \osim \up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$.
+% \end{itemize}
 
 
 \subsection{Labeled bisimilarity: A proof technique for rewriting bisimilarity}
 
-In the $\pi$-calculus, bisimilarity is similarly too strong to be used directly in proving the equivalence of processes.
-There, a sound proof technique for bisimilarity is built around a labeled transition system and a notion of labeled bisimulation.
-Because the labeled transition system is image-finite, proving that two processes are labeled bisimilar is more tractable than directly proving them [to be] bisimilar.
+In \ac{CCS} and the $\pi$-calculus, bisimilarity is similarly too strong to be used directly in proving the equivalence of processes.
+There, a sound proof technique for bisimilarity is built around a labeled transition system and a notion of labeled bisimulation.\autocite{Sangiorgi+Walker:CUP03}
+Because the labeled transition system is image-finite, proving that two processes are labeled bisimilar is more tractable than directly proving them to be bisimilar.
 
-In this \lcnamecref{??}, we follow that strategy and develop \vocab{labeled bisimilarity} as a sound and complete proof technique for rewriting bisimilariy.
-Like the $\pi$-calculus analogues, labeled bisimilarity is more tractable than rewriting bisimilarity because it uses labeled input transitions in place of [full] rewriting sequences.
+In this \lcnamecref{??}, we follow that strategy and develop \vocab{labeled bisimilarity} as a sound -- and, surprisingly, also complete -- proof technique for rewriting bisimilarity.
+Like its \ac{CCS} and $\pi$-calculus analogues, labeled bisimilarity is more tractable than rewriting bisimilarity because it uses individual input transitions in place of full rewriting sequences.
 
+Instead of defining labeled bisimulations directly, we use a refactorization, standard in the study of up-to techniques\autocite{??}, in which we first define a notion of \emph{progression} and then characterize labeled bisimulations in terms of progression.
 \begin{definition}
-  A \vocab{labeled bisimulation}, $\simu{R}$, is a symmetric binary relation [among contexts] that satisfies the following conditions.
-  \begin{thmdescription}
-  \item[Immediate output bisimulation]
-    If $\octx \simu{R} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \lctx$.
+  A binary relation $\simu{R}$ on contexts \vocab{progresses} to binary relation $\simu{S}$ if $\simu{R}$ is symmetric and the two relations satisfy the following conditions.
+  \begin{thmdescription}[nosep]
+  \item[Immediate output bisim.]
+    If $\octx \simu{R} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{S}}{\atmR{\lctx}'_R} \lctx$.
   \item[Immediate input bisimulation]
-    If $\octx \simu{R} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$, then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$.
+    If $\octx \simu{R} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$, then\\$\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{S} \lctx'$.
   \item[Reduction bisimulation]
     If $\octx \simu{R}\reduces \lctx'$, then $\octx \Reduces\simu{S} \lctx'$.
   \item[Emptiness bisimulation]
-    If $\octx \simu{R} \octxe$, then:
+    If $\octx \simu{R} (\octxe)$, then:
     \begin{itemize*}[label=, afterlabel=]
-    \item $\atmR{\lctx} \oc \octx \Reduces\rframe{\simu{R}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$; and
-    \item $\octx \oc \atmL{\lctx} \Reduces\lframe{\atmL{\lctx}}{\simu{R}} \atmL{\lctx}$ for all $\atmL{\lctx}$.
+    \item $\atmR{\lctx} \oc \octx \Reduces\rframe{\simu{S}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$; and
+    \item $\octx \oc \atmL{\lctx} \Reduces\lframe{\atmL{\lctx}}{\simu{S}} \atmL{\lctx}$ for all $\atmL{\lctx}$.
     \end{itemize*}
   \end{thmdescription}
-  \vocab{Labeled bisimilarity} is the largest labeled bisimulation.
+  A \vocab{labeled bisimulation} is a relation that progresses to itself, and \vocab{labeled bisimilarity} is the largest labeled bisimulation.
   \begin{marginfigure}
     \begin{center}
       \begin{tabular}{@{}c@{}}
@@ -583,25 +763,26 @@ Like the $\pi$-calculus analogues, labeled bisimilarity is more tractable than r
         \phantom{${} = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$}
         \\
         \emph{Immediate output bisimulation}
-        \\
+        \\[2ex]
         \begin{tikzcd}[sep=large]
           \atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R
             \rar[relation, "\lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}"]
-            \dar[Reduces, exists]
+            \arrow[Reduces, exists]{dd}
           &
           \atmR{\lctx}_L \oc \lctx \oc \atmL{\lctx}_R
-          &[-2.5em]
+          \\[-6ex]
+          &
           \atmR{\lctx}_L \oc [\lctx] \oc \atmL{\lctx}_R
             \dar[reduces]
           \\
-          \octx'
-            \arrow[relation, exists, "\simu{S}"]{rr}
-          &&
-          \lctx'
+          \octx\mathrlap{'}
+            \rar[relation, exists]{\simu{S}}
+          &
+          \lctx\mathrlap{'}
         \end{tikzcd}
         \\
         \emph{Immediate input bisimulation}
-        \\
+        \\[2ex]
         \begin{tikzcd}[sep=large]
           \octx
             \rar[relation, "\simu{R}"]
@@ -610,14 +791,14 @@ Like the $\pi$-calculus analogues, labeled bisimilarity is more tractable than r
           \lctx
             \dar[reduces]
           \\
-          \octx'
+          \octx\mathrlap{'}
             \rar[relation, exists, "\simu{S}"]
           &
-          \lctx'
+          \lctx\mathrlap{'}
         \end{tikzcd}
         \\
         \emph{Reduction bisimulation}
-        \\
+        \\[2ex]
         \begin{tikzcd}[sep=large]
           \atmR{\lctx} \oc \octx
             \rar[relation, "\lrframe{\atmR{\lctx}}{\simu{R}}{}"]
@@ -628,7 +809,7 @@ Like the $\pi$-calculus analogues, labeled bisimilarity is more tractable than r
           \octx' \oc \atmR{\lctx}
             \urar[relation, exists, "\lrframe{}{\simu{S}}{\atmR{\lctx}}" {sloped, below}]
         \end{tikzcd}
-        \qquad
+        \quad
         \begin{tikzcd}[sep=large]
           \octx \oc \atmL{\lctx}
             \rar[relation, "\lrframe{}{\simu{R}}{\atmL{\lctx}}"]
@@ -647,11 +828,34 @@ Like the $\pi$-calculus analogues, labeled bisimilarity is more tractable than r
   \end{marginfigure}
 \end{definition}
 
+The immediate output, immediate input, and reduction bisimulation conditions are all single-step forms of rewriting bisimilarity's output and input bisimulation conditions~\parencref{??} and reduction bisimulation property~\parencref{??}.
+The emptiness bisimulation condition is necessary for labeled bisimilarity to be complete.
+A similar condition appears in \textcite{Deng+:MSCS16}.
+
+Emptiness bisimulation is equivalent to requiring that $\octx \simu{R} (\octxe)$ implies $\octx \Reduces (\octxe) \simu{S} (\octxe)$.
+In this way, it can be seen
 
 
-The emptiness bisimulation condition is necessary to [...].
-Notice that it is equivalent to $\octx \simu{R} \octxe$ implies $\octx \Reduces \octxe$.
-A similar condition appears in \textcite{Deng+:LINEARITY12}.
+% O R (.) implies a O ==>(Ra) a
+% a O ==> O' a and O' R (.)
+% Case: a O = O' a
+%   O = (.) because it can't end with a 
+% Case: a O -->  ==> O' a
+%   O --> O' and a O'' ==> O' a
+%   O'' ==> (.)
+%   O ==> (.)
+
+
+% If D O ==>(Sa) D, then O ==> (.) and (.) S (.).
+% If O ==> (.) S (.), then D O ==>(SD) D.
+
+% a O ==> O' a then O ==> (.) and O' = (.)
+% Case: a O = O' a
+%   O = O' = . because a can't apear in O
+% Case: a O --> ==> O' a
+%   O --> O1 and a O1 ==> O' a
+%   O1 ==> (.) and O' = (.)
+%   O ==> (.)
 
 
 \begin{theorem}[Completeness of labeled bisimilarity]
@@ -659,7 +863,7 @@ A similar condition appears in \textcite{Deng+:LINEARITY12}.
 \end{theorem}
 \begin{proof}
   Let $\simu{R}$ be a rewriting bisimulation.
-  The immediate output, immediate input, and reduction conditions are trivial instances of the output and input bisimulation conditions.
+  The immediate output, immediate input, and reduction bisimulation conditions are trivial instances of the output and input bisimulation conditions.
   For instance, to prove that $\simu{R}$ is an immediate input bisimulation, assume that $\octx \simu{R} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$; then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R} \reduces \lctx'$.
   Because $\simu{R}$ is a rewriting bisimulation, it follows from the input bisimulation property that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$.
 
@@ -675,7 +879,7 @@ A similar condition appears in \textcite{Deng+:LINEARITY12}.
           \atmR{\lctx}
             \arrow[Reduces, loop right]{}
           \\
-          \octx'
+          \octx\mathrlap{'}
             \urar[relation, "\simu{R}" sloped]
             \dar[Reduces]
           \\
@@ -691,7 +895,7 @@ A similar condition appears in \textcite{Deng+:LINEARITY12}.
           \atmL{\lctx}
             \arrow[Reduces, loop right]{}
           \\
-          \octx'
+          \octx\mathrlap{'}
             \urar[relation, "\simu{R}" sloped]
             \dar[Reduces]
           \\
@@ -707,35 +911,44 @@ A similar condition appears in \textcite{Deng+:LINEARITY12}.
 
 
 Unfortunately, the direct converse is not true: a labeled bisimulation is not necessarily itself a rewriting bisimulation.
-For example, consider the least symmetric binary relation $\simu{R}$ such that $\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \simu{R} (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ and $\atmR{c} \simu{R} \atmR{c}$ and $(\octxe) \simu{R} (\octxe)$.
-The relation $\simu{R}$ is a labeled bisimulation, but it does not satisfy the input bisimulation condition, because $\atmR{a} \oc (\atmR{a} \limp (\atmR{c} \pmir \atmL{b})) \lframe{\atmR{a}}{\simu{R}} \atmR{a} \oc ((\atmR{a} \limp \atmR{c}) \pmir \atmL{b})$ does not imply $\atmR{a} \oc (\atmR{a} \limp (\atmR{c} \pmir \atmL{b})) \Reduces\simu{R} \atmR{a} \oc ((\atmR{a} \limp \atmR{c}) \pmir \atmR{b})$, and so is not a rewriting bisimulation.
+For example, consider the least symmetric binary relation $\simu{R}$ such that
+\begin{equation*}
+  \atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \simu{R} (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}
+  \quad\text{and}\quad
+  \atmR{c} \simu{R} \atmR{c}
+  \quad\text{and}\quad
+  (\octxe) \simu{R} (\octxe)
+  \,.
+\end{equation*}
+The relation $\simu{R}$ is a labeled bisimulation, but it does not qualify as a rewriting bisimulation because it does not satisfy the more general input bisimulation condition: $\atmR{a} \oc (\atmR{a} \limp (\atmR{c} \pmir \atmL{b})) \lframe{\atmR{a}}{\simu{R}} \atmR{a} \oc ((\atmR{a} \limp \atmR{c}) \pmir \atmL{b})$ does not imply $\atmR{a} \oc (\atmR{a} \limp (\atmR{c} \pmir \atmL{b})) \Reduces\simu{R} \atmR{a} \oc ((\atmR{a} \limp \atmR{c}) \pmir \atmR{b})$.
+That would only be possible if $\atmR{a} \oc (\atmR{a} \limp (\atmR{c} \pmir \atmL{b})) \simu{R} \atmR{a} \oc ((\atmR{a} \limp \atmR{c}) \pmir \atmR{b})$.
 
-However, a slightly weaker statement \emph{is} true: a labeled bisimulation is contained within \emph{some} rewriting bisimulation.
+Although a labeled bisimulation is not a rewriting bisimulation, a slightly weaker statement is nevertheless true: a labeled bisimulation is contained within \emph{some} rewriting bisimulation.
 Specifically, if $\simu{R}$ is a labeled bisimulation, then its input contextual closure, $\ctxc{\simu{R}}$, is such a rewriting bisimulation.
 Fortunately, this will be enough to prove that labeled bisimilarity is sound.
 
 
 
-\begin{definition}
-  A symmetric binary relation $\simu{R}$ \vocab{(labeled-)progresses} to binary relation $\simu{S}$ if the two relations satisfy the following conditions.
-  \begin{thmdescription}
-  \item[Immediate output bisimulation]
-    If $\octx \simu{R} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{S}}{\atmR{\lctx}'_R} \lctx$.
-  \item[Immediate input bisimulation]
-    If $\octx \simu{R} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$, then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{S} \lctx'$.
-  \item[Reduction bisimulation]
-    If $\octx \simu{R}\reduces \lctx'$, then $\octx \Reduces\simu{S} \lctx'$.
-  \item[Emptiness bisimulation]
-    If $\octx \simu{R} \octxe$, then:
-    \begin{itemize*}[label=, afterlabel=]
-    \item $\atmR{\lctx} \oc \octx \Reduces\lrframe{}{\simu{S}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$; and
-    \item $\octx \oc \atmL{\lctx} \Reduces\lrframe{\atmL{\lctx}}{\simu{S}}{} \atmL{\lctx}$ for all $\atmL{\lctx}$.
-    \end{itemize*}
-  \end{thmdescription}
-\end{definition}
-%
-\noindent
-Notice that the labeled bisimulations are exactly those relations that progress to themselves.
+% \begin{definition}
+%   A symmetric binary relation $\simu{R}$ \vocab{(labeled-)progresses} to binary relation $\simu{S}$ if the two relations satisfy the following conditions.
+%   \begin{thmdescription}
+%   \item[Immediate output bisimulation]
+%     If $\octx \simu{R} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{S}}{\atmR{\lctx}'_R} \lctx$.
+%   \item[Immediate input bisimulation]
+%     If $\octx \simu{R} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$, then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{S} \lctx'$.
+%   \item[Reduction bisimulation]
+%     If $\octx \simu{R}\reduces \lctx'$, then $\octx \Reduces\simu{S} \lctx'$.
+%   \item[Emptiness bisimulation]
+%     If $\octx \simu{R} \octxe$, then:
+%     \begin{itemize*}[label=, afterlabel=]
+%     \item $\atmR{\lctx} \oc \octx \Reduces\lrframe{}{\simu{S}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$; and
+%     \item $\octx \oc \atmL{\lctx} \Reduces\lrframe{\atmL{\lctx}}{\simu{S}}{} \atmL{\lctx}$ for all $\atmL{\lctx}$.
+%     \end{itemize*}
+%   \end{thmdescription}
+% \end{definition}
+% %
+% \noindent
+% Notice that the labeled bisimulations are exactly those relations that progress to themselves.
 
 
 
@@ -1059,18 +1272,24 @@ Notice that the labeled bisimulations are exactly those relations that progress 
 
 % \section{}
 
+The proof of soundness is clean, but it winds through a few \lcnamecrefs{lem:labeled-bisim-union}, however.
+The first of these describes a condition under which the union of two relations is a labeled bisimulation.
+%
 \begin{lemma}\label{lem:labeled-bisim-union}
   Let $\simu{S}$ be a labeled bisimulation.
   If $\simu{R}$ progresses to $\simu{R} \union \simu{S}$, then $\simu{R} \union \simu{S}$ is also a labeled bisimulation.
 \end{lemma}
 \begin{proof}
-  When $\simu{S}$ is a labeled bisimulation and $\simu{R}$ progresses to $\simu{R} \union \simu{S}$, then $\simu{R} \union \simu{S}$ satisfies the conditions required of a labeled bisimulation.
-  If $\octx \mathrel{(\simu{R} \union \simu{S})} \lctx$ because $\octx$ and $\lctx$ are $\simu{R}$-related
+  When $\simu{S}$ is a labeled bisimulation and $\simu{R}$ progresses to $\simu{R} \union \simu{S}$, then the relation $\simu{R} \union \simu{S}$ progresses to itself, \ie, $\simu{R} \union \simu{S}$ is 
+  % satisfies the conditions required of
+  a labeled bisimulation.
+  If $\octx \mathrel{(\simu{R} \union \simu{S})} \lctx$ because $\octx$ and $\lctx$ are $\simu{R}$-related, then the conditions for progressing to $\simu{R} \union \simu{S}$ are satisfied by $\simu{R}$ progressing to $\simu{R} \union \simu{S}$.
+  If, on the other hand, $\octx \mathrel{(\simu{R} \union \simu{S})} \lctx$ because $\octx$ and $\lctx$ are $\simu{S}$-related, then the conditions for progressing to $\simu{R} \union \simu{S}$ are satisfied by the fact that $\simu{S}$ is a labeled bisimulation.
 \end{proof}
 
-Next, we show that 
+Next, we use this result to prove that framing a single input atom onto a labeled bisimulation results in a binary relation that does not stray too far from a labeled bisimulation.
 \begin{lemma}\label{lem:single-input-atom}
-  If $\simu{R}$ is a labeled bisimulation, then so are $\lframe{\atmR{a}}{\simu{R}} \union \simu{R}$ and $\rframe{\simu{R}}{\atmL{a}} \union \simu{R}$, for all $\atmR{a}$.
+  If $\simu{R}$ is a labeled bisimulation, then so are $\lframe{\atmR{a}}{\simu{R}} \union \simu{R}$ and $\rframe{\simu{R}}{\atmL{a}} \union \simu{R}$, for all $\atmR{a}$ and $\atmL{a}$, respectively.
 \end{lemma}
 \begin{proof}
   Let $\simu{R}$ be a labeled bisimulation.
@@ -1087,8 +1306,8 @@ Next, we show that
     \item
       Consider the case in which $\lctx'$ is nonempty.
       Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate output bisimulation property after framing off $\atmR{a}$ and deduce that $\octx \lframe[\big]{\atmR{a}}{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_R})} \lctx$.
-      Reduction is closed under framing, so we conclude that $\octx \Reduces\rframe{\lframe{\atmR{a}}{\simu{R}}}{\atmR{\lctx}'_R} \lctx$, as required.
-      \begin{marginfigure}
+      Reduction is closed under framing, so we conclude that $\octx \Reduces\rframe{\lframe{\atmR{a}}{\simu{R}}}{\atmR{\lctx}'_R} \lctx$, as required.%
+      \begin{marginfigure}[-8\baselineskip]
         $
         \phantom{\octx = {}}
         \begin{tikzcd}[%
@@ -1103,27 +1322,27 @@ Next, we show that
           \\
           \atmR{a} \oc \octx'_0
             \urar[relation, "\rframe{\lframe{\atmR{a}}{\simu{R}}}{\atmR{\lctx}'_R}" {sloped, below}]
-          \\
-          \octx_0
-            \rar[relation, "\simu{R}"]
-            \dar[Reduces]
-          &
-          \lctx'_0 \oc \atmR{\lctx}'_R
-          \\
-          \octx'_0
-            \urar[relation, "\rframe{\simu{R}}{\atmR{\lctx}'_R}" {sloped, below}]
+          % \\
+          % \octx_0
+          %   \rar[relation, "\simu{R}"]
+          %   \dar[Reduces]
+          % &
+          % \lctx'_0 \oc \atmR{\lctx}'_R
+          % \\
+          % \octx'_0
+          %   \urar[relation, "\rframe{\simu{R}}{\atmR{\lctx}'_R}" {sloped, below}]
         \end{tikzcd}
         \phantom{{} = \lctx}
         $
-      \end{marginfigure}
+      \end{marginfigure}%
     %
     \item
       Consider the case in which $\lctx'$ is empty -- that is, the case in which $\octx \lframe{\atmR{a}}{\simu{R}} \lctx = \atmR{\lctx}'_R = \atmR{a} \oc \atmR{\lctx}''_R$ for some $\atmR{\lctx}''_R$.
       Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate output bisimulation property after framing off $\atmR{a}$ and deduce that $\octx \lframe{\atmR{a}}{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}''_R})} \atmR{\lctx}'_R$.
       Reduction is closed under framing, so $\octx \Reduces\rframe{\lframe{\atmR{a}}{\simu{R}}}{\atmR{\lctx}''_R} \atmR{\lctx}'_R$.
       After framing off $\atmR{\lctx}''_R$, we may subsequently appeal to the emptiness bisimulation property of $\simu{R}$ and deduce that $\octx \Reduces\rframe{(\Reduces\rframe{\simu{R}}{\atmR{a}})}{\atmR{\lctx}''_R} \atmR{\lctx}'_R$.
-      Once again, reduction is closed under framing, so we conclude that $\octx \Reduces\rframe{\simu{R}}{\atmR{\lctx}'_R} \lctx$, as required.
-      \begin{marginfigure}
+      Once again, reduction is closed under framing, so we conclude that $\octx \Reduces\rframe{\simu{R}}{\atmR{\lctx}'_R} \lctx$, as required.%
+      \begin{marginfigure}[-11\baselineskip]
         $
         \phantom{\octx = {}}
         \begin{tikzcd}[%
@@ -1134,18 +1353,18 @@ Next, we show that
             \rar[relation, "\lframe{\atmR{a}}{\simu{R}}"]
             \dar[Reduces]
           &
-          \atmR{a} \oc \atmR{\lctx}''_R \mathrlap{{} = \atmR{\lctx}'_R}
+          \atmR{a} \oc \atmR{\lctx}''_R \mathrlap{{} = \atmR{\lctx}'_R = \lctx}
           \\
           \atmR{a} \oc \octx'_0
             \urar[relation, "\rframe{\lframe{\atmR{a}}{\simu{R}}}{\atmR{\lctx}''_R}" {sloped, below}]
             \dar[Reduces]
           \\
           \octx''_0 \oc \atmR{a}
-            \arrow[relation, "\rframe{\rframe{\simu{R}}{\atmR{a}}}{\atmR{\lctx}''_R}" {sloped, below}]{uur}
+            \arrow[relation, "\rframe{\rframe{\simu{R}}{\atmR{a}}}{\atmR{\lctx}''_R}" {sloped, below}, bend right]{uur}
         \end{tikzcd}
-        \phantom{{} = \lctx}
+        \phantom{{} = \atmR{\lctx}'_R \oc \lctx}
         $
-      \end{marginfigure}
+      \end{marginfigure}%
     \end{itemize}
 
   \item[Immediate input bisimulation]
@@ -1154,35 +1373,132 @@ Next, we show that
     \begin{itemize}
     \item
       Consider the case in which $\atmR{a}$ does participate in the input transition -- that is, the case in which $\octx \lframe{\atmR{a}}{\simu{R}} \atmR{a} \oc \lctx_0 = \lctx$ and $\ireduces{\atmR{\lctx}_L \oc \atmR{a} \oc #1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'}$, for some $\lctx_0$.
-      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property and deduce that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$, as required.
+      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property and deduce $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$, as required.
+      \begin{marginfigure}[-8\baselineskip]
+        $
+        \begin{tikzcd}
+          \atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R
+            \dar[phantom]{=}
+          &[2em]
+          \atmR{\lctx}_L \oc \lctx \oc \atmL{\lctx}_R
+            \dar[phantom]{=}
+          \\[-3ex]
+          \atmR{\lctx}_L \oc \atmR{a} \oc \octx_0 \oc \atmL{\lctx}_R
+            \rar[relation, "\lrframe{(\atmR{\lctx}_L \atmR{a})}{\simu{R}}{\atmL{\lctx}_R}"]
+            \arrow[Reduces]{dd}
+          &
+          \atmR{\lctx}_L \oc \atmR{a} \oc \lctx_0 \oc \atmL{\lctx}_R
+          \\[-4ex]
+          &
+          \atmR{\lctx}_L \oc \atmR{a} \oc [\lctx_0] \oc \atmL{\lctx}_R
+            \dar[reduces]
+          \\
+          \octx\mathrlap{'}
+            \rar[relation, "\simu{R}" {sloped, below}]
+          &
+          \lctx\mathrlap{'}
+        \end{tikzcd}
+        $
+      \end{marginfigure}%
     %
     \item
-      Consider the case in which $\atmR{a}$ does not participate in the transition -- that is, the case in which $\atmR{\lctx}_L$ is empty and $\octx \lframe{\atmR{a}}{\simu{R}} \atmR{a} \oc \lctx_0 = \lctx$ and $\ireduces{#1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'_0}$ and $\lctx' = \atmR{a} \oc \lctx'_0$, for some $\lctx_0$ and $\lctx'_0$.
+      Consider the case in which $\atmR{a}$ does not participate in the input transition -- that is, the case in which $\atmR{\lctx}_L$ is empty and $\octx \lframe{\atmR{a}}{\simu{R}} \atmR{a} \oc \lctx_0 = \lctx$ and $\ireduces{#1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'_0}$ and $\lctx' = \atmR{a} \oc \lctx'_0$, for some $\lctx_0$ and $\lctx'_0$.
       Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property after framing off $\atmR{a}$ and deduce that $\octx \oc \atmL{\lctx}_R \lframe{\atmR{a}}{(\Reduces\simu{R})} \lctx'$.
-      Reduction is closed under framing, so we conclude that $\octx \oc \atmL{\lctx}_R \Reduces\lframe{\atmR{a}}{\simu{R}} \lctx'$, as required.
+      Reduction is closed under framing, so we conclude that $\octx \oc \atmL{\lctx}_R \Reduces\lframe{\atmR{a}}{\simu{R}} \lctx'$, as required.%
+      \begin{marginfigure}
+        $
+        \phantom{\octx \oc \atmL{\lctx}_R = {}}
+        \begin{tikzcd}
+          \mathllap{\octx \oc \atmL{\lctx}_R = {}}
+          \atmR{a} \oc \octx_0 \oc \atmL{\lctx}_R
+            \rar[relation, "\lframe{\atmR{a}}{\rframe{\simu{R}}{\atmL{\lctx}_R}}"]
+            \arrow[Reduces]{ddd}
+          &[1em]
+          \atmR{a} \oc \lctx_0 \oc \atmL{\lctx}_R
+          \mathrlap{{} = \lctx \oc \atmL{\lctx}_R}
+          \\[-4ex]
+          &
+          \hphantom{\atmR{a} \oc} [\lctx_0] \oc \atmL{\lctx}_R
+            \dar[reduces]
+          \\
+          &
+          \lctx\mathrlap{'_0}
+          \\[-4ex]
+          \atmR{a} \oc \octx'_0
+            \rar[relation, "\lframe{\atmR{a}}{\simu{R}}" {sloped, below}, shorten >=0.7em]
+          &
+          \mathllap{\atmR{a} \oc {}} \lctx\mathrlap{'_0 = \lctx'}
+        \end{tikzcd}
+        \phantom{{} = \lctx \oc \atmL{\lctx}\vphantom{_R}}
+        $
+      \end{marginfigure}%
     \end{itemize}
 
   \item[Reduction bisimulation]
-    Assume that $\octx \lframe{\atmR{a}}{\simu{R}}\reduces \lctx'$; we must show that $\octx \Reduces\mathrel{(\lframe{\atmR{a}}{\simu{R}} \union \simu{R})} \lctx'$.
+    Assume that $\octx \lframe{\atmR{a}}{\simu{R}}\reduces \lctx'$ holds; we must show that $\octx \Reduces\mathrel{(\lframe{\atmR{a}}{\simu{R}} \union \simu{R})} \lctx'$.
     We distinguish cases on the origin of the given reduction.
     \begin{itemize}
     \item
       Consider the case in which the reduction arises from the $\simu{R}$-related component alone -- that is, the case in which $\octx \lframe{\atmR{a}}{(\simu{R}\reduces)} \lctx'$.
       Because $\simu{R}$ is a labeled bisimulation, we may appeal to its reduction bisimulation property after framing off $\atmR{a}$ and deduce that $\octx \lframe{\atmR{a}}{(\Reduces\simu{R})} \lctx'$.
-      Reduction is closed under framing, so we conclude that $\octx \Reduces\lframe{\atmR{a}}{\simu{R}} \lctx'$, as required.
+      Reduction is closed under framing, so we conclude that $\octx \Reduces\lframe{\atmR{a}}{\simu{R}} \lctx'$, as required.%
+      \begin{marginfigure}[-9\baselineskip]
+        $
+        \phantom{\octx = {}}
+        \begin{tikzcd}
+          \mathllap{\octx = {}}
+          \atmR{a} \oc \octx_0
+            \rar[relation, "\lframe{\atmR{a}}{\simu{R}}"]
+            \dar[Reduces]
+          &
+          \atmR{a} \oc \lctx_0
+            \dar[reduces]
+          \\
+          \atmR{a} \oc \octx'_0
+            \rar[relation, "\lframe{\atmR{a}}{\simu{R}}" {sloped, below}]
+          &
+          \atmR{a} \oc \lctx'_0 \mathrlap{{} = \lctx'}
+        \end{tikzcd}
+        \phantom{{} = \lctx'}
+        $
+      \end{marginfigure}%
     \item
       Consider the case in which the reduction arises from an input transition on the $\simu{R}$-related component -- that is, the case in which $\octx \lframe{\atmR{a}}{\simu{R}} \atmR{a} \oc \lctx_0 = \lctx$ and $\ireduces{\atmR{a} \oc #1}{\lctx_0}{\lctx'}$, for some $\lctx_0$.
-      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property and deduce that $\octx \Reduces\simu{R} \lctx'$, as required.
+      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property and deduce that $\octx \Reduces\simu{R} \lctx'$, as required.%
+      \begin{marginfigure}[-8\baselineskip]
+        $
+        \phantom{\octx = {}}
+        \begin{tikzcd}
+          \mathllap{\octx = {}}
+          \atmR{a} \oc \octx_0
+            \rar[relation, "\lframe{\atmR{a}}{\simu{R}}"]
+            \arrow[Reduces]{dd}
+          &
+          \atmR{a} \oc \lctx_0 \mathrlap{{} = \lctx}
+          \\[-4ex]
+          &
+          \atmR{a} \oc [\lctx_0]
+            \dar[reduces]
+          \\
+          \octx\mathrlap{'}
+            \rar[relation, "\simu{R}" {sloped, below}]
+          &
+          \lctx\mathrlap{'}
+        \end{tikzcd}
+        \phantom{{} = \lctx}
+        $
+      \end{marginfigure}%
     \end{itemize}
 
   \item[Emptiness bisimulation]
-    Assume that $\octx \lframe{\atmR{a}}{\simu{R}} \octxe$.
+    Assume that $\octx \lframe{\atmR{a}}{\simu{R}} (\octxe)$.
     This is, in fact, impossible because the empty context does not contain $\atmR{a}$.
   %
   \qedhere
   \end{description}
 \end{proof}
 
+Having proved the preceding \lcnamecref{lem:??} about framing a single input atom, we can apply it inductively to prove that framing input contexts preserves labeled bisimulations. 
 \begin{lemma}\label{lem:ctxc-labeled-bisim}
   If $\simu{R}$ is a labeled bisimulation, then so is $\ctxc{\simu{R}}$.
 \end{lemma}
@@ -1212,6 +1528,8 @@ Next, we show that
   % Because each $\simu{S}_n$ is a labeled bisimulation, so is their least upper bound, $\ctxc{\simu{R}}$.
 \end{proof}
 
+Now we use the fact that $\ctxc{\simu{R}}$ is a labeled bisimulation whenever $\simu{R}$ is also one to prove that $\ctxc{\simu{R}}$ is a rewriting bisimulation.
+Rewriting bisimilarity therefore contains $\simu{R}$.
 \begin{theorem}\label{thm:labeled-proof-technique}
   If $\simu{R}$ is a labeled bisimulation, then rewriting bisimilarity contains $\simu{R}$.
 \end{theorem}
@@ -1220,19 +1538,63 @@ Next, we show that
   By \cref{lem:ctxc-labeled-bisim}, so is $\ctxc{\simu{R}}$.
   The relation $\ctxc{\simu{R}}$ is also a rewriting bisimulation, as we will show by proving each property in turn.
   (Notice, too, that $\ctxc{\simu{R}}$ is symmetric because $\simu{R}$ is.)
-  \begin{description}[listparindent=\parindent]
+  \begin{description}[itemsep=\dimexpr\itemsep+\parsep\relax, parsep=0pt, listparindent=\parindent]
   \item[Output bisimulation]
     Assume that $\octx \ctxc{\simu{R}}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$; we must show that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\ctxc{\simu{R}}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
 
     As a labeled bisimulation, $\ctxc{\simu{R}}$ satisfies the reduction bisimulation property, so we deduce that $\octx \Reduces\ctxc{\simu{R}} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
-    The relation $\ctxc{\simu{R}}$ also satisfies the immediate output bisimulation property, so we conclude that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\ctxc{\simu{R}}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, as required.
+    The relation $\ctxc{\simu{R}}$ also satisfies the immediate output bisimulation property, so we conclude that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\ctxc{\simu{R}}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, as required.%
+      \begin{marginfigure}[-9\baselineskip]
+        $
+        \begin{tikzcd}
+          \octx
+            \rar[relation, "\ctxc{\simu{R}}"]
+            \dar[Reduces]
+          &[0.8em]
+          \lctx
+            \dar[Reduces]
+          \\
+          \octx\mathrlap{'}
+            \rar[relation, "\ctxc{\simu{R}}" {sloped}]
+            \dar[Reduces]
+          &
+          \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R
+          \\
+          \octx\mathrlap{''}
+            \urar[relation, "\lrframe{\atmL{\lctx}'_L}{\ctxc{\simu{R}}}{\atmR{\lctx}'_R}" {sloped, below}, shorten <=0.2em]
+        \end{tikzcd}
+        \phantom{{} = \lctx'}
+        $
+      \end{marginfigure}%
   %
   \item[Input bisimulation]
-    Assume that $\octx \ctxc{\simu{R}} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$; we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\ctxc{\simu{R}} \lctx'$.
+    Assume that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\ctxc{\simu{R}}}{\atmL{\lctx}_R}\Reduces \lctx'$; we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\ctxc{\simu{R}} \lctx'$.
 
-    By \cref{??}, the given input transition gives rise to a reduction: $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\ctxc{\simu{R}}}{\atmL{\lctx}_R}\reduces \lctx'$.
-    Because $\ctxc{\simu{R}}$ is input contextual, we deduce that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \ctxc{\simu{R}}\reduces \lctx'$.
-    As a labeled bisimulation, $\ctxc{\simu{R}}$ satisfies the reduction bisimulation property, so we conclude that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\ctxc{\simu{R}} \lctx'$, as required.
+    Because $\ctxc{\simu{R}}$ is input contextual, we deduce that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \ctxc{\simu{R}}\Reduces \lctx'$.
+    As a labeled bisimulation, $\ctxc{\simu{R}}$ satisfies the reduction bisimulation property, so we conclude that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\ctxc{\simu{R}} \lctx'$, as required.%
+    % Assume that $\octx \ctxc{\simu{R}} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$; we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\ctxc{\simu{R}} \lctx'$.
+    % 
+    % By \cref{??}, the given input transition gives rise to a reduction: $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\ctxc{\simu{R}}}{\atmL{\lctx}_R}\reduces \lctx'$.
+    % Because $\ctxc{\simu{R}}$ is input contextual, we deduce that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \ctxc{\simu{R}}\reduces \lctx'$.
+    % As a labeled bisimulation, $\ctxc{\simu{R}}$ satisfies the reduction bisimulation property, so we conclude that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\ctxc{\simu{R}} \lctx'$, as required.%
+    \begin{marginfigure}[-7\baselineskip]
+        $
+        \begin{tikzcd}
+          \atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R
+            \rar[relation, "\lrframe{\atmR{\lctx}_L}{\ctxc{\simu{R}}}{\atmL{\lctx}_R}"]
+            \rar[relation, "\ctxc{\simu{R}}" {sloped, below}, bend right=20]
+            \dar[Reduces]
+          &[1.75em]
+          \atmR{\lctx}_L \oc \lctx \oc \atmL{\lctx}_R
+            \dar[Reduces]
+          \\[2ex]
+          \octx\mathrlap{'}
+            \rar[relation, "\ctxc{\simu{R}}" {sloped, below}]
+          &
+          \lctx\mathrlap{'}
+        \end{tikzcd}
+        $
+      \end{marginfigure}%
   %
   \qedhere
   \end{description}
@@ -1242,26 +1604,28 @@ Next, we show that
   Labeled bisimilarity is sound and complete with respect to rewriting bisimilarity.
 \end{corollary}
 
-\newthought{As a simple example} of this [labeled bisimilarity] proof technique, we shall now establish that $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ and $\atmR{b}$ are rewriting-bisimilar contexts.
-Let $\simu{R}$ be the least symmetric binary relation for which $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \simu{R} \atmR{b}$ and $\atmR{b} \simu{R} \atmR{b}$ and $\octxe \simu{R} \octxe$ hold.
+\newthought{As a simple example} of this labeled bisimilarity proof technique for rewriting bisimilarity, we shall now establish that $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ and $\atmR{b}$ are rewriting-bisimilar contexts.
+Let $\simu{R}$ be the least symmetric binary relation for which $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \simu{R} \atmR{b}$ and $\atmR{b} \simu{R} \atmR{b}$ and $(\octxe) \simu{R} (\octxe)$ hold.
 The relation $\simu{R}$ is a labeled bisimulation:
 \begin{itemize}
 \item The immediate output bisimulation condition holds because $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ can simulate $\atmR{b}$'s output of $\atmR{b}$ (with $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \reduces\rframe{\simu{R}}{\atmR{b}} \atmR{b}$) and the former makes no immediate outputs of its own.
-\item The immediate input bisimulation condition holds vacuously for [the relation] $\simu{R}$ because neither $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ nor $\atmR{b}$ accept any inputs on either side.
-\item The reduction bisumulation condition holds because $\atmR{b}$ can simulate the reduction $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \reduces \atmR{b}$ trivially (with $\atmR{b} \Reduces\simu{R} \atmR{b}$).
-\item The emptiness bisimulation condition holds trivially: $\atmR{\lctx} \Reduces\rframe{\simu{R}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$ because $\octxe \simu{R} \octxe$, and symmetrically for all $\atmL{\lctx}$.
+\item The immediate input bisimulation condition holds vacuously for the relation $\simu{R}$ because neither $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ nor $\atmR{b}$ accept any inputs on either side.
+\item The reduction bisimulation condition holds because $\atmR{b}$ can simulate the reduction $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \reduces \atmR{b}$ trivially (with $\atmR{b} \Reduces\simu{R} \atmR{b}$).
+\item The emptiness bisimulation condition holds trivially: $\atmR{\lctx} \Reduces\rframe{\simu{R}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$ because $(\octxe) \simu{R} (\octxe)$, and symmetrically for all $\atmL{\lctx}$.
 \end{itemize}
 We may conclude from the above proof technique~\parencref{thm:labeled-proof-technique} that $\simu{R}$ is contained within rewriting bisimilarity and that $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ and $\atmR{b}$ are indeed bisimilar.
 
-We can similarly prove that $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ are rewriting-bisimilar by showing that the least symmetric relation $\simu{R}$ such that $\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \simu{R} (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ and $\atmR{c} \simu{R} \atmR{c}$ and $\octxe \simu{R} \octxe$ is a labeled bisimulation.
+We can similarly prove that $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ are rewriting-bisimilar by showing that the least symmetric relation $\simu{R}$ such that $\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \simu{R} (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ and $\atmR{c} \simu{R} \atmR{c}$ and $(\octxe) \simu{R} (\octxe)$ is a labeled bisimulation.
 
 Somewhat surprisingly, even $\atmR{a} \limp \up \dn (\atmR{c} \pmir \atmL{b})$ and $\up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ are bisimilar.
-Once again, this can be proved by constructing an appropriate label bisimulation, namely the least symmetric relation $\simu{R}$ such that:
+This one is rather surprising because the $\up \dn$ shift is placed in two different locations: over $\mathord{-} \pmir \atmL{b}$ in the former, and over $\atmR{a} \limp \mathord{-}$ in the latter.
+Nevertheless, this can once again be proved by constructing an appropriate labeled bisimulation, namely the least symmetric relation $\simu{R}$ such that:
 $\atmR{a} \limp \up \dn (\atmR{c} \pmir \atmL{b}) \simu{R} \up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ and
 $\atmR{c} \pmir \atmL{b} \simu{R} \atmR{a} \oc \bigl(\up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}\bigr)$ and
 $\bigl(\atmR{a} \limp \up \dn (\atmR{c} \pmir \atmL{b})\bigr) \oc \atmL{b} \simu{R} \atmR{a} \limp \atmR{c}$ and
 $\atmR{c} \simu{R} \atmR{c}$ and
-$\octxe \simu{R} \octxe$.
+$(\octxe) \simu{R} (\octxe)$.
+The labeled bisimulation shows how the inputs protected by the $\up \dn$ double shifts are trated lazily in establishing the equivalence: the \emph{proposition} $\atmR{c} \pmir \atmL{b}$ is $\simu{R}$-related to the \emph{context} $\atmR{a} \oc \bigl(\up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}\bigr)$, for example.
 
 
 
@@ -1290,26 +1654,26 @@ $\octxe \simu{R} \octxe$.
 %   And indeed $\atmR{a} \oc \bigl(\up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}\bigr) \oc \atmL{b} \Reduces\simu{R} (\atmR{c} \pmir \atmL{b}) \oc \atmL{b}$.
 % \end{itemize}
 
-
+\clearpage
 \subsection{A simple up-to proof technique: Reflexivity}
 
-As a slight enhancement of the above proof technique, 
-
-\begin{lemma}\label{lem:identity-labeled-bisim}
-  The identity relation is a labeled bisimulation.
-\end{lemma}
-\begin{proof}
-  Each of the labeled bisimulation conditions is trivially true of the identity relation.
-\end{proof}
-
-Let us call a relation $\simu{R}$ a labeled bisimulation \vocab{up to reflexivity} if $\simu{R}$ progresses to its reflexive closure, $\reflc{\simu{R}}$.
+As a slight enhancement of the above proof technique, we can consider a simple up-to technique: bisimilarity up to reflexivity.
+Let us call a relation $\simu{R}$ a labeled bisimulation \vocab{up to reflexivity} if $\simu{R}$ progresses to its reflexive closure, which we write as $\reflc{\simu{R}}$.
+%
+% \begin{lemma}\label{lem:identity-labeled-bisim}
+%   The identity relation is a labeled bisimulation.
+% \end{lemma}
+% \begin{proof}
+%
+% \end{proof}
+%
 \begin{theorem}\label{thm:bisim-technique-up-to-refl}
   If $\simu{R}$ is a labeled bisimulation up to reflexivity, then rewriting bisimilarity contains $\simu{R}$.
 \end{theorem}
 \begin{proof}
   Let $\simu{R}$ be a labeled bisimulation up to reflexivity.
-  notice that 
-  Because the identity relation is a labeled bisimulation \parencref{??}, it follows from \cref{??} that $\reflc{\simu{R}}$, the reflexive closure of $\simu{R}$, is a labeled bisimulation.
+  First, notice that the identity relation is a labeled bisimulation -- each of the labeled bisimulation conditions is trivially true of the identity relation.
+  Then, it follows from \cref{??} that $\reflc{\simu{R}}$, the reflexive closure of $\simu{R}$, is a labeled bisimulation.
   By \cref{??}, we may conclude that rewriting bisimilarity contains $\reflc{\simu{R}}$ and hence $\simu{R}$.
 \end{proof}
 
@@ -1416,11 +1780,93 @@ Rewriting bisimilarity satisfies the usual properties expected of a notion of bi
   Rewriting bisimilarity is an equivalence relation.
 \end{theorem}
 \begin{proof}
-  Equality of contexts can be shown to be a bisimulation, so rewriting bisimilarity is reflexive.
+  The identity relation on contexts can be shown to be a bisimulation, so rewriting bisimilarity is reflexive.
   Rewriting bisimilarity is symmetric, by definition.
-  The relation $\osim^2$ can be shown to be a bisimulation, so rewriting bisimilarity is transitive.
+  The relation $\osim\osim$ can be shown to be a bisimulation, so rewriting bisimilarity is transitive.
 \end{proof}
 
+$\lframe{\atmR{a}}{\osim} \union \osim$ is a labeled bisimulation.
+$\lframe{\atmL{a}}{\osim}$ is a labeled bisimulation.
+$\lframe{\n{A}}{\osim}$ is a labeled bisimulation.
+
+$\octx \lframe{\atmL{a}}{(\Reduces\lrframe{\atmL{\lctx}''_L}{\osim}{\atmR{\lctx}'_R})} \lctx$
+
+$\octx \lframe{\atmL{a}}{\osim}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+$\octx \lframe{\atmL{a}}{(\osim\Reduces)} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+
+Assume that $\atmR{\lctx}_L \oc \atmL{a} \oc \octx \oc \atmL{\lctx}_R \lrframe{(\atmR{\lctx}_L \oc \atmL{a})}{\osim}{\atmL{\lctx}_R}\Reduces \lctx'$; we must show that $\atmR{\lctx}_L \oc \atmL{a} \oc \octx \oc \atmL{\lctx}_R \lrframe{(\atmR{\lctx}_L \oc \atmL{a})}{\osim}{\atmL{\lctx}_R}\Reduces \lctx'$.
+$\atmR{\lctx}_L \oc \atmL{a} \oc \octx \oc \atmL{\lctx}_R \lframe{(\atmR{\lctx}_L \oc \atmL{a})}{(\rframe{\osim}{\atmL{\lctx}_R}\Reduces)} \lctx'$.
+$\atmR{\lctx}_L \oc \atmL{a} \oc \octx \oc \atmL{\lctx}_R \lframe{(\atmR{\lctx}_L \oc \atmL{a})}{(\Reduces\osim)} \lctx'$.
+$\atmR{\lctx}_L \oc \atmL{a} \oc \octx \oc \atmL{\lctx}_R \Reduces\lframe{(\atmR{\lctx}_L \oc \atmL{a})}{\osim} \lctx'$.
+\begin{theorem}
+  Rewriting bisimilarity contains $\lframe{\oante}{\osim}$ and $\rframe{\oante}{\osim}$
+\end{theorem}
+\begin{proof}
+  \begin{description}
+  \item[Immediate output bisimulation]
+    Assume that $\octx \lframe{\oante}{\osim} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
+    we must show that $\octx \Reduces\mathrel{(\lframe{\oante}{\osim} \union \osim)} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+
+    In the case in which $\oante = \n{A}$, the proposition $\n{A}$ can be unified with neither the output atoms $\atmL{\lctx}'_L$ nor $\atmR{\lctx}'_R$.
+    So, $\atmL{\lctx}'_L$ is empty and $\lctx'$ begins with $\n{A}$.
+
+    Otherwise, consider the case in which $\oante = \atmL{a}$.
+    We distinguish cases on the size of $\atmL{\lctx}'_L$.
+    \begin{itemize}
+    \item Consider the case in which $\atmL{\lctx}'_L$ is nonempty.
+      Then $\oante$ must be some atom $\atmL{a}$, with $\atmL{\lctx}'_L = \atmL{a} \oc \atmL{\lctx}''_L$ for some context $\atmL{\lctx}''_L$, for otherwise $\oante$ would not unify with the output atoms $\atmL{\lctx}'_L$.
+      Because $\osim$ is a labeled bisimulation~\parencref{??}, we may appeal to its immediate output bisimulation property after framing off $\atmL{a}$ and deduce that $\octx \lframe{\atmL{a}}{(\Reduces\lrframe{\atmL{\lctx}''_L}{\osim}{\atmR{\lctx}'_R})} \lctx$.
+      Reduction is closed under framing, so we conclude that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\osim}{\atmR{\lctx}'_R} \lctx$.
+      % 
+    \item Consider the case in which $\atmL{\lctx}'_L$ is empty.
+      Then $\oante$ must be some atom $\atmL{a}$, with $\atmL{\lctx}'_L = \atmL{a} \oc \atmL{\lctx}''_L$ for some context $\atmL{\lctx}''_L$, for otherwise $\oante$ would not unify with the output atoms $\atmL{\lctx}'_L$.
+      Because $\osim$ is a labeled bisimulation~\parencref{??}, we may appeal to its immediate output bisimulation property after framing off $\atmL{a}$ and deduce that $\octx \lframe{\atmL{a}}{(\Reduces\lrframe{\atmL{\lctx}''_L}{\osim}{\atmR{\lctx}'_R})} \lctx$.
+      Reduction is closed under framing, so we conclude that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\osim}{\atmR{\lctx}'_R} \lctx$.
+
+    \end{itemize}
+
+    Because $\oante$ [...], it does not unify with $\atmL{\lctx}'_L$, the context $\atmL{\lctx}'_L$ must be empty.
+    
+    $\octx \lframe{\oante}{\osim}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+    $\octx \lframe{\oante}{(\osim\Reduces)} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+    $\octx \lframe{\oante}{(\Reduces\osim)} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+    $\octx \Reduces\lframe{\oante}{\osim} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+  \end{description}
+
+  \begin{description}
+  \item[Immediate output bisimulation]
+    Assume that $\octx \lframe{\n{A}}{\osim} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
+    it suffices to show that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\lframe{\n{A}}{\osim}}{\atmR{\lctx}'_R} \lctx$.
+
+    The proposition $\n{A}$ cannot be unified with $\atmL{\lctx}'_L$, so $\atmL{\lctx}'_L$ must be empty.
+    By output bisimulation, $\octx \lframe{\n{A}}{(\Reduces\rframe{\osim}{\atmR{\lctx}'_R})} \lctx' \atmR{\lctx}'_R$.
+    Because reduction is closed under framing, $\octx \Reduces\rframe{\lframe{\n{A}}{\osim}}{\atmR{\lctx}'_R} \lctx$.
+
+  \item[Immediate input bisimulation]
+    Assume that $\octx \lframe{\n{A}}{\osim} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$;
+    we must show that
+
+    $\lctx = \n{A} \oc \lctx_0$ and $\ireduces{#1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'_0}$ and $\lctx' = \n{A} \oc \lctx'_0$.
+    $\octx \oc \atmL{\lctx}_R \lframe{\n{A}}{(\Reduces\osim)} \lctx'$.
+    $\octx \oc \atmL{\lctx}_R \Reduces\lframe{\n{A}}{\osim} \lctx'$.
+
+  \item[Reduction bisimulation]
+    Assume that $\octx \lframe{\n{A}}{\osim}\reduces \lctx'$;
+    we must show that $\octx \Reduces\mathrel{(\lframe{\n{A}}{\osim} \union \osim)} \lctx'$.
+
+    \begin{itemize}
+    \item
+      Consider the case in which $\octx \lframe{\n{A}}{(\osim\reduces)} \lctx'$.
+      $\octx \lframe{\n{A}}{(\Reduces\osim)} \lctx'$.
+      Reduction is closed under framing, and so $\octx \Reduces\lframe{\n{A}}{\osim} \lctx'$, as required.
+
+    \item Consider the cae in which the reduction arises from $\n{A}$ -- that is, $\octx \lframe{\n{A}}{\osim} \n{A} \oc \atmL{\lctx}_R \oc \lctx'_R$ and $\ireduces{#1 \oc \atmL{\lctx}_R}{\n{A}}{\lctx'_0}$ and $\lctx' = \lctx'_0 \oc \lctx'_R$.
+      By immediate output bisimulation, $\octx \lframe{\n{A}}{(\Reduces\lframe{\atmL{\lctx}_R}{\osim})} \n{A} \oc \atmL{\lctx}_R \oc \lctx'_R$.
+      Because reduction is closeed under framing, $\octx \Reduces\lframe{(\n{A} \oc \atmL{\lctx}_R)}{\osim}\reduces \lctx'$.
+      $\octx \Reduces\lframe{(\n{A} \oc \atmL{\lctx}_R)}{\osim}\reduces \lctx'$.
+    \end{itemize}
+  \end{description}
+\end{proof}
 
 
 \begin{lemma}
@@ -1568,7 +2014,7 @@ Rewriting bisimilarity satisfies the usual properties expected of a notion of bi
 %     Assume that $\octx \lframe{\p{A}}{\simu{R}} \octxe$.
 %     This is, in fact, impossible because the empty context does not contain $\p{A}$.
 %   \end{description}
-% \end{proof}
+v% \end{proof}
 
 
 \begin{theorem}
@@ -1611,418 +2057,177 @@ The key feature of this counterexample is that atoms' lack of direction means th
 
 \section{Example of rewriting bisimilarity: \Aclp*{NFA}}
 
-As a more elaborate example of rewriting bisimilarity, we can return to the encoding of \acp{NFA} proposed in \cref{??}.
-Recall that 
-\begin{equation*}
-  \nfa{q} \defd
-\end{equation*}
-Like \ac{DFA} states, \ac{NFA} states that have equal encodings are bisimilar; unnlike \ac{DFA} states, bisimilar \ac{NFA} states do not have equal encodings. 
-However, bisimilar \ac{NFA} states do have encodings that are rewriting-bisimilar.
-In other words, the \ac{NFA} encoding preserves bisimilarity: $q \asim s$ if, and only if, $\nfa{q} \osim \nfa{s}$.
+Recall from \cref{??} the conjecture that bisimilar \ac{NFA} states have bisimilar encodings and vice versa.
+This will allow us to rephrase soundness and completeness of the \ac{NFA} choreography in a properly stratified way: $\atmR{a} \oc \defp{q} \reduces_{\orsig}\osim \defp{q}'$ if, and only if, $q \nfareduces[a]\asim q'$.
 
-[...]
-
+More precisely, we will prove the following \lcnamecref{??}.
+\begin{restatable*}[
+  label=thm:nfa-bisim-osim
+]{theorem}{thmnfabisim}
+  Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over the input alphabet $\ialph$.
+  Then $q \asim s$ if, and only if, $\nfa{q} \osim \nfa{s}$ for all states $q$ and $s$.
+\end{restatable*}
+\noindent
 Before proving this statement, we need a few \lcnamecref{lem:a-succ-bisim,lem:final-bisim}.
 %
-\begin{lemma}\label{lem:nfa-reduces}
-  For all states $q$:
-  \begin{enumerate}[nosep]
-  \item\label{enum:nfa-reduces-1} $\nfa{q} \nreduces$.
-  \item\label{enum:nfa-reduces-2} If $\atmR{a} \oc \nfa{q} \Reduces \octx'$, then either $\atmR{a} \oc \nfa{q} = \octx'$ or $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'_a = \octx'$ for some state $q'_a$ that $a$-succeeds $q$.
-  \item\label{enum:nfa-reduces-3} If $\atmR{\emp} \oc \nfa{q} \Reduces \octx'$, then either: $\atmR{\emp} \oc \nfa{q} = \octx'$; $\atmR{\emp} \oc \nfa{q} \reduces \nfa{F}(q) = \octx'$; or $q$ is a final state and $\atmR{\emp} \oc \nfa{q} \reduces \nfa{F}(q) \reduces \octxe = \octx'$.
-  \end{enumerate}
-\end{lemma}
-\begin{proof}
-  Part~\ref{enum:nfa-reduces-1} is proved by inversion of a hypothetical rewriting of $\nfa{q}$.
+% \begin{lemma}\label{lem:nfa-reduces}
+%   For all states $q$:
+%   \begin{enumerate}[nosep]
+%   \item\label{enum:nfa-reduces-1} $\defp{q} \nreduces$.
+%   \item\label{enum:nfa-reduces-2} If $\atmR{a} \oc \defp{q} \Reduces \octx'$, then either $\atmR{a} \oc \defp{q} = \octx'$ or $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a = \octx'$ for some state $q'_a$ that $a$-succeeds $q$.
+%   \item\label{enum:nfa-reduces-3} If $\atmR{\emp} \oc \defp{q} \Reduces \octx'$, then either: $\atmR{\emp} \oc \defp{q} = \octx'$; $\atmR{\emp} \oc \defp{q} \reduces \defp{F}(q) = \octx'$; or $q$ is a final state and $\atmR{\emp} \oc \defp{q} \reduces \defp{F}(q) \reduces \octxe = \octx'$.
+%   \end{enumerate}
+% \end{lemma}
+% \begin{proof}
+%   Part~\ref{enum:nfa-reduces-1} is proved by inversion of a hypothetical rewriting of $\defp{q}$.
 
-  Part~\ref{enum:nfa-reduces-2} is proved by inversion of the given rewriting sequence:
-  If the rewriting sequence is nontrivial, it must be $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'_a \Reduces \octx'$ for some state $q'_a$ that $a$-succeeds $q$; by part~\ref{enum:nfa-reduces-1}, we deduce that $\octx' = \nfa{q}'_a$.
-  Otherwise, if the rewriting sequence is trivial, the desired result is immediate.
-\end{proof}
+%   Part~\ref{enum:nfa-reduces-2} is proved by inversion of the given rewriting sequence:
+%   If the rewriting sequence is nontrivial, it must be $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a \Reduces \octx'$ for some state $q'_a$ that $a$-succeeds $q$; by part~\ref{enum:nfa-reduces-1}, we deduce that $\octx' = \defp{q}'_a$.
+%   Otherwise, if the rewriting sequence is trivial, the desired result is immediate.
+% \end{proof}
 %
 \noindent
-These results hold only because ordered rewriting is weakly focused;
-under an unfocused rewriting framework, $\nfa{q}$ would admit rewritings, such as $\nfa{q} \Reduces \atmR{\emp} \limp \nfa{F}(q)$, and $\atmR{a} \oc \nfa{q}$ would admit rewritings to contexts other than encodings of $a$-successors.
+These results hold only because the formula-as-process ordered rewriting framework is focused;
+under an unfocused rewriting framework, $\defp{q}$ would admit rewritings, such as $\defp{q} \Reduces \atmR{\eow} \limp \atmR{F}(q)$, and $\atmR{a} \oc \defp{q}$ would admit rewritings to contexts other than encodings of $a$-successors.
 
 
 \begin{lemma}\label{lem:a-succ-bisim}
-  If $\atmR{a} \oc \nfa{q} \Reduces\osim \nfa{q}'$, then $\nfa{q}'_a \osim \nfa{q}'$ for some state $q'_a$ that $a$-succeeds $q$.
+  Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over the alphabet $\ialph$.
+  Then:
+  \begin{itemize}[nosep]
+  \item $\defp{q} \nreduces$ for all states $q$.
+  \item If $\atmR{a} \oc \defp{q} \Reduces\osim \defp{q}'$, then $\defp{q}'_a \osim \defp{q}'$ for some state $q'_a$ that $a$-succeeds $q$.
+  \item If $\atmR{\eow} \oc \defp{q} \Reduces\osim \atmR{F}(s)$, then $q \in F$ if, and only if, $s \in F$.
+  \end{itemize}
 \end{lemma}
 \begin{proof}
-  Assume that $\atmR{a} \oc \nfa{q} \Reduces\osim \nfa{q}'$.
-  According to \cref{lem:nfa-reduces}, there are two cases: either
-  \begin{enumerate*}[label=\emph{(\roman*)}]
-  \item $\atmR{a} \oc \nfa{q} \osim \nfa{q}'$ or
-  \item $\nfa{q}'_a \osim \nfa{q}'$ for some state $q'_a$ that $a$-succeeds $q$.
-  \end{enumerate*}
-  In the latter case, the desired result is immediate.
+  The first part can be proved by examining the encoding of an arbitrary state $q$.
 
-  In the former case, because the underlying \ac{NFA} is well-formed~\parencref{??}, $q$ has at least one $a$-successor;
-  let $q'_a$ be one such successor.
-  By definition of the encoding, $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'_a$.
-  Because rewriting bisimilarity is reduction-closed (\cref{thm:bisim-reduction-closure}), $\nfa{q}'_a \osim\secudeR \nfa{q}'$.
-  States are encoded by latent\autocite{??} propositions (\cref{lem:nfa-reduces}), and so we may conclude that, in fact, $\nfa{q}'_a \osim \nfa{q}'$.
+  To prove the second part, assume that $\atmR{a} \oc \defp{q} \Reduces\osim \defp{q}'$.
+  By inversion on the given trace, there are two cases: either
+  \begin{enumerate*}[label=\emph{(\roman*)}]
+  \item $\atmR{a} \oc \defp{q} \osim \defp{q}'$ or
+  \item $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a \Reduces\osim \defp{q}'$ for some state $q'_a$ that $a$-succeeds $q$.
+  \end{enumerate*}
+  \begin{itemize}
+  \item
+    Consider the case in which $\atmR{a} \oc \defp{q} \osim \defp{q}'$.
+    Because the underlying \ac{NFA} is well-formed~\parencref{??}, $q$ has at least one $a$-successor;
+    let $q'_a$ be one such successor.
+    By definition of the encoding, $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a$.
+    Because rewriting bisimilarity is reduction-closed (\cref{thm:bisim-reduction-closure}), $\defp{q}'_a \osim\secudeR \defp{q}'$.
+    The first part of this \lcnamecref{lem:??} shows that states are encoded by latent propositions, and so we may conclude that, in fact, $\defp{q}'_a \osim \defp{q}'$.
+
+  \item 
+    Consider the case in which $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a \Reduces\osim \defp{q}'$ for some state $q'_a$ that $a$-succeeds $q$.
+    Because states are encoded by latent propositions, $\defp{q}'_a \osim \defp{q}'$ for some state $q'_a$ that $a$-succeeds $q$, as required.
   %
+  \qedhere
+  \end{itemize}
+  % 
   % \begin{itemize}
-  % \item Consider the case in which the trace is trivial: $\atmR{a} \oc \nfa{q} \osim \nfa{q}'$.
+  % \item Consider the case in which the trace is trivial: $\atmR{a} \oc \defp{q} \osim \defp{q}'$.
   %   Because the underlying \ac{NFA} is well-formed~\parencref{??}, $q$ has at least one $a$-successor;
   %   let $q'_a$ be one such successor.
-  %   By definition of the encoding, $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'_a$.
-  %   Because rewriting bisimilarity is reduction-closed (\cref{thm:bisim-reduction-closure}), $\nfa{q}'_a \osim\secudeR \nfa{q}'$.
-  %   States are encoded by latent\autocite{??} propositions (\cref{??}), and so we may conclude that, in fact, $\nfa{q}'_a \osim \nfa{q}'$.
+  %   By definition of the encoding, $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a$.
+  %   Because rewriting bisimilarity is reduction-closed (\cref{thm:bisim-reduction-closure}), $\defp{q}'_a \osim\secudeR \defp{q}'$.
+  %   States are encoded by latent\autocite{??} propositions (\cref{??}), and so we may conclude that, in fact, $\defp{q}'_a \osim \defp{q}'$.
   %
   % \item Consider the case in which the trace contains at least one step.
-  %   By inversion, that step corresponds to \iac{NFA} transition: $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'_a \Reduces\osim \nfa{q}'$, for some state $q'_a$ that $a$-succeeds $q$.
-  %   Once again, because states are encoded by latent propositions, the trace from $\nfa{q}'_a$ must be trivial.
+  %   By inversion, that step corresponds to \iac{NFA} transition: $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a \Reduces\osim \defp{q}'$, for some state $q'_a$ that $a$-succeeds $q$.
+  %   Once again, because states are encoded by latent propositions, the trace from $\defp{q}'_a$ must be trivial.
   % \qedhere
   % \end{itemize}
 \end{proof}
 %
-\begin{lemma}\label{lem:final-bisim}
-  If $\atmR{\emp} \oc \nfa{q} \Reduces\osim \nfa{F}(s)$, then $q \in F$ if, and only if, $s \in F$.
-\end{lemma}
+% \begin{lemma}\label{lem:final-bisim}
+%   If $\atmR{\emp} \oc \nfa{q} \Reduces\osim \nfa{F}(s)$, then $q \in F$ if, and only if, $s \in F$.
+% \end{lemma}
+% %
+% \begin{proof}
+%   \begin{itemize}
+%   \item Consider the case in which the trace is trivial -- \ie, $\atmR{\emp} \oc \nfa{q} \osim \nfa{F}(s)$.
+%     By definition of the encoding, $\nfa{F}(q) \secuder \atmR{\emp} \oc \nfa{q} \osim \nfa{F}(s)$.
+%     $\nfa{F}(q) \osim\secudeR \nfa{F}(s)$
+%   \end{itemize}
+% \end{proof}
+
+
+% \begin{lemma}
+%   If $\nfa{F}(q) \Reduces\osim \nfa{F}(s)$, then $q \in F$ if, and only if, $s \in F$.
+% \end{lemma}
+% %
+% \begin{proof}
+%   Assume that $\nfa{F}(q) \Reduces\osim \nfa{F}(s)$ and $q \notin F$.
+%   By inversion, The trace can only be the trivial one, so $\nfa{F}(q) = \top$ and $\nfa{F}(s)$ are bisimilar.
+%   Suppose, for the sake of contradiction, that $s \in F$ and so $\nfa{F}(s) = \one$.
+%   Then $\top \osim \one$; hence, $\atmR{a} \oc \top \Reduces\osim \atmR{a}$ follows from the input bisimilarity property.
+%   But output bisimilarity implies $\atmR{a} \oc \top \Reduces\rframe{\osim}{\atmR{a}} \atmR{a}$, which is impossible because $\atmR{a} \oc \top$ cannot produce $\atmR{a}$ at its right end.
+% \end{proof}
+
+\thmnfabisim
 %
 \begin{proof}
-  \begin{itemize}
-  \item Consider the case in which the trace is trivial -- \ie, $\atmR{\emp} \oc \nfa{q} \osim \nfa{F}(s)$.
-    By definition of the encoding, $\nfa{F}(q) \secuder \atmR{\emp} \oc \nfa{q} \osim \nfa{F}(s)$.
-    $\nfa{F}(q) \osim\secudeR \nfa{F}(s)$
-  \end{itemize}
-\end{proof}
-
-
-\begin{lemma}
-  If $\nfa{F}(q) \Reduces\osim \nfa{F}(s)$, then $q \in F$ if, and only if, $s \in F$.
-\end{lemma}
-%
-\begin{proof}
-  Assume that $\nfa{F}(q) \Reduces\osim \nfa{F}(s)$ and $q \notin F$.
-  By inversion, The trace can only be the trivial one, so $\nfa{F}(q) = \top$ and $\nfa{F}(s)$ are bisimilar.
-  Suppose, for the sake of contradiction, that $s \in F$ and so $\nfa{F}(s) = \one$.
-  Then $\top \osim \one$; hence, $\atmR{a} \oc \top \Reduces\osim \atmR{a}$ follows from the input bisimilarity property.
-  But output bisimilarity implies $\atmR{a} \oc \top \Reduces\rframe{\osim}{\atmR{a}} \atmR{a}$, which is impossible because $\atmR{a} \oc \top$ cannot produce $\atmR{a}$ at its right end.
-\end{proof}
-
-
-\begin{theorem}[\Ac*{NFA} adequacy]
-  Let $\aut{A} = (Q, ?, F)$ be \iac{NFA} over the input alphabet $\ialph$.
-  Then, for all states $q$, $q'$, and $s$:
-  \begin{enumerate}
-  \item\label{enum:nfa-adequacy-1} $q \asim s$ if, and only if, $\nfa{q} \osim \nfa{s}$.
-  \item\label{enum:nfa-adequacy-2} $q \asim\nfareduces[a]\asim q'$ if, and only if, $\atmR{a} \oc \nfa{q} \osim\reduces\osim \nfa{q}'$, for all input symbols $a \in \ialph$.
-    Moreover, $q \asim\nfareduces[w]\asim q'$ if, and only if, $\atmR{w} \oc \nfa{q} \osim\Reduces\osim \nfa{q}'$, for all finite words $w \in \finwds{\ialph}$.
-  \item\label{enum:nfa-adequacy-3} $q \in F$ if, and only if, $\atmR{\emp} \oc \nfa{q} \reduces \one$.
-%   \item $q \asim\nfareduces[w]\asim q'$ if, and only if, $\atmR{w} \oc \nfa{q} \osim\Reduces\osim \nfa{q}'$, for all finite words $w$.
-  \end{enumerate}
-\end{theorem}
-%
-\begin{proof}
-  Each part is proved in turn.
-  The proof of part~\ref{enum:nfa-adequacy-2} depends on the proof of part~\ref{enum:nfa-adequacy-1}.
-  \begin{enumerate}[parsep=0em, listparindent=\parindent]
-  %% Part one
-  \item
-    We shall show that \ac{NFA} bisimilarity coincides with rewriting bisimilarity of encodings, proving each direction separately.
-    \begin{itemize}[parsep=0em, listparindent=\parindent]
+  We shall show that \ac{NFA} bisimilarity coincides with rewriting bisimilarity of encodings, proving each direction separately.
+  \begin{itemize}[itemsep=\dimexpr\itemsep+\parsep\relax, parsep=0em, listparindent=\parindent]
     \item
-      To prove that bisimilar \ac{NFA} states have bisimilar encodings -- \ie, that $q \asim s$ implies $\nfa{q} \osim \nfa{s}$ -- we will show that the symmetric relation $\mathord{\simu{R}} = \Set{(\nfa{q}, \nfa{s}) \given q \asim s}$ is a labeled bisimulation up to reflexivity and, by \cref{thm:bisim-technique-up-to-refl}, is included in rewriting bisimilarity.
+      To prove that bisimilar \ac{NFA} states have bisimilar encodings -- \ie, that $q \asim s$ implies $\defp{q} \osim \defp{s}$ -- we will show that the relation $\mathord{\simu{R}} = \Set{(\defp{q}, \defp{s}) \given q \asim s}$ is a labeled bisimulation up to reflexivity and, by \cref{thm:bisim-technique-up-to-refl}, is included in rewriting bisimilarity.
+      Notice that $\simu{R}$ is symmetric.
       \begin{description}
       \item[Immediate output bisimulation]
-        Assume that $\nfa{q} \simu{R} \nfa{s} = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$; we must show that $\nfa{q} \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \nfa{s}$.
-        By definition of the encoding, $\nfa{s}$ is a negative propostion and does not expose outputs.
-        Therefore, $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ are empty and $\lctx'$ is $\nfa{s}$.
-        The required $\nfa{q} \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \nfa{s}$ follows trivially.
+        Assume that $\defp{q} \simu{R} \defp{s} = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$; we must show that $\defp{q} \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \defp{s}$.
+        By definition of the encoding, $\defp{s}$ is a negative propostion and does not expose outputs.
+        Therefore, $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ are empty and $\lctx'$ is $\defp{s}$.
+        The required $\defp{q} \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \defp{s}$ follows trivially.
 
       \item[Immediate input bisimulation]
-        Assume that $\nfa{q} \simu{R} \nfa{s}$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\nfa{s}}{\lctx'}$; we must show that $\atmR{\lctx}_L \oc \nfa{q} \oc \atmL{\lctx}_R \Reduces\reflc{\simu{R}} \lctx'$.
+        Assume that $\defp{q} \simu{R} \defp{s}$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\defp{s}}{\lctx'}$; we must show that $\atmR{\lctx}_L \oc \defp{q} \oc \atmL{\lctx}_R \Reduces\reflc{\simu{R}} \lctx'$.
         Inversion of the input transition yields two cases.
         \begin{itemize}
         \item
-          Consider the case in which the input transition is $\ireduces{\atmR{a} \oc #1}{\nfa{s}}{\nfa{s}'_a}$, where $s$ is $a$-succeeded by $s'_a$.
+          Consider the case in which the input transition is $\ireduces{\atmR{a} \oc #1}{\defp{s}}{\defp{s}'_a}$, where state $s$ is $a$-succeeded by $s'_a$.
           Because $q$ and $s$ are bisimilar, there must exist an $a$-successor of $q$, say $q'_a$, that is bisimilar to $s'_a$.
-          By definition of the encoding, we thus have $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'_a$.
-          So indeed, because $q'_a$ and $s'_a$ are bisimilar states, $\atmR{a} \oc \nfa{q} \Reduces\reflc{\simu{R}} \nfa{s}'_a$, as required.
+          By definition of the encoding, we thus have $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a$.
+          So indeed, because $q'_a$ and $s'_a$ are bisimilar states, $\atmR{a} \oc \defp{q} \Reduces\reflc{\simu{R}} \defp{s}'_a$, as required.
 
         \item
-          Consider the case in which the input transition is $\ireduces{\atmR{\emp} \oc #1}{\nfa{s}}{\nfa{F}(s)}$.
-          Because $q$ and $s$ are bisimilar states, $\nfa{F}(q) = \nfa{F}(s)$~\parencref{??}.
-          By definition of the encoding, $\atmR{\emp} \oc \nfa{q} \reduces \nfa{F}(q)$, and so, indeed, $\atmR{\emp} \oc \nfa{q} \Reduces\reflc{\simu{R}} \nfa{F}(s)$, as required.
+          Consider the case in which the input transition is $\ireduces{\atmR{\eow} \oc #1}{\defp{s}}{\atmR{F}(s)}$.
+          Because $q$ and $s$ are bisimilar states, $\atmR{F}(q) = \atmR{F}(s)$.
+          By definition of the encoding, $\atmR{\eow} \oc \defp{q} \reduces \atmR{F}(q)$, and so, indeed, $\atmR{\eow} \oc \defp{q} \Reduces\reflc{\simu{R}} \atmR{F}(s)$, as required.
         \end{itemize}
 
       \item[Reduction bisimulation]
-        Assume that $\nfa{q} \simu{R} \nfa{s} \reduces \lctx'$.
-        The reduction bisimulation property holds vacuously because states are encoded as latent propositions, and so $\nfa{s}$ does not reduce~\parencref{lem:nfa-latent}.
+        Assume that $\defp{q} \simu{R} \defp{s} \reduces \lctx'$.
+        The reduction bisimulation property holds vacuously because states are encoded as latent propositions, and so $\defp{s}$ does not reduce~\parencref{lem:nfa-latent}.
 
       \item[Emptiness bisimulation]
-        Assume that $\nfa{q} \simu{R} \nfa{s} = \octxe$.
+        Assume that $\defp{q} \simu{R} \defp{s} = (\octxe)$.
         The emptiness bisimulation property also holds vacuously because states are encoded as propositions, not empty contexts.
       \end{description}
 
     \item
-      To prove the converse -- that states with bisimilar encodings are themselves bisimilar -- we will show that the relation $\mathord{\simu{R}} = \Set{(q,s) \given \nfa{q} \osim \nfa{s}}$, which relates states if they have rewriting-bisimilar encodings, is \iac{NFA} bisimulation and is therefore included in bisimilarity.
+      To prove the converse -- that states with bisimilar encodings are themselves bisimilar -- we will show that the relation $\mathord{\simu{R}} = \Set{(q,s) \given \defp{q} \osim \defp{s}}$, which relates states if they have rewriting-bisimilar encodings, is \iac{NFA} bisimulation and is therefore included in bisimilarity.
 
       Because rewriting bisimilarity is symmetric, so too is the relation $\simu{R}$.
-      \begin{itemize}[parsep=0em, listparindent=\parindent]
-      \item Let $q$ and $s$ be states with bisimilar encodings, and let $q'_a$ be an $a$-successor of $q$;
+      We must also prove that $\simu{R}$ satisfies the conditions of \ac{NFA} bisimilarity.
+      \begin{description}[itemsep=\dimexpr\itemsep+\parsep\relax, parsep=0em, listparindent=\parindent]
+      \item[Input bisimulation] Let $q$ and $s$ be states with bisimilar encodings, and let $q'_a$ be an $a$-successor of $q$;
         we must exhibit a state $s'_a$ that $a$-succeeds $s$ and has an encoding that is bisimilar to that of $q'_a$.
 
-        By definition of the encoding, $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'_a$.
-        Because $q$ and $s$ have bisimilar encodings, the input bisimulation property allows us to deduce that $\atmR{a} \oc \nfa{s} \Reduces\osim \nfa{q}'_a$.
+        By definition of the encoding, $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a$.
+        Because $q$ and $s$ have bisimilar encodings, the input bisimulation property allows us to deduce that $\atmR{a} \oc \defp{s} \Reduces\osim \defp{q}'_a$.
         An appeal to \cref{lem:a-succ-bisim} provides exactly what is needed: a state $s'_a$ that $a$-succeeds $s$ and has an encoding bisimilar to that of $q'_a$.
         
-      \item Let $q$ and $s$ be states with bisimilar encodings, and assume that $q$ is a final state;
+      \item[Finality bisimulation] Let $q$ and $s$ be states with bisimilar encodings, and assume that $q$ is a final state;
         we must show that $s$ is also a final state.
 
-        By definition of the encoding, $\atmR{\emp} \oc \nfa{q} \reduces \nfa{F}(q) = \one$.
-        Because $q$ and $s$ have bisimilar encodings, it follows from input bisimilarity that $\atmR{\emp} \oc \nfa{s} \Reduces\osim \nfa{F}(q)$.
-        An appeal to \cref{??} yields $\nfa{F}(q) = \nfa{F}(s)$, from which we deduce that $s$ is also a final state.
-      \end{itemize}
-      
-
-
-      % Let $\simu{R}$ be the binary relation that relates two states if their encodings are rewriting-bisimilar -- that is, 
-      % we shall show that $\simu{R}$ is \iac{NFA} bisimulation and therefore included in \ac{NFA} bisimilarity.
-      % \begin{itemize}[listparindent=\parindent]
-      % \item Let $q$ and $s$ be states with bisimilar encodings, and let $q'_a$ be an $a$-successor of $q$;
-      %   we must exhibit a state $s'_a$ that $a$-succeeds $s$ and has an encoding that is bisimilar to that of $q'_a$.
-
-      %   By definition of the encoding, $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'_a$.
-      %   Because $q$ and $s$ have bisimilar encodings, the input bisimilarity property allows us to deduce that $\atmR{a} \oc \nfa{s} \Reduces\miso \nfa{q}'_a$.
-      %   An appeal to \cref{lem:??} provides exactly what is needed: a state $s'_a$ that $a$-succeeds $s$ and has an encoding bisimilar to that of $q'_a$.
-        
-      % \item Let $q$ and $s$ be states with bisimilar encodings, and assume that $q$ is a final state;
-      %   we must show that $s$ is also a final state.
-
-      %   By definition of the encoding, $\atmR{\emp} \oc \nfa{q} \reduces \nfa{F}(q) = \one$.
-      %   Because $q$ and $s$ have bisimilar encodings, it follows from input bisimilarity that $\atmR{\emp} \oc \nfa{s} \Reduces\miso \nfa{F}(q)$.
-      %   \begin{itemize}
-      %   \item $\nfa{F}(s) \secuder \atmR{\emp} \oc \nfa{s} \miso \nfa{F}(q)$.
-      %     Then $\nfa{F}(s) \miso\secudeR \nfa{F}(q)$.
-      %   \item $\nfa{F}(s) \Reduces\miso \nfa{F}(q)$.
-          
-      %   \end{itemize}
-      % \end{itemize}
-      
+        By definition of the encoding, $\atmR{\eow} \oc \defp{q} \reduces \atmR{F}(q) = \symacc$.
+        Because $q$ and $s$ have bisimilar encodings, it follows from input bisimilarity that $\atmR{\eow} \oc \defp{s} \Reduces\osim \atmR{F}(q)$.
+        An appeal to \cref{??} yields $\atmR{F}(q) = \atmR{F}(s)$, from which we deduce that $s$ is also a final state.
+      %
+      \qedhere
+      \end{description}
     \end{itemize}
-
-  % %% Part two
-  % \item
-  %   We would like to prove that $q \asim\nfareduces[a]\asim q'$ if, and only if, $\atmR{a} \oc \nfa{q} \osim\reduces\osim \nfa{q}'$.
-  %   Because bisimilar states have bisimilar encodings (part~\ref{??}), rewriting bisimilarity is an atomic congruence (\cref{??}), and \ac{NFA} bisimilarity is reflexive (\cref{??}), it suffices to show:
-  %   \begin{enumerate*}
-  %   \item that $q \nfareduces[a] q'$ implies $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'$; and
-  %   \item that $\atmR{a} \oc \nfa{q} \osim\reduces\osim \nfa{q}'$ implies $q \nfareduces[a]\asim q'$.
-  %   \end{enumerate*}
-  %   %
-  %   \begin{enumerate}
-  %   \item
-  %     Let $q'$ be an $a$-successor of state $q$.
-  %     There exists, by definition of the encoding, a trace $\atmR{a} \oc \nfa{q} \reduces \nfa{q}'$.
-  %   \item
-  %     Assume that a trace $\atmR{a} \oc \nfa{q} \osim\reduces\osim \nfa{q}'$ exists.
-  %     Because bisimlarity is, by definition, reduction-closed and transitive (\cref{??}), $\atmR{a} \oc \nfa{q} \Reduces\osim \nfa{q}'$.
-      
-  %   \end{enumerate}
-
-  %% Part four
-  \item
-    We would like to prove that $q \asim\nfareduces[w]\asim q'$ if, and only if, $\rev{\atmR{w}} \oc \nfa{q} \osim\Reduces\osim \nfa{q}'$.
-    Because bisimilar states have bisimilar encodings (part~\ref{enum:nfa-adequacy-1}), because rewriting bisimilarity is left-congruent (\cref{??}), reduction-closed (\cref{thm:bisim-reduction-closure}), and transitive (\cref{??}), and because \ac{NFA} bisimilarity is reflexive (\cref{??}), it suffices to show:
-    \begin{enumerate*}
-    \item that $q \nfareduces[w] q'$ implies $\rev{\atmR{w}} \oc \nfa{q} \Reduces \nfa{q}'$; and
-    \item that $\rev{\atmR{w}} \oc \nfa{q} \Reduces\osim \nfa{q}'$ implies $q \nfareduces[w]\asim q'$.
-    \end{enumerate*}
-    %
-    We prove these two statements in turn.
-    %
-    \begin{enumerate}
-    \item
-      That $q \nfareduces[w] q'$ implies $\rev{\atmR{w}} \oc \nfa{q} \Reduces \nfa{q}'$ can be proved by a straightforward induction over the structure of word $w$;
-      we omit the details.
-
-      % We shall prove that $q \nfareduces[w] q'$ implies $\rev{\atmR{w}} \oc \nfa{q} \Reduces \nfa{q}'$ by induction over the structure of word $w$.
-      % \begin{itemize}
-      % \item Consider the case of the empty word, $\emp$; we must show that $q = q'$ implies $\nfa{q} \Reduces \nfa{q}'$.
-      %   Because the encoding is a function, this is immediate.
-      % \item Consider the case of a nonempty word, $a \wc w$; we must show that $q \nfareduces[a]\nfareduces[w] q'$ implies $\rev{\atmR{w}} \oc \atmR{a} \oc \nfa{q} \Reduces \nfa{q}'$.
-      %   Let $q'_a$ be a state that is an $a$-successor of state $q$ and is itself $w$-succeeded by state $q'$.
-      %   There exists, by definition of the encoding, a trace
-      %   \begin{equation*}
-      %     \rev{\atmR{w}} \oc \atmR{a} \oc \nfa{q}
-      %       \reduces \rev{\atmR{w}} \oc \nfa{q}'_a
-      %       \Reduces \nfa{q}'
-      %     \,,
-      %   \end{equation*}
-      %   with the trace's tail justified by an appeal to the inductive hypothesis.
-      % \end{itemize}
-
-    \item
-      We shall prove that $\rev{\atmR{w}} \oc \nfa{q} \Reduces\osim \nfa{q}'$ implies $q \nfareduces[w]\asim q'$ by induction over the structure of word $w$.
-      \begin{itemize}
-      \item Consider the case of the empty word, $\emp$; we must show that $\nfa{q} \Reduces\osim \nfa{q}'$ implies $q \asim q'$.
-        Because states are encoded by latent propositions (\cref{lem:nfa-reduces}), the given trace can only be the trivial one; thus, $\nfa{q} \osim \nfa{q}'$.
-        An appeal to part~\ref{enum:nfa-adequacy-1} allows us to conclude that $q \asim q'$.
-      \item Consider the case of a nonempty word, $a \wc w$; we must show that $\rev{\atmR{w}} \oc \atmR{a} \oc \nfa{q} \Reduces\osim \nfa{q}'$ implies $q \nfareduces[a]\nfareduces[w]\asim q'$.
-        By inversion, the given trace must begin by inputting $a$:
-        \begin{equation*}
-          \rev{\atmR{w}} \oc \atmR{a} \oc \nfa{q} \reduces \rev{\atmR{w}} \oc \nfa{q}'_a \Reduces\osim \nfa{q}'
-          \,,
-        \end{equation*}
-        where $q'_a$ is an $a$-successor of state $q$.
-        An appeal to the inductive hypothesis on the trace's tail yields $q'_a \nfareduces[w]\asim q'$, and so the \ac{NFA} admits $q \nfareduces[a]\nfareduces[w]\asim q'$, as required.
-      \end{itemize}
-    \end{enumerate}
-
-    \noindent
-    Additionally, we would like to prove an apparently stronger statement: $q \asim\nfareduces[a]\asim q'$ if, and only if, $\atmR{a} \oc \nfa{q} \osim\reduces\osim \nfa{q}'$.
-    From the above proof involving finite words, we know that $q \asim\nfareduces[a]\asim q'$ if, and only if, $\atmR{a} \oc \nfa{q} \osim\Reduces\osim \nfa{q}'$.
-    Therefore, it suffices to show that the multi-step $\atmR{a} \oc \nfa{q} \osim\Reduces\osim \nfa{q}'$ is equivalent to the single-step $\atmR{a} \oc \nfa{q} \osim\reduces\osim \nfa{q}'$.
-    \begin{itemize}
-    \item 
-      To prove the left-to-right direction, begin with the multi-step assumption that $\atmR{a} \oc \nfa{q} \osim\Reduces\osim \nfa{q}'$.
-      Because rewriting bisimilarity is reduction-closed (\cref{thm:bisim-reduction-closure}) and transitive (\cref{??}), $\atmR{a} \oc \nfa{q} \Reduces\osim \nfa{q}'$.
-      By \cref{lem:a-succ-bisim}, there exists a state $q'_a$ that $a$-succeeds $q$ such that
-      % $q'_a$ is an $a$-successor of state $q$ and
-      $\nfa{q}'_a \osim \nfa{q}'$.
-      Then, by definition of the encoding (and reflexivity of rewriting bisimilarity (\cref{??})), it follows that $\atmR{a} \oc \nfa{q} \osim\reduces\osim \nfa{q}'$, as required.
-      % States are encoded as latent propositions (\cref{??}), and so the trace from $\nfa{q}'_a$ can only be trivial: $\atmR{a} \oc \nfa{q}'_a \osim\reduces\osim \nfa{q}'$, as required.
-    \item
-      The right-to-left direction is trivial because a single step is a particular form of trace.
-    \end{itemize}
-
-  %% Part three
-  \item
-    We shall prove that the final states are exactly those states $q$ such that $\atmR{\emp} \oc \nfa{q} \reduces \one$.
-    \begin{itemize}
-    \item
-      Let $q$ be a final state; accordingly, $\nfa{F}(q) = \one$.
-      There exists, by definition of the encoding, a trace $\atmR{\emp} \oc \nfa{q} \reduces \nfa{F}(q) = \one$.
-    \item
-      Assume that $\atmR{\emp} \oc \nfa{q} \reduces \one$.
-      The only step possible from $\atmR{\emp} \oc \nfa{q}$ is $\atmR{\emp} \oc \nfa{q} \reduces \nfa{F}(q)$, and so $\nfa{F}(q) = \one$.
-      It follows that $q$ is a final state.
-    %
-    \qedhere
-    \end{itemize}
-
-  % %% Part four
-  % \item
-  %   We would like to prove that $q \asim\nfareduces[w]\asim q'$ if, and only if, $\rev{\atmR{w}} \oc \nfa{q} \osim\Reduces\osim \nfa{q}'$.
-  %   Because bisimilar states have bisimilar encodings (part~\ref{??}), rewriting bisimilarity is left-congruent (\cref{??}), reduction-closed (\cref{??}), and transitive (\cref{??}), and \ac{NFA} bisimilarity is reflexive (\cref{??}), it suffices to show:
-  %   \begin{enumerate*}
-  %   \item that $q \nfareduces[w] q'$ implies $\rev{\atmR{w}} \oc \nfa{q} \Reduces \nfa{q}'$; and
-  %   \item that $\rev{\atmR{w}} \oc \nfa{q} \Reduces\osim \nfa{q}'$ implies $q \nfareduces[w]\asim q'$.
-  %   \end{enumerate*}
-
-  %   Both statements can be established by induction over the structure of word $w$.
-  %   The latter proof is slightly more involved and deserves a bit of explanation.
-  %   \begin{itemize}
-  %   \item Consider the case in which $w$ is the empty word; we must show that $\nfa{q} \Reduces\osim \nfa{q}'$ implies $q \asim q'$.
-  %     With no input symbols available to $\nfa{q}$, the given trace can only be the trivial one, and so it suffices to show that $\nfa{q} \osim \nfa{q}'$ implies $q \asim q'$.
-  %     This is exactly the content of the right-to-left direction of part~\ref{??}.
-
-  %     Assume that $\nfa{q} \osim\Reduces\osim \nfa{q}'$.
-  %     Because bisimilarity is reduction-closed (\cref{??}) and transitive (\cref{??}), $\nfa{q} \Reduces\osim \nfa{q}'$.
-  %     With no input symbols available to $\nfa{q}$, this trace can only be the trivial one, and so $\nfa{q} \osim \nfa{q}'$.
-  %     Because states with bisimilar encodings are themselves bisimilar (part~\ref{??}), it follows that $q \asim q'$.
-
-  %   \item
-  %     Consider the case of a nonempty word, $a \wc w$; we must show that $\rev{\atmR{w}} \oc \atmR{a} \oc \nfa{q} \Reduces\osim \nfa{q}'$ implies $q \nfareduces[a]\nfareduces[w]\asim q'$.
-  %     %
-  %     By inversion, the given trace must begin by inputting $\atmR{a}$: in other words, $\rev{\atmR{w}} \oc \atmR{a} \oc \nfa{q} \reduces \rev{\atmR{w}} \oc \nfa{q}'_a \Reduces\osim \nfa{q}'$, where $q'_a$ is an $a$-successor of $q$.
-  %     Appealing to the inductive hypothesis on the trace's tail yields $q'_a \nfareduces[w]\asim q'$, and so $q \nfareduces[a]\nfareduces[w]\asim q'$, as required.
-
-  %     Assume that $\atmR{w} \oc \atmR{a} \oc \nfa{q} \osim\Reduces\osim \nfa{q}'$.
-  %     Because bisimilarity is reduction-closed (\cref{??}) and transitive (\cref{??}), $\atmR{w} \oc \atmR{a} \oc \nfa{q} \Reduces\osim \nfa{q}'$.
-  %     By inversion, the trace must begin by inputting $\atmR{a}$: in other words, $\atmR{w} \oc \atmR{a} \oc \nfa{q} \reduces \atmR{w} \oc \nfa{q}'_a \Reduces\osim \nfa{q}'$, where $q'_a$ is an $a$-successor of $q$.
-  %     Appealing to the inductive hypothesis on the trace's tail yields $q'_a \nfareduces[w]\asim q'$, and so $q \nfareduces[a]\nfareduces[w]\asim q'$, as required.
-  %   \end{itemize}
-
-
-  %   \begin{itemize}
-  %   \item Assume that, up to bisimilarity, $q'$ is an $a$-successor of $q$ -- that is, that $q \misa s \nfareduces[a] s'_a \asim q'$ for some states $s$ and $s'_a$.
-  %     By definition of the encoding, $\atmR{a} \oc \nfa{s} \reduces \nfa{s}'_a$.
-  %     Because bisimilar states have bisimilar encodings (part~\ref{??}), $\nfa{q} \miso \nfa{s}$ and $\nfa{s}'_a \osim \nfa{q}'$.
-  %     Moreover, because rewriting bisimilarity is an atomic congruence (\cref{??}), $\atmR{a} \oc \nffa{q} \miso \atmR{a} \oc \nfa{s}$.
-  %     and putting everything together, we have $\atmR{a} \oc \nfa{q} \miso\reduces\osim \nfa{s}'_a$.
-
-  %   \item Assume that, up to bisimilarity, $\atmR{a} \oc \nfa{q}$ rewrites to $\nfa{q}'$ -- that is, assume that $\atmR{a} \oc \nfa{q} \miso\reduces\osim \nfa{q}'$.
-  %     An appeal to the reduction bisimilarity property yields $\atmR{a} \oc \nfa{q} \Reduces\miso\osim \nfa{q}'$.
-  %     Because bisimilarity is a symmetric relation, it follows from \cref{lem:??} that there exists a state $q'_a$ that $a$-succeeds $q$ and has an encoding that is bisimilar to that of $q'$.
-  %     Moreover, because states with bisimilar encodings are themselves bisimilar (part~\ref{??}) and because bisimilarity is reflexive, $q \misa\nfareduces[a]\asim q'$.
-  %   \end{itemize}
-
-  % \item
-  % \item 
-  %   \begin{itemize}
-  %   \item We must show that $q \misa\asim q'$ if, and only if, $\nfa{q} \miso\Reduces\osim \nfa{q}'$.
-  %   \item We must show that $q \misa\nfareduces[a]\nfareduces[w]\asim q'$ if, and only if, $\atmR{w} \oc \atmR{a} \oc \nfa{q} \miso\Reduces\osim \nfa{q}'$.
-      
-  %   \end{itemize}
-  \end{enumerate}
-
-  % Let $\simu{R}$ be the binary relation on ordered contexts such that $\octx$ and $\lctx$ are $\simu{R}$-related if they are equal to the encodings of a pair of bisimilar states -- that is, $\mathord{\simu{R}} = \set{(\octx, \lctx) \given \exists q,s \in Q.\, (\octx = \nfa{q}) \land (q \asim s) \land (\nfa{s} = \lctx)}$.
-  % \begin{itemize}
-  % \item Let $q$ and $s$ be bisimilar states, and assume that $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\nfa{q}}{\lctx'}$.
-  %   By inversion, there are two cases; in either case, the context $\atmL{\lctx}_R$ must be empty.
-  %   \begin{itemize}
-  %   \item Consider the case in which the context $\atmR{\lctx}_L$ is a single atom $\atmR{\emp}$ and $\lctx' = \nfa{F}(q)$.
-  %     By the encoding's construction, $\ireduces{\atmR{\emp} \oc #1}{\nfa{s}}{\nfa{F}(s)}$.
-  %     And, because states $q$ and $s$ are bisimilar, the two are both final or both nonfinal states.
-  %     $\nfa{F}(s)$
-  %   \item  or $\atmR{a}$ for some input symbol $a$.
-  %   \end{itemize}
-  % \end{itemize}
-  
-
-  % Let $\simu{R}$ be the binary relation on states such that $q$ and $s$ are $\simu{R}$-related if their encodings are ordered bisimilar -- that is, $\mathord{\simu{R}} = \set{(q, s) \given \nfa{q} \osim \nfa{s}}$.
-  % \begin{itemize}
-  % \item Assume that $s \simu{R}^{-1} q \nfareduces[a] q'_a$.
-  %   Because $q'_a$ is an $a$-successor of $q$, there exists a trace $\atmR{a} \oc \nfa{q} \Reduces \nfa{q}'_a$.
-  %   Because $q$ and $s$ have bisimilar encodings, it then follows from the input bisimilarity property that $\atmR{a} \oc \nfa{s} \Reduces\miso \nfa{q}'_a$.
-  %   By inversion, there are two cases
-  %   \begin{itemize}
-  %   \item $\nfa{s}'_a \secuder \atmR{a} \oc \nfa{s} \miso \nfa{q}'_a$, so $\nfa{q}'_a \Reduces\osim \nfa{s}'_a$
-  %   \item $\atmR{a} \oc \nfa{s} \reduces \nfa{s}'_a \miso \nfa{q}'_a$
-  %   \end{itemize}
-  %   By inversion of this trace, there must exist a state $s'_a$ that is an $a$-successor of $s$ and has an encoding that is bisimilar to the encoding of $q'_a$ -- in other words, $s \nfareduces[a] s'_a \simu{R}^{-1} q'_a$.
-
-  % \item Assume that $s \simu{R}^{-1} q \in F$.
-  %   With $q$ being a final state, there exists a trace $\atmR{\emp} \oc \nfa{q} \Reduces \octxe$.
-  %   Because $q$ and $s$ have bisimilar encodings, $\atmR{\emp} \oc \nfa{s} \Reduces\miso \octxe$.
-  %   By inversion of this trace, $\nfa{F}(s)$ is bisimilar to the empty context.
-  %   That is impossible if $s \notin F$, so $s$ must be a final state, like $q$.
-  % \end{itemize}
-
-  % To establish the completness of our \ac{NFA} encoding with respect to bisimularity, it then suffices to show that ordered bisimularity contains the relation $\simu{R}$.
-  % Appealing to the preceding proof technique for ordered bisimilarity\parencref{thm:ord-bisim-technique}, we need only establish that $\simu{R}$ has immediate output bisimulation, immediate input bisimulation, reduction bisimulation, and emptiness bisimulation properties.
-
-  % Only the immediate input bisimulation and reduction bisimulation conditions apply to the relation $\simu{R}$.
-  % \begin{description}
-  % \item[Immediate input bisimulation]
-  %   Assume that $\lctx \simu{R} \octx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$;
-  %   we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\refl*{\simu{R}}^{-1} \lctx'$.
-
-  %   Inversion allows us to deduce $\lctx = \nfa{q}$ and $\octx = \nfa{s}$ for some states $q$ and $s$ such that $q \asim s$.
-  %   Examining the encoding, we see that there are two possible input transitions from $\nfa{q}$.
-  %   \begin{itemize}
-  %   \item Consider the input transition $\ireduces{\atmR{a} \oc #1}{\nfa{q}}{\nfa{q}'_a}$, with $a \in \ialph$ and $q \nfareduces[a] q'_a$ -- that is, $\atmR{\lctx}_L = \atmR{a}$; $\atmL{\lctx}_R = \octxe$; and $\lctx' = \nfa{q}'_a$.
-  %     We must show that $\atmR{a} \oc \nfa{s} \Reduces\refl*{\simu{R}}^{-1} \nfa{q}'_a$.
-
-  %     Because $q$ and $s$ are bisimilar states, $s \nfareduces[a] s'_a \misa q'_a$ for some state $s'_a$.
-  %     Recall from \cref{thm:nfa-encoding-reduces} that the encoding of \acp{NFA} is complete with respect to input transitions; so, $\atmR{a} \oc \nfa{s} \reduces \nfa{s}'_a$.
-  %     As $q'_a$ and $s'_a$ are bisimilar states, we conclude that $\atmR{a} \oc \nfa{s} \reduces\refl*{\simu{R}}^{-1} \nfa{q}'_a$, as required.
-
-  %   \item Consider the input transition $\ireduces{\atmR{\emp} \oc #1}{\nfa{q}}{\octxe}$ when $q$ is a final state -- that is, $\atmR{\lctx}_L = \atmR{\emp}$ and $\atmL{\lctx}_R = \lctx' = \octxe$.
-  %     We must show that $\atmR{\emp} \oc \nfa{s} \Reduces\refl*{\simu{R}}^{-1} \octxe$.
-
-  %     Because $q$ and $s$ are bisimilar states, $s$ must also be a final state.
-  %     Recall from \cref{thm:nfa-encoding-reduces} that the encoding of \acp{NFA} is complete with respect to input transitions; so, $\atmR{\emp} \oc \nfa{s} \reduces \octxe$.
-  %     We conclude that $\atmR{\emp} \oc \nfa{s} \reduces\refl*{\simu{R}}^{-1} \octxe$, as required.
-  %   \end{itemize}
-  % %
-  % \item[Reduction bisimulation]
-  % \end{description}
 \end{proof}
 
 
@@ -2190,104 +2395,105 @@ under an unfocused rewriting framework, $\nfa{q}$ would admit rewritings, such a
 \section{Example of rewriting bisimilarity: Binary counter}
 
 For a further application of rewriting bisimilarity, we can revisit the binary counter of \cref{??}.
-Under a message-passing interpretation of ordered rewriting, the definitions of $e$, $b_0$, $b_1$, and $b'_0$ are the same as in \cref{??}, but with directions consistently assigned to the uninterpreted, positive atomic propositions:
+Recall from \cref{sec:??} the object-oriented choreography of the binary counter:
 \begin{equation*}
-  \begin{lgathered}
-    e \defd (e \fuse b_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d}) \\
-    b_0 \defd (\up \dn b_1 \pmir \atmL{i}) \with (\atmL{d} \fuse b'_0 \pmir \atmL{d}) \\
-    b'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp b_1 \fuse \atmR{s}) \\
-    b_1 \defd (\atmL{i} \fuse b_0 \pmir \atmL{i}) \with (b_0 \fuse \atmR{s} \pmir \atmL{d})
+  \orsig =
+  \begin{lgathered}[t]
+    \defp{e} \defd (\defp{e} \fuse \defp{b}_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d}) \\
+    \defp{b}_0 \defd (\up \dn \defp{b}_1 \pmir \atmL{i}) \with (\atmL{d} \fuse \defp{b}'_0 \pmir \atmL{d}) \\
+    \defp{b}_1 \defd (\atmL{i} \fuse \defp{b}_0 \pmir \atmL{i}) \with (\defp{b}_0 \fuse \atmR{s} \pmir \atmL{d}) \\
+    \defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \defp{b}_1 \fuse \atmR{s})
   \end{lgathered}
 \end{equation*}
-The increment and decrement messages, $\atmL{i}$ and $\atmL{d}$, are left-directed, whereas the zero and successor messages, $\atmR{z}$ and $\atmR{s}$, are right-directed.
+Also, recall that denotations were assigned directly to choreographed counters using $\aval{\octx}{n}$, $\ainc{\octx}{n}$, and $\adec{\octx}{n}$ judgments.
 
+Intuitively, any two counters that have the same denotation ought to be indistinguishable.
+After all, the only two operations that we have on counters are increment and head-unary normalization (or decrement), and both of these are reflected in the denotation.
+For instance, both $\defp{e} \oc \atmL{i} \oc \defp{b}_1$ and $\defp{e} \oc \defp{b}_1 \oc \defp{b}_0 \oc \atmL{i}$ denote the natural number $3$, so any sequence of increments and decrements that we apply to these counters ought not to distinguish them.
 
-\begin{inferences}
-  \infer{\aval{e}{0}}{}
-  \and
-  \infer{\aval{\octx \oc b_0}{2n}}{
-    \aval{\octx}{n}}
-  \and
-  \infer{\aval{\octx \oc b_1}{2n+1}}{
-    \aval{\octx}{n}}
-  \\
-  \infer{\ainc{e}{0}}{}
-  \and
-  \infer{\ainc{\octx \oc b_0}{2n}}{
-    \ainc{\octx}{n}}
-  \and
-  \infer{\ainc{\octx \oc b_1}{2n+1}}{
-    \ainc{\octx}{n}}
-  \and
-  \infer{\ainc{\octx \oc \atmL{i}}{n+1}}{
-    \ainc{\octx}{n}}
-  \\
-  \infer{\ainc{e \fuse b_1}{1}}{}
-  \and
-  \infer{\ainc{\octx \oc (i \fuse b_0)}{2(n+1)}}{
-    \ainc{\octx}{n}}
-  \\
-  \infer{\adec{\octx \oc \atmL{d}}{n}}{
-    \ainc{\octx}{n}}
-  \and
-  \infer{\adec{\atmR{z}}{0}}{}
-  \and
-  \infer{\adec{\octx \oc \atmR{s}}{n+1}}{
-    \ainc{\octx}{n}}
-  \and
-  \infer{\adec{\octx \oc b'_0}{2n}}{
-    \adec{\octx}{n}}
-  \\
-  \infer{\adec{\octx \oc (\atmL{d} \fuse b'_0)}{2n}}{
-    \ainc{\octx}{n}}
-  \and
-  \infer{\adec{\octx \oc (b_1 \fuse \atmR{s})}{2n+2}}{
-    \ainc{\octx}{n}}
-  \and
-  \infer{\adec{\octx \oc (b_0 \fuse \atmR{s})}{2n+1}}{
-    \ainc{\octx}{n}}
-\end{inferences}
+% Strictly speaking, denotations were only defined for the string rewriting specification of binary counters~\parencref{sec:??}: string $w$ denotes natural number $n$ exactly when $\ainc{w}{n}$.
+% We can, of course, lift the denotations to choreographed contexts:
+% $\octx$ denotes $n$ exactly when $\ainc{\theta^{-1}(\octx)}{n}$.
+% For instance, $\defp{e} \oc \atmL{i} \oc \defp{b}_1$ denotes $3$ because $\theta^{-1}(\defp{e} \oc \atmL{i} \oc \defp{b}_1) = \ainc{e \wc i \wc b_1}{3}$.
+% We could even assign denotations directly to choreographed contexts by defining new $\aval{}{}$, $\ainc{}{}$, and $\adec{}{}$ relations on choreographed contexts.
+% \begin{inferences}
+%   \infer[\jrule{$\defp{e}$-V}]{\aval{\defp{e}}{0}}{}
+%   \and
+%   \infer[\jrule{$\defp{b}_0$-V}]{\aval{\octx \oc \defp{b}_0}{2n}}{
+%     \aval{\octx}{n}}
+%   \and
+%   \infer[\jrule{$\defp{b}_1$-V}]{\aval{\octx \oc \defp{b}_1}{2n+1}}{
+%     \aval{\octx}{n}}
+%   \\
+%   \infer[\jrule{$\defp{e}$-I}]{\ainc{\defp{e}}{0}}{}
+%   \and
+%   \infer[\jrule{$\defp{b}_0$-I}]{\ainc{\octx \oc \defp{b}_0}{2n}}{
+%     \ainc{\octx}{n}}
+%   \and
+%   \infer[\jrule{$\defp{b}_1$-I}]{\ainc{\octx \oc \defp{b}_1}{2n+1}}{
+%     \ainc{\octx}{n}}
+%   \and
+%   \infer[\jrule{$\atmL{i}$-I}]{\ainc{\octx \oc \atmL{i}}{n+1}}{
+%     \ainc{\octx}{n}}
+%   \\
+%   \infer[\jrule{$\atmL{d}$-D}]{\adec{\octx \oc \atmL{d}}{n}}{
+%     \ainc{\octx}{n}}
+%   \and
+%   \infer[\jrule{$\atmR{z}$-D}]{\adec{\atmR{z}}{0}}{}
+%   \and
+%   \infer[\jrule{$\atmR{s}$-D}]{\adec{\octx \oc \atmR{s}}{n+1}}{
+%     \ainc{\octx}{n}}
+%   \and
+%   \infer[\jrule{$\defp{b}'_0$-D}]{\adec{\octx \oc \defp{b}'_0}{2n}}{
+%     \adec{\octx}{n}}
+% \end{inferences}
+% A context $\octx$ is an \vocab{increment counter} or \vocab{increment context} if $\ainc{\octx}{n}$ for some natural number $n$;
+% likewise, we will say that a context $\octx$ is an \vocab{decrement counter} or \vocab{decrement context} if $\adec{\octx}{n}$ for some natural number $n$.
 
-\begin{theorem}[Big-step adequacy of increments]\label{thm:msg-inc-big-adequacy}
-  If $\ainc{\octx}{n}$, then:
+% With these relations, 
+We can state and prove that counters with equal denotations are bisimilar, and conversely, bisimilar counters have equal denotations.
+\begin{restatable}[
+  label=thm:oo-counter-bisim
+]{theorem}{thmoocounterbisim}
+  If either
+  \begin{enumerate*}[label=\emph{(\roman*)}]
+  \item $\ainc{\octx}{n}$ and $\ainc{\lctx}{n'}$ or
+  \item $\adec{\octx}{n}$ and $\adec{\lctx}{n'}$
+  \end{enumerate*}, then $\octx \osim \lctx$ if, and only if, $n = n'$.
+\end{restatable}
+
+Before proving this \lcnamecref{thm:oo-counter-bisim}, recall the big-step adequacy of decrements for the choreography.
+\coroocounteradequacy*
+
+\begin{lemma}
+  If $\octx = \atmL{\octx}'_L \oc \octx' \oc \atmR{\octx}'_R$, then:
   \begin{itemize}[nosep]
-  \item $\octx \Reduces\aval{}{n'}$ if, and only if, $n = n'$; and
-  \item $\octx \Reduces \atmL{\octx}'_L \oc \octx' \oc \atmR{\octx}'_R$ only if $\ainc{\octx'}{n}$ and both $\atmL{\octx}'_L$ and $\atmR{\octx}'_R$ are empty.
-  \end{itemize}
-\end{theorem}
-
-\begin{theorem}[Big-step adequacy of decrements]\label{thm:msg-dec-big-adequacy}
-  If $\adec{\octx}{n}$, then:
-  \begin{itemize}[nosep]
-  \item $\octx \Reduces \atmR{z}$ if $n = 0$;
-  \item $\octx \Reduces \octx' \oc \atmR{s}$ for some $\ainc{\octx'}{n-1}$ if $n > 0$; and
-  \item $\octx \Reduces \atmL{\octx}'_L \oc \octx' \oc \atmR{\octx}'_R$ only if $\atmL{\octx}'_L = \octxe$ and either:
+  \item $\ainc{\octx}{n}$ only if $\atmL{\octx}'_L$ and $\atmR{\octx}'_R$ are empty; and
+  \item $\adec{\octx}{n}$ only if $\atmL{\octx}'_L$ is empty and either:
     \begin{itemize}[nosep]
-    \item $\adec{\octx'}{n}$ and $\atmR{\octx}'_R = \octxe$;
-    \item $n = 0$ and $\octx' = \octxe$ and $\atmR{\octx}'_R = \atmR{z}$; or
-    \item $n > 0$ and $\ainc{\octx'}{n-1}$ and $\atmR{\octx}'_R = \atmR{s}$.
+    \item $n=0$ and $\atmR{\octx}'_R = \atmR{z}$ and $\octx'$ is empty;
+    \item $n > 0$ and $\atmR{\octx}'_R = \atmR{s}$ and $\ainc{\octx'}{n-1}$; or
+    \item $\atmR{\octx}'_R$ is empty.
     \end{itemize}
   \end{itemize}
-\end{theorem}
+\end{lemma}
+\begin{proof}
+  
+\end{proof}
 
-Compare with:
-\begin{theorem}[Big-step adequacy of decrements]
-  If $\adec{\octx}{n}$, then:
+\begin{lemma}
+  If $\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}$, then:
   \begin{itemize}[nosep]
-  \item $\octx \Reduces \atmR{z}$ if $n = 0$;
-  \item $\octx \Reduces \octx' \oc \atmR{s}$ for some $\ainc{\octx'}{n-1}$ if $n > 0$;
-  \item $\octx \Reduces \atmR{z}$ only if $n = 0$; and
-  \item $\octx \Reduces \octx' \oc \atmR{s}$ only if $n > 0$ and $\ainc{\octx'}{n-1}$.
+  \item $\ainc{\octx}{n}$ only if $\atmR{\octx}_L$ is empty and either $\atmL{\octx}_R = \atmL{i}$ or $\atmL{\octx}_R = \atmL{d}$ or $\atmL{\octx}_R$ is empty; and
+  \item $\adec{\octx}{n}$ only if $\atmR{\octx}_L$ and $\atmL{\octx}_R$ are empty.
   \end{itemize}
-\end{theorem}
+\end{lemma}
+\begin{proof}
+  Each part is proved by structural induction on the denotation's derivation, with the second part depending on the first.
+\end{proof}
 
-\subsection{Counters with equal denotations are bisimilar}
-
-States with equal denotations are bisimilar, and conversely, bimsimilar states have equal denotations.
-\begin{theorem}\leavevmode
-  If $\ainc{\octx}{n}$ and $\ainc{\lctx}{n'}$, then $\octx \osim \lctx$ if, and only if, $n = n'$.
-  Similarly, if $\adec{\octx}{n}$ and $\adec{\lctx}{n'}$, then $\octx \osim \lctx$ if, and only if, $n = n'$.
-\end{theorem}
+Using this \lcnamecref{??}, we may prove the correspondence between denotation and bisimilarity:
+\thmoocounterbisim*
 \begin{proof}
   We prove each direction separately.
   \begin{itemize}
@@ -2297,30 +2503,62 @@ States with equal denotations are bisimilar, and conversely, bimsimilar states h
   \begin{equation*}
     \mathord{\simu{R}}
     =
-    \Set{(\octx, \lctx) \given \exists n \in \nats.\,(\ainc{\octx}{n}) \land (\ainc{\lctx}{n})}
-    \union
-    \Set{(\octx, \lctx) \given \exists n \in \nats.\,(\adec{\octx}{n}) \land (\adec{\lctx}{n})}
-    \,.
+    \begin{lgathered}[t]
+      \Set{(\octx, \lctx) \given \exists n \in \nats.\,(\ainc{\octx}{n}) \land (\ainc{\lctx}{n})} \\
+      {} \union
+      \Set{(\octx, \lctx) \given \exists n \in \nats.\,(\adec{\octx}{n}) \land (\adec{\lctx}{n})}
+      \,.
+    \end{lgathered}
   \end{equation*}
   We shall show that $\simu{R}$ progresses to its reflexive closure and then conclude, by \cref{??}, that $\simu{R}$ is contained within rewriting bisimilarity.
   \begin{description}
   \item[Immediate output bisimulation]
-    Assume that $\octx \simu{R} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
-    According to big-step adequacy of decrements~\parencref{thm:msg-dec-big-adequacy}, there are three cases that derive from $\lctx$.
+    Assume that $\octx \simu{R} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$; we must show that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \lctx$.
+    Because $\octx$ and $\lctx$ are $\simu{R}$-related, either:
+      $\ainc{\octx}{n}$ and $\ainc{\lctx}{n}$ for some natural number $n$; or
+      $\adec{\octx}{n}$ and $\adec{\lctx}{n}$ for some natural number $n$.
+    \begin{itemize}
+    \item
+      Consider the case in which $\ainc{\octx}{n}$ and $\ainc{\lctx}{n}$.
+      A straightforward induction on the derivation of $\ainc{\lctx}{n}$ shows that $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ must both be empty.
+      The required $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \lctx$ is then trivial.
+
+    \item
+      Consider the case in which $\adec{\octx}{n}$ and $\adec{\lctx}{n}$.
+    According to big-step adequacy of decrements for the choreography~\parencref{thm:msg-dec-big-adequacy}, there are three cases that derive from $\lctx$.
     \begin{itemize}
     \item 
       Consider the case in which $\adec{\octx}{0}$ and $\lctx = \adec{\atmR{z}}{0}$.
-      According to big-step adequacy of decrements~\parencref{thm:msg-dec-big-adequacy}, $\octx \Reduces \atmR{z}$ and so, indeed, $\octx \Reduces\rframe{\reflc{\simu{R}}}{\atmR{z}} \atmR{z}$.
+      According to big-step adequacy of decrements for the choreography, $\octx \Reduces \atmR{z}$ and so, indeed, $\octx \Reduces\rframe{\reflc{\simu{R}}}{\atmR{z}} \atmR{z} = \lctx$.
 
     \item 
       Consider the case in which $\adec{\octx}{n}$ and $n > 0$ and $\lctx = \lctx' \oc \atmR{s}$ and $\ainc{\lctx'}{n-1}$.
-      According to big-step adequacy of decrements~\parencref{thm:msg-dec-big-adequacy}, $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
-      It immediately follows that $\octx \Reduces\rframe{\simu{R}}{\atmR{s}} \lctx$.
+      According to big-step adequacy of decrements for the choreography, $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
+      It immediately follows that $\octx \Reduces\rframe{\simu{R}}{\atmR{s}} \lctx' \oc \atmR{s} = \lctx$.
 
     \item
       Consider the case in which $\adec{\octx}{n}$ and $\adec{\lctx}{n}$, with both $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ empty.
       The required $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \lctx$ is trivial.
     \end{itemize}
+    \end{itemize}
+
+  % \item[Immediate output bisimulation]
+  %   Assume that $\octx \simu{R} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+  %   According to big-step adequacy of decrements~\parencref{thm:msg-dec-big-adequacy}, there are three cases that derive from $\lctx$.
+  %   \begin{itemize}
+  %   \item 
+  %     Consider the case in which $\adec{\octx}{0}$ and $\lctx = \adec{\atmR{z}}{0}$.
+  %     According to big-step adequacy of decrements~\parencref{thm:msg-dec-big-adequacy}, $\octx \Reduces \atmR{z}$ and so, indeed, $\octx \Reduces\rframe{\reflc{\simu{R}}}{\atmR{z}} \atmR{z}$.
+
+  %   \item 
+  %     Consider the case in which $\adec{\octx}{n}$ and $n > 0$ and $\lctx = \lctx' \oc \atmR{s}$ and $\ainc{\lctx'}{n-1}$.
+  %     According to big-step adequacy of decrements~\parencref{thm:msg-dec-big-adequacy}, $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
+  %     It immediately follows that $\octx \Reduces\rframe{\simu{R}}{\atmR{s}} \lctx$.
+
+  %   \item
+  %     Consider the case in which $\adec{\octx}{n}$ and $\adec{\lctx}{n}$, with both $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ empty.
+  %     The required $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \lctx$ is trivial.
+  %   \end{itemize}
 
 
     % \begin{itemize}
@@ -2341,53 +2579,61 @@ States with equal denotations are bisimilar, and conversely, bimsimilar states h
   \item[Immediate input bisimulation]
     Assume that $\octx \simu{R} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$.
     There are several cases.
-    \begin{itemize}
+    \begin{itemize}[listparindent=\parindent]
     \item
-      Consider the case in which $\ainc{\octx}{n}$ and $\ainc{\lctx}{n}$, for some $n$.
+      Consider the case in which $\ainc{\octx}{n}$ and $\ainc{\lctx}{n}$, for some natural number $n$.
       According to \cref{??}, the input transition is either $\ireduces{#1 \oc \atmL{i}}{\lctx}{\lctx'}$ or $\ireduces{#1 \oc \atmL{d}}{\lctx}{\lctx'}$.
+      \begin{itemize}
+      \item
+        If the input transition $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$ is $\ireduces{#1 \oc \atmL{i}}{\lctx}{\lctx'}$, then  apply the $\jrule{$\atmL{i}$-I}$ rule to deduce that $\ainc{\octx \oc \atmL{i}}{n+1}$ and $\ainc{\lctx \oc \atmL{i}}{n+1}$.
+        Because $\lctx \oc \atmL{i} \reduces \lctx'$, it follows from $\ainc{}{}$-preservation~\parencref{??} that $\ainc{\lctx'}{n+1}$.
+        We conclude that $\octx \oc \atmL{i} \Reduces\simu{R} \lctx'$, as required.
 
-      For the former transition, we may apply the $\jrule{$\atmL{i}$-I}$ rule to deduce that $\ainc{\octx \oc \atmL{i}}{n+1}$ and $\ainc{\lctx \oc \atmL{i}}{n+1}$.
-      Because $\lctx \oc \atmL{i} \reduces \lctx'$, it follows from preservation\parencref{??} that $\ainc{\lctx'}{n+1}$.
-      We conclude that $\octx \oc \atmL{i} \Reduces\simu{R} \lctx'$, as required.
-
-      For the latter input transition, a similar argument can be used.
+      \item
+        If the input transition $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$ is $\ireduces{#1 \oc \atmL{d}}{\lctx}{\lctx'}$, then similar reasoning applies.
+      \end{itemize}
 
     \item 
       Consider the case in which $\adec{\octx}{n}$ and $\adec{\lctx}{n}$, for some $n$.
       By \cref{??}, the input transition can only be $\ireduces{#1}{\lctx}{\lctx'}$, and so $\lctx \reduces \lctx'$.
-      It follows from preservation\parencref{??} that $\adec{\lctx'}{n}$; we conclude that $\octx \Reduces\simu{R} \lctx'$, as required.
+      It follows from $\adec{}{}$-preservation~\parencref{??} that $\adec{\lctx'}{n}$; we conclude that $\octx \Reduces\simu{R} \lctx'$, as required.
     \end{itemize}
 
   \item[Reduction bisimulation]
     Assume that $\octx \simu{R} \lctx \reduces \lctx'$.
-    The states $\octx$ and $\lctx$ are either both increment- or both decrement-states with equal denotations.
-    In either case, the relevant preservation result \parencref{??} allows us to deduce that $\lctx'$ has the same denotation and then conclude that $\octx \Reduces\simu{R} \lctx'$, as required.
+    If $\ainc{\octx}{n}$ and $\ainc{\lctx}{n}$ for some natural number $n$, then $\ainc{}{}$-preservation~\parencref{??} yields $\ainc{\lctx'}{n}$;
+    it immediately follows that $\octx \Reduces\simu{R} \lctx'$.
+    Otherwise, if $\adec{\octx}{n}$ and $\adec{\lctx}{n}$ for some natural number $n$, then $\adec{}{}$-preservation similarly allows us to conclude that $\octx \Reduces\simu{R} \lctx'$.
 
   \item[Emptiness bisimulation]
     This is vacuously true.
   \end{description}
 
   \item
-    To prove the converse, that bisimilar states have equal denotations, we shall use a lexicographic induction, first on the denotation $n$ and then on [..].
+    To prove the converse, that bisimilar counters have equal denotations, we shall prove that 
+    \begin{enumerate}[noitemsep]
+    \item If $\adec{\octx}{n}$ and $\adec{\lctx}{n'}$ and $\octx \osim \lctx$, then $n = n'$.
+    \item If $\ainc{\octx}{n}$ and $\ainc{\lctx}{n'}$ and $\octx \osim \lctx$, then $n = n'$.
+    \end{enumerate}
+    using a lexicographic induction, first on the denotation $n$ and then on the inductive hypothesis used, with $\text{1} < \text{2}$.
   \begin{enumerate}
-  \item Assume that $\octx$ and $\lctx$ are bisimilar decrement states denoting $n$ and $n'$, respectively.
-    We distinguish cases on $n$.
+  \item Assume that $\adec{\octx}{n}$ and $\adec{\lctx}{n'}$ and $\octx \osim \lctx$.
     \begin{itemize}
     \item
       Consider the case in which $n = 0$.
       By big-step adequacy of decrements~\parencref{thm:msg-dec-big-adequacy}, $\octx \Reduces \atmR{z}$.
       Because $\octx$ and $\lctx$ are bisimilar, $\lctx \Reduces\rframe{\osim}{\atmR{z}} \atmR{z}$.
-      According to \cref{thm:msg-dec-big-adequacy} again, $\lctx$ eventually emits $\atmR{z}$ only if its denotation is $n' = 0$, and so $n = 0 = n'$.
+      According to big-step adequacy of decrements again, $\lctx$ eventually emits $\atmR{z}$ only if its denotation is $n' = 0$, and so $n = 0 = n'$.
 
     \item 
       Consider the case in which $n > 0$.
       By big-step adequacy of decrements~\parencref{thm:msg-dec-big-adequacy}, $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
       Because $\octx$ and $\lctx$ are bisimilar, $\lctx \Reduces\rframe{\osim}{\atmR{s}} \octx' \oc \atmR{s}$; in other words, $\lctx \Reduces \lctx' \oc \atmR{s}$ for some $\lctx'$ such that $\octx' \osim \lctx'$.
-      According to \cref{thm:msg-dec-big-adequacy} again, $\lctx$ eventually emits $\atmR{s}$ only if $n' > 0$ and $\ainc{\lctx'}{n'-1}$.
+      According to big-step adequacy of decrements again, $\lctx$ eventually emits $\atmR{s}$ only if $n' > 0$ and $\ainc{\lctx'}{n'-1}$.
       By the inductive hypothesis, it follows that $n-1 = n'-1$, and so $n = n'$ as required.
     \end{itemize}
     
-  \item Assume that $\octx$ and $\lctx$ are bisimilar increment states denoting $n$ and $n'$, respectively.
+  \item Assume that $\ainc{\octx}{n}$ and $\ainc{\lctx}{n'}$ and $\octx \osim \lctx$.
     By applying the $\jrule{$\atmL{d}$-D}$ rule, we may deduce that $\adec{\octx \oc \atmL{d}}{n}$ and $\adec{\lctx \oc \atmL{d}}{n'}$.
     Moreover, because rewriting bisimilarity is a congruence~\parencref{??}, $\octx \oc \atmL{d} \osim \lctx \oc \atmL{d}$.
     By part~\ref{item:??} of the inductive hypothesis, we conclude that $n = n'$, as required.

@@ -24,7 +24,7 @@ Substructural logics are so named because they reject some or all of these struc
 Most famously, linear logic\autocite{Girard:TCS87} is substructural because it rejects both weakening and contraction.
 The result is a system in which each hypothesis must be used exactly once; accordingly, linear hypotheses may be viewed as consumable resources\autocite{Girard:TCS87}.
 
-Ordered logic, also known as the (full) Lambek calculus,\autocites{Lambek:AMM58}{Lambek:??} goes a substructural step further.
+Ordered logic, also known as the (full) Lambek calculus,\autocites{Lambek:AMM58}{Abrusci:MLQ90}{Kanazawa:LLI92} goes a substructural step further.
 Like its linear cousin, ordered logic rejects weakening and contraction, making ordered hypotheses resources, too.
 But ordered logic additionally eschews exchange; 
 ordered hypotheses are resources that must remain in order, with no reshuffling.
@@ -93,9 +93,10 @@ The small twist is that these resources are inherently ordered and may not be pe
 To keep the notation for sequents concise, the list of antecedents is usually packaged into an ordered context $\octx = A_1 \oc A_2 \dotsb A_n$, with the sequent then written $\oseq{\octx |- A}$.
 Algebraically, ordered contexts $\octx$ form a free noncommutative monoid:
 \begin{equation*}
-  \octx \Coloneqq \octx_1 \oc \octx_2 \mid \octxe \mid A \,,
+  \octx , \lctx \Coloneqq \octx_1 \oc \octx_2 \mid \octxe \mid A \,,
 \end{equation*}
 where the monoid operation is concatenation, denoted by juxtaposition, and the unit element is the empty context, denoted by $(\octxe)$.
+(We will also sometimes use the metavariable $\lctx$ for \emph{ordered} contexts.)
 As a monoid, ordered contexts are equivalent up to associativity and unit laws (see adjacent \lcnamecref{fig:ordered-logic:monoid-laws}).%
 \begin{marginfigure}
   \begin{gather*}
@@ -166,18 +167,18 @@ As we will see in \cref{??}, the admissibility of these principles serves an imp
 % The $\jrule{CUT}$ rule shows that resource production is transitive: if resource $A$ can be produced from resources $\octx$, and if the resource $C$ can be produced from resources $\octx'_L \oc A \oc \octx'_R$, then $C$ can be produced from $\octx'_L \oc \octx \oc \octx'_R$ by first producing $A$ from the inner resources $\octx$ and then producing $C$ from the resulting resources, $\octx'_L \oc A \oc \octx'_R$.
 % Dually, the $\jrule{ID}$ rule shows that resource production is also reflexive: given a resource $A$, the same resource $A$ can be produced effortlessly.
 
-\subsection{The logical connectives}
+\subsection{The ordered logical connectives}
 
 The propositions of ordered logic are given by the following grammar.
 \begin{syntax*}
   Propositions & A, B, C &
-    p
+    a
     \begin{array}[t]{@{{} \mid {}}l@{}}
-      A \fuse B \mid \one \mid A \plus B \mid \zero \\
+      A \fuse B \mid \one \mid A \esuf B \mid A \plus B \mid \zero \\
       A \with B \mid \top \mid A \limp B \mid B \pmir A
     \end{array}
 \end{syntax*}
-Among these are propositional atoms, $p$, which stand in for arbitrary propositions.
+Among these are propositional atoms, $a$, which stand in for arbitrary propositions.
 The other propositions are built up from these atoms by using the logical connectives.
 
 Under the resource interpretation of ordered logic, these logical connectives may be viewed as resource constructors.
@@ -208,18 +209,13 @@ Under the resource interpretation, $\one$ is therefore an empty resource package
 \end{inferences}
 The sequents $\oseq{\one \fuse A \dashv|- \oseq{A \dashv|- A \fuse \one}}$ are all derivable%
 \footnote{$\oseq{A \dashv|- B}$ stands for the sequents $\oseq{A |- B}$ and $\oseq{B |- A}$.}%
-, so $\one$ is indeed $\fuse$'s unit.%
-% \begin{marginfigure}
-%   \centering
-%   $\infer[\lrule{\fuse}]{\oseq{\one \fuse A |- A}}{
-%      \infer[\lrule{\one}]{\oseq{\one \oc A |- A}}{
-%        \infer[\jrule{ID}\smash{^A}]{\oseq{A |- A}}{}}}$%
-%   \qquad
-%   $\infer[\rrule{\fuse}]{\oseq{A |- \one \fuse A}}{
-%      \infer[\rrule{\one}]{\oseq{\octxe |- \one}}{} &
-%      \infer[\jrule{ID}\smash{^A}]{\oseq{A |- A}}{}}$%
-%   \caption{Proofs of two of the unit laws for ordered conjunction}
-% \end{marginfigure}
+, so $\one$ is indeed $\fuse$'s unit.
+
+In addition to $A \fuse B$, the proposition $A \esuf B$, read \enquote{$A$ twist $B$}, is included.
+Under the resource interpretation, $A \esuf B$ is the side-by-side pair of resources $B$ and $A$, packaged as a single ordered resource.
+If we gave sequent calculus inference rules for $A \esuf B$, the sequents $\oseq{B \fuse A \dashv|- A \esuf B}$ and $\oseq{\one \esuf A \dashv|- \oseq{A \dashv|- A \esuf \one}}$ would all be derivable.
+Therefore, instead of taking $A \esuf B$ as a primitive and explicitly giving, we choose to treat it as merely a notational definition for the ordered conjunction $B \fuse A$.
+
 
 \paragraph{Disjunction and its unit}
 Disjunction is the proposition $A \plus B$, read \enquote{$A$ plus $B$}.%
@@ -301,7 +297,7 @@ Right-handed implication, $B \pmir A$ (read \enquote{$B$ over $A$} or \enquote{$
     \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
 \end{inferences}
 
-The two forms of implication each enjoy their own currying laws: the sequents $\oseq{A \limp (B \limp C) \dashv|- (B \fuse A) \limp C}$ and $\oseq{(C \pmir B) \pmir A \dashv|- C \pmir (A \fuse B)}$ are derivable.
+The two forms of implication each enjoy their own currying laws: the sequents $\oseq{A \limp (B \limp C) \dashv|- (A \esuf B) \limp C}$ and $\oseq{(C \pmir B) \pmir A \dashv|- C \pmir (A \fuse B)}$ are derivable.
 
 
 % \paragraph*{Summary}
@@ -317,11 +313,17 @@ The two forms of implication each enjoy their own currying laws: the sequents $\
     \\ \midrule
     Ordered conjunction & $A \fuse B$ & A side-by-side pair of resources $A$ and $B$ % , packaged as one % a single resource
     \\
+    Multiplicative truth & $\one$ & The unit of ordered conjunction 
+    \\
     (Additive) disjunction & $A \plus B$ & % A resource package that contains
       A package containing  $A$ or $B$ (not both)
     \\
+    (Additive) falsehood & $\zero$ & A package containing no resources 
+    \\
     Alternative conjunction & $A \with B$ &% A resource that can be transformed into either $A$ or $B$
-      Transforms into either $A$ or $B$
+      A resource that transforms into $A$ or $B$
+    \\
+    Additive truth & $\top$ & An immutable resource
     \\
     Left-handed implication & $A \limp B$ & % A resource that
       Transforms a left-adjacent % resource
@@ -340,11 +342,11 @@ The two forms of implication each enjoy their own currying laws: the sequents $\
   \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
   \begin{syntax*}
     Propositions & A,B,C &
-      \alpha \begin{array}[t]{@{{} \mid {}}l@{}}
-               A \fuse B \mid \one \mid A \plus B \mid \zero \\
-               A \with B \mid \top \mid A \limp B \mid B \pmir A
-             \end{array}
-             \\
+      a \begin{array}[t]{@{{} \mid {}}l@{}}
+          A \fuse B \mid \one \mid A \plus B \mid \zero \\
+          A \with B \mid \top \mid A \limp B \mid B \pmir A
+        \end{array}
+    \\
     Contexts & \octx &
       \octx_1 \oc \octx_2 \mid \octxe \mid A
   \end{syntax*}
@@ -425,7 +427,7 @@ In \citeauthor{Martin-Lof:Siena83}'s words, \enquote{The meaning of a propositio
 And a verification is a proof that decomposes that proposition into its subformulas, without dragging in other, unrelated propositions.
 In this way, the meaning of a proposition is compositional.
 
-For the ordered sequent calculus, a verification is thus a proof that relies only on the right and left inference rules (and the $\jrule{ID}^{p}$ rule for propositional atoms) -- the $\jrule{CUT}$ rule drags in an unrelated proposition as its cut formula; and, when $A$ is a compound proposition, the $\jrule{ID}^A$ rule fails to decompose $A$ to its subformulas.
+For the ordered sequent calculus, a verification is thus a proof that relies only on the right and left inference rules (and the $\jrule{ID}^{a}$ rule for propositional atoms) -- the $\jrule{CUT}$ rule drags in an unrelated proposition as its cut formula; and, when $A$ is a compound proposition, the $\jrule{ID}^A$ rule fails to decompose $A$ to its subformulas.
 A proof is \vocab{cut-free} if it does not contain any instances of the $\jrule{CUT}$ rule; similarly, a proof is \vocab{identity-long} if all instances of the $\jrule{ID}$ rule occur at propositional atoms.
 Verifications are thus exactly those proofs that are both cut-free and identity-long.
 
@@ -509,7 +511,8 @@ with the dotted line indicating that this is an admissible, not primitive, rule.
 Writing it in this way emphasizes that the proof of \cref{lem:ordered-logic:cut-admissibility} will amount to defining a meta-level function that takes cut-free proofs of $\oseq{\octx |- A}$ and $\oseq{\octx'_L \oc A \oc \octx'_R |- C}$ and produces a \emph{cut-free} proof of $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}$.
 Contrast this with the primitive $\jrule{CUT}$ rule of the ordered sequent calculus, which forms a (cut-full) proof of $\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}$ from (potentially cut-full) proofs of $\oseq{\octx |- A}$ and $\oseq{\octx'_L \oc A \oc \octx'_R |- C}$.
 
-From here on, we won't bother to be quite so pedantic, instead often omitting the turnstile decoration on cut-free proofs, with the understanding that any proofs to which the admissible $\jrule{A-CUT}$ rule is applied are necessarily cut-free.
+From here on, we won't bother to be quite so pedantic, instead often omitting the turnstile decoration on cut-free proofs, with the understanding that any proofs to which the admissible $\jrule{A-CUT}$ rule is applied are necessarily cut-free.%
+\footnote{The distinction will become somewhat more important in \cref{ch:singleton-logic} when we introduce a \enquote{semi-axiomatic sequent calculus} for singleton logic.}
 
 \newthought{With that} clarification out of the way, we may proceed to proving the previously stated \lcnamecref{lem:ordered-logic:cut-admissibility} and \lcnamecref{thm:ordered-logic:cut-elimination}.
 %
@@ -664,11 +667,11 @@ Before proving the identity elimination \lcnamecref{thm:ordered-logic:id-elimina
   \end{equation*}
   to suggest that this proof amounts to defining a meta-level function on propositions $A$.
 
-  In the base case of propositional atoms $\alpha$, the instance of the $\jrule{ID}$ rule at $\alpha$ is itself already long:
+  In the base case of propositional atoms $a$, the instance of the $\jrule{ID}$ rule at $a$ is itself already identity-long:
   \begin{equation*}
-    \infer-[\jrule{A-ID}\smash{^{\alpha}}]{\oseql{\alpha |- \alpha}}{}
+    \infer-[\jrule{A-ID}\smash{^{a}}]{\oseql{a |- a}}{}
     =
-    \infer[\jrule{ID}\smash{^{\alpha}}]{\oseql{\alpha |- \alpha}}{}
+    \infer[\jrule{ID}\smash{^{a}}]{\oseql{a |- a}}{}
   \end{equation*}
 
   For non-atomic propositions, the identity-long proof of $\oseq{A |- A}$ is constructed from right and left rules, together with calls to the admissible $\jrule{A-ID}$ rule at subformulas of $A$.
@@ -768,12 +771,12 @@ In any case, in the remainder of this document we are concerned only with genera
 
 Ordered logic can also be extended in other directions that we briefly describe here
 % In this \lcnamecref{sec:ordered-logic:extensions}, we give a brief overview of several extensions to the preceding ordered sequent calculus
-\begin{itemize*}[label=, before=\unskip{:}, itemjoin={,}, itemjoin*={, and}]
-\item first-order universal and existential quantifiers
-\item multiplicative falsehood
-\item a mobility modality
-\item the aforementioned persistence modality
-\end{itemize*}.
+% \begin{itemize*}[label=, before=\unskip{:}, itemjoin={,}, itemjoin*={, and}]
+first-order universal and existential quantifiers,
+ multiplicative falsehood and disjunction\autocite{Chang+:CMU03},
+ a mobility modality\autocite{Polakow+Pfenning:MFPS99},
+ the aforementioned persistence modality, and
+ subexponentials\autocite{Kanovich+:MSCS19} and adjunctions from adjoint logic\autocite{??}.
 These extensions are not crucial to the remainder of this dissertation, but are mentioned for the sake of completeness.
 
 % \paragraph*{First-order quantification}
@@ -801,7 +804,7 @@ Sequents are extended with a separate context of well-sorted term variables, $x{
 
 Multiplicative falsehood can be introduced into
 % along a different dimension, 
-the ordered sequent calculus like in the linear sequent calculus\autocite{Chang+:CMU03}:
+the ordered sequent calculus like in the intuitionistic linear sequent calculus\autocite{Chang+:CMU03}:
 by generalizing % can be generalized to allow
 sequents to % carry
 allow
@@ -832,13 +835,16 @@ Multiplicative falsehood, $\bot$, internalizes this judgment as a proposition an
 %   \and
 %   \infer[\lrule{\bot}]{\oseq{\bot |- \cdot}}{}
 % \end{inferences}
+Multiplicative disjunction, $A \boxplus B$, can also be introduced like in the intuitionistic linear sequent calculus\autocite{Chang+:CMU03}; it requires multiple-conclusion sequents.
 
 % \paragraph*{Mobility and persistence modalities}
 % Linear\fixnote{Circular proofs, too!}
 
-In addition to the aforementioned persistence modality, $\bang A$, it is possible to introduce a mobility modality, $\gnab A$.\autocite{??}
+In addition to the aforementioned persistence modality, $\bang A$, it is possible to introduce a mobility modality, $\gnab A$.\autocite{Polakow+Pfenning:MFPS99}
 Just as persistence is subject to all of the structural properties, $\gnab A$ is subject to exchange (but neither weakening nor contraction).
 In this way, $\gnab A$ represents a mobile resource that may permute with other resources.
+Related to these modalities are subexponentials\autocite{Kanovich+:MSCS19} and adjunctions from adjoint logic\autocite{??}.
+Both subexponentials and adjunctions allow ordered logic to include multiple distinct layers, each with its own set of structural properties (that must, however, meet conditions for cut elimination).
 
 
 

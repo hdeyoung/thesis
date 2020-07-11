@@ -1,8 +1,21 @@
-\chapter{Preliminaries: Automata}\label{ch:automata}
+\chapter{Preliminaries: Binary relations and automata}\label{ch:automata}
 
 In this \lcnamecref{ch:automata}, we review the definitions of alphabets, words, languages, and automata that we will use in the running examples throughout this document.
 % The classic text by \textcite{Hopcroft+Ullman:??} is a excellent reference.
 Our definitions, though equivalent to the classical ones found in \textcite{Hopcroft+Ullman:??}'s text, differ slightly, having been tuned for the particular applications in this document.
+
+First, however, we describe our notaional conventions for binary relations.
+
+\section{Binary relations}
+
+In this and future \lcnamecrefs{ch:automata}, we make significant use of binary relations of various kinds.
+These are often written in infix notation.
+
+Given a binary relation $\simu{R}$, we write $\simu{R}^{-1}$ for its inverse.
+For relations written as arrows, such as $\reduces$ and $\Reduces$, we often instead express their inverses by writing the arrow in the other direction.
+For instance, $\secudeR$ would be the inverse of $\Reduces$, so that $y \secudeR x$ exactly when $x \Reduces y$.
+
+We write the relational composition of $\simu{R}$ and $\simu{S}$ as juxtaposition, so that $x \simu{R}\simu{S} z$ holds exactly when there exists a $y$ such that $x \simu{R} y$ and $y \simu{S} z$.
 
 \section{Alphabets, words, and languages}
 
@@ -37,8 +50,8 @@ Depending on the context, it will be a subset of either $\wds{\ialph}$, $\infinw
   \item a \vocab{transition function}, $\nfapow\colon Q \times \ialph \to \pow{Q}$ such that $\nfapow(q, a) \neq \emptyset$ for all states $q \in Q$ and input symbols $a \in \ialph$; and
   \item a subset of \vocab{final states}, $F \subseteq Q$,
   \end{itemize}
-  If $q' \in \nfapow(q, a)$, then we say that $q'$ is an \emph{$a$-successor} of $q$ and write $q \nfareduces[a] q'$.
-  The condition placed on $\nfapow$ thus serves to ensure that, for all input symbols $a$, each state $q$ has an $a$-successor -- that is, that the \ac{NFA} $\aut{A}$ cannot get stuck.
+  If $q' \in \nfapow(q, a)$, then we say that $q'$ is an \emph{$a$-successor} of $q$ and write $q \nfareduces[a] q'$.%
+  \footnote{The condition placed on $\nfapow$ thus serves to ensure that, for all input symbols $a$, each state $q$ has an $a$-successor -- that is, that the \ac{NFA} $\aut{A}$ cannot get stuck.}
 
   The transition function $\nfapow$ can be lifted to a relation involving finite input words: For each word $w = a_1 \wc a_2 \dotsm a_n \in \finwds{\ialph}$, define a relation $\mathord{\nfareduces[\smash{w}]} \subseteq Q \times Q$ such that $q \nfareduces[w] q'$ when $q = q_0 \nfareduces[a_1] q_1 \nfareduces[a_2] \dotsb \nfareduces[a_n] q_n = q'$ for some sequence of states $q_0, q_1, \dotsc, q_n \in Q$.
 
@@ -112,93 +125,114 @@ This is because we will be primarily interested in the operational aspects of \i
 In later \lcnamecrefs{ch:ordered-bisimilarity}, we will refer to a notion of bisimilarity for \acp{NFA} that was originally developed by \textcite{Milner:??}.
 
 In general, two objects are bisimilar if they cannot be distinguished by an observer.
-Here, \ac{NFA} bisimilarity is a relation on states, and the observer may only observe whether the empty word, $\emp$, is accepted or rejected by the given state.
+Here, \ac{NFA} bisimilarity is a relation on states, and the observer may provide an input word and observe whether the word is accepted or rejected by the given state.
 % Two \ac{NFA} states are bisimilar if their successors are bisimilar and if they behave equivalently on the empty word, $\emp$.
 %
 \begin{definition}% [\ac*{NFA} bisimilarity]
-  Let $\aut{A}_1 = (Q_1, \nfapow_1, F_1)$ and $\aut{A}_2 = (Q_2, \nfapow_2, F_2)$ be \acp{NFA} over an input alphabet $\ialph$.
-  An \emph{\acs{NFA} bisimulation} between $\aut{A}_1$ and $\aut{A}_2$ is a binary relation on states, $\mathord{\simu{R}} \subseteq Q_1 \times Q_2$, that satisfies the following conditions.
+  Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over an input alphabet $\ialph$.
+  An \emph{\acs{NFA} bisimulation} on $\aut{A}$ is a \emph{symmetric} binary relation on states, $\mathord{\simu{R}} \subseteq Q \times Q$, that satisfies the following conditions.
   \begin{thmdescription}
-  \item[Input bisimilarity]
-    If $s \simu{R}^{-1}\nfareduces[a] q'$, then $s \nfareduces[a]\simu{R}^{-1} q'$;
-    symmetrically, if $q \simu{R}\nfareduces[a] s'$, then $q \nfareduces[a]\simu{R} s'$.
-    (See the adjacent \lcnamecref{fig:nfa-bisim:diagrams}.)% 
+  \item[Input bisimulation]
+    If $q \simu{R}\nfareduces[a] s'$, then $q \nfareduces[a]\simu{R} s'$.
+    % (See the adjacent \lcnamecref{fig:nfa-bisim:diagrams}.)% 
     \begin{marginfigure}
       \begin{equation*}
-        \begin{tikzcd}
-          q \rar[reduces]{a} \dar[relation][swap]{\simu{R}}
-            & q\mathrlap{'} \dar[relation, exists]{\simu{R}}
-          \\[.5ex]
-          s \rar[reduces, exists]{a} & s\smash{\mathrlap{'}}
-        \end{tikzcd}
-        \qquad
+        % \begin{tikzcd}
+        %   q \rar[reduces]{a} \dar[relation][swap]{\simu{R}}
+        %     & q\mathrlap{'} \dar[relation, exists]{\simu{R}}
+        %   \\[.5ex]
+        %   s \rar[reduces, exists]{a} & s\smash{\mathrlap{'}}
+        % \end{tikzcd}
+        % \qquad
         \begin{tikzcd}
           q \rar[reduces, exists]{a} \dar[relation][swap]{\simu{R}}
             & q\mathrlap{'} \dar[relation, exists]{\simu{R}}
           \\[.5ex]
           s \rar[reduces]{a} & s\smash{\mathrlap{'}}
         \end{tikzcd}
+        \quad\text{\raisebox{-1ex}{and}}\quad
+        \begin{tikzcd}
+          q \dar[relation][swap]{\simu{R}}
+            \drar[relation, exists]{\textstyle\in}
+          \\[.5ex]
+          s \rar[phantom]{\in} &[-2em] F
+        \end{tikzcd}
       \end{equation*}
-      \caption{\Acs*{NFA} input bisimilarity, in diagrams}\label{fig:nfa-bisim:diagrams}
+      \caption{\Acs*{NFA} bisimilarity, in diagrams}\label{fig:nfa-bisim:diagrams}
     \end{marginfigure}%
 
-  \item[Finality]
-    If $q \simu{R} s$, then $q \in F_1$ if, and only if, $s \in F_2$.
+  \item[Finality bisimulation]
+    If $q \simu{R} s \in F$, then $q \in F$.
   \end{thmdescription}
-  \vocab{\ac{NFA} bisimilarity} between $\aut{A}_1$ and $\aut{A}_2$, written $\asim_{\aut{A}_1,\aut{A}_2}$, is the largest bisimulation between $\aut{A}_1$ and $\aut{A}_2$.
-  We will usually omit the subscripts because the automata are nearly always clear from context.
+  \vocab{\ac{NFA} bisimilarity} on $\aut{A}$, written $\asim_{\aut{A}}$, is the largest bisimulation on $\aut{A}$.
+  We will usually omit the subscript because the automaton is nearly always clear from context.
 \end{definition}
 
-Often, as a matter of convenience, \ac{NFA} bisimilarity is defined on the disjoint union of two \acp{NFA}.
-Bisimilarity is then an equivalence relation.
-Here we choose to keep the two automata distinct and prove reflexivity, symmetry, and transitivity, not in their strictest form, but in forms that apply to bisimilarity as defined above.
+As a matter of convenience, \ac{NFA} bisimilarity is defined on a single \ac{NFA}.
+If we wish to discuss the bisimilarity of states from distinct \acp{NFA}, we can form the disjoint union of the two \acp{NFA} and work with its bisimilarity relation.
 
-\begin{theorem}\label{thm:nfa-bisim-refl}
+Bisimilarity is an equivalence relation.
+% Here we choose to keep the two automata distinct and prove reflexivity, symmetry, and transitivity, not in their strictest form, but in forms that apply to bisimilarity as defined above.
+\begin{theorem}\label{thm:nfa-bisim-equiv}
   Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over an input alphabet $\ialph$.
-  Then equality on $Q$ is a bisimulation between $\aut{A}$ and itself.
-  Moreover, $q \asim q$ for all $q \in Q$.
+  \Ac{NFA} bisimilarity on $\aut{A}$ is reflexive, symmetric, and transitive:
+  \begin{thmdescription}[nosep]
+  \item[Reflexivity] Equality on $Q$ is a bisimulation on $\aut{A}$.
+  \item[Symmetry] If $\simu{R}$ is a bisimulation on $\aut{A}$, then so is $\simu{R}^{-1}$.
+  \item[Transitivity] If $\simu{R}$ and $\simu{S}$ are bisimulations on $\aut{A}$, then so is $\simu{R}\simu{S}$.
+  \end{thmdescription}
 \end{theorem}
 \begin{proof}
-  By checking that equality on $Q$ satisfies the conditions of a bisimulation between $\aut{A}$ and itself.
+  By the definition of bisimulation.
 \end{proof}
 
-\begin{theorem}\label{thm:nfa-bisim-sym}
-  Let $\aut{A}_1 = (Q_1, \nfapow_1, F_1)$ and $\aut{A}_2 = (Q_2, \nfapow_2, F_2)$ be \acp{NFA} over an input alphabet $\ialph$, and let $\simu{R}$ be \iac{NFA} bisimulations between $\aut{A}_1$ and $\aut{A}_2$.
-  Then its relational inverse, $\simu{R}^{-1}$, is a bisimulation between $\aut{A}_2$ and $\aut{A}_1$.
-  Moreover, for all $q_1 \in Q_1$ and $q_2 \in Q_2$, if $q_1 \asim q_2$, then $q_2 \asim q_1$.
-\end{theorem}
-\begin{proof}
-  By checking that $\simu{R}^{-1}$ satisfies the conditions of a bisimulation between $\aut{A}_2$ and $\aut{A}_1$.
-\end{proof}
-
-\begin{theorem}\label{thm:nfa-bisim-trans}
-  Let $\aut{A}_1 = (Q_1, \nfapow_1, F_1)$, $\aut{A}_2 = (Q_2, \nfapow_2, F_2)$, and $\aut{A}_3 = (Q_3, \nfapow_3, F_3)$ be \acp{NFA} over an input alphabet $\ialph$, and let $\simu{R}$ and $\simu{S}$ be \ac{NFA} bisimulations between $\aut{A}_1$ and $\aut{A}_2$ and between $\aut{A}_2$ and $\aut{A}_3$, respectively.
-  Then their relational composition, $\simu{R}\simu{S}$, is a bisimulation between $\aut{A}_1$ and $\aut{A}_3$.
-  Moreover, for all $q_1 \in Q_1$ and $q_2 \in Q_2$ and $q_3 \in Q_3$, if $q_1 \asim q_2$ and $q_2 \asim q_3$, then $q_1 \asim q_3$.
-\end{theorem}
-\begin{proof}
-  By checking that $\simu{R}\simu{S}$ satisfies the conditions of a bisimulation between $\aut{A}_1$ and $\aut{A}_3$.
-  % By proving that $\Set{ (q, r) \in Q_1 \times Q_3 \given \exists s \in Q_2.\, (q \asim s) \land (s \asim r) }$ is \iac{NFA} bisimulation between $\aut{A}_1$ and $\aut{A}_3$.
-\end{proof}
-
-% Notice that these \lcnamecrefs{thm:nfa-bisim-sym} are symmetry- and transitivity-like properties, but because distinct automata are used, they cannot be symmetry and transitivity in a strict sense.
-When \ac{NFA} bisimilarity is employed as an endorelation on the states of a single \ac{NFA}, $\aut{A}$, bisimilarity is a bona fide equivalence relation.%
-%
-\begin{corollary}
-  Let $\aut{A}$ be \iac{NFA} over an input alphabet $\ialph$.
-  \Ac{NFA} bisimilarity on $\aut{A}$ is reflexive, symmetric, and transitive.
-\end{corollary}
-% %
+% \begin{theorem}\label{thm:nfa-bisim-refl}
+%   Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over an input alphabet $\ialph$.
+%   Then equality on $Q$ is a bisimulation between $\aut{A}$ and itself.
+%   Moreover, $q \asim q$ for all $q \in Q$.
+% \end{theorem}
 % \begin{proof}
-%   \Ac{NFA} bisimilarity can be proved to be reflexive by showing that the state equality relation is \iac{NFA} bisimulation.
-%   \Cref{thm:nfa-bisim-sym,thm:nfa-bisim-trans} prove that \ac{NFA} bisimilarity on $\aut{A}$ is symmetric and transitive.
+%   By checking that equality on $Q$ satisfies the conditions of a bisimulation between $\aut{A}$ and itself.
 % \end{proof}
 
-The input bisimilarity condition satisfied by \iac{NFA} bisimulation can be lifted to a condition on words, not just input symbols.
+% \begin{theorem}\label{thm:nfa-bisim-sym}
+%   Let $\aut{A}_1 = (Q_1, \nfapow_1, F_1)$ and $\aut{A}_2 = (Q_2, \nfapow_2, F_2)$ be \acp{NFA} over an input alphabet $\ialph$, and let $\simu{R}$ be \iac{NFA} bisimulations between $\aut{A}_1$ and $\aut{A}_2$.
+%   Then its relational inverse, $\simu{R}^{-1}$, is a bisimulation between $\aut{A}_2$ and $\aut{A}_1$.
+%   Moreover, for all $q_1 \in Q_1$ and $q_2 \in Q_2$, if $q_1 \asim q_2$, then $q_2 \asim q_1$.
+% \end{theorem}
+% \begin{proof}
+%   By checking that $\simu{R}^{-1}$ satisfies the conditions of a bisimulation between $\aut{A}_2$ and $\aut{A}_1$.
+% \end{proof}
+
+% \begin{theorem}\label{thm:nfa-bisim-trans}
+%   Let $\aut{A}_1 = (Q_1, \nfapow_1, F_1)$, $\aut{A}_2 = (Q_2, \nfapow_2, F_2)$, and $\aut{A}_3 = (Q_3, \nfapow_3, F_3)$ be \acp{NFA} over an input alphabet $\ialph$, and let $\simu{R}$ and $\simu{S}$ be \ac{NFA} bisimulations between $\aut{A}_1$ and $\aut{A}_2$ and between $\aut{A}_2$ and $\aut{A}_3$, respectively.
+%   Then their relational composition, $\simu{R}\simu{S}$, is a bisimulation between $\aut{A}_1$ and $\aut{A}_3$.
+%   Moreover, for all $q_1 \in Q_1$ and $q_2 \in Q_2$ and $q_3 \in Q_3$, if $q_1 \asim q_2$ and $q_2 \asim q_3$, then $q_1 \asim q_3$.
+% \end{theorem}
+% \begin{proof}
+%   By checking that $\simu{R}\simu{S}$ satisfies the conditions of a bisimulation between $\aut{A}_1$ and $\aut{A}_3$.
+%   % By proving that $\Set{ (q, r) \in Q_1 \times Q_3 \given \exists s \in Q_2.\, (q \asim s) \land (s \asim r) }$ is \iac{NFA} bisimulation between $\aut{A}_1$ and $\aut{A}_3$.
+% \end{proof}
+
+% % Notice that these \lcnamecrefs{thm:nfa-bisim-sym} are symmetry- and transitivity-like properties, but because distinct automata are used, they cannot be symmetry and transitivity in a strict sense.
+% When \ac{NFA} bisimilarity is employed as an endorelation on the states of a single \ac{NFA}, $\aut{A}$, bisimilarity is a bona fide equivalence relation.%
+% %
+% \begin{corollary}
+%   Let $\aut{A}$ be \iac{NFA} over an input alphabet $\ialph$.
+%   \Ac{NFA} bisimilarity on $\aut{A}$ is reflexive, symmetric, and transitive.
+% \end{corollary}
+% % %
+% % \begin{proof}
+% %   \Ac{NFA} bisimilarity can be proved to be reflexive by showing that the state equality relation is \iac{NFA} bisimulation.
+% %   \Cref{thm:nfa-bisim-sym,thm:nfa-bisim-trans} prove that \ac{NFA} bisimilarity on $\aut{A}$ is symmetric and transitive.
+% % \end{proof}
+
+The input bisimulation condition satisfied by \iac{NFA} bisimulation can be lifted to a condition on words, not just input symbols.
 %
 \begin{theorem}\label{thm:nfa-bisim:words}
-  Let $\aut{A}_1 = (Q_1, \nfapow_1, F_1)$ and $\aut{A}_2 = (Q_2, \nfapow_2, F_2)$ be \acp{NFA} over an input alphabet $\ialph$, and let $\simu{R}$ be \iac{NFA} bisimulation for $\aut{A}_1$ and $\aut{A}_2$.
-  Then $s \simu{R}^{-1}\nfareduces[w] q'$ implies $s \nfareduces[w]\simu{R}^{-1} q'$; moreover, $q \simu{R}\nfareduces[w] s'$ implies $q \nfareduces[w]\simu{R} s'$.
+  Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over an input alphabet $\ialph$, and let $\simu{R}$ be \iac{NFA} bisimulation on $\aut{A}$.
+  % Then $s \simu{R}^{-1}\nfareduces[w] q'$ implies $s \nfareduces[w]\simu{R}^{-1} q'$; moreover, 
+  Then $q \simu{R}\nfareduces[w] s'$ implies $q \nfareduces[w]\simu{R} s'$.
 \end{theorem}
 %
 \begin{proof}
@@ -206,23 +240,24 @@ The input bisimilarity condition satisfied by \iac{NFA} bisimulation can be lift
 \end{proof}
 
 
-\Ac{NFA} bisimilarity implies language equivalence, but, because of nondeterminism, the converse does not hold.
+\Ac{NFA} bisimilarity implies language equivalence.
 %
 \begin{theorem}
-  Let $\aut{A}_1 = (Q_1, \nfapow_1, F_1)$ and $\aut{A}_2 = (Q_2, \nfapow_2, F_2)$ be \acp{NFA} over an input alphabet $\ialph$.
-  Then $q \asim s$ implies $\autlang{\aut{A}_1}{q} = \autlang{\aut{A}_2}{s}$.
+  Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over an input alphabet $\ialph$.
+  Then $q \asim s$ implies $\autlang{\aut{A}}{q} = \autlang{\aut{A}}{s}$.
 \end{theorem}
 %
 \begin{proof}
-  Because bisimilarity has a symmetry-like property~\parencref{thm:nfa-bisim-sym}, it suffices to show that $q \asim s$ implies $\autlang{\aut{A}_1}{q} \subseteq \autlang{\aut{A}_2}{s}$.
-  Let $q \in Q_1$ and $s \in Q_2$ be bisimilar states, and choose an arbitrary word $w$ that is accepted from state $q$.
-  By definition, $q \nfareduces[w] q'_w \in F_1$ for some state $q'_w$.
-  It follows from \cref{thm:nfa-bisim:words} and the finality condition that $s \nfareduces[w] s'_w \in F_2$, for some state $s'_w$, and so $w$ is also accepted from state $s$.
+  Because bisimilarity is symmetric~\parencref{thm:nfa-bisim-equiv}, it suffices to show that $q \asim s$ implies $\autlang{\aut{A}}{q} \subseteq \autlang{\aut{A}}{s}$.
+  Let $q \in Q$ and $s \in Q$ be bisimilar states, and choose an arbitrary word $w$ that is accepted from state $q$.
+  By definition, $q \nfareduces[w] q'_w \in F$ for some state $q'_w$.
+  It follows from \cref{thm:nfa-bisim:words} and the finality bisimulation condition that $s \nfareduces[w] s'_w \in F$, for some state $s'_w$, and so $w$ is also accepted from state $s$.
 \end{proof}
-%
+
+But, because of nondeterminism, the converse does not hold.
 \begin{falseclaim}
-  Let $\aut{A}_1 = (Q_1, \nfapow_1, F_1)$ and $\aut{A}_2 = (Q_2, \nfapow_2, F_2)$ be \acp{NFA} over an input alphabet $\ialph$.
-  Then $\autlang{\aut{A}_1}{q} = \autlang{\aut{A}_2}{s}$ implies $q \asim s$.
+  Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over an input alphabet $\ialph$.
+  Then $\autlang{\aut{A}}{q} = \autlang{\aut{A}}{s}$ implies $q \asim s$.
 \end{falseclaim}
 %
 \begin{proof}[Counterexample]
@@ -231,37 +266,40 @@ The input bisimilarity condition satisfied by \iac{NFA} bisimulation can be lift
 
   For the sake of deriving a contradiction, assume that $q_0 \asim s_0$.
   % and its symmetric reflection, $s_0 \asim q_0$.
-  Because $q_0$ is one of the $b$-successors of $q_0$, it follows by the input bisimilarity condition that $s_0 \nfareduces[\smash{b}]\asim q_0$.
+  Because $q_0$ is one of the $b$-successors of $q_0$, it follows by the input bisimulation condition that $s_0 \nfareduces[\smash{b}]\asim q_0$.
   But $s_1$ is the unique $b$-successor of $s_0$, and so we may deduce that $s_1 \asim q_0$.
-  Just as $s_1$ is a final state, the finality condition demands that $q_0$ be final, which it is not.
+  Just as $s_1$ is a final state, the finality bisimulation condition demands that $q_0$ be final, which it is not.
   From this contradiction, we conclude that $q_0$ and $s_0$ are \emph{not} bisimilar. 
 \end{proof}
 
 However, if both automata are \acp{DFA}, then language equivalence does imply bisimilarity.
 %
 \begin{theorem}
-  Let $\aut{A}_1 = (Q_1, \dfanext_1, F_1)$ and $\aut{A}_2 = (Q_2, \dfanext_2, F_2)$ be \emph{\acp{DFA}} over an input alphabet $\ialph$.
-  Then $\autlang{\aut{A}_1}{q} = \autlang{\aut{A}_2}{s}$ implies $q \asim s$.
+  Let $\aut{A} = (Q, \dfanext, F)$ be \emph{\iac{DFA}} over an input alphabet $\ialph$.
+  Then $\autlang{\aut{A}}{q} = \autlang{\aut{A}}{s}$ implies $q \asim s$.
 \end{theorem}
 %
 \begin{proof}
-  Let $\mathord{\simu{R}} = \Set{ (q, s) \given \autlang{\aut{A}_1}{q} = \autlang{\aut{A}_2}{s} }$; we will prove that $\simu{R}$ is a bisimulation between the \acp{DFA} $\aut{A}_1$ and $\aut{A}_2$.
+  Let $\mathord{\simu{R}} = \Set{ (q, s) \given \autlang{\aut{A}}{q} = \autlang{\aut{A}}{s} }$; we will prove that $\simu{R}$ is a bisimulation on the \ac{DFA} $\aut{A}$.
+  As the largest bisimulation, bisimilarity will then contain $\simu{R}$.
   %
   \begin{description}[parsep=0pt, listparindent=\parindent]
-  \item[Input bisimilarity]
-    Assume that $s \simu{R}^{-1}\dfareduces[a] q'_a$; we must show that $s \dfareduces[a]\simu{R}^{-1} q'_a$.
-    Because $\aut{A}_2$ is deterministic, it suffices to show that $\autlang{\aut{A}_1}{q'_a} = \autlang{\aut{A}_2}{s'_a}$, where $s'_a$ is the unique $a$-successor of $s$.
+  \item[Input bisimulation]
+    Assume that $q \simu{R} s \dfareduces[a] s'_a$ for some state $s$; we must show that $q \dfareduces[a]\simu{R} s'_a$.
+    Because $\aut{A}$ is deterministic, it suffices to show that $\autlang{\aut{A}}{q'_a} = \autlang{\aut{A}}{s'_a}$, where $q'_a$ is the unique $a$-successor of $q$.
 
     Choose an arbitrary word $w$ from the language accepted from state $q'_a$.
-    Then $a \wc w$ is in the language accepted from state $q$, and hence also in the language accepted from state $s$.
-    Because $\aut{A}_2$ is deterministic, this can be only if $w$ is in the language accepted from state $s'_a$.
-    Thus $\autlang{\aut{A}_1}{q'_a} \subseteq \autlang{\aut{A}_2}{s'_a}$.
-    By symmetric reasoning, $\autlang{\aut{A}_1}{q'_a} \supseteq \autlang{\aut{A}_2}{s'_a}$.
+    Then $a \wc w$ is in the language accepted from state $q$, and, because $q$ and $s$ are $\simu{R}$-related, also in the language accepted from $s$.
+    Because $\aut{A}$ is deterministic, this can only be if $w$ is in the language accepted from state $s'_a$, the unique $a$-successor of $s$.
+    Thus $\autlang{\aut{A}}{q'_a} \subseteq \autlang{\aut{A}}{s'_a}$.
+    By symmetric reasoning, $\autlang{\aut{A}}{q'_a} \supseteq \autlang{\aut{A}}{s'_a}$.
+    It follows that $q'_a \simu{R} s'_a$.
 
-  \item[Finality]
-    Assume that $q \simu{R} s$; we must show that $q \in F_1$ if, and only if, $s \in F_2$.
-    Because $\autlang{\aut{A}_1}{q} = \autlang{\aut{A}}{s}$, the states $q$ and $s$ either both accept or both reject $\emp$.
-    A state accepts the empty word, $\emp$, exactly when it is a final state, so it follows that $q \in F_1$ if, and only if, $s \in F_2$.
+  \item[Finality bisimulation]
+    Assume that $q \simu{R} s \in F$; we must show that $q \in F$.
+    Because $s$ is a final state, it accepts the empty word, $\emp$.
+    The state $q$ must also accept the empty word, because $\autlang{\aut{A}}{q} = \autlang{\aut{A}}{s}$.
+    A state accepts the empty word only if it is a final state, so it follows that $q \in F$.
   %
   \qedhere
   \end{description}
@@ -291,6 +329,7 @@ However, if both automata are \acp{DFA}, then language equivalence does imply bi
       
 %   \end{tikzcd}
 % \end{marginfigure}
+
 
 \section{Finite transducers}
 \fixnote{Remove these?}
