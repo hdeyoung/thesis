@@ -28,9 +28,9 @@ Together, the cut elimination and identity elimination metatheorems identify the
 % Together, the cut elimination and identity expansion metatheorems identify the cut-free, $\eta$-long proofs as analytic verifications that exhibit a subformula property.
 
 Yet there are certainly other presentations of logics besides sequent calculi, so, in \cref{sec:singleton-logic:hilbert}, we develop a Hilbert-style axiomatization of singleton logic.
-This Hilbert system can also be viewed as a variant of the sequent calculus, so we dub it a \emph{semi-axiomatic sequent calculus}.
+This Hilbert system can also be viewed as a variant of the sequent calculus, so we dub it the \emph{semi-axiomatic sequent calculus}\autocite{DeYoung+:FSCD20}.
 % Our interest in a Hilbert system is not, however, zoological;
-An analysis of its basic metatheory~\parencref{sec:singleton-logic:hilbert:metatheory} begins to suggest the basis of a Curry--Howard interpretation of Hilbert-style proofs as chains of well-typed, asynchronously communicating processes.
+An analysis of its basic metatheory~\parencref{sec:singleton-logic:hilbert:metatheory} begins to suggest the basis of a Curry--Howard interpretation of semi-axiomatic sequent proofs as chains of well-typed, asynchronously communicating processes.
 \Cref{ch:singleton-processes} will be devoted to developing that observation more fully.
 
 % Although the single-antecedent restriction precludes a true Hilbert system, we are able to consruct a Hilbert-like system that can also be viewed as a variant of the singleton sequent calculus.
@@ -370,7 +370,7 @@ Changing the size of the context by introducing, or sometimes removing, antecede
   \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
   \begin{syntax*}
     Propositions &
-      A,B,C & p \mid A \plus B \mid \zero \mid A \with B \mid \top
+      A,B,C & a \mid A \plus B \mid \zero \mid A \with B \mid \top
   \end{syntax*}
   \begin{inferences}
     \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
@@ -669,9 +669,9 @@ Identity elimination -- a slight misnomer -- transforms a proof into an identity
 
 Sequent calculi are not the only way to present logics, so
 % natural deduction calculi and Hilbert systems are also commonly used, for instance.
-in this \lcnamecref{sec:singleton-logic:hilbert} we also consider a Hilbert-style axiomatization of singleton logic.\fixnote{Should I deemphasize the Hilbert aspects in favor of the semi-axiomatic sequent calculus?}
-Our interest in a Hilbert system for singleton logic is not taxonomic, however.
-Rather, over the course of the next \lcnamecref{ch:process-chains} and a half, we shall see that normalization of Hilbert-style proofs serves as the basis of a Curry--Howard isomorphism with chains of asynchronously communicating processes.
+in this \lcnamecref{sec:singleton-logic:hilbert} we also consider a Hilbert-style axiomatization of singleton logic, which can be viewed as a sequent calculus variant that we dub the \emph{semi-axiomatic sequent calculus}\autocite{DeYoung+:FSCD20}.
+Our interest in a semi-axiomatic sequent calculus for singleton logic is not taxonomic, however.
+Rather, over the course of the next \lcnamecref{ch:process-chains} and a half, we shall see that normalization of semi-axiomatic sequent proofs serves as the basis of a Curry--Howard isomorphism with chains of asynchronously communicating processes.
 
 % \subsection{A Hilbert-style axiomatization of linear logic}
 
@@ -692,9 +692,12 @@ Consequently, Hilbert-style axiomatizations usually rely heavily on implication 
 to effect the meanings of the logical connectives.
 
 However, as explained in \cref{??}, singleton logic does not enjoy the luxury of an implication connective.
-So in a Hilbert-style axiomatization of singleton logic, we will have to content ourselves with a broad interpretation of the term \enquote*{axiom schema} that encompasses zero-premise rules that derive hypothetical judgments.
+So, for singleton logic, a true Hilbert-style axiomatization that relies on a \emph{modus ponens} rule as its only inference rule is not possible.
+Instead, for a semi-axiomatic sequent calculus of singleton logic, 
+% So in a Hilbert-style axiomatization of singleton logic,
+we will have to content ourselves with a broad interpretation of the term \enquote*{axiom schema} that encompasses zero-premise rules that derive hypothetical judgments.
 
-\newthought{To construct} a Hilbert-style axiomatization of singleton logic, we will ask, in turn, whether each sequent calculus rule can be reduced to an axiom schema.
+\newthought{To construct} a semi-axiomatic sequent calculus for singleton logic, we will ask, in turn, whether each sequent calculus rule can be reduced to an axiom schema.
 
 First, consider the judgmental rules, $\jrule{ID}$ and $\jrule{CUT}$, for the identity and cut principles (see neighboring display).%
 \marginnote{%
@@ -707,13 +710,13 @@ First, consider the judgmental rules, $\jrule{ID}$ and $\jrule{CUT}$, for the id
     \hphantom{\jrule{CUT}^B}
   \end{inferences}
 }
-With zero premises, the $\jrule{ID}$ rule itself is already an axiom schema and can be adopted directly in singleton logic's Hilbert system.
+With zero premises, the $\jrule{ID}$ rule itself is already an axiom schema and can be adopted directly in singleton logic's semi-axiomatic sequent calculus.
 
 The $\jrule{CUT}$ rule is not so accommodating.
 As a rule for composing proofs, the $\jrule{CUT}$ rule serves a similar purpose to the traditional \emph{modus ponens} rule.
 Just as \emph{modus ponens} cannot be reduced to an axiom schema, so must $\jrule{CUT}$ remain a rule of inference.
 Moreover, because singleton logic has no implication connective, the rule's hypothetical judgments cannot even be simplified to categorical judgments.
-Therefore, the $\jrule{CUT}$ rule is adopted wholesale in the Hilbert system.
+Therefore, the $\jrule{CUT}$ rule is adopted wholesale in the semi-axiomatic sequent calculus.
 
 % Because singleton logic does not have an implication connective to internalize the hypothetical judgment, there is no obvious way to turn this rule into an axiom.
 % Both rules are therefore adopted wholesale in the Hilbert-style axiomatization.
@@ -746,7 +749,7 @@ Moreover, by combining this new $\rrule{\plus}'_1$ axiom schema with $\jrule{CUT
   \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
     \slseq{A |- B_1}}
 \end{equation*}
-Together, these two observations suggest that $\rrule{\plus}'_1$ be adopted as an axiom schema in the Hilbert-style axiomatization of singleton logic.
+Together, these two observations suggest that $\rrule{\plus}'_1$ be adopted as an axiom schema in the semi-axiomatic sequent calculus for singleton logic.
 A symmetric $\rrule{\plus}'_2$ axiom schema should be adopted, too.
 
 What about the sequent calculus's $\lrule{\plus}$ rule (see neighboring display)?%
@@ -759,7 +762,7 @@ What about the sequent calculus's $\lrule{\plus}$ rule (see neighboring display)
 }
 Can it also be reduced to an axiom schema?
 Once again, singleton logic's lack of an implication connective prevents us from even simplifying the $\lrule{\plus}$ rule's hypothetical judgments to categorical judgments.
-Like $\jrule{CUT}$, the sequent calculus's $\lrule{\plus}$ rule is thus adopted wholesale in singleton logic's Hilbert system.
+Like $\jrule{CUT}$, the sequent calculus's $\lrule{\plus}$ rule is thus adopted wholesale in singleton logic's semi-axiomatic sequent calculus.
 Including the additive $\lrule{\plus}$ rule as a primitive rule of inference is perhaps not unexpected.
 It is consistent with Hilbert-style axiomatizations of linear logic\autocite{Avron:TCS88}, which include an adjunction rule -- essentially the linear sequent calculus's $\rrule{\with}$ rule -- to effect the additive behavior that linear implication and its multiplicative \emph{modus ponens} rule cannot.
 
@@ -768,7 +771,7 @@ It is consistent with Hilbert-style axiomatizations of linear logic\autocite{Avr
 % Instead, we will
 % carry the $\lrule{\plus}$ sequent calculus rule over to our Hilbert-style axiomatization [of singleton logic] as a primitive rule of inference.
 
-The axiomatization of additive conjunction is dual to that of $A_1 \plus A_2$:
+The treatment of additive conjunction is dual to that of $A_1 \plus A_2$:
 The sequent calculus's $\rrule{\with}$ rule will be adopted wholesale, and $\lrule{\with}'_1$ and $\lrule{\with}'_2$ axiom schemas will be derived from the sequent calculus's $\lrule{\with}_1$, $\lrule{\with}_2$, and $\jrule{ID}$ rules.
 %
 \begin{marginfigure}
@@ -781,18 +784,18 @@ The sequent calculus's $\rrule{\with}$ rule will be adopted wholesale, and $\lru
     \and
     \infer[\lrule{\with}'_2]{\slseq{C_1 \with C_2 |- C_2}}{}
   \end{inferences}
-  \caption{A Hilbert-style axiomatization of additive conjunction from singleton logic}
+  \caption{Semi-axiomatic sequent calculus rules for additive conjunction from singleton logic}
 \end{marginfigure}%
 %
-And finally, the axiomatizations of $\zero$ and $\top$ are the nullary analogues of those of the binary $\plus$ and $\with$ connectives, respectively.
+And finally, $\zero$ and $\top$ are treated as the nullary analogues of those of the binary $\plus$ and $\with$ connectives, respectively.
 
-\Cref{fig:singleton-logic:hilbert} summarizes this Hilbert-style axiomatization of singleton logic.
+\Cref{fig:singleton-logic:hilbert} summarizes this semi-axiomatic sequent calculus for singleton logic.
 %
 \begin{figure}[tbp]
   \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
   \begin{syntax*}
     Propositions &
-      A & p \mid A \plus B \mid \zero \mid A \with B \mid \top
+      A,B,C & a \mid A \plus B \mid \zero \mid A \with B \mid \top
   \end{syntax*}
   \begin{inferences}
     \infer[\jrule{CUT}^B]{\slseq{A |- C}}{
@@ -823,7 +826,7 @@ And finally, the axiomatizations of $\zero$ and $\top$ are the nullary analogues
     \text{(no $\lrule{\top}$ rule)}
   \end{inferences}
   \vspace{-\belowdisplayskip}
-  \caption{A Hilbert system for singleton logic}%
+  \caption{A semi-axiomatic for singleton logic}%
   \label{fig:singleton-logic:hilbert}
 \end{figure}
 %
@@ -1135,31 +1138,34 @@ And finally, the axiomatizations of $\zero$ and $\top$ are the nullary analogues
 
 
 
-\newthought{The Hilbert system} of \cref{fig:singleton-logic:hilbert} shares so many rules with the singleton sequent calculus~\parencref{fig:singleton-logic:seq-calc} that it can be viewed as a variant in which each connective's non-invertible rules have been replaced with zero-premise rules.
-As such, we should seek to prove the usual sequent calculus metatheorems -- cut elimination and identity expansion -- for this Hilbert-style variant.
+\newthought{The semi-axiomatic} sequent calculus of \cref{fig:singleton-logic:hilbert} shares many rules with the singleton sequent calculus~\parencref{fig:singleton-logic:seq-calc}.
+In fact, it is a variant in which each connective's non-invertible rules have been replaced with zero-premise rules.
+From this observation, we conjecture that every intuitionistic sequent calculus has a corresponding semi-axiomatic sequent calculus.
+But, in this document, we are only interested in the semi-axiomatic sequent calculus for singleton logic, so we do not pursue this conjecture further.
 
-Strictly speaking, cut elimination does not hold for the Hilbert system.
-As a concrete counterexample, there is no cut-free Hilbert-style proof of the sequent $\slseq{p_2 |- p_1 \plus (p_2 \plus p_3)}$, even though the same sequent is provable using cut:
+This semi-axiomatic variant being so closely related to the sequent calculus, we should seek to prove that it enjoys the usual sequent calculus metatheorems -- cut elimination and identity expansion.
+Strictly speaking, however, cut elimination does not hold for the semi-axiomatic sequent calculus.
+As a concrete counterexample, there is no cut-free semi-axiomatic proof of the sequent $\slseq{a_2 |- a_1 \plus (a_2 \plus a_3)}$, even though the same sequent is provable using cut:
 % \begin{equation*}
 %   \infer[\jrule{CUT}]{\slseq{p |- \top \plus \top}}{
 %     \infer[\rrule{\top}]{\slseq{p |- \top}}{} &
 %     \infer[\rrule{\plus}'_1]{\slseq{\top |- \top \plus \top}}{}}
 % \end{equation*}
 \begin{equation*}
-  \infer[\jrule{CUT}]{\slseq{p_2 |- p_1 \plus (p_2 \plus p_3)}}{
-    \infer[\rrule{\plus}'_1]{\slseq{p_2 |- p_2 \plus p_3}}{} &
-    \infer[\rrule{\plus}'_2]{\slseq{p_2 \plus p_3 |- p_1 \plus (p_2 \plus p_3)}}{}}
+  \infer[\jrule{CUT}]{\slseq{a_2 |- a_1 \plus (a_2 \plus a_3)}}{
+    \infer[\rrule{\plus}'_1]{\slseq{a_2 |- a_2 \plus a_3}}{} &
+    \infer[\rrule{\plus}'_2]{\slseq{a_2 \plus a_3 |- a_1 \plus (a_2 \plus a_3)}}{}}
 \end{equation*}
 Although cut elimination does not hold, normal forms nevertheless exist.
 % , we will still be able to prove a weak normalization result.
-Normal Hilbert-style proofs will contain cuts, but those cuts will have a particular, analytic form.
+Normal semi-axiomatic proofs will contain cuts, but those cuts will have a particular, analytic form.
 In other words, although full cut elimination does not hold,
 % of all cuts is not possible, but
 elimination of \emph{non-analytic} cuts does.
 
-\subsection{A proof term assignment for the Hilbert system}
+\subsection{A proof term assignment for the semi-axiomatic sequent calculus}
 
-Before presenting a proof of non-analytic cut elimination, we will take a moment to introduce a proof term assignment for the Hilbert system.
+Before presenting a proof of non-analytic cut elimination, we will take a moment to introduce a proof term assignment for the semi-axiomatic sequent calculus.
 These proof terms will be a convenient, succinct notation with which to describe the elimination procedure.
 To keep the proof terms compact, we will also take this opportunity to introduce labeled, $n$-ary forms of additive disjunction and conjunction.
 
@@ -1167,8 +1173,8 @@ To keep the proof terms compact, we will also take this opportunity to introduce
   \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
   \begin{syntax*}
     Propositions &
-      A & \alpha \mid \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}
-                 \mid \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
+      A & a \mid \plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}
+            \mid \with*[sub=_{\ell \in L}]{\ell:A_{\ell}}
     \\
     Proof terms &
       P & \spawn{P_1}{P_2} \mid \fwd
@@ -1196,11 +1202,11 @@ To keep the proof terms compact, we will also take this opportunity to introduce
       \text{($\kay \in L$)}}
   \end{inferences}
   \vspace{-\belowdisplayskip}%
-  \caption{Proof terms for a labeled, $n$-ary variant of the Hilbert system of \cref{fig:singleton-logic:hilbert}}%
+  \caption{Proof terms for a labeled, $n$-ary variant of the semi-axiomatic sequent calculus of \cref{fig:singleton-logic:hilbert}}%
   \label{fig:singleton-logic:hilbert-terms}
 \end{figure}
 %
-\Cref{fig:singleton-logic:hilbert-terms} presents the labeled, $n$-ary generalization of the singleton Hilbert system, equipped with proof terms.
+\Cref{fig:singleton-logic:hilbert-terms} presents a labeled, $n$-ary generalization of singleton logic's semi-axiomatic sequent calculus, equipped with proof terms.
 Individual labels $\ell$ and $\kay$ are drawn from an unspecified universe of labels, and the metavariable $L$ is used for index sets of labels.
 The labeled, $n$-ary proposition $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$ generalizes binary additive disjunction, $A \plus B$, and, because the label set $L$ may even be empty, it also generalizes additive falsehood, $\zero$.
 Likewise, $\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}$ generalizes both $A \with B$ and $\top$.
@@ -1210,14 +1216,15 @@ Because the $\jrule{CUT}$ rule serves to compose two proofs of compatible sequen
 The proof term $\fwd$ is used for the $\jrule{ID}$ rule.
 %
 Because of their similar structure, the $\rrule{\plus}'$ and $\lrule{\with}'$ rules are assigned the similar proof terms $\selectR{\kay}$ and $\selectL{\kay}$; the direction of the underlying arrow distinguishes them.
-Similarly, the $\lrule{\plus}$ and $\rrule{\with}$ rules are assigned the proof terms $\caseL[\ell \in L]{\ell => P_{\ell}}$ and $\caseR[\ell \in L]{\ell => P_{\ell}}$.\fixnote{Comments about variable-free combinators?}
+Similarly, the $\lrule{\plus}$ and $\rrule{\with}$ rules are assigned the proof terms $\caseL[\ell \in L]{\ell => P_{\ell}}$ and $\caseR[\ell \in L]{\ell => P_{\ell}}$.
+%
+All of these terms serve as variable-free combinators.%
+%
+\subsection{Non-analytic cut elimination for the semi-axiomatic sequent calculus}
 
+With proof terms in hand, we can now return to our goal of establishing a \emph{non-analytic} cut elimination \lcnamecref{thm:singleton:hilbert:cutelim} for singleton logic's semi-axiomatic sequent calculus.
 
-\subsection{Non-analytic cut elimination for the singleton Hilbert system}
-
-With proof terms in hand, we can now return to our goal of establishing a \emph{non-analytic} cut elimination \lcnamecref{thm:singleton:hilbert:cutelim} for the singleton Hilbert system.
-
-The cut elimination procedure will normalize a Hilbert-style proof so that any remaining cuts are analytic, specifically of the forms $\spawn{\selectL{\kay}}{P}$ or $\spawn{P}{\selectR{\kay}}$.
+The cut elimination procedure will normalize a semi-axiomatic proof so that any remaining cuts are analytic, specifically of the forms $\spawn{\selectL{\kay}}{P}$ or $\spawn{P}{\selectR{\kay}}$.
 As shown in the neighboring display,%
 %
 \marginnote{
@@ -1281,7 +1288,7 @@ First, however, we need the admissibility of non-analytic cut as a \lcnamecref{l
   \end{equation*}
 
   Once again, we will prove the cut principle by a lexicographic induction, first on the cut formula, $B$, and then on the structures of the given terms, $N$ and $M$.
-  However, because the Hilbert system uses different rules than the sequent calculus, the proof's cases are organized a bit differently.
+  However, because the semi-axiomatic formulation uses different rules than the sequent calculus, the proof's cases are organized a bit differently.
   In addition to the usual classes of principal, identity, and commutative cases, a new class of associative cases is introduced.
   \begin{description}[listparindent=\parindent, parsep=0pt]
   \item[Associative cases]
@@ -1320,6 +1327,7 @@ First, however, we need the admissibility of non-analytic cut as a \lcnamecref{l
             \slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- M : C}}}
       \end{gather*}
       \vspace{-\belowdisplayskip}
+      % \bottomrule
       \caption{One of the associative cases in the proof of non-analytic cut admissibility~\parencref{lem:singleton-logic:hilbert:cut-admissibility}}%
       \label{fig:singleton-logic:hilbert:associative-cut}
     \end{figure}
@@ -1346,7 +1354,7 @@ First, however, we need the admissibility of non-analytic cut as a \lcnamecref{l
         &= N_{\kay}
     \end{align*}
     If $\selectR{\kay}$ and $\selectL{\kay}$ are viewed as directed messages, then these principal clauses in $\nspawn{}{}$'s definition look much like rules for asynchronous message-passing communication.
-    This observation is at the heart of the Curry--Howard interpretation of the singleton Hilbert system that we develop in the following \lcnamecref{ch:process-chains}.
+    This observation is at the heart of the Curry--Howard interpretation of singleton logic's semi-axiomatic sequent calculus that we develop in the following \lcnamecref{ch:process-chains}.
 
   \item[Identity cases]
     As in the proof of admissibility of cut for the sequent calculus~\parencref{lem:singleton-logic:cut-admissibility}, the identity cases cover pairings involving the $\jrule{ID}$ rule and yield the following clauses.
@@ -1416,11 +1424,14 @@ But many of the choices that would be made in breaking ties, such as between the
 \thmsingletonhilbertcutelim
 %
 \begin{proof}
+  By structural induction on the proof term $P$.
+
+  This theorem can be phrased as the following admissible rule.
   \begin{equation*}
     \infer-[\jrule{CE}]{\slof{A |- \ce{P} : C}}{
       \slof{A |- P : C}}
   \end{equation*}
-
+  The principal case in proving the admissibility of this rule is:
   \begin{equation*}
     \infer-[\jrule{CE}]{\slof{A |- \ce{\spawn{P_1}{P_2}} : C}}{
       \infer[\jrule{CUT}^B]{\slof{A |- \spawn{P_1}{P_2} : C}}{
@@ -1432,9 +1443,10 @@ But many of the choices that would be made in breaking ties, such as between the
       \infer-[\jrule{CE}]{\slof{B |- \ce{P_2} : C}}{
         \slof{B |- P_2 : C}}}
   \end{equation*}
-
+  In this case, a cut is replaced with an appeal to the admissibility of cut.
+  The remaining cases are handled compositionally:
   \begin{equation*}
-    \begin{lgathered}
+    \begin{lgathered}[b]
       \ce{\spawn{P_1}{P_2}} = \nspawn{\ce{P_1}}{\ce{P_2}} \\
       \ce{\fwd} = \fwd \\
       \ce{\selectR{\kay}} = \selectR{\kay} \\
@@ -1508,71 +1520,55 @@ But many of the choices that would be made in breaking ties, such as between the
 
 
 
-\clearpage
+
 \section{Extensions of singleton logic}\label{sec:singleton-logic:extensions}
 
-The singleton sequent calculus and singleton Hilbert system support various extensions.
+The usual and semi-axiomatic sequent calculi for singleton logic support various extensions.
 One simple but useful extension would be to introduce first-order universal and existential quantifiers, $\forall x{:}\tau.A$ and $\exists x{:}\tau.A$, over well-sorted data.
 Variable typing assumptions, $x{:}\tau$, would not be subject to the single-antecedent restriction -- the usual weakening, contraction, and exchange properties apply to variable typing assumptions.
 
-\newthought{Another direction} for extension is to slightly relax the single-antecedent restriction.
+Another direction for extension is to slightly relax the single-antecedent restriction.
 Instead of demanding that sequents have exactly one antecedent and exactly one consequent, we could allow each sequent to have zero or one antecedents and zero or one consequents.
-So now, instead of sequents $\slseq{A |- C}$, we have sequents $\slseq{\sctx |- \cseq}$, where $\sctx$ and $\cseq$ adhere to the following grammars.
-\begin{syntax*}
-  Subsingleton antecedents & \sctx & A \mid \sctxe \\
-  Subsingleton conseq{}uents & \cseq & C \mid \cseqe
-\end{syntax*}
-With this relaxation, we arrive at \emph{sub}singleton logic.
+% So now, instead of sequents $\slseq{A |- C}$, we have sequents $\slseq{\sctx |- \cseq}$, where $\sctx$ and $\cseq$ adhere to the following grammars.
+% \begin{syntax*}
+%   Subsingleton antecedents & \sctx & A \mid \sctxe \\
+%   Subsingleton conseq{}uents & \cseq & C \mid \cseqe
+% \end{syntax*}
+With this relaxation, we arrive at \emph{sub}singleton logic, which now includes the multiplicative units $\one$ and $\bot$.
+%  can now be characterized by right and left rules:
+% \begin{inferences}
+%   \infer[\rrule{\one}]{\slseq{\sctxe |- \one}}{}
+%   \and
+%   \infer[\lrule{\one}]{\slseq{\one |- \cseq}}{
+%     \slseq{\sctxe |- \cseq}}
+%   \\
+%   \infer[\rrule{\bot}]{\slseq{\sctx |- \bot}}{
+%     \slseq{\sctx |- \cseqe}}
+%   \and
+%   \infer[\lrule{\bot}]{\slseq{\bot |- \cseqe}}{}
+% \end{inferences}
+% These rules apply to both the sequent calculus and Hilbert system presentations of subsingleton logic.
 
-The multiplicative units $\one$ and $\bot$ can now be characterized by right and left rules:
+It is even possible to modify subsingleton logic to include the \enquote*{of course} modality, $\bang A$, from linear logic.
+To make this work, singleton sequents are extended with a structural zone.
+Both the right and left rules for $\bang A$ require that the context be allowed to be empty, so $\bang A$ is not possible for singleton logic, only subsingleton logic.
+
+Interestingly, the proposition $A \mathbin{\bang\mathord{\tensor}} B$ with right and left rules
 \begin{inferences}
-  \infer[\rrule{\one}]{\slseq{\sctxe |- \one}}{}
+  \infer[\rrule{\bang\tensor}]{\slseq{\uctx ; A |- B_1 \mathbin{\bang\tensor} B_2}}{
+    \slseq{\uctx ; \sctxe |- B_1} & \slseq{\uctx ; A |- B_2}}
   \and
-  \infer[\lrule{\one}]{\slseq{\one |- \cseq}}{
-    \slseq{\sctxe |- \cseq}}
-  \\
-  \infer[\rrule{\bot}]{\slseq{\sctx |- \bot}}{
-    \slseq{\sctx |- \cseqe}}
-  \and
-  \infer[\lrule{\bot}]{\slseq{\bot |- \cseqe}}{}
+  \infer[\lrule{\bang\tensor}]{\slseq{\uctx ; B_1 \mathbin{\bang\tensor} B_2 |- C}}{
+    \slseq{\uctx, B_1 ; B_2 |- C}}
 \end{inferences}
-These rules apply to both the sequent calculus and Hilbert system presentations of subsingleton logic.
-
-Without the binary multiplicative connectives $\tensor$ and ...
-
-\begin{syntax*}
-  Propositions & A & \dotsb \mid \bang A \\
-  Persistent contexts & \uctx & \uctxe \mid \uctx, A
-\end{syntax*}
-
-\begin{inferences}
-  \infer[\jrule{CUT!}^A]{\slseq{\uctx, A ; \sctx |- \cseq}}{
-    \slseq{\uctx ; \sctxe |- A} & \slseq{\uctx, A ; \sctx |- \cseq}}
-  \and
-  \infer[\jrule{COPY}]{\slseq{\uctx, A ; \sctxe |- \cseq}}{
-    \slseq{\uctx, A ; A |- \cseq}}
-  \\
-  \infer[\rrule{\bang}]{\slseq{\uctx ; \sctxe |- \bang A}}{
-    \slseq{\uctx ; \sctxe |- A}}
-  \and
-  \infer[\lrule{\bang}]{\slseq{\uctx ; \bang A |- \cseq}}{
-    \slseq{\uctx, A ; \sctxe |- \cseq}}
-\end{inferences}
-
-\begin{inferences}
-  \infer[\rrule{\bang\tensor}]{\slseq{\uctx ; \sctx |- A_1 \mathbin{\bang\tensor} A_2}}{
-    \slseq{\uctx ; \sctxe |- A_1} & \slseq{\uctx ; \sctx |- A_2}}
-  \and
-  \infer[\lrule{\bang\tensor}]{\slseq{\uctx ; A_1 \mathbin{\bang\tensor} A_2 |- \cseq}}{
-    \slseq{\uctx, A_1 ; A_2 |- \cseq}}
-\end{inferences}
-
-\begin{inferences}
-  \infer[\rrule{\bang}]{\slseq{\uctx, A ; \sctxe |- \bang A}}{}
-  \and
+would, strictly speaking, not be possible for singleton logic's sequent calculus: the $\rrule{\mathord{\bang\mathord{\tensor}}}$ rule uses an empty context.
+But, interestingly, such a proposition would be possible in singleton logic's \emph{semi-axiomatic} sequent calculus:
+the right rule would be replaced by
+\begin{equation*}
   \infer[\rrule{\bang\tensor}]{\slseq{\uctx, A_1 ; A_2 |- A_1 \mathbin{\bang\tensor} A_2}}{}
-\end{inferences}
-
+  \,,
+\end{equation*}
+which does not violate the single-antecedent restriction.
 
 
 
@@ -1784,13 +1780,13 @@ CSL '12 paper on asynchronous Curry--Howard for linear logic\fixnote{Belongs in 
 
 \subsection{Connections to Basic Logic}
 
-\textcite{Sambin+:JSL00} proposes Basic Logic in which connectives are defined by a single \emph{definitional equation}.
-For example, the definitional equation for alternative conjunction would be
+\Textcite{Sambin+:JSL00} propose Basic Logic in which connectives are defined by a single \emph{definitional equation}.
+For example, the definitional equation for alternative conjunction in ordered logic would be
 \begin{equation*}
   \infer=[\with]{\oseq{\octx |- A \with B}}{
     \oseq{\octx |- A} & \oseq{\octx |- B}}
 \end{equation*}
-Read top-down, the rule is a \emph{formation} rule; read bottom-up, the rule is two \emph{implicit reflection} rules.
+Read top-down, the rule is a \emph{formation} rule; read bottom-up, the rule is two \emph{implicit reflection} rules:
 \begin{equation*}
   \infer[\jrule{$\with$F}]{\oseq{\octx |- A \with B}}{
     \oseq{\octx |- A} & \oseq{\octx |- B}}
@@ -1801,7 +1797,10 @@ Read top-down, the rule is a \emph{formation} rule; read bottom-up, the rule is 
   \infer[\jrule{$\with$IR}_2]{\oseq{\octx |- B}}{
     \oseq{\octx |- A \with B}}
 \end{equation*}
-By trivializing the implicit reflection rules, \citeauthor{Sambin+:JSL00} arrive at the axioms
+The formation rule is the same as the usual sequent calculus right rule for alternative conjunction, and the implicit reflection rules correspond to natural deduction elimination rules for $\with$.
+
+To arrive at the usual sequent calculus left rules for alternative conjunction, \citeauthor{Sambin+:JSL00} proceed by way of what they call \emph{axioms of reflection}.
+They obtain these axioms by trivializing the implicit reflection rules:
 \begin{equation*}
   \infer[\jrule{$\with$A}_1]{\oseq{A \with B |- A}}{}
   \qquad
@@ -1832,85 +1831,85 @@ Alternatively, the implicit reflection rules could be obtained from the explicit
 }
 So, in fact, the implicit and explicit reflection rules and axioms are all equivalent in the presence of $\jrule{CUT}$.
 
-\newthought{As another example} of this process, consider the definitional equation for ordered conjunction:
-\begin{equation*}
-  \infer=[\fuse]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
-    \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
-\end{equation*}
-The formation and implicit reflection rules are:
-\begin{equation*}
-  \infer[\jrule{$\fuse$F}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
-    \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
-  \qquad
-  \infer[\jrule{$\fuse$IR}]{\oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}{
-    \oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}
-\end{equation*}
-By trivializing the implicit reflection rule, we obtain the axiom
-\begin{equation*}
-  \infer[\jrule{$\fuse$A}]{\oseq{A \oc B |- A \fuse B}}{}
-\end{equation*}
-Combining this axiom with $\jrule{CUT}$, we arrive at the explicit reflection rule%
-\marginnote{%
-  \begin{equation*}
-      \infer[\jrule{CUT}^A]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
-    \oseq{\octx_1 |- A} &
-    \infer[\jrule{CUT}^B]{\oseq{A \oc \octx_2 |- A \fuse B}}{
-      \oseq{\octx_2 |- B} & \infer[\jrule{$\fuse$A}]{\oseq{A \oc B |- A \fuse B}}{}}}
-  \end{equation*}
-}
-\begin{equation*}
-  \infer[\jrule{$\fuse$ER}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
-    \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
-\end{equation*}
-In the other direction, the axiom can also be obtained by trivializing the explicit reflection rule; the implicit reflection rules is then obtained from $\jrule{CUT}$.%
-\marginnote{%
-  \begin{equation*}
-    \infer[\jrule{CUT}^{A \fuse B}]{\oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}{
-      \infer[\jrule{$\fuse$A}]{\oseq{A \oc B |- A \fuse B}}{} &
-      \oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}
-  \end{equation*}
-}
+% \newthought{As another example} of this process, consider the definitional equation for ordered conjunction:
+% \begin{equation*}
+%   \infer=[\fuse]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
+%     \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
+% \end{equation*}
+% The formation and implicit reflection rules are:
+% \begin{equation*}
+%   \infer[\jrule{$\fuse$F}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
+%     \oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}
+%   \qquad
+%   \infer[\jrule{$\fuse$IR}]{\oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}{
+%     \oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}
+% \end{equation*}
+% By trivializing the implicit reflection rule, we obtain the axiom
+% \begin{equation*}
+%   \infer[\jrule{$\fuse$A}]{\oseq{A \oc B |- A \fuse B}}{}
+% \end{equation*}
+% Combining this axiom with $\jrule{CUT}$, we arrive at the explicit reflection rule%
+% \marginnote{%
+%   \begin{equation*}
+%       \infer[\jrule{CUT}^A]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
+%     \oseq{\octx_1 |- A} &
+%     \infer[\jrule{CUT}^B]{\oseq{A \oc \octx_2 |- A \fuse B}}{
+%       \oseq{\octx_2 |- B} & \infer[\jrule{$\fuse$A}]{\oseq{A \oc B |- A \fuse B}}{}}}
+%   \end{equation*}
+% }
+% \begin{equation*}
+%   \infer[\jrule{$\fuse$ER}]{\oseq{\octx_1 \oc \octx_2 |- A \fuse B}}{
+%     \oseq{\octx_1 |- A} & \oseq{\octx_2 |- B}}
+% \end{equation*}
+% In the other direction, the axiom can also be obtained by trivializing the explicit reflection rule; the implicit reflection rules is then obtained from $\jrule{CUT}$.%
+% \marginnote{%
+%   \begin{equation*}
+%     \infer[\jrule{CUT}^{A \fuse B}]{\oseq{\octx'_L \oc A \oc B \oc \octx'_R |- C}}{
+%       \infer[\jrule{$\fuse$A}]{\oseq{A \oc B |- A \fuse B}}{} &
+%       \oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}
+%   \end{equation*}
+% }
 
-\newthought{As a final example} of this process, consider the definitional equation for left-handed implication:
-\begin{equation*}
-  \infer=[\limp]{\oseq{\octx |- A \limp B}}{
-    \oseq{A \oc \octx |- B}}
-\end{equation*}
-The formation and implicit reflection rules are:
-\begin{equation*}
-  \infer[\jrule{$\limp$F}]{\oseq{\octx |- A \limp B}}{
-    \oseq{A \oc \octx |- B}}
-  \qquad
-  \infer[\jrule{$\limp$IR}]{\oseq{A \oc \octx |- B}}{
-    \oseq{\octx |- A \limp B}}
-\end{equation*}
-By trivializing the implicit reflection rule, we obtain the axiom
-\begin{equation*}
-  \infer[\jrule{$\limp$A}]{\oseq{A \oc (A \limp B) |- B}}{}
-\end{equation*}
-Combining this axiom with $\jrule{CUT}$, we arrive at the explicit reflection rule%
-\marginnote{%
-  \begin{equation*}
-    \infer[\jrule{CUT}^A]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- C}}{
-      \oseq{\octx |- A} &
-      \infer[\jrule{CUT}^B]{\oseq{\octx'_L \oc A \oc (A \limp B) \oc \octx'_R |- C}}{
-        \infer[\jrule{$\limp$A}]{\oseq{A \oc (A \limp B) |- B}}{} &
-        \oseq{\octx'_L \oc B \oc \octx'_R |- C}}}
-  \end{equation*}
-}
-\begin{equation*}
-  \infer[\jrule{$\limp$ER}]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- C}}{
-    \oseq{\octx |- A} &
-    \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
-\end{equation*}
-In the other direction, the axiom can also be obtained by trivializing the explicit reflection rule; the implicit reflection rules is then obtained from $\jrule{CUT}$.%
-\marginnote{%
-  \begin{equation*}
-    \infer[\jrule{CUT}^{A \limp B}]{\oseq{A \oc \octx |- B}}{
-      \oseq{\octx |- A \limp B} &
-      \infer[\jrule{$\limp$A}]{\oseq{A \oc (A \limp B) |- B}}{}}
-  \end{equation*}
-}
+% \newthought{As a final example} of this process, consider the definitional equation for left-handed implication:
+% \begin{equation*}
+%   \infer=[\limp]{\oseq{\octx |- A \limp B}}{
+%     \oseq{A \oc \octx |- B}}
+% \end{equation*}
+% The formation and implicit reflection rules are:
+% \begin{equation*}
+%   \infer[\jrule{$\limp$F}]{\oseq{\octx |- A \limp B}}{
+%     \oseq{A \oc \octx |- B}}
+%   \qquad
+%   \infer[\jrule{$\limp$IR}]{\oseq{A \oc \octx |- B}}{
+%     \oseq{\octx |- A \limp B}}
+% \end{equation*}
+% By trivializing the implicit reflection rule, we obtain the axiom
+% \begin{equation*}
+%   \infer[\jrule{$\limp$A}]{\oseq{A \oc (A \limp B) |- B}}{}
+% \end{equation*}
+% Combining this axiom with $\jrule{CUT}$, we arrive at the explicit reflection rule%
+% \marginnote{%
+%   \begin{equation*}
+%     \infer[\jrule{CUT}^A]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- C}}{
+%       \oseq{\octx |- A} &
+%       \infer[\jrule{CUT}^B]{\oseq{\octx'_L \oc A \oc (A \limp B) \oc \octx'_R |- C}}{
+%         \infer[\jrule{$\limp$A}]{\oseq{A \oc (A \limp B) |- B}}{} &
+%         \oseq{\octx'_L \oc B \oc \octx'_R |- C}}}
+%   \end{equation*}
+% }
+% \begin{equation*}
+%   \infer[\jrule{$\limp$ER}]{\oseq{\octx'_L \oc \octx \oc (A \limp B) \oc \octx'_R |- C}}{
+%     \oseq{\octx |- A} &
+%     \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
+% \end{equation*}
+% In the other direction, the axiom can also be obtained by trivializing the explicit reflection rule; the implicit reflection rules is then obtained from $\jrule{CUT}$.%
+% \marginnote{%
+%   \begin{equation*}
+%     \infer[\jrule{CUT}^{A \limp B}]{\oseq{A \oc \octx |- B}}{
+%       \oseq{\octx |- A \limp B} &
+%       \infer[\jrule{$\limp$A}]{\oseq{A \oc (A \limp B) |- B}}{}}
+%   \end{equation*}
+% }
   
 %%% Local Variables:
 %%% mode: latex
