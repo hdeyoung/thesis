@@ -50,7 +50,7 @@ Accordingly, the description of ordered logic in this \lcnamecref{ch:ordered-log
 
 \Cref{sec:ordered-logic:sequent-calculus} introduces ordered logic's sequent calculus as a collection of inference rules, informally justifying them with a resource interpretation similar to that of linear logic.
 To be sure that this collection of rules constitutes a well-defined logic
-Together, cut and identity elimination \lcnamecrefs{thm:ordered-logic:cut-elimination}~\parencref{thm:ordered-logic:cut-elimination,thm:ordered-logic:identity-elimination} serve to establish a proof normalization result: every proof has a corresponding verification.
+Together, cut and identity elimination \lcnamecrefs{thm:ordered-logic:cut-elimination}~\parencref{thm:ordered-logic:cut-elimination,thm:ordered-logic:id-elimination} serve to establish a proof normalization result: every proof has a corresponding verification.
 
 
 The reader who is familiar with ordered logic's sequent calculus and basic metatheory -- particularly the cut elimination result -- should feel free to skip this \lcnamecref{ch:ordered-logic}.
@@ -106,7 +106,7 @@ As a monoid, ordered contexts are equivalent up to associativity and unit laws (
   \caption{Monoid laws for ordered contexts}\label{fig:ordered-logic:monoid-laws}
 \end{marginfigure}
 We choose to keep this equivalence implicit, however, treating equivalent contexts as syntactically indistinguishable.%
-\footnote{Throughout this document, we will encounter free noncommutative monoids in various guises.
+\footnote{Throughout this document, we will encoun\-ter free noncommutative monoids in various guises.
 Each time, we will choose to keep the equivalence induced by the monoid laws implicit, as we do here.}
 %
 Associativity means that contexts are indeed lists, not trees; and noncommutativity means that those lists are ordered, not multisets as in linear logic.
@@ -151,7 +151,7 @@ As with the identity principle, this cut principle is adopted by the ordered seq
 \end{equation*}
 
 The importance of these two judgmental principles goes beyond that of mere rules of inference.
-As we will see in \cref{??}, the admissibility of these principles serves an important role in defining the meaning of the logical connectives.
+As we will see in \cref{sec:ordered-logic:meanings}, the admissibility of these principles serves an important role in defining the meaning of the logical connectives.
 
 % Even without considering the structure of propositions, two judgmental principles of the ordered sequent calculus are already apparent.
 % \begin{itemize}
@@ -417,7 +417,7 @@ The two forms of implication each enjoy their own currying laws: the sequents $\
   \caption{A summary of  ordered logic's sequent calculus, as presented in \cref{sec:ordered-logic:sequent-calculus}}\label{fig:ordered-logic:sequent-calculus}
 \end{figure}
 
-\section{A verificationist meaning-theory of the ordered sequent calculus}\label{sec:ordered-logic:verifications}
+\section{A verificationist meaning-theory of the ordered sequent calculus}\label{sec:ordered-logic:verifications}\label{sec:ordered-logic:meanings}
 
 The previous \lcnamecref{sec:ordered-logic:sequent-calculus} presented a collection of inference rules that have an apparently sensible resource interpretation.
 But how can we be sure that the rules constitute a well-defined \emph{logic}?
@@ -454,7 +454,7 @@ This normalization procedure is described by the constructive content of the fol
 %
 \begin{restatable*}[
       name=Identity elimination,
-      label=thm:ordered-logic:identity-elimination
+      label=thm:ordered-logic:id-elimination
     ]{theorem}{orderedidelimination}
       If a proof of\/ $\oseq{\octx |- A}$ exists, then an \emph{identity-long} proof of\/ $\oseq{\octx |- A}$ exists.
       % Moreover, cut-freeness is preserved.
@@ -760,7 +760,7 @@ $\bang (p \limp p \fuse A)$
 
 Also like in the $\pi$-calculus, there is an alternative means of introducing unbounded behavior: recursive definitions, $p \defd A$.
 Recursive definitions have been studied extensively\autocites{??}, but have not, to the best of our knowledge, been previously used in the context of ordered logic.
-We conjecture that persistence is strictly more expressive than recursive definitions, but as we will see in \cref{ch:??}, recursive definitions will prove to be a good match for recursive processes.
+We conjecture that persistence is strictly more expressive than recursive definitions, but as we will see in \cref{ch:process-chains}, recursive definitions will prove to be a good match for recursive processes.
 
 \Textcite{Fortier+Santocanale:CSL13} have used recursive definitions together with circular derivations in a fragment of the linear sequent calculus, establishing a sound condition under which these definitions constitute least and greatest fixed points and these derivations constitute valid inductive and coinductive proofs.
 Extending their work, \textcite{Derakhshan+Pfenning:??} have presented a related, locally decidable condition on circular derivations in first-order intuitionistic multiplicative and additive linear logic that ensures cut elimination is productive.

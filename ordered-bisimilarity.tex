@@ -1,51 +1,71 @@
-\chapter{Ordered bisimilarity}\label{ch:ordered-bisimilarity}
+\chapter{Bisimilarity for ordered rewriting}\label{ch:ordered-bisimilarity}
 
-The previous \lcnamecref{ch:??} introduced a formula-as-process view of the focused ordered rewriting framework, and showed how to use it to provide local, message-passing choreographies of the global, string rewriting specifications seen in \cref{ch:string-rewriting}.
-The formula-as-process ordered rewriting framework brings (focused) ordered rewriting more in line with process calculi -- [...].
+With the shift from the global, state-transformation view of ordered rewriting put forth in \cref{ch:ordered-rewriting} to the local, formula-as-process view developed in the preceding \lcnamecref{ch:formula-as-process}, we are now in a position to examine how individual propositions and contexts behave and interact.%
+\fixnote{Because each proposition has its own \emph{local} thread of control, we can describe a proposition's behavior only to the extent that that behavior can be witnessed by an external observer.}
 
-But process calculi are usually equipped with a notion of observational equivalence, which formula-as-process ordered rewriting does not yet enjoy.
-In this \lcnamecref{ch:ordered-bisimilarity}, we [...].
+According to the formula-as-process view, each proposition has its own \emph{local} thread of control.
+This locality means that a proposition's\fixnote{or context's?} behavior can be described only to the extent that that behavior can be witnessed by an external observer.
+Locality, together with the local interaction semantics of \cref{??}, also suggests\fixnote{dictates?} what may be observed:
+A proposition's structure is opaque; only outward-directed atoms, which are viewed as output messages, are observable.
+Thus
 
-To construct 
-
-With the notion of process identity uninterpreted atomic propositions as messages and 
-
-This \lcnamecref{ch:ordered-bisimilarity} explores the question of when two propositions have equivalent behavior under this process-as-formula view.
-In keeping with the large body of work on bisimilarity for message-passing processes\autocite{??}, we develop a notion of bisimilarity for ordered propositions.
-This \vocab{ordered rewriting bisimilarity} treats the uninterpreted atomic propositions as the sole observables, in keeping with their interpretation as messages.
-Messages are observable, but processes are opaque.
-
-
-\section{}
-
-With the shift from a global, state-transformation view of ordered rewriting put forth in \cref{ch:ordered-rewriting} to the local, formula-as-process view developed in the preceding \lcnamecref{ch:??}, we are now in a position to examine how individual propositions or contexts behave and interact.
-Because each proposition has its own local thread of control, we can describe its behavior only to the extent that its behavior can be witnessed by an external observer.
+% (Implicit in the local interaction semantics of \cref{??} is the idea that atoms ought to be observable but that non-atomic propositions are opaque.
+% A proposition's neighbors can discover its behavior only by sending it messages and observing the atoms that it sends as replies.)
 
 Intuitively, for example, the contexts $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ and $\atmR{b}$ should have the same observable behavior: an internal reduction transforms $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ into $\atmR{b}$, and no other interactions -- reductions, input transitions, nor output transitions -- are possible from $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$.
-As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ ought to be behaviorally equivalent, intuitively because they are logically equivalent\footnote{$\oseq{\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \dashv|- (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}}$}.
+In particular, the atom $\atmR{a}$ at the left edge of the context $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ cannot be observed because it is directed inward and therefore acting as an input to, not an output from, $\atmR{a} \limp \atmR{b}$.
 
-Following the vast literature on various forms of bisimilarity\footnote{See \textcite{??} for a survey.}, we will develop a notion of \emph{ordered rewriting bisimilarity} on ordered contexts, $\octx \osim \lctx$.
+As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ ought to be behaviorally equivalent, intuitively because they are logically equivalent\footnote{That is, $\oseq{\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \dashv|- (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}}$.}.
+
+\newthought{Following the vast} literature on various forms of bisimilarity\footnote{See \textcite{??} for a survey.}, we will develop a notion of \emph{ordered rewriting bisimilarity} on ordered contexts, $\octx \osim \lctx$.
 In \cref{sec:??}, we define rewriting bisimilarity and present a few examples of contexts that are \emph{not} bisimilar under this definition.
 
-However, it will prove to be cumbersome to use only the definition of rewriting bisimilarity to establish that contexts are bisimilar, a problem that is familiar from process calculi notions of bisimilarity.
-Therefore, in \cref{sec:??}, we present \emph{labeled bisimilarity}, a sound proof technique for rewriting bisimilarity -- ordered contexts that are labeled bisimilar are also rewriting bisimilar.
-Unlike the $\pi$-calculus's labeled bisimilarity, our labeled bisimilarity is surprisingly complete for rewriting bisimilarity -- ordered contexts that are rewriting bisimilar are also labeled bisimilar.
+However, it will prove to be cumbersome to use rewriting bisimilarity's definition alone to establish that two contexts are bisimilar, a problem that is familiar from process calculi bisimilarities.
+Therefore, in \cref{sec:ordered-bisimilarity:labeled-bisim}, we present \emph{labeled bisimilarity}, a sound proof technique for rewriting bisimilarity -- ordered contexts that are labeled bisimilar will also be rewriting bisimilar.
+Unlike the $\pi$-calculus's labeled bisimilarity, our labeled bisimilarity is surprisingly complete for rewriting bisimilarity -- contexts that are rewriting bisimilar will also be labeled bisimilar.
 
 This \lcnamecref{ch:ordered-bisimilarity} concludes with several applications of ordered rewriting bisimilarity to our now-familiar running examples, binary counters and \aclp*{NFA}.
-\Cref{sec:??} proves that \ac{NFA}-bisimilar states have ordered-bisimilar encodings under the functional choreography described in \cref{sec:??}, which allows us to finally rephrase the choreography's adequacy in a clean and stratified form.
-And \cref{sec:??} proves that binary counters are ordered-bisimilar if, and only if, they have the same denotation.
+\Cref{sec:ordered-bisimilarity:nfa} proves that \ac{NFA}-bisimilar states have rewriting-bisimilar encodings under the functional choreography described in \cref{sec:formula-as-process:nfa-functional}, which allows us to finally rephrase the choreography's adequacy in a clean and stratified form.
+And \cref{sec:ordered-bisimilarity:counter} proves that binary counters are rewriting-bisimilar if, and only if, they have the same denotation.
 
-Our rewriting bisimilarity is inspired by and related to the contextual bisimilarity for linear contexts put forth by \textcite{Deng+:MSCS16}.
+Our rewriting bisimilarity is strongly inspired by the contextual bisimilarity for linear contexts put forth by \textcite{Deng+:MSCS16}.
+
+
+\section{Toss?}
+
+The previous \lcnamecref{ch:formula-as-process} introduced a formula-as-process view of the focused ordered rewriting framework, and showed how to use it to provide local, message-passing choreographies of the global, string rewriting specifications seen in \cref{ch:string-rewriting}.
+The formula-as-process ordered rewriting framework brings (focused) ordered rewriting more in line with process calculi, such as the $\pi$-calculus.
+
+Much more than functional programming, process calculi emphasize observational equivalence.
+Owing to their distributed nature, processes are opaque -- only messages are observable.
+A client can't peer inside a process to see its internal structure;
+a client can only send the process messages and observe any messages that the process sends as a reply.
+
+So far, the formula-as-process ordered rewriting framework does not enjoy a notion of observational equivalence.
+In this \lcnamecref{ch:ordered-bisimilarity}, we resolve that deficiency.
+In keeping with the large body of work on bisimilarity for message-passing processes\autocite{??}, we develop a notion of bisimilarity for ordered contexts.
+Two contexts are judged to be bisimilar if there is no experiment that will eventually distinguish them.
+
+In process calculi, processes are usually treated as opaque, being defined by their behavior rather than their internal structure.
+(This emphasis differs from that of functional programming.)
+A client can only observe
+
+But process calculi are usually equipped with a notion of observational equivalence, which formula-as-process ordered rewriting does not yet enjoy.
+In this \lcnamecref{ch:ordered-bisimilarity}, we develop an observational equivalence for ordered rewriting.
+% This \lcnamecref{ch:ordered-bisimilarity} explores the question of when two propositions have equivalent behavior under this process-as-formula view.
+In keeping with the large body of work on bisimilarity for message-passing processes\autocite{??}, we develop a notion of bisimilarity for ordered propositions.
+This \vocab{ordered rewriting bisimilarity} treats the atomic propositions as the sole observables, in keeping with their interpretation as messages.
+
+Messages are observable, but processes are opaque.
+
 
 
 \section{Ordered rewriting bisimilarity}
 
-\paragraph*{Atoms are observable}
+% An ordered context $\octx$ may be composed when surrounded by ordered contexts $\octx_L$ and $\octx_R$.
 
-An ordered context $\octx$ may be composed when surrounded by ordered contexts $\octx_L$ and $\octx_R$.
-
-Thus, in $\octx_L \oc \octx \oc \octx_R$, we view $\octx$ as existing within the environment formed by its surrounding contexts, $\octx_L$ and $\octx_R$.
-The context $\octx$ then interacts with that environment along two interfaces: the left end of $\octx$ may interact with the right end of $\octx_L$, and, symmetrically, the right end of $\octx$ may interact with the left end of $\octx_R$.
+% Thus, in $\octx_L \oc \octx \oc \octx_R$, we view $\octx$ as existing within the environment formed by its surrounding contexts, $\octx_L$ and $\octx_R$.
+% The context $\octx$ then interacts with that environment along two interfaces: the left end of $\octx$ may interact with the right end of $\octx_L$, and, symmetrically, the right end of $\octx$ may interact with the left end of $\octx_R$.
 
 An atom's location and direction are crucial to its observability.
 For an atom to be observable, it must be possible for an external observer to receive that atom as a message.
@@ -61,359 +81,360 @@ But those same atoms are not observable in $\octx \oc \atmL{a}$ and $\atmR{b} \o
   By inversion on the given reduction, making use of the fact that $\atmL{a} \limp \n{B}$ and $\n{B} \pmir \atmR{a}$ are not well-formed propositions.
 \end{proof}
 
-\paragraph*{Ordered rewriting is asynchronous}
-
-Notice that $\octx_L \oc (\up \p{A} \pmir \atmL{a}) \oc (\atmL{a} \fuse \p{B}) \oc \octx_R \Reduces \octx_L \oc \p{A} \oc \p{B} \oc \octx_R$ in two steps, first decomposing $\atmL{a} \fuse \p{B}$ into $\atmL{a}$ and $\p{B}$, and then using that $\atmL{a}$ to decompose $\up \p{A} \pmir \atmL{a}$ into $\p{A}$.
-But the rewriting cannot occur in a single, synchronous step:
+\newthought{Ordered rewriting} is asynchronous.
+As a simple example, it takes two steps to achieve $\octx_L \oc (\up \p{A} \pmir \atmL{a}) \oc (\atmL{a} \fuse \p{B}) \oc \octx_R \Reduces \octx_L \oc \p{A} \oc \p{B} \oc \octx_R$:
+first, $\atmL{a} \fuse \p{B}$ is decomposed into $\atmL{a}$ and $\p{B}$, and then that $\atmL{a}$ is used to decompose $\up \p{A} \pmir \atmL{a}$ into $\p{A}$.
+The entire rewriting cannot occur in a single, synchronous step:
 \begin{equation*}
   \octx_L \oc (\up \p{A} \pmir \atmL{a}) \oc (\atmL{a} \fuse \p{B}) \oc \octx_R
     \nreduces \octx_L \oc \p{A} \oc \p{B} \oc \octx_R
   \,.
 \end{equation*}
 
-For this reason, ordered rewriting is asynchronous, and we should expect the notion of bisimilarity that we develop to be similar to bisimilarity developed for the asynchronous $\pi$-calculus\autocite{Amadio+:TCS98}.
+Because ordered rewriting is asynchronous in this way, we should expect our notion of rewriting bisimilarity to have some analogy to the kinds of bisimilarities developed for asynchronous process calculi, such as the asynchronous $\pi$-calculus\autocite{Amadio+:TCS98} and asynchronous \acs*{CCS}\autocite{??}.
 
-\subsection{}
+% \subsection{}
 
-Because outgoing atoms are observable at a context's edges, there is a built-in notion of (immediate) output transition: a context $\octx$ outputs $\atmL{a}$ to its left exactly when $\octx = \atmL{a} \oc \octx'$, for some $\octx'$.
-Symmetrically, a context $\octx$ outputs $\atmR{b}$ to its right exactly when $\octx = \octx' \oc \atmR{b}$.
-We could adopt a process-calculus--like labeled transition notation for these output transitions -- such as $\octx = \atmL{a} \oc \octx' \reduces[\atmL{a}] \octx'$ and $\octx = \octx' \oc \atmR{a} \reduces[\atmR{a}] \octx'$ -- but that 
+% Because outgoing atoms are observable at a context's edges, there is a built-in notion of (immediate) output transition: a context $\octx$ outputs $\atmL{a}$ to its left exactly when $\octx = \atmL{a} \oc \octx'$, for some $\octx'$.
+% Symmetrically, a context $\octx$ outputs $\atmR{b}$ to its right exactly when $\octx = \octx' \oc \atmR{b}$.
+% We could adopt a process-calculus--like labeled transition notation for these output transitions -- such as $\octx = \atmL{a} \oc \octx' \reduces[\atmL{a}] \octx'$ and $\octx = \octx' \oc \atmR{a} \reduces[\atmR{a}] \octx'$ -- but that 
 
-A weak output transition would then be
-So, in this setting, $\octx$ would have a weak output transition to $\octx'$ if there exists a context $\octx_0$ such that $\octx \Reduces \atmL{a} \oc \octx_0$ and $\octx_0 \Reduces \octx'$ -- or, more simply, if $\octx \Reduces \atmL{a} \oc \octx'$.
-
-
-\section{}
-
-This \lcnamecref{ch:ordered-bisimilarity} marks a change in our perspective on ordered rewriting.
-In the previous \lcnamecref{ch:ordered-rewriting}, we viewed ordered rewriting as an abstract framework for global specifications of concurrent systems, in the vein of previous work on [...].
-The emphasis was placed squarely on state transformation [...].
-
-Although useful for reasoning about abstract properties of concurrent systems, these global specifications do not immediately suggest [...].
-Therefore, in this [...], we instead refine ordered rewriting into a framework for message-passing concurrency among processes with independent threads of control.
-
-This message-passing view is obtained through a \vocab{process-as-formula}\autocite{??} reading of ordered propositions and contexts.
-The logical connectives are reinterpreted as process constructors, so that propositions are seen as processes; positive atomic propositions, as messages; and contexts, as process configurations.
-
-In this \lcnamecref{ch:ordered-bisimilarity}, we would instead like to decrease the level of abstraction and view ordered rewriting as a framework for message-passing concurrency.
-
- -- specifically, message-passing among processes arranged in a chain\fixnote{linear?} topology.
-With their independent threads of control, processes bring a more local character to ordered rewriting, bringing it closer to a process calculus such as the $\pi$-calculus.
-
-This message-passing view is obtained through a \vocab{process-as-formula}\autocite{??} view of ordered propositions and contexts.
-The logical connectives are reinterpreted as process constructors, so that propositions are seen as processes; positive atomic propositions, as messages; and contexts, as process configurations.
+% A weak output transition would then be
+% So, in this setting, $\octx$ would have a weak output transition to $\octx'$ if there exists a context $\octx_0$ such that $\octx \Reduces \atmL{a} \oc \octx_0$ and $\octx_0 \Reduces \octx'$ -- or, more simply, if $\octx \Reduces \atmL{a} \oc \octx'$.
 
 
 
-This \lcnamecref{ch:ordered-bisimilarity} marks a change in our perspective on ordered rewriting.
-In the previous \lcnamecref{ch:ordered-rewriting}, we viewed ordered rewriting as an abstract framework for concurrent state transformation, in the vein of previous work on multiset rewriting\autocite{??} [or even Petri nets\autocite{??}].
-With the emphasis on transformation of the entire state, our view of concurrent computation was inherently global.
+% \section{}
 
-In this \lcnamecref{ch:ordered-bisimilarity}, we would instead like to view ordered rewriting as a framework for message-passing concurrency -- specifically, message-passing among processes arranged in a chain\fixnote{linear?} topology.
-With their independent threads of control, processes bring a more local character to ordered rewriting, bringing it closer to a process calculus such as the $\pi$-calculus.
+% This \lcnamecref{ch:ordered-bisimilarity} marks a change in our perspective on ordered rewriting.
+% In the previous \lcnamecref{ch:ordered-rewriting}, we viewed ordered rewriting as an abstract framework for global specifications of concurrent systems, in the vein of previous work on [...].
+% The emphasis was placed squarely on state transformation [...].
 
-This message-passing view is obtained through a \vocab{process-as-formula}\autocite{??} view of ordered propositions and contexts.
-The logical connectives are reinterpreted as process constructors, so that propositions are seen as processes; positive atomic propositions, as messages; and contexts, as process configurations.
+% Although useful for reasoning about abstract properties of concurrent systems, these global specifications do not immediately suggest [...].
+% Therefore, in this [...], we instead refine ordered rewriting into a framework for message-passing concurrency among processes with independent threads of control.
 
+% This message-passing view is obtained through a \vocab{process-as-formula}\autocite{??} reading of ordered propositions and contexts.
+% The logical connectives are reinterpreted as process constructors, so that propositions are seen as processes; positive atomic propositions, as messages; and contexts, as process configurations.
 
-% negative propositions can be seen as processes, positive atoms can be seen as messages, and ordered contexts can be seen as process configurations.
+% In this \lcnamecref{ch:ordered-bisimilarity}, we would instead like to decrease the level of abstraction and view ordered rewriting as a framework for message-passing concurrency.
 
-% Accordingly, we take a \vocab{process-as-formula}\autocite{??} view, in which [...].
-% Specifically, uninterpreted positive atoms will act like messages and negative propositions will act like processes.
-% Owing to the conceptual introduction of processes with independent threads of control, this view of concurrency is more local in character and brings ordered rewriting closer to a process calculus, such as the $\pi$-calculus.
+%  -- specifically, message-passing among processes arranged in a chain\fixnote{linear?} topology.
+% With their independent threads of control, processes bring a more local character to ordered rewriting, bringing it closer to a process calculus such as the $\pi$-calculus.
 
-Interestingly, this change in perspective necessitates very few formal changes to the ordered rewriting framework.
-The primary change is that left- and right-handed implications are restricted to positive atoms, corresponding to the common first-order restriction that input processes receive only messages.
-
-Despite the few formal changes, the new local [, message-passing] perspective does raise a new, important question: when do two processes have equivalent behavior?
-In keeping with the large body of work on bisimilarity\autocite{??}, we develop a notion of bisimilarity between ordered contexts.
-Several examples [...]
-
-Despite requiring only very few formal changes, the shift from global to local perspective does raise an important question: when do two processes have equivalent behavior?
-We answer this question by developing a notion of bisimilarity for ordered contexts.
-In keeping with the large body of work on bisimilarity\autocite{??}, we develop a notion of bisimilarity between ordered contexts.
-
-\begin{itemize}
-\item Assign direction to uninterpreted atoms so they act like messagesl
-\item Defined atoms are like processes
-\item Left and right implications are restricted to messages (compare with higher-order $\pi$ calculus)
-\end{itemize}
-
-
-\section{}
-
-\begin{equation*}
-  a \oc \dfa{q} \reduces \dfa{q}'_a
-\end{equation*}
-where $q \dfareduces[a] q'_a$, for each pair $(q, a) \in Q \times \ialph$; and 
-\begin{equation*}
-  \emp \oc \dfa{q} \reduces
-    \begin{cases*}
-      \one & if $q \in F$ \\
-      \top & if $q \notin F$
-    \end{cases*}
-\end{equation*}
-for each $q \in Q$.
-
-As a specification of \acp{DFA}, this works well.
-But as an implementation, it is significantly lacking.
-The rewriting axioms $a \oc \dfa{q} \reduces \dfa{q}'_a$ presume that a conductor orchestrates the interactions between input symbols and \ac{DFA} states, but a local\fixnote{distributed?} implementation 
-
-This specification could be choreographed in (at least) two ways.
-One choreography treats the input symbols $a$ as messages that are received by the states $\dfa{q}$, acting as processes.
-\begin{equation*}
-  \dfa{q} \defd (\emp \limp \dfa{F}(q)) \with \bigwith_{a \in \ialph}(\atmR{a} \limp \dfa{q}'_a)
-\end{equation*}
-Because the input word is delivered like data to the state, this choreography has a functional flavor.
-
-Another choreography of the same specification is dual, treating the input symbols as processes
-\begin{equation*}
-  a \defd \bigwith_{q \in Q}(\atmL{q}'_a \pmir \atmL{q})
-  \quad\text{and}\quad
-  \emp \defd \bigwith_{q \in Q}(\dfa{F}(q) \pmir \atmL{q})
-\end{equation*}
-
-\section{}
-
-To interpret polarized ordered propositions as processes, we adapt the \vocab{process-as-formula} view of logical connectives initiated by \textcite{??}.
-The logical connectives are read as process constructors, so that positive atomic propositions may be seen as messages; negative propositions, [may be seen] as processes; ordered contexts, [may be seen] as process configurations with a chain topology; and positive propositions, [may be seen] as processes that reify those configurations.
-
-To keep the interpretation as simple as possible, we introduce three syntactic restrictions on the ordered propositions.
-Each of these restrictions may be relaxed at the expense of some additional complexity, as we will discuss in \cref{??}.
-
-First, each positive atom is consistently assigned a direction, either left-directed, $\atmL{a}$, or right-directed, $\atmR{a}$.
-When positive atoms are viewed as messages, these directions indicate the message's sender and intended recipient.
-For example, in the context $\dn \n{C} \oc \atmL{a} \oc \p{B}$, the right-to-left direction of $\atmL{a}$ incicates that $\p{B}$ was the sender and $\dn \n{C}$ is the intended recipient.
+% This message-passing view is obtained through a \vocab{process-as-formula}\autocite{??} view of ordered propositions and contexts.
+% The logical connectives are reinterpreted as process constructors, so that propositions are seen as processes; positive atomic propositions, as messages; and contexts, as process configurations.
 
 
 
-Second, recursively defined \emph{positive} propositions are disallowed.\fixnote{is this necessary?}
+% This \lcnamecref{ch:ordered-bisimilarity} marks a change in our perspective on ordered rewriting.
+% In the previous \lcnamecref{ch:ordered-rewriting}, we viewed ordered rewriting as an abstract framework for concurrent state transformation, in the vein of previous work on multiset rewriting\autocite{??} [or even Petri nets\autocite{??}].
+% With the emphasis on transformation of the entire state, our view of concurrent computation was inherently global.
 
-Third, the left- and right-handed implications are restricted to accept only atoms with an incoming direction: $\atmR{a} \limp \n{B}$ and $\n{B} \pmir \atmL{a}$.
-[In conjunction with atoms' directions,] this acts as a mild form of typing -- an input process may receive only intended messages.
-Something like $\atmL{a} \oc (a \limp \up \p{B}) \reduces \p{B}$ should \emph{not} be possible, because its process-as-formula reading
+% In this \lcnamecref{ch:ordered-bisimilarity}, we would instead like to view ordered rewriting as a framework for message-passing concurrency -- specifically, message-passing among processes arranged in a chain\fixnote{linear?} topology.
+% With their independent threads of control, processes bring a more local character to ordered rewriting, bringing it closer to a process calculus such as the $\pi$-calculus.
 
-
-\begin{syntax*}
-  Ordered contexts &
-    \octx & \octx_1 \oc \octx_2 \mid \octxe \mid \p{A}
-\end{syntax*}
-Concatenation of contexts, $\octx_1 \oc \octx_2$, is viewed as end-to-end composition of process configurations;
-the empty context, $\octxe$, is the empty process configuration;
-and [...].
-
-To keep the interpretation as simple as possible, we introduce three syntactic restrictions on propositions.
-Each of these restrictions may be relaxed at the expense of some additional complexity, as we will discuss in \cref{??}.
-
-First, each positive atom is consistently assigned a direction, either left-directed, $\atmL{a}$, or right-directed, $\atmR{a}$.
-Because 
-Second, recursively defined \emph{positive} propositions are disallowed.
-Thus, the positive propositions are generated by the following grammar.
-\begin{syntax*}
-  Positive props. &
-    \p{A} & \atmL{a} \mid \atmR{a} \mid \p{A} \fuse \p{B} \mid \one \mid \dn \n{A}
-\end{syntax*}
-Atoms $\atmL{a}$ and $\atmR{a}$ are viewed as left- and right-directed messages; ordered conjunction, $\p{A} \fuse \p{B}$, denotes end-to-end composition of processes $\p{A}$ and $\p{B}$; $\one$ denotes the terminating 
-
-\begin{tabular}{@{}rl@{}}
-  $\octx_1 \oc \octx_2$ & end-to-end composition of configurations \\
-  $\octxe$ & empty configuration \\
-  $\p{A}$ & 
-\end{tabular}
-
-\begin{tabular}{@{}rl@{}}
-  $\atmR{a}$ & right-directed message \\
-  $\atmL{a}$ & left-directed message \\
-  $\p{A} \fuse \p{B}$ & process composition \\
-  $\one$ & terminating process \\
-  $\dn \n{A}$ & 
-\end{tabular}
-
-\begin{tabular}{@{}rl@{}}
-  $\n{\alpha} \defd \n{A}$ & recursively defined process \\
-  $\atmR{a} \limp \n{B}$ & receive $\atmR{a}$ from the left, then continue as $\n{B}$ \\
-  $\n{B} \pmir \atmL{a}$ & receive $\atmL{a}$ from the right, then continue as $\n{B}$ \\
-  $\n{A} \with \n{B}$ & nondeterministically choose to continue as $\n{A}$ or $\n{B}$ \\
-  $\top$ & \\
-  $\up \p{A}$ &
-\end{tabular}
-
-\begin{tabular}{@{}rl@{}}
-  $\octx_1 \oc \octx_2$ & composition of configurations $\octx_1$ and $\octx_2$ \\
-  $\octxe$ & empty configuration \\
-  $\p{A}$ & single process configuration
-\end{tabular}
-
-\begin{syntax*}
-  Positive props. &
-    \p{A} & \atmR{a} \mid \atmL{a} \mid \p{A} \fuse \p{B} \mid \one \mid \dn \n{A}
-\end{syntax*}
-
-Atoms' directions act as a very mild form of typing.
-The left- and right-handed implications are restricted to accept only atoms with an incoming direction: $\atmR{a} \limp \n{B}$ and $\n{B} \pmir \atmL{a}$.
-The full syntax of negative propositions is thus:
-\begin{syntax*}
-  Negative props. &
-    \n{A} & \n{\alpha} \mid \atmR{a} \limp \n{B} \mid \n{B} \pmir \atmL{a} \mid \n{A} \with \n{B} \mid \top \mid \up \p{A}
-  \,,
-\end{syntax*}
-with equirecursively defined negative propositions $\n{\alpha} \defd \n{A}$.
+% This message-passing view is obtained through a \vocab{process-as-formula}\autocite{??} view of ordered propositions and contexts.
+% The logical connectives are reinterpreted as process constructors, so that propositions are seen as processes; positive atomic propositions, as messages; and contexts, as process configurations.
 
 
- acting like recursively defined processes.
+% % negative propositions can be seen as processes, positive atoms can be seen as messages, and ordered contexts can be seen as process configurations.
 
-In addition to fully general ordered contexts of positive propositions, it will also be useful to characterize two refinements: contexts that contain only atoms of one direction or the other.
-We use an arrow decoration to indicate the direction.
-\begin{syntax*}
-  Ordered contexts &
-    \octx & \octx_1 \oc \octx_2 \mid \octxe \mid \p{A}
-  \\[-2\jot]
-  Right-directed &
-    \atmR{\octx} & \atmR{\octx}_1 \oc \atmR{\octx}_2 \mid \octxe \mid \atmR{a}
-  \\[-2\jot]
-  Left-directed &
-    \atmL{\octx} & \atmL{\octx}_1 \oc \atmL{\octx}_2 \mid \octxe \mid \atmL{a}
-\end{syntax*}
+% % Accordingly, we take a \vocab{process-as-formula}\autocite{??} view, in which [...].
+% % Specifically, uninterpreted positive atoms will act like messages and negative propositions will act like processes.
+% % Owing to the conceptual introduction of processes with independent threads of control, this view of concurrency is more local in character and brings ordered rewriting closer to a process calculus, such as the $\pi$-calculus.
 
-Having restricted the premises of left- and right-handed implications to incoming atoms, $\atmR{a}$ and $\atmL{a}$, respectively, the left focus judgment and its rules may be refined.
-The judgment is now $\lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}$, because [...inputs can only be incoming messages...].
-Other than this refinement, the inference rules remain essentially the same as in \cref{??}.
-The revised 
+% Interestingly, this change in perspective necessitates very few formal changes to the ordered rewriting framework.
+% The primary change is that left- and right-handed implications are restricted to positive atoms, corresponding to the common first-order restriction that input processes receive only messages.
 
+% Despite the few formal changes, the new local [, message-passing] perspective does raise a new, important question: when do two processes have equivalent behavior?
+% In keeping with the large body of work on bisimilarity\autocite{??}, we develop a notion of bisimilarity between ordered contexts.
+% Several examples [...]
 
-\begin{figure}
-  \begin{syntax*}
-    Positive props. &
-      \p{A} & \atmR{a} \mid \atmL{a} \mid \p{A} \fuse \p{B} \mid \one \mid \dn \n{A}
-    \\
-    Negative props. &
-      \n{A} & \n{\alpha} \mid
-                \atmR{a} \limp \n{B} \mid \n{B} \pmir \atmL{a} \mid
-                \n{A} \with \n{B} \mid \top \mid \up \p{A}
-    \\
-    Ordered contexts &
-        \octx & \octx_1 \oc \octx_2 \mid \octxe \mid \p{A} \\[-2\jot]
-      & \atmR{\octx} & \atmR{\octx}_1 \oc \atmR{\octx}_2 \mid \octxe \mid \atmR{a} \\[-2\jot]
-      & \atmL{\octx} & \atmL{\octx}_1 \oc \atmL{\octx}_2 \mid \octxe \mid \atmL{a}
-  \end{syntax*}
-  \begin{inferences}[Rewriting: $\octx \reduces \octx'$ and $\octx \Reduces \octx'$]
-    \infer[\jrule{$\dn$D}]{\atmR{\octx}_L \oc \dn \n{A} \oc \atmL{\octx}_R \reduces \p{C}}{
-      \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}}
-    \and
-    \infer[\jrule{$\fuse$D}]{\p{A} \fuse \p{B} \reduces \p{A} \oc \p{B}}{}
-    \and
-    \infer[\jrule{$\one$D}]{\one \reduces \octxe}{}
-    \\
-    \text{(no $\jrule{$\plus$D}$ and $\jrule{$\zero$D}$ rules)}
-    \\
-    \infer[\jrule{$\reduces$C}_{\jrule{L}}]{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
-      \octx_1 \reduces \octx'_1}
-    \and
-    \infer[\jrule{$\reduces$C}_{\jrule{R}}]{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
-      \octx_1 \reduces \octx'_1}
-  \end{inferences}
-  \begin{inferences}
-    \infer[\jrule{$\Reduces$R}]{\octx \Reduces \octx}{}
-    \and
-    \infer[\jrule{$\Reduces$T}]{\octx \Reduces \octx''}{
-      \octx \reduces \octx' & \octx' \Reduces \octx''}
-  \end{inferences}
+% Despite requiring only very few formal changes, the shift from global to local perspective does raise an important question: when do two processes have equivalent behavior?
+% We answer this question by developing a notion of bisimilarity for ordered contexts.
+% In keeping with the large body of work on bisimilarity\autocite{??}, we develop a notion of bisimilarity between ordered contexts.
 
-  \begin{inferences}[Left focus: $\lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}$]
-    \infer[\lrule{\limp}']{\lfocus{\atmR{\octx}_L}{\atmR{a} \limp \n{B}}{\atmL{\octx}_R}{\p{C}}}{
-      \lfocus{\atmR{\octx}_L \oc \atmR{a}}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
-    \and
-    \infer[\lrule{\pmir}']{\lfocus{\atmR{\octx}_L}{\n{B} \pmir \atmL{a}}{\atmL{\octx}_R}{\p{C}}}{
-      \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{a} \oc \atmL{\octx}_R}{\p{C}}}
-    \\
-    \infer[\lrule{\with}_1]{\lfocus{\atmR{\octx}_L}{\n{A} \with \n{B}}{\atmL{\octx}_R}{\p{C}}}{
-      \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}}
-    \and
-    \infer[\lrule{\with}_2]{\lfocus{\atmR{\octx}_L}{\n{A} \with \n{B}}{\atmL{\octx}_R}{\p{C}}}{
-      \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
-    \and
-    \text{(no $\lrule{\top}$ rule)}
-    \\
-    \infer[\lrule{\up}]{\lfocus{}{\up \p{A}}{}{\p{A}}}{}
-  \end{inferences}
-  \caption{A weakly focused ordered rewriting framework}
-\end{figure}
-
-\begin{figure}
- \begin{inferences}[Input transition: $\ireduces{\atmR{\octx}_L \oc ##1 \oc \atmL{\octx}_R}{\octx}{\octx'}$]
-    \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\dn \n{A}}{\p{C}}}{
-      \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}}
-    \and
-    \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\atmR{a} \oc \octx}{\octx'}}{
-      \ireduces{\atmR{\octx}_L \oc \atmR{a} \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}}
-    \and
-    \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx \oc \atmL{a}}{\octx'}}{
-      \ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{a} \oc \atmL{\octx}_R}{\octx}{\octx'}}
-    \\
-    \infer{\ireduces{#1 \oc \atmL{\octx}_R}{\p{A} \oc \octx}{\p{A} \oc \octx'}}{
-      \ireduces{#1 \oc \atmL{\octx}_R}{\octx}{\octx'}}
-    \and
-    \infer{\ireduces{\atmR{\octx}_L \oc #1}{\octx \oc \p{A}}{\octx' \oc \p{A}}}{
-      \ireduces{\atmR{\octx}_L \oc #1}{\octx}{\octx'}}
-  \end{inferences}
-  \caption{A weakly focused ordered rewriting framework}
-\end{figure}
+% \begin{itemize}
+% \item Assign direction to uninterpreted atoms so they act like messagesl
+% \item Defined atoms are like processes
+% \item Left and right implications are restricted to messages (compare with higher-order $\pi$ calculus)
+% \end{itemize}
 
 
-\section{Input transitions}
+% \section{}
 
-With the above restriction of left- and right-handed implications to atomic premises of hte 
+% \begin{equation*}
+%   a \oc \dfa{q} \reduces \dfa{q}'_a
+% \end{equation*}
+% where $q \dfareduces[a] q'_a$, for each pair $(q, a) \in Q \times \ialph$; and 
+% \begin{equation*}
+%   \emp \oc \dfa{q} \reduces
+%     \begin{cases*}
+%       \one & if $q \in F$ \\
+%       \top & if $q \notin F$
+%     \end{cases*}
+% \end{equation*}
+% for each $q \in Q$.
 
-\begin{inferences}
-  \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\dn \n{A}}{\p{C}}}{
-    \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}}
-  \\
-  \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\atmR{a} \oc \octx}{\octx'}}{
-    \ireduces{\atmR{\octx}_L \oc \atmR{a} \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}}
-  \and
-  \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx \oc \atmL{a}}{\octx'}}{
-    \ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{a} \oc \atmL{\octx}_R}{\octx}{\octx'}}
-  \\
-  \infer{\ireduces{#1 \oc \atmL{\octx}_R}{\p{A} \oc \octx}{\p{A} \oc \octx'}}{
-    \ireduces{#1 \oc \atmL{\octx}_R}{\octx}{\octx'}}
-  \and
-  \infer{\ireduces{\atmR{\octx}_L \oc #1}{\octx \oc \p{A}}{\octx' \oc \p{A}}}{
-    \ireduces{\atmR{\octx}_L \oc #1}{\octx}{\octx'}}
-\end{inferences}
+% As a specification of \acp{DFA}, this works well.
+% But as an implementation, it is significantly lacking.
+% The rewriting axioms $a \oc \dfa{q} \reduces \dfa{q}'_a$ presume that a conductor orchestrates the interactions between input symbols and \ac{DFA} states, but a local\fixnote{distributed?} implementation 
 
-In its most basic form, an input transition derives from the inputs required by [...].
+% This specification could be choreographed in (at least) two ways.
+% One choreography treats the input symbols $a$ as messages that are received by the states $\dfa{q}$, acting as processes.
+% \begin{equation*}
+%   \dfa{q} \defd (\emp \limp \dfa{F}(q)) \with \bigwith_{a \in \ialph}(\atmR{a} \limp \dfa{q}'_a)
+% \end{equation*}
+% Because the input word is delivered like data to the state, this choreography has a functional flavor.
 
-The following \lcnamecref{thm:input-transition-reduction} relates input transitions to reductions.
-\begin{theorem}\label{thm:input-transition-reduction}
-  If $\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}$, then $\atmR{\octx}_L \oc \octx \oc \atmL{\octx}_R \reduces \octx'$.
-  Conversely, if $\octx \reduces \octx'$, then there exist $\octx_L$ and $\octx_R$ such that either:
-  \begin{itemize}
-  \item $\octx = \octx_L \oc \atmR{\lctx}_L \oc \octx_0 \oc \atmL{\lctx}_R \oc \octx_R$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\octx_0}{\octx'_0}$ and $\octx' = \octx_L \oc \octx'_0 \oc \octx_R$, for some $\atmR{\lctx}_L$, $\octx_0$, $\atmL{\lctx}_R$, and $\octx'_0$;
-  \item $\octx = \octx_L \oc (\p{A} \fuse \p{B}) \oc \octx_R$ and $\octx' = \octx_L \oc \p{A} \oc \p{B} \oc \octx_R$, for some $\p{A}$ and $\p{B}$; or
-  \item $\octx = \octx_L \oc \one \oc \octx_R$ and $\octx' = \octx_L \oc \octx_R$.
-  \end{itemize}
-\end{theorem}
-\begin{proof}
-  By structural induction on the given input transition or reduction, respectively.
-\end{proof}
+% Another choreography of the same specification is dual, treating the input symbols as processes
+% \begin{equation*}
+%   a \defd \bigwith_{q \in Q}(\atmL{q}'_a \pmir \atmL{q})
+%   \quad\text{and}\quad
+%   \emp \defd \bigwith_{q \in Q}(\dfa{F}(q) \pmir \atmL{q})
+% \end{equation*}
 
-\begin{lemma}\label{lem:input-framing}
-  If $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\atmR{a} \oc \octx}{\octx'}$, then either:
-  \begin{itemize}[nosep]
-  \item $\atmR{a}$ satisfies an input demand -- \ie, $\ireduces{\atmR{\lctx}_L \oc \atmR{a} \oc #1 \oc \atmL{\lctx}_R}{\octx}{\octx'}$; or
-  \item $\atmR{a}$ does not participate in the input transition -- \ie, $\atmR{\lctx}_L = \octxe$ and $\octx' = \atmR{a} \oc \octx'_a$ for some $\octx'_a$ such that $\ireduces{#1 \oc \atmL{\lctx}_R}{\octx}{\octx'_a}$.
-  \end{itemize}
-  Symmetrically, if $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\octx \oc \atmL{a}}{\octx'}$, then either:
-  \begin{itemize}[nosep]
-  \item $\atmL{a}$ satisfies an input demand -- \ie, $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{a} \oc \atmL{\lctx}_R}{\octx}{\octx'}$; or
-  \item $\atmL{a}$ does not participate in the input transition -- \ie, $\atmL{\lctx}_R = \octxe$ and $\octx' = \octx'_a \oc \atmL{a}$ for some $\octx'_a$ such that $\ireduces{\atmR{\lctx}_L \oc #1}{\octx}{\octx'_a}$.
-  \end{itemize}
-\end{lemma}
-\begin{proof}
-  By structural induction on the given input transition.
-\end{proof}
+% \section{}
 
-\section{Rewriting bisimilarity}
+% To interpret polarized ordered propositions as processes, we adapt the \vocab{process-as-formula} view of logical connectives initiated by \textcite{??}.
+% The logical connectives are read as process constructors, so that positive atomic propositions may be seen as messages; negative propositions, [may be seen] as processes; ordered contexts, [may be seen] as process configurations with a chain topology; and positive propositions, [may be seen] as processes that reify those configurations.
+
+% To keep the interpretation as simple as possible, we introduce three syntactic restrictions on the ordered propositions.
+% Each of these restrictions may be relaxed at the expense of some additional complexity, as we will discuss in \cref{??}.
+
+% First, each positive atom is consistently assigned a direction, either left-directed, $\atmL{a}$, or right-directed, $\atmR{a}$.
+% When positive atoms are viewed as messages, these directions indicate the message's sender and intended recipient.
+% For example, in the context $\dn \n{C} \oc \atmL{a} \oc \p{B}$, the right-to-left direction of $\atmL{a}$ incicates that $\p{B}$ was the sender and $\dn \n{C}$ is the intended recipient.
+
+
+
+% Second, recursively defined \emph{positive} propositions are disallowed.\fixnote{is this necessary?}
+
+% Third, the left- and right-handed implications are restricted to accept only atoms with an incoming direction: $\atmR{a} \limp \n{B}$ and $\n{B} \pmir \atmL{a}$.
+% [In conjunction with atoms' directions,] this acts as a mild form of typing -- an input process may receive only intended messages.
+% Something like $\atmL{a} \oc (a \limp \up \p{B}) \reduces \p{B}$ should \emph{not} be possible, because its process-as-formula reading
+
+
+% \begin{syntax*}
+%   Ordered contexts &
+%     \octx & \octx_1 \oc \octx_2 \mid \octxe \mid \p{A}
+% \end{syntax*}
+% Concatenation of contexts, $\octx_1 \oc \octx_2$, is viewed as end-to-end composition of process configurations;
+% the empty context, $\octxe$, is the empty process configuration;
+% and [...].
+
+% To keep the interpretation as simple as possible, we introduce three syntactic restrictions on propositions.
+% Each of these restrictions may be relaxed at the expense of some additional complexity, as we will discuss in \cref{??}.
+
+% First, each positive atom is consistently assigned a direction, either left-directed, $\atmL{a}$, or right-directed, $\atmR{a}$.
+% Because 
+% Second, recursively defined \emph{positive} propositions are disallowed.
+% Thus, the positive propositions are generated by the following grammar.
+% \begin{syntax*}
+%   Positive props. &
+%     \p{A} & \atmL{a} \mid \atmR{a} \mid \p{A} \fuse \p{B} \mid \one \mid \dn \n{A}
+% \end{syntax*}
+% Atoms $\atmL{a}$ and $\atmR{a}$ are viewed as left- and right-directed messages; ordered conjunction, $\p{A} \fuse \p{B}$, denotes end-to-end composition of processes $\p{A}$ and $\p{B}$; $\one$ denotes the terminating 
+
+% \begin{tabular}{@{}rl@{}}
+%   $\octx_1 \oc \octx_2$ & end-to-end composition of configurations \\
+%   $\octxe$ & empty configuration \\
+%   $\p{A}$ & 
+% \end{tabular}
+
+% \begin{tabular}{@{}rl@{}}
+%   $\atmR{a}$ & right-directed message \\
+%   $\atmL{a}$ & left-directed message \\
+%   $\p{A} \fuse \p{B}$ & process composition \\
+%   $\one$ & terminating process \\
+%   $\dn \n{A}$ & 
+% \end{tabular}
+
+% \begin{tabular}{@{}rl@{}}
+%   $\n{\alpha} \defd \n{A}$ & recursively defined process \\
+%   $\atmR{a} \limp \n{B}$ & receive $\atmR{a}$ from the left, then continue as $\n{B}$ \\
+%   $\n{B} \pmir \atmL{a}$ & receive $\atmL{a}$ from the right, then continue as $\n{B}$ \\
+%   $\n{A} \with \n{B}$ & nondeterministically choose to continue as $\n{A}$ or $\n{B}$ \\
+%   $\top$ & \\
+%   $\up \p{A}$ &
+% \end{tabular}
+
+% \begin{tabular}{@{}rl@{}}
+%   $\octx_1 \oc \octx_2$ & composition of configurations $\octx_1$ and $\octx_2$ \\
+%   $\octxe$ & empty configuration \\
+%   $\p{A}$ & single process configuration
+% \end{tabular}
+
+% \begin{syntax*}
+%   Positive props. &
+%     \p{A} & \atmR{a} \mid \atmL{a} \mid \p{A} \fuse \p{B} \mid \one \mid \dn \n{A}
+% \end{syntax*}
+
+% Atoms' directions act as a very mild form of typing.
+% The left- and right-handed implications are restricted to accept only atoms with an incoming direction: $\atmR{a} \limp \n{B}$ and $\n{B} \pmir \atmL{a}$.
+% The full syntax of negative propositions is thus:
+% \begin{syntax*}
+%   Negative props. &
+%     \n{A} & \n{\alpha} \mid \atmR{a} \limp \n{B} \mid \n{B} \pmir \atmL{a} \mid \n{A} \with \n{B} \mid \top \mid \up \p{A}
+%   \,,
+% \end{syntax*}
+% with equirecursively defined negative propositions $\n{\alpha} \defd \n{A}$.
+
+
+%  acting like recursively defined processes.
+
+% In addition to fully general ordered contexts of positive propositions, it will also be useful to characterize two refinements: contexts that contain only atoms of one direction or the other.
+% We use an arrow decoration to indicate the direction.
+% \begin{syntax*}
+%   Ordered contexts &
+%     \octx & \octx_1 \oc \octx_2 \mid \octxe \mid \p{A}
+%   \\[-2\jot]
+%   Right-directed &
+%     \atmR{\octx} & \atmR{\octx}_1 \oc \atmR{\octx}_2 \mid \octxe \mid \atmR{a}
+%   \\[-2\jot]
+%   Left-directed &
+%     \atmL{\octx} & \atmL{\octx}_1 \oc \atmL{\octx}_2 \mid \octxe \mid \atmL{a}
+% \end{syntax*}
+
+% Having restricted the premises of left- and right-handed implications to incoming atoms, $\atmR{a}$ and $\atmL{a}$, respectively, the left focus judgment and its rules may be refined.
+% The judgment is now $\lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}$, because [...inputs can only be incoming messages...].
+% Other than this refinement, the inference rules remain essentially the same as in \cref{??}.
+% The revised 
+
+
+% \begin{figure}
+%   \begin{syntax*}
+%     Positive props. &
+%       \p{A} & \atmR{a} \mid \atmL{a} \mid \p{A} \fuse \p{B} \mid \one \mid \dn \n{A}
+%     \\
+%     Negative props. &
+%       \n{A} & \n{\alpha} \mid
+%                 \atmR{a} \limp \n{B} \mid \n{B} \pmir \atmL{a} \mid
+%                 \n{A} \with \n{B} \mid \top \mid \up \p{A}
+%     \\
+%     Ordered contexts &
+%         \octx & \octx_1 \oc \octx_2 \mid \octxe \mid \p{A} \\[-2\jot]
+%       & \atmR{\octx} & \atmR{\octx}_1 \oc \atmR{\octx}_2 \mid \octxe \mid \atmR{a} \\[-2\jot]
+%       & \atmL{\octx} & \atmL{\octx}_1 \oc \atmL{\octx}_2 \mid \octxe \mid \atmL{a}
+%   \end{syntax*}
+%   \begin{inferences}[Rewriting: $\octx \reduces \octx'$ and $\octx \Reduces \octx'$]
+%     \infer[\jrule{$\dn$D}]{\atmR{\octx}_L \oc \dn \n{A} \oc \atmL{\octx}_R \reduces \p{C}}{
+%       \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}}
+%     \and
+%     \infer[\jrule{$\fuse$D}]{\p{A} \fuse \p{B} \reduces \p{A} \oc \p{B}}{}
+%     \and
+%     \infer[\jrule{$\one$D}]{\one \reduces \octxe}{}
+%     \\
+%     \text{(no $\jrule{$\plus$D}$ and $\jrule{$\zero$D}$ rules)}
+%     \\
+%     \infer[\jrule{$\reduces$C}_{\jrule{L}}]{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
+%       \octx_1 \reduces \octx'_1}
+%     \and
+%     \infer[\jrule{$\reduces$C}_{\jrule{R}}]{\octx_1 \oc \octx_2 \reduces \octx'_1 \oc \octx_2}{
+%       \octx_1 \reduces \octx'_1}
+%   \end{inferences}
+%   \begin{inferences}
+%     \infer[\jrule{$\Reduces$R}]{\octx \Reduces \octx}{}
+%     \and
+%     \infer[\jrule{$\Reduces$T}]{\octx \Reduces \octx''}{
+%       \octx \reduces \octx' & \octx' \Reduces \octx''}
+%   \end{inferences}
+
+%   \begin{inferences}[Left focus: $\lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}$]
+%     \infer[\lrule{\limp}']{\lfocus{\atmR{\octx}_L}{\atmR{a} \limp \n{B}}{\atmL{\octx}_R}{\p{C}}}{
+%       \lfocus{\atmR{\octx}_L \oc \atmR{a}}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
+%     \and
+%     \infer[\lrule{\pmir}']{\lfocus{\atmR{\octx}_L}{\n{B} \pmir \atmL{a}}{\atmL{\octx}_R}{\p{C}}}{
+%       \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{a} \oc \atmL{\octx}_R}{\p{C}}}
+%     \\
+%     \infer[\lrule{\with}_1]{\lfocus{\atmR{\octx}_L}{\n{A} \with \n{B}}{\atmL{\octx}_R}{\p{C}}}{
+%       \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}}
+%     \and
+%     \infer[\lrule{\with}_2]{\lfocus{\atmR{\octx}_L}{\n{A} \with \n{B}}{\atmL{\octx}_R}{\p{C}}}{
+%       \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
+%     \and
+%     \text{(no $\lrule{\top}$ rule)}
+%     \\
+%     \infer[\lrule{\up}]{\lfocus{}{\up \p{A}}{}{\p{A}}}{}
+%   \end{inferences}
+%   \caption{A weakly focused ordered rewriting framework}
+% \end{figure}
+
+% \begin{figure}
+%  \begin{inferences}[Input transition: $\ireduces{\atmR{\octx}_L \oc ##1 \oc \atmL{\octx}_R}{\octx}{\octx'}$]
+%     \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\dn \n{A}}{\p{C}}}{
+%       \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}}
+%     \and
+%     \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\atmR{a} \oc \octx}{\octx'}}{
+%       \ireduces{\atmR{\octx}_L \oc \atmR{a} \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}}
+%     \and
+%     \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx \oc \atmL{a}}{\octx'}}{
+%       \ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{a} \oc \atmL{\octx}_R}{\octx}{\octx'}}
+%     \\
+%     \infer{\ireduces{#1 \oc \atmL{\octx}_R}{\p{A} \oc \octx}{\p{A} \oc \octx'}}{
+%       \ireduces{#1 \oc \atmL{\octx}_R}{\octx}{\octx'}}
+%     \and
+%     \infer{\ireduces{\atmR{\octx}_L \oc #1}{\octx \oc \p{A}}{\octx' \oc \p{A}}}{
+%       \ireduces{\atmR{\octx}_L \oc #1}{\octx}{\octx'}}
+%   \end{inferences}
+%   \caption{A weakly focused ordered rewriting framework}
+% \end{figure}
+
+
+% \section{Input transitions}
+
+% With the above restriction of left- and right-handed implications to atomic premises of hte 
+
+% \begin{inferences}
+%   \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\dn \n{A}}{\p{C}}}{
+%     \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}}}
+%   \\
+%   \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\atmR{a} \oc \octx}{\octx'}}{
+%     \ireduces{\atmR{\octx}_L \oc \atmR{a} \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}}
+%   \and
+%   \infer{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx \oc \atmL{a}}{\octx'}}{
+%     \ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{a} \oc \atmL{\octx}_R}{\octx}{\octx'}}
+%   \\
+%   \infer{\ireduces{#1 \oc \atmL{\octx}_R}{\p{A} \oc \octx}{\p{A} \oc \octx'}}{
+%     \ireduces{#1 \oc \atmL{\octx}_R}{\octx}{\octx'}}
+%   \and
+%   \infer{\ireduces{\atmR{\octx}_L \oc #1}{\octx \oc \p{A}}{\octx' \oc \p{A}}}{
+%     \ireduces{\atmR{\octx}_L \oc #1}{\octx}{\octx'}}
+% \end{inferences}
+
+% In its most basic form, an input transition derives from the inputs required by [...].
+
+% The following \lcnamecref{thm:input-transition-reduction} relates input transitions to reductions.
+% \begin{theorem}\label{thm:input-transition-reduction}
+%   If $\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}$, then $\atmR{\octx}_L \oc \octx \oc \atmL{\octx}_R \reduces \octx'$.
+%   Conversely, if $\octx \reduces \octx'$, then there exist $\octx_L$ and $\octx_R$ such that either:
+%   \begin{itemize}
+%   \item $\octx = \octx_L \oc \atmR{\lctx}_L \oc \octx_0 \oc \atmL{\lctx}_R \oc \octx_R$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\octx_0}{\octx'_0}$ and $\octx' = \octx_L \oc \octx'_0 \oc \octx_R$, for some $\atmR{\lctx}_L$, $\octx_0$, $\atmL{\lctx}_R$, and $\octx'_0$;
+%   \item $\octx = \octx_L \oc (\p{A} \fuse \p{B}) \oc \octx_R$ and $\octx' = \octx_L \oc \p{A} \oc \p{B} \oc \octx_R$, for some $\p{A}$ and $\p{B}$; or
+%   \item $\octx = \octx_L \oc \one \oc \octx_R$ and $\octx' = \octx_L \oc \octx_R$.
+%   \end{itemize}
+% \end{theorem}
+% \begin{proof}
+%   By structural induction on the given input transition or reduction, respectively.
+% \end{proof}
+
+% \begin{lemma}\label{lem:input-framing}
+%   If $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\atmR{a} \oc \octx}{\octx'}$, then either:
+%   \begin{itemize}[nosep]
+%   \item $\atmR{a}$ satisfies an input demand -- \ie, $\ireduces{\atmR{\lctx}_L \oc \atmR{a} \oc #1 \oc \atmL{\lctx}_R}{\octx}{\octx'}$; or
+%   \item $\atmR{a}$ does not participate in the input transition -- \ie, $\atmR{\lctx}_L = \octxe$ and $\octx' = \atmR{a} \oc \octx'_a$ for some $\octx'_a$ such that $\ireduces{#1 \oc \atmL{\lctx}_R}{\octx}{\octx'_a}$.
+%   \end{itemize}
+%   Symmetrically, if $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\octx \oc \atmL{a}}{\octx'}$, then either:
+%   \begin{itemize}[nosep]
+%   \item $\atmL{a}$ satisfies an input demand -- \ie, $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{a} \oc \atmL{\lctx}_R}{\octx}{\octx'}$; or
+%   \item $\atmL{a}$ does not participate in the input transition -- \ie, $\atmL{\lctx}_R = \octxe$ and $\octx' = \octx'_a \oc \atmL{a}$ for some $\octx'_a$ such that $\ireduces{\atmR{\lctx}_L \oc #1}{\octx}{\octx'_a}$.
+%   \end{itemize}
+% \end{lemma}
+% \begin{proof}
+%   By structural induction on the given input transition.
+% \end{proof}
+
+\section{Rewriting bisimilarity}\label{sec:ordered-bisimilarity:rewriting-bisimilarity}
 
 With the shift from a global, state transformation view of ordered rewriting to a local, \enquote{formula-as-process} view, it is now possible to consider how the individual \enquote{formula-as-process} -- or, more generally, \enquote{context-as-configuration} -- components behave and how they interact with each other.
 Because each component has its own, local thread of control, we can describe its behavior only to the extent that its behavior is observable.
@@ -431,10 +452,10 @@ related to Deng et al.
 
 
 
-In this \lcnamecref{sec:??}, we define \emph{ordered rewriting bisimilarity}, a notion of observational equivalence for ordered contexts.
+In this \lcnamecref{sec:ordered-bisimilarity:rewriting-bisimilarity}, we define \emph{ordered rewriting bisimilarity}, a notion of observational equivalence for ordered contexts.
 Before that, however, we must define a few auxiliary relations on contexts.
 %
-\begin{definition}[Framed binary relations]
+\begin{definition}[Framed binary relations]\label{def:ordered-bisimilarity:framed-relation}
   Let $\simu{R}$ be a binary relation on ordered contexts.
   Given ordered contexts $\lctx_L$ and $\lctx_R$, let $\lrframe{\lctx_L}{\simu{R}}{\lctx_R}$ be the least binary relation such that:
   \begin{inferences}
@@ -483,13 +504,13 @@ The resulting bisimilarity will therefore be a weak bisimilarity.
       \atmL{\lctx}'_L \oc \lctx' \oc \atmL{\lctx}'_R
     \end{tikzcd}
   \end{equation*}
-  However, this formulation is unwieldy, so we prefer the seperate output and input bisimulation conditions.}
+  However, this formulation is unwieldy, so we prefer the separate output and input bisimulation conditions.}
 
  they have the same input and output behavior.
 Based on this principle, we arrive at the following notion of rewriting bisimilarity.
 We will state its definition first and then justify that definition on the basis of observable indistinguishability.
 %
-\begin{definition}
+\begin{definition}\label{def:ordered-bisimilarity:bisim}
   A \vocab{rewriting bisimulation}, $\simu{R}$, is a symmetric binary relation among contexts that satisfies the following conditions.
   \begin{thmdescription}[nosep]
   \item[Output bisimulation]
@@ -552,44 +573,47 @@ Notice that a third, reduction bisimulation property is a trivial instance of th
 The clauses of \cref{def:ordered-bisimilarity:bisim} could do with some explanation.
 Let's begin with the output bisimulation condition.
 
-Expanding slightly, we are given that $\octx \simu{R} \lctx \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, for some context $\lctx$.
-Based on the local interaction semantics~\parencref{sec:??}, this means
+Expanding slightly, we are given that there exists a context $\lctx$ such that $\octx \simu{R} \lctx \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+Based on the local interaction semantics~\parencref{sec:formula-as-process:transition-semantics}, this means
 \begin{enumerate*}[label=\emph{(\roman*)}]
 \item that $\lctx$ can eventually output $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ and then continue as $\lctx'$; and
 \item that $\octx$ is $\simu{R}$-related to $\lctx$
 \end{enumerate*}.
-For $\simu{R}$ to be a rewriting bisimulation, the context $\octx$ ought to be able to simulate $\lctx$'s eventual output of $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$, otherwise the $\simu{R}$-related contexts $\octx$ and $\lctx$ could be distinguished based on their (eventual) output behaviour.
+For $\simu{R}$ to be a rewriting bisimulation, the context $\octx$ ought to be able to simulate $\lctx$'s eventual output of $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$, otherwise the $\simu{R}$-related contexts $\octx$ and $\lctx$ could be distinguished based on their (eventual) output behavior.
 Moreover, the continuations ought to be $\simu{R}$-related as well.
-Formally, we ought to have $\octx \Reduces \atmL{\lctx}'_L \oc \octx' \oc \atmR{\lctx}'_R$ (\ie, $\octx$ eventualy outputs $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$) and $\octx' \simu{R} \lctx'$, for some context $\octx'$, which is all neatly packaged up as $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+Formally, we ought to have $\octx \Reduces \atmL{\lctx}'_L \oc \octx' \oc \atmR{\lctx}'_R$ (\ie, $\octx$ eventually outputs $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$) and $\octx' \simu{R} \lctx'$, for some context $\octx'$, which is all neatly packaged up as $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
 
 Input bisimulation is dual to output bisimulation.
-Unpacking the given $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}\Reduces \lctx'$, we see that $\octx \simu{R} \lctx$ and $\atmR{\lctx}_L \oc \lctx \oc \atmL{\lctx}_R \Reduces \lctx'$, for some context $\lctx$.
-In other words, once provided with the incoming messages $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$, the context $\lctx$ can eventually reach $\lctx'$.
-Being $\simu{R}$-related to $\lctx$, the context $\octx$, when provided with the same incoming messages, must be able to reach a context that is $\simu{R}$-related to $\lctx'$, otherwise $\octx$ and $\lctx$ could be distinguished by how they react to $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$.
+For input bisimulation, we are given that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}\Reduces \lctx'$.
+Expanding slightly, there exists a context $\lctx$ such that $\octx \simu{R} \lctx$ and $\atmR{\lctx}_L \oc \lctx \oc \atmL{\lctx}_R \Reduces \lctx'$.
+In other words, once provided with the incoming messages $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$, the context $\lctx$ can eventually evolve to $\lctx'$.
+Being $\simu{R}$-related to $\lctx$, the context $\octx$, when provided with the same incoming messages, must be able to evolve to a context that is $\simu{R}$-related to $\lctx'$, otherwise $\octx$ and $\lctx$ could be distinguished by how they react to $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$.
 That is, we must have $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces \octx' \simu{R} \lctx'$ for some $\octx'$, which is neatly packaged as $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$.
 
 
 \newthought{The other way} to understand rewriting bisimilarity is by analogy with the asynchronous \ac{CCS}'s notion of weak bisimilarity.\autocites{Amadio+:INRIA96}{Boreale+:IC02}
 There, a weak bisimulation can be described as a symmetric relation $\simu{R}$ on processes that satisfies three conditions:%
 \footnote{%
-  The premises of these conditions are usually stated with strong transitions.
-  We will return to this point shortly.}
+  The premises of these conditions are usually stated with strong transitions, but we prefer this phrasing for its similarity to rewriting bisimilarity.}
 \begin{itemize}[noitemsep]% [label=\emph{(\roman*)}]
 \item If $P \simu{R}\overset{\smash{\bar{c}}}{\Reduces} Q'$, then $P \overset{\smash{\bar{c}}}{\Reduces}\simu{R} Q'$.
 \item If $P \simu{R}\overset{\tau}{\Reduces} Q'$, then $P \overset{\tau}{\Reduces}\simu{R} Q'$.
 \item If $P \simu{R}\overset{c}{\Reduces} Q'$, then either $P \overset{c}{\Reduces}\simu{R} Q'$ or there exists a process $P'$ such that $P \overset{\tau}{\Reduces} P'$ and $\bar{c} \mid P' \simu{R} Q'$.
 \end{itemize}
+Weak bisimilarity for the asynchronous \ac{CCS} is then the largest such bisimulation.
 
-When the output and input contexts $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ and $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$ are empty, rewriting bisimilarity's output and input bisimulation conditions amount to a reduction bisimulation property~\parencref{thm:??} and correspond to the second of these \ac{CCS} conditions.
+The first of these three conditions corresponds to rewriting bisimilarity's output bisimulation condition with nonempty output contexts $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$.
+As mentioned in \cref{sec:formula-as-process:transition-semantics}, $\lctx \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ functions as an implicit weak output transition from $\lctx$ to $\lctx'$, with outputs $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$.
+Similarly, $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ is analogous to $P \overset{\smash{\bar{c}}}{\Reduces}\simu{R} Q'$.
 
-For nonempty output contexts, rewriting bisimilarity's output bisimulation condition corresponds to the first of the asynchronous \ac{CCS} weak bisimilarity's conditions.
-As mentioned in \cref{sec:??}, $\lctx \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ functions as an implicit weak output transition from $\lctx$ to $\lctx'$.
-Therefore, $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ is analogous to $P \overset{\smash{\bar{c}}}{\Reduces}\simu{R} Q'$.
+The second of the three conditions imposed by asynchronous \ac{CCS} weak bisimilarity corresponds to rewriting bisimilarity's reduction bisimulation property~\parencref{thm:bisim-reduction-closure}, which is really just either output or input bisimulation with empty output contexts $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ or input contexts $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$.
 
-Rewriting bisimilarity's input bisimulation condition corresponds to the third of the asynchronous \ac{CCS} weak bisimilarity's conditions.
+The third of the three conditions imposed by asynchronous \ac{CCS} weak bisimilarity corresponds to rewriting bisimilarity's input bisimulation condition.
+% Rewriting bisimilarity's input bisimulation condition corresponds to the third of the asynchronous \ac{CCS} weak bisimilarity's conditions.
 The \ac{CCS} condition is equivalent to \enquote{If $P \simu{R}\overset{c}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.}
-Because asynchronous \ac{CCS} bisimilarity is a congruence, that condition can be rephrased as \enquote{If $P \simu{R} Q$ and $\bar{c} \mid Q \overset{\tau}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$} without affecting the resulting bisimilarity.%
-\footnote{See \cref{??} for a proof sketch.}
+(In fact, it is typical to use this phrasing in the definition of asynchronous \ac{CCS} bisimilarity.)
+Because asynchronous \ac{CCS} weak bisimilarity is a congruence, that condition can be rephrased as \enquote{If $P \simu{R} Q$ and $\bar{c} \mid Q \overset{\tau}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$} without affecting the resulting bisimilarity.%
+\footnote{See \cref{app:ccs} for a proof sketch.}
 And, in that form, the correspondence with rewriting bisimilarity's input bisimulation condition becomes apparent.
 
 
@@ -720,13 +744,13 @@ However, in general, a proof technique for rewriting bisimilarity is sorely need
 % \end{itemize}
 
 
-\subsection{Labeled bisimilarity: A proof technique for rewriting bisimilarity}
+\subsection{Labeled bisimilarity: A proof technique for rewriting bisimilarity}\label{sec:ordered-bisimilarity:labeled-bisim}
 
 In \ac{CCS} and the $\pi$-calculus, bisimilarity is similarly too strong to be used directly in proving the equivalence of processes.
 There, a sound proof technique for bisimilarity is built around a labeled transition system and a notion of labeled bisimulation.\autocite{Sangiorgi+Walker:CUP03}
 Because the labeled transition system is image-finite, proving that two processes are labeled bisimilar is more tractable than directly proving them to be bisimilar.
 
-In this \lcnamecref{??}, we follow that strategy and develop \vocab{labeled bisimilarity} as a sound -- and, surprisingly, also complete -- proof technique for rewriting bisimilarity.
+In this \lcnamecref{sec:ordered-bisimilarity:labeled-bisim}, we follow that strategy and develop \vocab{labeled bisimilarity} as a sound -- and, surprisingly, also complete -- proof technique for rewriting bisimilarity.
 Like its \ac{CCS} and $\pi$-calculus analogues, labeled bisimilarity is more tractable than rewriting bisimilarity because it uses individual input transitions in place of full rewriting sequences.
 
 Instead of defining labeled bisimulations directly, we use a refactorization, standard in the study of up-to techniques\autocite{??}, in which we first define a notion of \emph{progression} and then characterize labeled bisimulations in terms of progression.
@@ -828,12 +852,13 @@ Instead of defining labeled bisimulations directly, we use a refactorization, st
   \end{marginfigure}
 \end{definition}
 
-The immediate output, immediate input, and reduction bisimulation conditions are all single-step forms of rewriting bisimilarity's output and input bisimulation conditions~\parencref{??} and reduction bisimulation property~\parencref{??}.
-The emptiness bisimulation condition is necessary for labeled bisimilarity to be complete.
-A similar condition appears in \textcite{Deng+:MSCS16}.
+The immediate output, immediate input, and reduction bisimulation conditions are all single-step forms of rewriting bisimilarity's output and input bisimulation conditions~\parencref{def:ordered-bisimilarity:bisim} and reduction bisimulation property~\parencref{thm:bisim-reduction-closure}.
+The emptiness bisimulation condition, on the other hand, is necessary for labeled bisimilarity to be complete.
+A similar condition appears in \textcite{Deng+:MSCS16}'s simulation preorder.
 
-Emptiness bisimulation is equivalent to requiring that $\octx \simu{R} (\octxe)$ implies $\octx \Reduces (\octxe) \simu{S} (\octxe)$.
-In this way, it can be seen
+Emptiness bisimulation is equivalent to requiring that $\octx \simu{R} (\octxe)$ implies both $\octx \Reduces (\octxe)$ and $(\octxe) \simu{S} (\octxe)$.%
+\footnote{See \cref{thm:emptiness-bisim-equiv} for a proof sketch.}
+In this way, it can be seen that being $\simu{R}$-related to $(\octxe)$ is possible only if $\octx$ is morally equivalent to $(\octxe)$, in the sense that $\octx$ must be able to spontaneously evolve to $(\octxe)$.
 
 
 % O R (.) implies a O ==>(Ra) a
@@ -857,8 +882,9 @@ In this way, it can be seen
 %   O1 ==> (.) and O' = (.)
 %   O ==> (.)
 
-
-\begin{theorem}[Completeness of labeled bisimilarity]
+\newthought{It is relatively} straightforward to show that labeled bisimilarity is complete with respect to rewriting bisimilarity: every rewriting bisimulation is itself a labeled bisimulation.
+%
+\begin{theorem}[Completeness of labeled bisimilarity]\label{thm:ordered-bisimilarity:labeled-complete}
   Every rewriting bisimulation is also a labeled bisimulation, and labeled bisimilarity consequently contains rewriting bisimilarity.
 \end{theorem}
 \begin{proof}
@@ -920,11 +946,11 @@ For example, consider the least symmetric binary relation $\simu{R}$ such that
   (\octxe) \simu{R} (\octxe)
   \,.
 \end{equation*}
-The relation $\simu{R}$ is a labeled bisimulation, but it does not qualify as a rewriting bisimulation because it does not satisfy the more general input bisimulation condition: $\atmR{a} \oc (\atmR{a} \limp (\atmR{c} \pmir \atmL{b})) \lframe{\atmR{a}}{\simu{R}} \atmR{a} \oc ((\atmR{a} \limp \atmR{c}) \pmir \atmL{b})$ does not imply $\atmR{a} \oc (\atmR{a} \limp (\atmR{c} \pmir \atmL{b})) \Reduces\simu{R} \atmR{a} \oc ((\atmR{a} \limp \atmR{c}) \pmir \atmR{b})$.
-That would only be possible if $\atmR{a} \oc (\atmR{a} \limp (\atmR{c} \pmir \atmL{b})) \simu{R} \atmR{a} \oc ((\atmR{a} \limp \atmR{c}) \pmir \atmR{b})$.
+The relation $\simu{R}$ is a labeled bisimulation, but it does not qualify as a rewriting bisimulation because it does not satisfy the more general input bisimulation condition: for instance, $\atmR{a} \oc (\atmR{a} \limp (\atmR{c} \pmir \atmL{b})) \lframe{\atmR{a}}{\simu{R}} \atmR{a} \oc ((\atmR{a} \limp \atmR{c}) \pmir \atmL{b})$ does not imply $\atmR{a} \oc (\atmR{a} \limp (\atmR{c} \pmir \atmL{b})) \Reduces\simu{R} \atmR{a} \oc ((\atmR{a} \limp \atmR{c}) \pmir \atmR{b})$.
+That would be possible only if $\atmR{a} \oc (\atmR{a} \limp (\atmR{c} \pmir \atmL{b}))$ and $\atmR{a} \oc ((\atmR{a} \limp \atmR{c}) \pmir \atmR{b})$ were $\simu{R}$-related.
 
-Although a labeled bisimulation is not a rewriting bisimulation, a slightly weaker statement is nevertheless true: a labeled bisimulation is contained within \emph{some} rewriting bisimulation.
-Specifically, if $\simu{R}$ is a labeled bisimulation, then its input contextual closure, $\ctxc{\simu{R}}$, is such a rewriting bisimulation.
+Even though a labeled bisimulation itself is not a rewriting bisimulation, a slightly weaker statement is nevertheless true: each labeled bisimulation is contained within \emph{some} rewriting bisimulation.
+Specifically, if $\simu{R}$ is a labeled bisimulation, then its input contextual closure, $\ctxc{\simu{R}}$, as described in \cref{def:ordered-bisimilarity:framed-relation} is such a rewriting bisimulation.
 Fortunately, this will be enough to prove that labeled bisimilarity is sound.
 
 
@@ -1272,7 +1298,7 @@ Fortunately, this will be enough to prove that labeled bisimilarity is sound.
 
 % \section{}
 
-The proof of soundness is clean, but it winds through a few \lcnamecrefs{lem:labeled-bisim-union}, however.
+The proof of soundness is clean, but it does wind through a few \lcnamecrefs{lem:labeled-bisim-union}.
 The first of these describes a condition under which the union of two relations is a labeled bisimulation.
 %
 \begin{lemma}\label{lem:labeled-bisim-union}
@@ -1498,7 +1524,7 @@ Next, we use this result to prove that framing a single input atom onto a labele
   \end{description}
 \end{proof}
 
-Having proved the preceding \lcnamecref{lem:??} about framing a single input atom, we can apply it inductively to prove that framing input contexts preserves labeled bisimulations. 
+Having proved the preceding \lcnamecref{lem:single-input-atom} about framing a single input atom, we can apply it inductively to prove that framing input contexts preserves labeled bisimulations. 
 \begin{lemma}\label{lem:ctxc-labeled-bisim}
   If $\simu{R}$ is a labeled bisimulation, then so is $\ctxc{\simu{R}}$.
 \end{lemma}
@@ -1528,8 +1554,9 @@ Having proved the preceding \lcnamecref{lem:??} about framing a single input ato
   % Because each $\simu{S}_n$ is a labeled bisimulation, so is their least upper bound, $\ctxc{\simu{R}}$.
 \end{proof}
 
-Now we use the fact that $\ctxc{\simu{R}}$ is a labeled bisimulation whenever $\simu{R}$ is also one to prove that $\ctxc{\simu{R}}$ is a rewriting bisimulation.
-Rewriting bisimilarity therefore contains $\simu{R}$.
+Now we use this \lcnamecref{lem:ctxc-labeled-bisim}
+% fact that $\ctxc{\simu{R}}$ is a labeled bisimulation whenever $\simu{R}$ is also one 
+to prove that $\ctxc{\simu{R}}$ is a rewriting bisimulation if $\simu{R}$ is a labeled bisimulation.
 \begin{theorem}\label{thm:labeled-proof-technique}
   If $\simu{R}$ is a labeled bisimulation, then rewriting bisimilarity contains $\simu{R}$.
 \end{theorem}
@@ -1600,6 +1627,7 @@ Rewriting bisimilarity therefore contains $\simu{R}$.
   \end{description}
 \end{proof}
 
+Rewriting bisimilarity therefore contains every labeled bisimulation and, in particular, the largest labeled bisimulation, namely labeled bisimilarity.
 \begin{corollary}
   Labeled bisimilarity is sound and complete with respect to rewriting bisimilarity.
 \end{corollary}
@@ -1609,6 +1637,7 @@ Let $\simu{R}$ be the least symmetric binary relation for which $\atmR{a} \oc (\
 The relation $\simu{R}$ is a labeled bisimulation:
 \begin{itemize}
 \item The immediate output bisimulation condition holds because $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ can simulate $\atmR{b}$'s output of $\atmR{b}$ (with $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \reduces\rframe{\simu{R}}{\atmR{b}} \atmR{b}$) and the former makes no immediate outputs of its own.
+  Moreover, $\atmR{b}$ and $\atmR{b}$ can simulate each other's output of $\atmR{b}$.
 \item The immediate input bisimulation condition holds vacuously for the relation $\simu{R}$ because neither $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ nor $\atmR{b}$ accept any inputs on either side.
 \item The reduction bisimulation condition holds because $\atmR{b}$ can simulate the reduction $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \reduces \atmR{b}$ trivially (with $\atmR{b} \Reduces\simu{R} \atmR{b}$).
 \item The emptiness bisimulation condition holds trivially: $\atmR{\lctx} \Reduces\rframe{\simu{R}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$ because $(\octxe) \simu{R} (\octxe)$, and symmetrically for all $\atmL{\lctx}$.
@@ -1619,13 +1648,16 @@ We can similarly prove that $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\at
 
 Somewhat surprisingly, even $\atmR{a} \limp \up \dn (\atmR{c} \pmir \atmL{b})$ and $\up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ are bisimilar.
 This one is rather surprising because the $\up \dn$ shift is placed in two different locations: over $\mathord{-} \pmir \atmL{b}$ in the former, and over $\atmR{a} \limp \mathord{-}$ in the latter.
-Nevertheless, this can once again be proved by constructing an appropriate labeled bisimulation, namely the least symmetric relation $\simu{R}$ such that:
+One might expect that the placement of $\up \dn$ and the different intermediate contexts that it induces would make it possible to distinguish $\atmR{a} \limp \up \dn (\atmR{c} \pmir \atmL{b})$from $\up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$.
+
+But by using least symmetric relation $\simu{R}$ such that
 $\atmR{a} \limp \up \dn (\atmR{c} \pmir \atmL{b}) \simu{R} \up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ and
 $\atmR{c} \pmir \atmL{b} \simu{R} \atmR{a} \oc \bigl(\up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}\bigr)$ and
 $\bigl(\atmR{a} \limp \up \dn (\atmR{c} \pmir \atmL{b})\bigr) \oc \atmL{b} \simu{R} \atmR{a} \limp \atmR{c}$ and
 $\atmR{c} \simu{R} \atmR{c}$ and
-$(\octxe) \simu{R} (\octxe)$.
-The labeled bisimulation shows how the inputs protected by the $\up \dn$ double shifts are trated lazily in establishing the equivalence: the \emph{proposition} $\atmR{c} \pmir \atmL{b}$ is $\simu{R}$-related to the \emph{context} $\atmR{a} \oc \bigl(\up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}\bigr)$, for example.
+$(\octxe) \simu{R} (\octxe)$,
+we can prove that the two propositions are indistinguishable.
+The labeled bisimulation $\simu{R}$ shows how the inputs protected by the $\up \dn$ double shifts are treated lazily in establishing the equivalence: the proposition $\atmR{c} \pmir \atmL{b}$ is $\simu{R}$-related to the context $\atmR{a} \oc \bigl(\up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}\bigr)$, for example.
 
 
 
@@ -1654,7 +1686,7 @@ The labeled bisimulation shows how the inputs protected by the $\up \dn$ double 
 %   And indeed $\atmR{a} \oc \bigl(\up \dn (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}\bigr) \oc \atmL{b} \Reduces\simu{R} (\atmR{c} \pmir \atmL{b}) \oc \atmL{b}$.
 % \end{itemize}
 
-\clearpage
+% \clearpage
 \subsection{A simple up-to proof technique: Reflexivity}
 
 As a slight enhancement of the above proof technique, we can consider a simple up-to technique: bisimilarity up to reflexivity.
@@ -1673,8 +1705,8 @@ Let us call a relation $\simu{R}$ a labeled bisimulation \vocab{up to reflexivit
 \begin{proof}
   Let $\simu{R}$ be a labeled bisimulation up to reflexivity.
   First, notice that the identity relation is a labeled bisimulation -- each of the labeled bisimulation conditions is trivially true of the identity relation.
-  Then, it follows from \cref{??} that $\reflc{\simu{R}}$, the reflexive closure of $\simu{R}$, is a labeled bisimulation.
-  By \cref{??}, we may conclude that rewriting bisimilarity contains $\reflc{\simu{R}}$ and hence $\simu{R}$.
+  Then, it follows from \cref{lem:labeled-bisim-union} that $\reflc{\simu{R}}$, the reflexive closure of $\simu{R}$, is a labeled bisimulation.
+  By \cref{thm:labeled-proof-technique}, we may conclude that rewriting bisimilarity contains $\reflc{\simu{R}}$ and hence $\simu{R}$.
 \end{proof}
 
 % \begin{lemma}
@@ -1772,163 +1804,426 @@ Let us call a relation $\simu{R}$ a labeled bisimulation \vocab{up to reflexivit
 
 
 
-\section{}
+\subsection{Other properties of rewriting bisimilarity}
 
-Rewriting bisimilarity satisfies the usual properties expected of a notion of bisimilarity: it is a congruence [...].
+In addition to soundness and completeness of labeled bisimilarity with respect to rewriting bisimilarity, we also expect rewriting bisimilarity to be a (monoidal) congruence relation.
+
+Rewriting bisimilarity is, indeed, an equivalence relation.
 %
-\begin{theorem}
-  Rewriting bisimilarity is an equivalence relation.
+\begin{theorem}\label{thm:ordered-bisimilarity:equivalence}
+  Rewriting bisimilarity is reflexive, symmetric, and transitive.
 \end{theorem}
 \begin{proof}
   The identity relation on contexts can be shown to be a bisimulation, so rewriting bisimilarity is reflexive.
-  Rewriting bisimilarity is symmetric, by definition.
-  The relation $\osim\osim$ can be shown to be a bisimulation, so rewriting bisimilarity is transitive.
-\end{proof}
-
-$\lframe{\atmR{a}}{\osim} \union \osim$ is a labeled bisimulation.
-$\lframe{\atmL{a}}{\osim}$ is a labeled bisimulation.
-$\lframe{\n{A}}{\osim}$ is a labeled bisimulation.
-
-$\octx \lframe{\atmL{a}}{(\Reduces\lrframe{\atmL{\lctx}''_L}{\osim}{\atmR{\lctx}'_R})} \lctx$
-
-$\octx \lframe{\atmL{a}}{\osim}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
-$\octx \lframe{\atmL{a}}{(\osim\Reduces)} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
-
-Assume that $\atmR{\lctx}_L \oc \atmL{a} \oc \octx \oc \atmL{\lctx}_R \lrframe{(\atmR{\lctx}_L \oc \atmL{a})}{\osim}{\atmL{\lctx}_R}\Reduces \lctx'$; we must show that $\atmR{\lctx}_L \oc \atmL{a} \oc \octx \oc \atmL{\lctx}_R \lrframe{(\atmR{\lctx}_L \oc \atmL{a})}{\osim}{\atmL{\lctx}_R}\Reduces \lctx'$.
-$\atmR{\lctx}_L \oc \atmL{a} \oc \octx \oc \atmL{\lctx}_R \lframe{(\atmR{\lctx}_L \oc \atmL{a})}{(\rframe{\osim}{\atmL{\lctx}_R}\Reduces)} \lctx'$.
-$\atmR{\lctx}_L \oc \atmL{a} \oc \octx \oc \atmL{\lctx}_R \lframe{(\atmR{\lctx}_L \oc \atmL{a})}{(\Reduces\osim)} \lctx'$.
-$\atmR{\lctx}_L \oc \atmL{a} \oc \octx \oc \atmL{\lctx}_R \Reduces\lframe{(\atmR{\lctx}_L \oc \atmL{a})}{\osim} \lctx'$.
-\begin{theorem}
-  Rewriting bisimilarity contains $\lframe{\oante}{\osim}$ and $\rframe{\oante}{\osim}$
-\end{theorem}
-\begin{proof}
-  \begin{description}
-  \item[Immediate output bisimulation]
-    Assume that $\octx \lframe{\oante}{\osim} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
-    we must show that $\octx \Reduces\mathrel{(\lframe{\oante}{\osim} \union \osim)} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
-
-    In the case in which $\oante = \n{A}$, the proposition $\n{A}$ can be unified with neither the output atoms $\atmL{\lctx}'_L$ nor $\atmR{\lctx}'_R$.
-    So, $\atmL{\lctx}'_L$ is empty and $\lctx'$ begins with $\n{A}$.
-
-    Otherwise, consider the case in which $\oante = \atmL{a}$.
-    We distinguish cases on the size of $\atmL{\lctx}'_L$.
-    \begin{itemize}
-    \item Consider the case in which $\atmL{\lctx}'_L$ is nonempty.
-      Then $\oante$ must be some atom $\atmL{a}$, with $\atmL{\lctx}'_L = \atmL{a} \oc \atmL{\lctx}''_L$ for some context $\atmL{\lctx}''_L$, for otherwise $\oante$ would not unify with the output atoms $\atmL{\lctx}'_L$.
-      Because $\osim$ is a labeled bisimulation~\parencref{??}, we may appeal to its immediate output bisimulation property after framing off $\atmL{a}$ and deduce that $\octx \lframe{\atmL{a}}{(\Reduces\lrframe{\atmL{\lctx}''_L}{\osim}{\atmR{\lctx}'_R})} \lctx$.
-      Reduction is closed under framing, so we conclude that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\osim}{\atmR{\lctx}'_R} \lctx$.
-      % 
-    \item Consider the case in which $\atmL{\lctx}'_L$ is empty.
-      Then $\oante$ must be some atom $\atmL{a}$, with $\atmL{\lctx}'_L = \atmL{a} \oc \atmL{\lctx}''_L$ for some context $\atmL{\lctx}''_L$, for otherwise $\oante$ would not unify with the output atoms $\atmL{\lctx}'_L$.
-      Because $\osim$ is a labeled bisimulation~\parencref{??}, we may appeal to its immediate output bisimulation property after framing off $\atmL{a}$ and deduce that $\octx \lframe{\atmL{a}}{(\Reduces\lrframe{\atmL{\lctx}''_L}{\osim}{\atmR{\lctx}'_R})} \lctx$.
-      Reduction is closed under framing, so we conclude that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\osim}{\atmR{\lctx}'_R} \lctx$.
-
-    \end{itemize}
-
-    Because $\oante$ [...], it does not unify with $\atmL{\lctx}'_L$, the context $\atmL{\lctx}'_L$ must be empty.
-    
-    $\octx \lframe{\oante}{\osim}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
-    $\octx \lframe{\oante}{(\osim\Reduces)} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
-    $\octx \lframe{\oante}{(\Reduces\osim)} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
-    $\octx \Reduces\lframe{\oante}{\osim} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
-  \end{description}
-
-  \begin{description}
-  \item[Immediate output bisimulation]
-    Assume that $\octx \lframe{\n{A}}{\osim} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
-    it suffices to show that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\lframe{\n{A}}{\osim}}{\atmR{\lctx}'_R} \lctx$.
-
-    The proposition $\n{A}$ cannot be unified with $\atmL{\lctx}'_L$, so $\atmL{\lctx}'_L$ must be empty.
-    By output bisimulation, $\octx \lframe{\n{A}}{(\Reduces\rframe{\osim}{\atmR{\lctx}'_R})} \lctx' \atmR{\lctx}'_R$.
-    Because reduction is closed under framing, $\octx \Reduces\rframe{\lframe{\n{A}}{\osim}}{\atmR{\lctx}'_R} \lctx$.
-
-  \item[Immediate input bisimulation]
-    Assume that $\octx \lframe{\n{A}}{\osim} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$;
-    we must show that
-
-    $\lctx = \n{A} \oc \lctx_0$ and $\ireduces{#1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'_0}$ and $\lctx' = \n{A} \oc \lctx'_0$.
-    $\octx \oc \atmL{\lctx}_R \lframe{\n{A}}{(\Reduces\osim)} \lctx'$.
-    $\octx \oc \atmL{\lctx}_R \Reduces\lframe{\n{A}}{\osim} \lctx'$.
-
-  \item[Reduction bisimulation]
-    Assume that $\octx \lframe{\n{A}}{\osim}\reduces \lctx'$;
-    we must show that $\octx \Reduces\mathrel{(\lframe{\n{A}}{\osim} \union \osim)} \lctx'$.
-
-    \begin{itemize}
-    \item
-      Consider the case in which $\octx \lframe{\n{A}}{(\osim\reduces)} \lctx'$.
-      $\octx \lframe{\n{A}}{(\Reduces\osim)} \lctx'$.
-      Reduction is closed under framing, and so $\octx \Reduces\lframe{\n{A}}{\osim} \lctx'$, as required.
-
-    \item Consider the cae in which the reduction arises from $\n{A}$ -- that is, $\octx \lframe{\n{A}}{\osim} \n{A} \oc \atmL{\lctx}_R \oc \lctx'_R$ and $\ireduces{#1 \oc \atmL{\lctx}_R}{\n{A}}{\lctx'_0}$ and $\lctx' = \lctx'_0 \oc \lctx'_R$.
-      By immediate output bisimulation, $\octx \lframe{\n{A}}{(\Reduces\lframe{\atmL{\lctx}_R}{\osim})} \n{A} \oc \atmL{\lctx}_R \oc \lctx'_R$.
-      Because reduction is closeed under framing, $\octx \Reduces\lframe{(\n{A} \oc \atmL{\lctx}_R)}{\osim}\reduces \lctx'$.
-      $\octx \Reduces\lframe{(\n{A} \oc \atmL{\lctx}_R)}{\osim}\reduces \lctx'$.
-    \end{itemize}
-  \end{description}
+  Rewriting bisimilarity is symmetric by definition.
+  The relation $\osim\osim$ can be shown to be a bisimulation, so rewriting bisimilarity is also transitive.
 \end{proof}
 
 
-\begin{lemma}
-  Rewriting bisimilarity contains $\lframe{\p{A}}{\osim}$ and $\rframe{\osim}{\p{A}}$, for all propositions $\p{A}$.
+% \begin{equation*}
+%   \begin{lgathered}
+%     \congsimu*{\octxe}{\simu{R}} = \mathord{\simu{R}} \\
+%     \congsimu*{\lctx_L \oc \atmR{a}}{\simu{R}} = \mathord{\simu{S}}(\lctx_L, \lframe{\atmR{a}}{\simu{R}} \union \simu{R}) \\
+%     \mathord{\simu{S}}(\lctx_L \oc \atmL{a}, \simu{R}) = \mathord{\simu{S}}(\lctx_L, \lframe{\atmL{a}}{\simu{R}} \union \simu{R}) \\
+%     \congsimu*{\lctx_L \oc \n{A}}{\simu{R}} = \congsimu*{\lctx_L}{\lframe{\n{A}}{\simu{R}} \union \bigcup_{\lctx'} \congsimu*{\lctx'}{\simu{R}}}
+%   \end{lgathered}
+% \end{equation*}
+% Notice that $\congsimu*{\lctx_L}{\simu{R}}$ contains $\lframe{\lctx_L}{\simu{R}}$.
+
+% \begin{theorem}
+%   If $\simu{R}$ is a labeled bisimulation, then so is $\congsimu*{\lctx_L}{\simu{R}}$, for all contexts $\lctx_L$.
+% \end{theorem}
+% \begin{proof}
+%   By structural induction on the context $\lctx_L$.
+
+%   Assume that $\simu{R}$ is a labeled bisimulation;
+%   we must show that so is $\congsimu*{\lctx_L}{\simu{R}}$.
+%   \begin{itemize}[itemsep=\dimexpr\itemsep+\parsep\relax, parsep=0pt, listparindent=\parindent]
+%   \item Consider the case in which $\lctx_L = (\octxe)$.
+%     Because $\congsimu*{\octxe}{\simu{R}} = \mathord{\simu{R}}$, it is immediate that $\congsimu*{\octxe}{\simu{R}}$ is a labeled bisimulation.
+
+%   \item Consider the case in which $\lctx_L = \lctx'_L \oc \atmR{a}$.
+%     According to \cref{lem:single-input-atom}, $\lframe{\atmR{a}}{\simu{R}} \union \simu{R}$ is also a labeled bisimulation.
+%     By the inductive hypothesis, we conclude that $\congsimu*{\lctx'_L}{\lframe{\atmR{a}}{\simu{R}} \union \simu{R}} = \congsimu*{\lctx'_L \oc \atmR{a}}{\simu{R}}$ is a labeled bisimulation.
+
+%   \item Consider the case in which $\lctx_L = \lctx'_L \oc \atmL{a}$.
+%     We will show that $\lframe{\atmL{a}}{\simu{R}} \union \simu{R}$ is a labeled bisimulation.
+%     It will then follow from the inductive hypothesis that $\congsimu*{\lctx'_L}{\lframe{\atmL{a}}{\simu{R}} \union \simu{R}} = \congsimu*{\lctx'_L \oc \atmL{a}}{\simu{R}}$ is a labeled bisimulation.
+
+%     To show that $\lframe{\atmL{a}}{\simu{R}} \union \simu{R}$ is a labeled bisimulation, it suffices, according to \cref{??}, to show that $\lframe{\atmL{a}}{\simu{R}}$ progresses to $\lframe{\atmL{a}}{\simu{R}} \union \simu{R}$.
+%     \begin{description}
+%     \item[Immediate output bisimulation]
+%       Assume that $\octx \lframe{\atmL{a}}{\simu{R}} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
+%       we must show that $\octx \Reduces\lrframe[\bigl]{\atmL{\lctx}'_L}{\mathrel{(\lframe{\atmL{a}}{\simu{R}} \union \simu{R})}}{\atmR{\lctx}'_R} \lctx$.
+%       We distinguish cases on whether $\atmL{\lctx}'_L$ is empty.
+%       \begin{itemize}
+%       \item Consider the subcase in which $\atmL{\lctx}'_L$ is empty.
+%         Because $\atmL{a}$ cannot be unified with the right-directed atoms $\atmR{\lctx}'_R$, it must be that $\lctx'$ is nonempty.
+%         Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation property after framing off $\atmL{a}$ and deduce that $\octx \lframe[\bigl]{\atmL{a}}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_R})}} \lctx$.
+%         Reduction is closed under framing, so we conclude that $\octx \Reduces\rframe{\lframe{\atmL{a}}{\simu{R}}}{\atmR{\lctx}'_R} \lctx$, as required.
+
+%       \item Consider the subcase in which $\atmL{\lctx}'_L$ is nonempty -- that is, $\atmL{\lctx}'_L = \atmL{a} \oc \atmL{\lctx}''_L$ for some $\atmL{\lctx}''_L$.
+%         Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation property after framing off $\atmL{a}$ and deduce that $\octx \lframe[\bigl]{\atmL{a}}{\mathrel{(\Reduces\lrframe{\atmL{\lctx}''_L}{\simu{R}}{\atmR{\lctx}'_R})}} \lctx$.
+%         Reduction is closed under framing, so we conclude that $\octx \Reduces\lrframe[\bigl]{(\atmL{a} \oc \atmL{\lctx}''_L)}{\simu{R}}{\atmR{\lctx}'_R} \lctx$, as required.
+%       \end{itemize}
+%     \end{description}
+
+%   \item Consider the case in which $\lctx_L = \lctx'_L \oc \n{A}$.
+%     In this case, $\congsimu*{\lctx_L}{\simu{R}} = \mathord{\lframe{\n{A}}{\simu{R}} \union \simu{X}}$.
+%     \begin{description}
+%     \item[Reduction bisimulation]
+%       Assume that $\octx \lframe{\n{A}}{\simu{R}} \lctx \reduces \lctx'$;
+%       we must show that $\octx \Reduces\mathrel{(\lframe{\n{A}}{\simu{R}} \union \simu{X})} \lctx'$.
+%       \begin{itemize}
+%       \item Consider the case in which the given reduction arises from an input transition on $\n{A}$ -- that is, $\lctx = \n{A} \oc \atmL{\lctx}_R \oc \lctx_0$ and $\ireduces{#1 \oc \atmL{\lctx}_R}{\n{A}}{\lctx'_A}$ and $\lctx'_A \oc \lctx_0 = \lctx'$, for some $\atmL{\lctx}_R$, $\lctx_0$, and $\lctx'_A$.
+%         Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation property and deduce that $\octx \Reduces\lframe{(\n{A} \oc \atmL{\lctx}_R)}{\simu{R}} \lctx$.
+%         After carrying out the reduction involving $\n{A}$, we have $\octx \Reduces\reduces\lframe{\lctx'_A}{\simu{R}} \lctx'$.
+%         Because $\congsimu*{\lctx'_A}{\simu{R}}$ contains $\lframe{\lctx'_A}{\simu{R}}$, it follows that $\octx \Reduces\congsimu{\lctx'_A}{\simu{R}} \lctx'$.
+
+%         I would like to say that $\congsimu*{\lctx'_A}{\simu{R}}$ is a labeled bisimulation.
+%         But I don't see how to use the inductive hypothesis -- $\lctx'_A$ doesn't seem to be smaller than $\lctx_L$.
+%       \end{itemize}
+%     \end{description}
+%   \end{itemize}
+% \end{proof}
+
+
+At this point, we would like to prove, as a \lcnamecref{lem:ordered-bisimilarity:append-left}, that $\lframe{\lctx_L}{\simu{R}}$ is contained in some labeled bisimulation, for all contexts $\lctx_L$ and all labeled bisimulations $\simu{R}$.
+Ideally, the proof that proceeds by induction (or possibly coinduction), decomposing the context $\lctx_L$ and framing each antecedent of $\lctx_L$ onto the relation, one at a time.
+This would allow \cref{lem:single-input-atom} to be reused, and would also streamline other cases.
+
+Unfortunately, such a proof has been elusive so far.
+So, instead, we will prove the following \lcnamecref{lem:ordered-bisimilarity:append-left} by handling the context $\lctx_L$ all at once.
+The proof rehashes cases from \cref{lem:single-input-atom} and is not particularly enlightening beyond what was already presented there.
+For that reason, the majority of the following \lcnamecref{lem:ordered-bisimilarity:append-left}'s proof is postponed to \cref{app:bisim}.
+%
+\begin{lemma}\label{lem:ordered-bisimilarity:append-left}
+  If $\simu{R}$ is a labeled bisimulation, then, for each context $\lctx_L$, there exists a labeled bisimulation that contains $\lframe{\lctx_L}{\simu{R}}$.
 \end{lemma}
 \begin{proof}
-  By induction over the structure of $\p{A}$.
-  We show only the proof for $\lframe{\p{A}}{\osim}$; the proof for $\rframe{\osim}{\p{A}}$ is symmetric.
-
-  According to \cref{??}, it suffices to show that $\lframe{\p{A}}{\osim} \union \osim$ is a labeled bisimulation.
-  By \cref{??}, we need only show that $\lframe{\p{A}}{\osim}$ progresses to $\lframe{\p{A}}{\osim} \union \osim$.
-  Many of the cases follow the pattern laid out in the proof of \cref{??}, substituting $\p{A}$ for $\atmR{a}$; we show only the new cases.
+  Let $\mathord{\simu{S}}$ be the relation such that $\octx \simu{S} \lctx$ if, and only if, there exists a context $\lctx_L$ such that $\octx \lframe{\lctx_L}{\simu{R}} \lctx$.
+  We will show that $\simu{S}$ is a labeled bisimulation.
   \begin{description}
   \item[Immediate output bisimulation]
-    Assume that $\octx \lframe{\p{A}}{\osim} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
-    we must show that $\octx \Reduces\lrframe[\big]{\atmL{\lctx}'_L}{(\lframe{\p{A}}{\osim} \union \osim)}{\atmR{\lctx}'_R} \lctx$.
+    Assume that $\octx \lframe{\lctx_L}{\simu{R}} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
+    we must show that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{S}}{\atmR{\lctx}'_R} \lctx$.
+    We distinguish three cases according to where the right edge of $\lctx_L$ occurs in $\lctx$.
+    \begin{itemize}
+    \item Consider the case in which the right edge of $\lctx_L$ occurs in either $\atmL{\lctx}'_L$ or $\lctx'$ -- that is, the case in which $\atmL{\lctx}'_L = \lctx_L \oc \atmL{\lctx}''_L$ for some $\atmL{\lctx}''_L$.
+      Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation property after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\lrframe{\atmL{\lctx}''_L}{\simu{R}}{\atmR{\lctx}'_R})}} \lctx$.
+      Reduction is closed under framing, so we may conclude that $\octx \Reduces\lrframe[\big]{(\lctx_L \atmL{\lctx}''_L)}{\simu{R}}{\atmR{\lctx}'_R} \lctx$, as required.
 
-    Unlike in the proof of \cref{??}, here it is possible that $\p{A} = \atmL{a}$ with $\atmL{\lctx}'_L$ nonempty: $\atmL{\lctx}'_L = \atmL{a} \oc \atmL{\lctx}''_L$, for some $\atmL{\lctx}''_L$.
-    Because $\osim$ is a labeled bisimulation~\parencref{??}, we may appeal to its immediate output bisimulation property after framing $\atmL{a}$ and deduce that $\octx \lframe[\big]{\atmL{a}}{(\Reduces\lrframe{\atmL{\lctx}''_L}{\osim}{\atmR{\lctx}'_R})} \lctx$.
-    Reduction is closed under framing, so $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\osim}{\atmR{\lctx}'_R} \lctx$, as required.
+    \item Consider the case in which the right edge of $\lctx_L$ occurs in $\lctx'$ -- that is, the case in which $\lctx' = \lctx'_1 \oc \lctx'_2$ for some $\lctx'_1$ and $\lctx'_2$ such that $\lctx_L = \atmL{\lctx}'_L \oc \lctx'_1$.
+      Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation property after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_R})}} \lctx$.
+      Reduction is closed under framing, so $\octx \Reduces\lrframe[\big]{\atmL{\lctx}'_L}{\lframe{\lctx'_1}{\simu{R}}}{\atmR{\lctx}'_R} \lctx$, as required.
 
-    The other cases follow the pattern laid out in the proof of \cref{??}.
+    \item Consider the case in which the right edge of $\lctx_L$ occurs in $\atmR{\lctx}'_R$ -- that is, the case in which $\atmR{\lctx}'_R = \atmR{\lctx}'_{R1} \oc \atmR{\lctx}'_{R2}$ for some $\atmR{\lctx}'_{R1}$ and $\atmR{\lctx}'_{R2}$ such that $\lctx_L = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_{R1}$.
+      Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation properties after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_{R2}})}} \lctx$.
+      Reduction is closed under framing, so $\octx \Reduces\lrframe{\lctx_L}{\simu{R}}{\atmR{\lctx}'_{R2}} \lctx = \lctx_L \oc \atmR{\lctx}'_{R2}$.
+      We can also appeal to $\simu{R}$'s emptiness bisimulation property after framing off $(\atmL{\lctx}'_L \oc \lctx')$ and $\atmR{\lctx}'_{R2}$ and deduce that $\octx \Reduces\lrframe[\big]{(\atmL{\lctx}'_L \lctx')}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_{R1}})}}{\atmR{\lctx}'_{R2}} \lctx$.
+      Once again, reduction is closed under framing, so we conclude that $\octx \Reduces\lrframe[\big]{\atmL{\lctx}'_L}{\lframe{\lctx'}{\simu{R}}}{\atmR{\lctx}'_R} \lctx$, as required.
+    \end{itemize}
 
   \item[Immediate input bisimulation]
-    Assume that $\octx \lframe{\p{A}}{\osim} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$;
-    we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\mathrel{\bigl(\lframe{\p{A}}{\osim} \union \osim\bigr)} \lctx'$.
+    Assume that $\octx \lframe{\lctx_L}{\simu{R}} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$;
+    we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{S} \lctx'$.
 
-    All cases here follow the pattern laid out in the proof of \cref{??}.
-    
+    According to 
+    \begin{itemize}
+    \item 
+      Consider the case in which $\lctx_L$ only consists of (possibly zero) right-directed messages.
+      In this case, an input transition $\ireduces{\atmR{\lctx}_L \oc \lctx_L \oc #1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'}$ exists, for some $\lctx_0$ such that $\octx \lframe{\lctx_L}{\simu{R}} \lctx_L \oc \lctx_0 = \lctx$.
+      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property to deduce that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$, as required.
+
+    \item
+      Consider the case in which some part of $\lctx_L$ does not participate in the input transition -- that is, the case in which $\lctx_L = \lctx'_L \oc \atmR{\lctx}'_L$ and $\atmR{\lctx}_L$ is empty and $\ireduces{\atmR{\lctx}'_L \oc #1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'_0}$ and $\lctx'_L \oc \lctx'_0 = \lctx'$.
+      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property after framing off $\lctx'_L$ and deduce that $\octx \oc \atmL{\lctx}_R \lframe{\lctx'_L}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
+      Reduction is closed under framing, so we conclude that $\octx \oc \atmL{\lctx}_R \Reduces\lframe{\lctx'_L}{\simu{R}} \lctx'$, as required.
+    \end{itemize}
+
   \item[Reduction bisimulation]
-    Assume that $\octx \lframe{\p{A}}{\osim}\reduces \lctx'$;
-    we must show that $\octx \Reduces\mathrel{(\lframe{\p{A}}{\osim} \union \osim)} \lctx'$.
-
-    As in the proof of \cref{??}, we distinguish cases based on the origin of the reduction.
-    Here, there are three new cases because the reduction might originate from $\p{A}$; the other cases follow the pattern laid out in the proof of \cref{??}.
+    Assume that $\octx \lframe{\lctx_L}{\simu{R}} \lctx \reduces \lctx'$;
+    we must show that $\octx \Reduces\simu{S} \lctx'$.
+    We distinguish cases on the origin of the given reduction.
     \begin{itemize}
     \item
-      Consider the case in which $\p{A} = \p{A}_1 \fuse \p{A}_2$ and $\octx \lframe{\p{A}}{\osim} (\p{A}_1 \fuse \p{A}_2) \oc \lctx_0 \reduces \p{A}_1 \oc \p{A}_2 \oc \lctx_0 = \lctx'$ for some $\lctx_0$.
-      Notice that $\octx \reduces\lframe{\p{A}_1}{\lframe{\p{A}_2}{\osim}} \lctx'$.
-      By appealing to the inductive hypothesis for $\p{A}_2$, we deduce that rewriting bisimilarity contains $\lframe{\p{A}_2}{\osim}$, and so $\octx \reduces\lframe{\p{A}_1}{\osim} \lctx'$.
-      Similar reasoning for $\p{A}_1$ allows us to conclude that $\octx \reduces\osim \lctx'$, as required.
+      Consider the case in which the reduction arises from the $\simu{R}$-related component alone -- that is, the case in which $\octx \lframe[\big]{\lctx_L}{\mathrel{(\simu{R}\reduces)}} \lctx'$.
+      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its reduction bisimulation property after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
+      Reduction is closed under framing, so we may conclude that $\octx \Reduces\lframe{\lctx_L}{\simu{R}} \lctx'$, as required.
 
     \item
-      Consider the case in which $\p{A} = \one$ and $\octx \lframe{\p{A}}{\osim} \one \oc \lctx' \reduces \lctx'$.
-      Notice that $\octx \reduces\osim \lctx'$, as required.
-
-    \item
-      Consider the case in which $\p{A} = \n{A}_0$ and $\octx \lframe[\big]{\p{A}}{\osim} \dn \n{A}_0 \oc \atmL{\lctx}_L \oc \lctx'_0 \reduces \p{C} \oc \lctx'_0 = \lctx'$ because $\lfocus{}{\n{A}_0}{\atmL{\lctx}_L}{\p{C}}$.
-      Because $\osim$ is a labeled bisimulation~\parencref{??}, we may appeal to immediate output bisimulation property after framing off $\dn \n{A}_0$ and deduce that $\octx \lframe[\big]{\p{A}}{(\Reduces\lframe{\atmL{\lctx}_L}{\osim})} \dn \n{A}_0 \oc \atmL{\lctx}_L \oc \lctx'_0$.
-      Reduction is closed under framing, so $\octx \Reduces\lframe[\big]{(\dn \n{A} \oc \atmL{\lctx}_L)}{\osim} \dn \n{A} \oc \atmL{\lctx}_L \oc \lctx'_0$.
-      We can insert the reduction $\dn \n{A} \oc \atmL{\lctx}_L \reduces \p{C}$ and arrive at $\octx \Reduces\lframe{\p{C}}{\osim} \p{C} \oc \lctx'_0 = \lctx'$.
-      The proposition $\p{C}$ is a subformula of $\dn \n{A}$, so, by the inductive hypothesis, $\lframe{\p{C}}{\osim}$ is contained within $\osim$.
-      It follows that $\octx \Reduces\osim \lctx'$, as required. 
+      Consider the case in which the reduction arises from an input transition on the $\simu{R}$-related component -- that is, the case in which $\lctx_L = \lctx'_L \oc \atmR{\lctx}_L$ and $\ireduces{\atmR{\lctx}_L \oc #1}{\lctx}{\lctx'_0}$ and $\lctx'_L \oc \lctx'_0 = \lctx'$ for some contexts $\lctx'_L$, $\atmR{\lctx}_L$, and $\lctx'_0$.
+      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its reduction bisimulation property after framing off $\lctx'_L$ and deduce that $\octx \lframe[\big]{\lctx'_L}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
+      Reduction is closed under framing, so we may conclude that $\octx \Reduces\lframe{\lctx'_L}{\simu{R}} \lctx'$, as required.
     \end{itemize}
 
   \item[Emptiness bisimulation]
-    Assume that $\octx \lframe{\p{A}}{\osim} \octxe$.
-    As before, this is impossible.
+    Assume that $\octx \lframe{\lctx_L}{\simu{R}} (\octxe)$;
+    we must show that:
+    $\atmR{\lctx} \oc \octx \Reduces\rframe{\simu{S}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$; and $\octx \oc \atmL{\lctx} \lframe{\atmL{\lctx}}{\simu{S}} \atmL{\lctx}$ for all $\atmL{\lctx}$.
+
+    It can only be that $\lctx_L$ is empty, and so $\octx \simu{R} (\octxe)$.
+    Because $\simu{R}$ is a labeled bisimulation, it follows that: $\atmR{\lctx} \oc \octx \Reduces\rframe{\simu{R}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$; and $\octx \oc \atmL{\lctx} \lframe{\atmL{\lctx}}{\simu{R}} \atmL{\lctx}$ for all $\atmL{\lctx}$.
   %
   \qedhere
   \end{description}
 \end{proof}
+
+
+
+% \begin{theorem} 
+  
+% \end{theorem}
+% \begin{proof}
+%   \begin{equation*}
+%     \mathord{\simu{R}} = \Set{ (\lctx_L \oc \octx, \lctx_L \oc \lctx) \given \octx \osim \lctx }
+%   \end{equation*}
+%   \begin{description}
+%   \item[Immediate output bisimulation]
+%     Assume that $\lctx_L \oc \octx \simu{R} \lctx_L \oc \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
+%     we must show that $\lctx_L \oc \octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \lctx_L \oc \lctx$.
+    
+%   \end{description}
+% \end{proof}
+
+% \begin{theorem}
+%   \begin{itemize}
+%   \item If $\simu{R}$ is a labeled bisimulation, then, for each context $\lctx_L$, there exists a labeled bisimulation that contains $\lframe{\lctx_L}{\simu{R}}$.
+%   \item If $\simu{R}$ is a labeled bisimulation, then for each $\oante$ there exists a labeled bisimulation that contains $\lframe{\oante}{\simu{R}}$.
+%   \end{itemize}
+% \end{theorem}
+% \begin{proof}
+%   If $\lctx$ is empty, we are done.
+%   Otherwise, $\lctx$ ends with some $\oante$.
+%   \begin{itemize}
+%   \item If $\oante$ is $\atmR{a}$, then $\lframe{\atmR{a}}{\simu{R}} \union \simu{R}$ is a labeled bisimulation.
+%     By the inductive hypothesis, there exists a labeled bisimulation that contains $\lframe{\lctx}{\simu{R}} \union \lframe{\lctx_0}{\simu{R}}$.
+%   \item If $\oante$ is $\atmL{a}$, then $\lframe{\atmL{a}}{\simu{R}}$
+%   \end{itemize}
+
+%   Let $\simu{S}$ be the relation 
+%   \begin{equation*}
+%     \mathord{\simu{S}}(\oante) =
+%       \begin{cases*}
+%         \lframe{\atmR{a}}{\simu{R}} \union \simu{R} & if $\oante = \atmR{a}$ \\
+%         \lframe{\atmL{a}}{\simu{R}} \union \simu{R} & if $\oante = \atmL{a}$ \\
+%         \lframe{\n{A}}{\simu{R}} \union \simu{R} & if $\oante = \n{A}$
+%       \end{cases*}
+%   \end{equation*}
+% \end{proof}
+
+% $\osim$ is a labeled bisimulation.
+% So are $\lframe{\atmR{a}}{\osim} \union \osim$ and $\rframe{\osim}{\atmL{a}} \union \osim$.
+% So $\osim$ contains them.
+% In particular, $\osim$ contains $\lframe{\atmR{a}}{\osim}$ and symmetrically.
+
+% It suffices to show that $\lframe{\n{A}}{\osim} \union \osim$ and $\rframe{\osim}{\n{A}} \union \osim$.
+
+% $\octx \lframe{\n{A}}{\simu{R}} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$
+
+
+% \begin{theorem}
+%   \begin{itemize}
+%   \item If $\simu{R}$ is a labeled bisimulation, then so are $\lframe{\oante}{\simu{R}} \union \simu{R}$ and $\rframe{\simu{R}}{\oante} \union \simu{R}$, for all $\oante$.
+%   \item If $\simu{R}$ is a labeled bisimulation, then so are $\lframe{\lctx_L}{\simu{R}} \union \simu{R}$ and $\rframe{\simu{R}}{\lctx_R} \union \simu{R}$, for all $\lctx_L$ and $\lctx_R$, respectively.
+%   \end{itemize}
+% \end{theorem}
+% \begin{proof}
+%   $\lctx = \oante_1 \oc \oante_2 \dotsm \oante_n$
+%   and $\lctx_0^n = (\octxe)$ and $\lctx_{i+1}^n = \oante_{n-i} \lctx_i$
+%   and $\lctx = \lctx_n^n$.
+
+%   If $\simu{R}$ is a labeled bisimulation, then so is $\bigcup_{i=0}^n \lframe{\lctx_i^n}{\simu{R}}$.
+
+%   By the inductive hypothesis, $\bigcup_{i=0}^n \lframe{\lctx_i}{\simu{R}}$ is a labeled bisimulation.
+
+  
+%   $\bigcup_{i=2}^n \lframe{\lctx_i}{\simu{R}}$ is a labeled bisimulation.
+  
+
+%   $\lctx_L = \oante \oc \lctx'_L$.
+%   By the inductive hypothesis, $\lframe{\lctx'_L}{\simu{R}} \union \simu{R}$ is a labeled bisimulation.
+%   $\mathord{\lframe{\lctx_L}{\simu{R}}} \union \mathord{\lframe{\oante}{\simu{R}}} \union \mathord{\simu{R}}$ is a labeled bisimulation.
+  
+
+%   Let $\simu{R}$ be a labeled bisimulation.
+%   We shall prove that $\lframe{\n{A}}{\simu{R}} \union \simu{R}$ is a labeled bisimulation;
+%   the proof for $\rframe{\simu{R}}{\n{A}} \union \simu{R}$ is symmetric.
+
+%   If $\oante = $
+
+%   \begin{description}
+%   \item[Immediate output bisimulation]
+%     Assume that $\octx \lframe{\oante}{\simu{R}} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
+%     we must show that $\octx \Reduces\lrframe[\big]{\atmL{\lctx}'_L}{\mathrel{(\lframe{\oante}{\simu{R}} \union \simu{R})}}{\atmR{\lctx}'_R} \lctx$.
+%     \begin{itemize}
+%     \item Consider the case in which $\oante$ is a negative proposition -- \ie, $\oante = \n{A}$, for some $\n{A}$.
+%       Because the proposition $\n{A}$ cannot be unified with the output atoms $\atmL{\lctx}'_L$, the context $\atmL{\lctx}'_L$ must be empty.
+%       Moreover, because $\n{A}$ cannot be unified with the output atoms $\atmR{\lctx}'_R$, the context $\lctx'$ must be \emph{non}empty -- that is, the proposition $\n{A}$ must occur at the left edge of $\lctx'$.
+%       Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate output bisimulation property after framing off $\n{A}$ and deduce that $\octx \lframe{\n{A}}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_R})}} \lctx$.
+%       Reduction is closed under framing, so we conclude that $\octx \Reduces\rframe{\lframe{\n{A}}{\simu{R}}}{\atmR{\lctx}'_R} \lctx$, as required.
+
+%     \item Consider the case in which $\oante$ is a left-directed atom -- \ie, $\oante = \atmL{a}$ for some $\atmL{a}$.
+%       Unlike negative propositions, the atom $\atmL{a}$ can be unified with the output atoms $\atmL{\lctx}_L$.
+%       By the same reasoning as 
+%     \end{itemize}
+
+%   \item[Immediate input bisimulation]
+%     Assume that $\octx \lframe{\oante}{\simu{R}} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$;
+%     we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\mathrel{(\lframe{\oante}{\simu{R}} \union \simu{R})} \lctx'$.
+
+%     According to \cref{??}, $\oante$ cannot participate in the given input transition.
+%     That is, $\atmR{\lctx}_L$ is empty and $\octx \lframe{\oante}{\simu{R}} \oante \oc \lctx_0 = \lctx$ and $\ireduces{#1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'_0}$ and $\lctx' = \oante \oc \lctx'_0$, for some contexts $\lctx_0$ and $\lctx'_0$.
+%     Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property after framing off $\oante$ and deduce that $\octx \oc \atmL{\lctx}_R \lframe{\oante}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
+%     Reduction is closed under framing, so we conclude that $\octx \oc \atmL{\lctx}_R \Reduces\lframe{\oante}{\simu{R}} \lctx'$, as required.
+
+%   \item[Reduction bisimulation]
+%     Assume that $\octx \lframe{\oante}{\simu{R}}\reduces \lctx'$ holds;
+%     we must show that $\octx \Reduces\mathrel{(\lframe{\oante}{\simu{R}} \union \simu{R})} \lctx'$.
+%     We distinguish cases on the origin of the given reduction.
+%     \begin{itemize}
+%     \item Consider the case in which the reduction arises from the $\simu{R}$-related component alone -- that is, the case in which $\octx \lframe{\oante}{\mathrel{(\simu{R}\reduces)}} \lctx'$.
+%       Because $\simu{R}$ is a labeled bisimulation, we may appeal to its reduction bisimulation property after framing off $\oante$ and deduce that $\octx \lframe{\oante}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
+%       Reduction is closed under framing, so we conclude that $\octx \Reduces\lframe{\oante}{\simu{R}} \lctx'$, as required.
+
+%     \item Consider the case in which the reduction arises from an input transition on the $\simu{R}$-related conponent -- $\octx \lframe{\oante}{\simu{R}} \oante \oc \lctx_0$
+
+%     \item Consider the case in which $\oante = \n{A}$ for some negative proposition $\n{A}$ and the reduction arises from $\n{A}$ -- that is, the case in which $\octx \lframe{\n{A}}{\simu{R}} \n{A} \oc \atmL{\lctx}_L \oc \lctx_0 = \lctx$ and $\ireduces{#1 \oc \atmL{\lctx}_L}{\n{A}}{\lctx'_L}$ and $\lctx'_L \oc \lctx_0 = \lctx'$, for some contexts $\atmL{\lctx}_L$ and $\lctx'_L$.
+%       Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate output bisimulation property after framing off $\n{A}$ and deduce that $\octx \lframe{\n{A}}{\mathrel{(\Reduces\lframe{\atmL{\lctx}_L}{\simu{R}})}} \lctx$.
+
+%       $\octx_0 \Reduces\lframe{\atmL{\lctx}_L}{\simu{R}} \atmL{\lctx}_L \oc \lctx_0$.
+%       $\n{A} \oc \octx_0 \Reduces\reduces \lctx'_L \oc \octx'_0 \lframe{\lctx'_L}{\simu{R}} \lctx'$
+
+%       Reduction is closed under framing, so $\octx \Reduces\lframe{(\n{A} \oc \atmL{\lctx}_L)}{\simu{R}} \lctx$.
+%       Owing to the input transition on $\n{A}$, we can $\octx \Reduces\reduces\lframe{\lctx'_L}{\simu{R}} \lctx'$.
+
+%     \item Consider the case in which $\octx = \n{A} \oc \octx_R \lframe{\n{A}}{\simu{R}} \n{A} \oc (\atmL{\lctx}_L \oc \lctx_0) = \lctx$ and $\ireduces{#1 \oc \atmL{\lctx}_L}{\n{A}}{\lctx'_L}$.
+%       We must show that $\octx \Reduces\mathrel{(\lframe{\n{A}}{\simu{R}} \union \simu{R})} \lctx'_L \oc \lctx_0 = \lctx'$.
+
+%       By output bisimulation, $\octx_R \Reduces\lframe{\atmL{\lctx}_L}{\simu{R}} \atmL{\lctx}_L \oc \lctx_0$.
+%       Framing $\n{A}$ on, $\n{A} \oc \octx_R \Reduces\lframe{(\n{A} \oc \atmL{\lctx}_L)}{\simu{R}} \n{A} \oc \atmL{\lctx}_L \oc \lctx_0$.
+%       We can append a reduction: $\n{A} \oc \octx_R \Reduces\lframe{(\n{A} \oc \atmL{\lctx}_L)}{\simu{R}} \n{A} \oc \atmL{\lctx}_L \oc \lctx_0 \reduces \lctx'_L \oc \lctx_0$.
+%       Therefore, $\n{A} \oc \octx_R \Reduces\lframe{\lctx'_L}{\simu{R}} \lctx'_L \oc \lctx_0 = \lctx'$.
+
+%     \item The case in which $\oante = \atmL{a}$ for some left-directed atom $\atmL{a}$ and the reduction arises from $\oante$ is 
+%     \end{itemize}
+
+
+%   \item[Emptiness bisimulation]
+%     Assume that $\octx \lframe{\oante}{\simu{R}} (\octxe)$.
+%     This is, in fact, impossible because the empty context does not contain $\oante$.
+%   \end{description}
+
+
+%   \begin{description}
+%   \item[Immediate output bisimulation]
+%     Assume that $\octx \lframe{\n{A}}{\simu{R}} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
+%     we must show that $\octx \Reduces\lrframe[\big]{\atmL{\lctx}'_L}{\mathrel{(\lframe{\n{A}}{\simu{R}} \union \simu{R})}}{\atmR{\lctx}'_R} \lctx$.
+
+%     Because the proposition $\n{A}$ cannot be unified with the output atoms $\atmL{\lctx}'_L$, the context $\atmL{\lctx}'_L$ must be empty.
+%     Moreover, because $\n{A}$ cannot be unified with the output atoms $\atmR{\lctx}'_R$, the context $\lctx'$ must be \emph{non}empty -- that is, the proposition $\n{A}$ must occur at the left edge of $\lctx'$.
+%     Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate output bisimulation property after framing off $\n{A}$ and deduce that $\octx \lframe{\n{A}}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_R})}} \lctx$.
+%     Reduction is closed under framing, so we conclude that $\octx \Reduces\rframe{\lframe{\n{A}}{\simu{R}}}{\atmR{\lctx}'_R} \lctx$, as required.
+
+%   \item[Immediate input bisimulation]
+%     Assume that $\octx \lframe{\n{A}}{\simu{R}} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$;
+%     we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\mathrel{(\lframe{\n{A}}{\simu{R}} \union \simu{R})} \lctx'$.
+
+%     According to \cref{??}, $\n{A}$ does not participate in the given input transition.
+%     That is, $\atmR{\lctx}_L$ is empty and $\octx \lframe{\n{A}}{\simu{R}} \n{A} \oc \lctx_0 = \lctx$ and $\ireduces{#1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'_0}$ and $\lctx' = \n{A} \oc \lctx'_0$, for some contexts $\lctx_0$ and $\lctx'_0$.
+%     Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property after framing off $\n{A}$ and deduce that $\octx \oc \atmL{\lctx}_R \lframe{\n{A}}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
+%     Reduction is closed under framing, so we conclude that $\octx \oc \atmL{\lctx}_R \Reduces\lframe{\n{A}}{\simu{R}} \lctx'$, as required.
+
+%   \item[Reduction bisimulation]
+%     Assume that $\octx \lframe{\n{A}}{\simu{R}}\reduces \lctx'$ holds;
+%     we must show that $\octx \Reduces\mathrel{(\lframe{\n{A}}{\simu{R}} \union \simu{R})} \lctx'$.
+
+%   \item[Emptiness bisimulation]
+%     Assume that $\octx \lframe{\n{A}}{\simu{R}} (\octxe)$.
+%     This is, in fact, impossible because the empty context does not contain $\n{A}$.
+%   \end{description}
+% \end{proof}
+
+\begin{theorem}
+  If $\octx_1 \osim \lctx_1$ and $\octx_2 \osim \lctx_2$, then $\octx_1 \oc \octx_2 \osim \lctx_1 \oc \lctx_2$.
+\end{theorem}
+\begin{proof}
+  Assume that $\octx_1 \osim \lctx_1$ and $\octx_2 \osim \lctx_2$.
+  Notice that $\octx_1 \oc \octx_2 \lframe{\octx_1}{\osim} \octx_1 \oc \lctx_2 \rframe{\osim}{\lctx_2} \lctx_1 \oc \lctx_2$.
+
+  Rewriting bisimilarity is a labeled bisimulation~\parencref{thm:ordered-bisimilarity:labeled-complete}.
+  By \cref{lem:ordered-bisimilarity:append-left}, there exists a labeled bisimulation that contains $\lframe{\octx_1}{\osim}$.
+  According to \cref{thm:labeled-proof-technique}, rewriting bisimilarity therefore contains $\lframe{\octx_1}{\osim}$.
+  By symmetric reasoning, rewriting bisimilarity must also contain $\rframe{\osim}{\lctx_2}$.
+
+  Applying these to the previous observation, $\octx_1 \oc \octx_2 \osim \octx_1 \oc \lctx_2 \osim \lctx_1 \oc \lctx_2$.
+  Because rewriting bisimilarity is transitive~\parencref{thm:ordered-bisimilarity:equivalence}, we conclude that $\octx_1 \oc \octx_2 \osim \lctx_1 \oc \lctx_2$.
+\end{proof}
+
+\begin{corollary}
+  Rewriting bisimilarity is a congruence.
+\end{corollary}
+
+% \begin{lemma}
+%   Rewriting bisimilarity contains $\lframe{\p{A}}{\osim}$ and $\rframe{\osim}{\p{A}}$, for all propositions $\p{A}$.
+% \end{lemma}
+% \begin{proof}
+%   By induction over the structure of $\p{A}$.
+%   We show only the proof for $\lframe{\p{A}}{\osim}$; the proof for $\rframe{\osim}{\p{A}}$ is symmetric.
+
+%   According to \cref{??}, it suffices to show that $\lframe{\p{A}}{\osim} \union \osim$ is a labeled bisimulation.
+%   By \cref{??}, we need only show that $\lframe{\p{A}}{\osim}$ progresses to $\lframe{\p{A}}{\osim} \union \osim$.
+%   Many of the cases follow the pattern laid out in the proof of \cref{??}, substituting $\p{A}$ for $\atmR{a}$; we show only the new cases.
+%   \begin{description}
+%   \item[Immediate output bisimulation]
+%     Assume that $\octx \lframe{\p{A}}{\osim} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
+%     we must show that $\octx \Reduces\lrframe[\big]{\atmL{\lctx}'_L}{(\lframe{\p{A}}{\osim} \union \osim)}{\atmR{\lctx}'_R} \lctx$.
+
+%     Unlike in the proof of \cref{??}, here it is possible that $\p{A} = \atmL{a}$ with $\atmL{\lctx}'_L$ nonempty: $\atmL{\lctx}'_L = \atmL{a} \oc \atmL{\lctx}''_L$, for some $\atmL{\lctx}''_L$.
+%     Because $\osim$ is a labeled bisimulation~\parencref{??}, we may appeal to its immediate output bisimulation property after framing $\atmL{a}$ and deduce that $\octx \lframe[\big]{\atmL{a}}{(\Reduces\lrframe{\atmL{\lctx}''_L}{\osim}{\atmR{\lctx}'_R})} \lctx$.
+%     Reduction is closed under framing, so $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\osim}{\atmR{\lctx}'_R} \lctx$, as required.
+
+%     The other cases follow the pattern laid out in the proof of \cref{??}.
+
+%   \item[Immediate input bisimulation]
+%     Assume that $\octx \lframe{\p{A}}{\osim} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$;
+%     we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\mathrel{\bigl(\lframe{\p{A}}{\osim} \union \osim\bigr)} \lctx'$.
+
+%     All cases here follow the pattern laid out in the proof of \cref{??}.
+    
+%   \item[Reduction bisimulation]
+%     Assume that $\octx \lframe{\p{A}}{\osim}\reduces \lctx'$;
+%     we must show that $\octx \Reduces\mathrel{(\lframe{\p{A}}{\osim} \union \osim)} \lctx'$.
+
+%     As in the proof of \cref{??}, we distinguish cases based on the origin of the reduction.
+%     Here, there are three new cases because the reduction might originate from $\p{A}$; the other cases follow the pattern laid out in the proof of \cref{??}.
+%     \begin{itemize}
+%     \item
+%       Consider the case in which $\p{A} = \p{A}_1 \fuse \p{A}_2$ and $\octx \lframe{\p{A}}{\osim} (\p{A}_1 \fuse \p{A}_2) \oc \lctx_0 \reduces \p{A}_1 \oc \p{A}_2 \oc \lctx_0 = \lctx'$ for some $\lctx_0$.
+%       Notice that $\octx \reduces\lframe{\p{A}_1}{\lframe{\p{A}_2}{\osim}} \lctx'$.
+%       By appealing to the inductive hypothesis for $\p{A}_2$, we deduce that rewriting bisimilarity contains $\lframe{\p{A}_2}{\osim}$, and so $\octx \reduces\lframe{\p{A}_1}{\osim} \lctx'$.
+%       Similar reasoning for $\p{A}_1$ allows us to conclude that $\octx \reduces\osim \lctx'$, as required.
+
+%     \item
+%       Consider the case in which $\p{A} = \one$ and $\octx \lframe{\p{A}}{\osim} \one \oc \lctx' \reduces \lctx'$.
+%       Notice that $\octx \reduces\osim \lctx'$, as required.
+
+%     \item
+%       Consider the case in which $\p{A} = \n{A}_0$ and $\octx \lframe[\big]{\p{A}}{\osim} \dn \n{A}_0 \oc \atmL{\lctx}_L \oc \lctx'_0 \reduces \p{C} \oc \lctx'_0 = \lctx'$ because $\lfocus{}{\n{A}_0}{\atmL{\lctx}_L}{\p{C}}$.
+%       Because $\osim$ is a labeled bisimulation~\parencref{??}, we may appeal to immediate output bisimulation property after framing off $\dn \n{A}_0$ and deduce that $\octx \lframe[\big]{\p{A}}{(\Reduces\lframe{\atmL{\lctx}_L}{\osim})} \dn \n{A}_0 \oc \atmL{\lctx}_L \oc \lctx'_0$.
+%       Reduction is closed under framing, so $\octx \Reduces\lframe[\big]{(\dn \n{A} \oc \atmL{\lctx}_L)}{\osim} \dn \n{A} \oc \atmL{\lctx}_L \oc \lctx'_0$.
+%       We can insert the reduction $\dn \n{A} \oc \atmL{\lctx}_L \reduces \p{C}$ and arrive at $\octx \Reduces\lframe{\p{C}}{\osim} \p{C} \oc \lctx'_0 = \lctx'$.
+%       The proposition $\p{C}$ is a subformula of $\dn \n{A}$, so, by the inductive hypothesis, $\lframe{\p{C}}{\osim}$ is contained within $\osim$.
+%       It follows that $\octx \Reduces\osim \lctx'$, as required. 
+%     \end{itemize}
+
+%   \item[Emptiness bisimulation]
+%     Assume that $\octx \lframe{\p{A}}{\osim} \octxe$.
+%     As before, this is impossible.
+%   %
+%   \qedhere
+%   \end{description}
+% \end{proof}
 
 % \begin{itemize}
 % \item Assume that $\octx \lframe{\p{A}}{\osim} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
@@ -2014,53 +2309,35 @@ $\atmR{\lctx}_L \oc \atmL{a} \oc \octx \oc \atmL{\lctx}_R \Reduces\lframe{(\atmR
 %     Assume that $\octx \lframe{\p{A}}{\simu{R}} \octxe$.
 %     This is, in fact, impossible because the empty context does not contain $\p{A}$.
 %   \end{description}
-v% \end{proof}
+% \end{proof}
 
 
-\begin{theorem}
-  If $\octx \osim \lctx$, then $\octx_L \oc \octx \oc \octx_R \osim \octx_L \oc \lctx \oc \octx_R$ for all $\octx_L$ and $\octx_R$.
-\end{theorem}
-\begin{proof}
-  By induction on the structures of $\octx_L$ and $\octx_R$, appealing to \cref{??}.
-\end{proof}
+% \begin{theorem}
+%   If $\octx \osim \lctx$, then $\octx_L \oc \octx \oc \octx_R \osim \octx_L \oc \lctx \oc \octx_R$ for all $\octx_L$ and $\octx_R$.
+% \end{theorem}
+% \begin{proof}
+%   By induction on the structures of $\octx_L$ and $\octx_R$, appealing to \cref{??}.
+% \end{proof}
 
 
-\begin{theorem}[Reduction closure]
-  Let $\simu{R}$ be a rewriting bisimulation.
-  Then $\simu{R}$ is reduction-closed: $\octx \simu{R}\Reduces \lctx'$ implies $\octx \Reduces\simu{R} \lctx'$.
-\end{theorem}
-%
-\begin{proof}
-  Reduction closure follows immediately as the trivial instance of either the output or input bisimulation properties.
-\end{proof}
+% \begin{theorem}[Reduction closure]
+%   Let $\simu{R}$ be a rewriting bisimulation.
+%   Then $\simu{R}$ is reduction-closed: $\octx \simu{R}\Reduces \lctx'$ implies $\octx \Reduces\simu{R} \lctx'$.
+% \end{theorem}
+% %
+% \begin{proof}
+%   Reduction closure follows immediately as the trivial instance of either the output or input bisimulation properties.
+% \end{proof}
 
 
 
 
-\subsection{Counterexample}
+\clearpage
+\section{Example of rewriting bisimilarity: \Aclp*{NFA}}\label{sec:ordered-bisimilarity:nfa}
 
-
-This definition is too fine, ruling out desirable equivalences.
-For example, $e \oc b_0 \not\osim e$.
-Suppose, for the sake of deriving a contradiction, that $e \oc b_0 \osim e$.
-Because $e \oc b_0 \oc \atm{d} \Reduces \atm{z} \oc b'_0$, it follows from input bisimilarity that $e \oc \atm{d} \Reduces\miso \atm{z} \oc b'_0$.
-So either $\atm{z} \oc b'_0 \osim e \oc \atm{d}$ or $\atm{z} \oc b'_0 \osim \atm{z}$.
-The former is impossible because $\atm{z} \oc b'_0$ cannot produce $\atm{d}$ on the right\footnote{Nor, in fact, on the left.} and so violates output bisimilarity.
-
-The latter is also impossible.
-It has an output of $\atm{z}$ on the left of $\atm{z} \oc b'_0$, from which output bisimilarity yields $b'_0 \osim \octxe$.
-From input bisimilarity, $b'_0 \oc \atm{a} \osim \atm{a}$ follows, for any $\atm{a}$.
-And, that violates output bisimilarity because $b'_0 \oc \atm{a}$, which does not reduce, cannot match the left output that $\atm{a}$ makes.
-
-The key feature of this counterexample is that atoms' lack of direction means that the output bisimilarity condition also applies to atoms intended to act as inputs ($\atm{d}$ and $\atm{a}$, for instance).
-
-
-\section{Example of rewriting bisimilarity: \Aclp*{NFA}}
-
-Recall from \cref{??} the conjecture that bisimilar \ac{NFA} states have bisimilar encodings and vice versa.
-This will allow us to rephrase soundness and completeness of the \ac{NFA} choreography in a properly stratified way: $\atmR{a} \oc \defp{q} \reduces_{\orsig}\osim \defp{q}'$ if, and only if, $q \nfareduces[a]\asim q'$.
-
-More precisely, we will prove the following \lcnamecref{??}.
+Recall from \cref{sec:formula-as-process:nfa-bisim} the conjecture that bisimilar \ac{NFA} states have bisimilar encodings and vice versa.
+Once established, this will allow us to rephrase soundness and completeness of the \ac{NFA} choreography in a properly stratified way: $\atmR{a} \oc \defp{q} \reduces_{\orsig}\osim \defp{q}'$ if, and only if, $q \nfareduces[a]\asim q'$.
+More precisely, we will prove the following \lcnamecref{thm:nfa-bisim-osim}.
 \begin{restatable*}[
   label=thm:nfa-bisim-osim
 ]{theorem}{thmnfabisim}
@@ -2068,7 +2345,7 @@ More precisely, we will prove the following \lcnamecref{??}.
   Then $q \asim s$ if, and only if, $\nfa{q} \osim \nfa{s}$ for all states $q$ and $s$.
 \end{restatable*}
 \noindent
-Before proving this statement, we need a few \lcnamecref{lem:a-succ-bisim,lem:final-bisim}.
+Before proving this statement, we need a few \lcnamecrefs{lem:a-succ-bisim}.
 %
 % \begin{lemma}\label{lem:nfa-reduces}
 %   For all states $q$:
@@ -2086,12 +2363,13 @@ Before proving this statement, we need a few \lcnamecref{lem:a-succ-bisim,lem:fi
 %   Otherwise, if the rewriting sequence is trivial, the desired result is immediate.
 % \end{proof}
 %
-\noindent
+
+% \noindent
 These results hold only because the formula-as-process ordered rewriting framework is focused;
 under an unfocused rewriting framework, $\defp{q}$ would admit rewritings, such as $\defp{q} \Reduces \atmR{\eow} \limp \atmR{F}(q)$, and $\atmR{a} \oc \defp{q}$ would admit rewritings to contexts other than encodings of $a$-successors.
 
 
-\begin{lemma}\label{lem:a-succ-bisim}
+\begin{lemma}\label{lem:a-succ-bisim}\label{lem:nfa-latent}\label{lem:final-bisim}
   Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over the alphabet $\ialph$.
   Then:
   \begin{itemize}[nosep]
@@ -2112,18 +2390,19 @@ under an unfocused rewriting framework, $\defp{q}$ would admit rewritings, such 
   \begin{itemize}
   \item
     Consider the case in which $\atmR{a} \oc \defp{q} \osim \defp{q}'$.
-    Because the underlying \ac{NFA} is well-formed~\parencref{??}, $q$ has at least one $a$-successor;
+    Because the underlying \ac{NFA} is well-formed~\parencref{def:finite-automata:nfa}, $q$ has at least one $a$-successor;
     let $q'_a$ be one such successor.
     By definition of the encoding, $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a$.
     Because rewriting bisimilarity is reduction-closed (\cref{thm:bisim-reduction-closure}), $\defp{q}'_a \osim\secudeR \defp{q}'$.
-    The first part of this \lcnamecref{lem:??} shows that states are encoded by latent propositions, and so we may conclude that, in fact, $\defp{q}'_a \osim \defp{q}'$.
+    The first part of this \lcnamecref{lem:a-succ-bisim} shows that states are encoded by propositions that do not reduce, and so we may conclude that, in fact, $\defp{q}'_a \osim \defp{q}'$.
 
   \item 
     Consider the case in which $\atmR{a} \oc \defp{q} \reduces \defp{q}'_a \Reduces\osim \defp{q}'$ for some state $q'_a$ that $a$-succeeds $q$.
-    Because states are encoded by latent propositions, $\defp{q}'_a \osim \defp{q}'$ for some state $q'_a$ that $a$-succeeds $q$, as required.
-  %
-  \qedhere
+    Because states are encoded by propositions that do not reduce, $\defp{q}'_a \osim \defp{q}'$ for some state $q'_a$ that $a$-succeeds $q$, as required.
   \end{itemize}
+
+  To prove the third part, we reason as in the preceding part and deduce that $\atmR{F}(q) \osim \atmR{F}(s)$;
+  we conclude that $q \in F$ if, and only if, $s \in F$.
   % 
   % \begin{itemize}
   % \item Consider the case in which the trace is trivial: $\atmR{a} \oc \defp{q} \osim \defp{q}'$.
@@ -2171,8 +2450,8 @@ under an unfocused rewriting framework, $\defp{q}$ would admit rewritings, such 
   We shall show that \ac{NFA} bisimilarity coincides with rewriting bisimilarity of encodings, proving each direction separately.
   \begin{itemize}[itemsep=\dimexpr\itemsep+\parsep\relax, parsep=0em, listparindent=\parindent]
     \item
-      To prove that bisimilar \ac{NFA} states have bisimilar encodings -- \ie, that $q \asim s$ implies $\defp{q} \osim \defp{s}$ -- we will show that the relation $\mathord{\simu{R}} = \Set{(\defp{q}, \defp{s}) \given q \asim s}$ is a labeled bisimulation up to reflexivity and, by \cref{thm:bisim-technique-up-to-refl}, is included in rewriting bisimilarity.
-      Notice that $\simu{R}$ is symmetric.
+      To prove that bisimilar \ac{NFA} states have bisimilar encodings -- \ie, that $q \asim s$ implies $\defp{q} \osim \defp{s}$ -- we shall now show that the relation $\mathord{\simu{R}} = \Set{(\defp{q}, \defp{s}) \given q \asim s}$ is a labeled bisimulation up to reflexivity and, by \cref{thm:bisim-technique-up-to-refl}, is included in rewriting bisimilarity.
+      Notice that $\simu{R}$ is, by definition, symmetric because \ac{NFA} bisimilarity is symmetric~\parencref{thm:ordered-bisimilarity:equivalence}.
       \begin{description}
       \item[Immediate output bisimulation]
         Assume that $\defp{q} \simu{R} \defp{s} = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$; we must show that $\defp{q} \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \defp{s}$.
@@ -2198,7 +2477,7 @@ under an unfocused rewriting framework, $\defp{q}$ would admit rewritings, such 
 
       \item[Reduction bisimulation]
         Assume that $\defp{q} \simu{R} \defp{s} \reduces \lctx'$.
-        The reduction bisimulation property holds vacuously because states are encoded as latent propositions, and so $\defp{s}$ does not reduce~\parencref{lem:nfa-latent}.
+        The reduction bisimulation property holds vacuously because states are encoded as propositions that do not reduce~\parencref{lem:nfa-latent} -- there is no $\lctx'$ such that $\defp{s} \reduces \lctx'$.
 
       \item[Emptiness bisimulation]
         Assume that $\defp{q} \simu{R} \defp{s} = (\octxe)$.
@@ -2206,9 +2485,9 @@ under an unfocused rewriting framework, $\defp{q}$ would admit rewritings, such 
       \end{description}
 
     \item
-      To prove the converse -- that states with bisimilar encodings are themselves bisimilar -- we will show that the relation $\mathord{\simu{R}} = \Set{(q,s) \given \defp{q} \osim \defp{s}}$, which relates states if they have rewriting-bisimilar encodings, is \iac{NFA} bisimulation and is therefore included in bisimilarity.
+      To prove the converse -- that states with bisimilar encodings are themselves bisimilar -- we shall now show that the relation $\mathord{\simu{R}} = \Set{(q,s) \given \defp{q} \osim \defp{s}}$, which relates states if they have rewriting-bisimilar encodings, is \iac{NFA} bisimulation and is therefore included in \ac{NFA} bisimilarity.
 
-      Because rewriting bisimilarity is symmetric, so too is the relation $\simu{R}$.
+      Because rewriting bisimilarity is symmetric~\parencref{thm:ordered-bisimilarity:equivalence}, so too is the relation $\simu{R}$.
       We must also prove that $\simu{R}$ satisfies the conditions of \ac{NFA} bisimilarity.
       \begin{description}[itemsep=\dimexpr\itemsep+\parsep\relax, parsep=0em, listparindent=\parindent]
       \item[Input bisimulation] Let $q$ and $s$ be states with bisimilar encodings, and let $q'_a$ be an $a$-successor of $q$;
@@ -2221,9 +2500,9 @@ under an unfocused rewriting framework, $\defp{q}$ would admit rewritings, such 
       \item[Finality bisimulation] Let $q$ and $s$ be states with bisimilar encodings, and assume that $q$ is a final state;
         we must show that $s$ is also a final state.
 
-        By definition of the encoding, $\atmR{\eow} \oc \defp{q} \reduces \atmR{F}(q) = \symacc$.
-        Because $q$ and $s$ have bisimilar encodings, it follows from input bisimilarity that $\atmR{\eow} \oc \defp{s} \Reduces\osim \atmR{F}(q)$.
-        An appeal to \cref{??} yields $\atmR{F}(q) = \atmR{F}(s)$, from which we deduce that $s$ is also a final state.
+        By definition of the encoding, $\atmR{\eow} \oc \defp{q} \reduces \atmR{F}(q) = \atmR{\symacc}$.
+        Because $q$ and $s$ have bisimilar encodings, it follows from the input bisimulation property that $\atmR{\eow} \oc \defp{s} \Reduces\osim \atmR{F}(q)$.
+        An appeal to \cref{lem:final-bisim} allows us to conclude that $s$, like $q$, is a final state.
       %
       \qedhere
       \end{description}
@@ -2391,11 +2670,12 @@ under an unfocused rewriting framework, $\defp{q}$ would admit rewritings, such 
 %   However, $\atmR{x} \oc \atmR{\emp} \oc \nfa{s}$ exposes $\atmR{x}$ on the right only if $s$ is also a final state.
 % \end{proof}
 
+% \clearpage
+\section{Example of rewriting bisimilarity: Binary counter}\label{sec:ordered-bisimilarity:counter}
 
-\section{Example of rewriting bisimilarity: Binary counter}
-
-For a further application of rewriting bisimilarity, we can revisit the binary counter of \cref{??}.
-Recall from \cref{sec:??} the object-oriented choreography of the binary counter:
+For a further application of rewriting bisimilarity, we can revisit the binary counter.
+Recall from \cref{sec:formula-as-process:counters-oo} its object-oriented choreography:
+%d of the binary counter:
 \begin{equation*}
   \orsig =
   \begin{lgathered}[t]
@@ -2408,7 +2688,7 @@ Recall from \cref{sec:??} the object-oriented choreography of the binary counter
 Also, recall that denotations were assigned directly to choreographed counters using $\aval{\octx}{n}$, $\ainc{\octx}{n}$, and $\adec{\octx}{n}$ judgments.
 
 Intuitively, any two counters that have the same denotation ought to be indistinguishable.
-After all, the only two operations that we have on counters are increment and head-unary normalization (or decrement), and both of these are reflected in the denotation.
+After all, the only two operations that we have on counters are increment and head-unary normalization (also known as decrement), and both of these are reflected in the denotation.
 For instance, both $\defp{e} \oc \atmL{i} \oc \defp{b}_1$ and $\defp{e} \oc \defp{b}_1 \oc \defp{b}_0 \oc \atmL{i}$ denote the natural number $3$, so any sequence of increments and decrements that we apply to these counters ought not to distinguish them.
 
 % Strictly speaking, denotations were only defined for the string rewriting specification of binary counters~\parencref{sec:??}: string $w$ denotes natural number $n$ exactly when $\ainc{w}{n}$.
@@ -2451,7 +2731,7 @@ For instance, both $\defp{e} \oc \atmL{i} \oc \defp{b}_1$ and $\defp{e} \oc \def
 % likewise, we will say that a context $\octx$ is an \vocab{decrement counter} or \vocab{decrement context} if $\adec{\octx}{n}$ for some natural number $n$.
 
 % With these relations, 
-We can state and prove that counters with equal denotations are bisimilar, and conversely, bisimilar counters have equal denotations.
+We can state and prove that counters with equal denotations are bisimilar, and conversely, that bisimilar counters have equal denotations.
 \begin{restatable}[
   label=thm:oo-counter-bisim
 ]{theorem}{thmoocounterbisim}
@@ -2465,34 +2745,78 @@ We can state and prove that counters with equal denotations are bisimilar, and c
 Before proving this \lcnamecref{thm:oo-counter-bisim}, recall the big-step adequacy of decrements for the choreography.
 \coroocounteradequacy*
 
-\begin{lemma}
-  If $\octx = \atmL{\octx}'_L \oc \octx' \oc \atmR{\octx}'_R$, then:
+We also need to prove an easy lemma that characterizes the  output and input transitions possible from binary counters.
+\begin{lemma}\label{lem:ordered-bisimilarity:oo-counter-bisim-easy}\leavevmode
   \begin{itemize}[nosep]
-  \item $\ainc{\octx}{n}$ only if $\atmL{\octx}'_L$ and $\atmR{\octx}'_R$ are empty; and
-  \item $\adec{\octx}{n}$ only if $\atmL{\octx}'_L$ is empty and either:
+  \item
+    If $\ainc{\lctx}{n}$, then:
     \begin{itemize}[nosep]
-    \item $n=0$ and $\atmR{\octx}'_R = \atmR{z}$ and $\octx'$ is empty;
-    \item $n > 0$ and $\atmR{\octx}'_R = \atmR{s}$ and $\ainc{\octx'}{n-1}$; or
-    \item $\atmR{\octx}'_R$ is empty.
+    \item $\lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ only if $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ are empty; and
+    \item $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$ only if $\atmR{\lctx}_L$ is empty and either $\atmL{\lctx}_R = \atmL{i}$ or $\atmL{\lctx}_R = \atmL{d}$.
+    \end{itemize}
+
+  \item
+    If $\adec{\lctx}{n}$, then:
+    \begin{itemize}[nosep]
+    \item $\lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ only if
+      $\atmL{\lctx}'_L$ is empty and either:
+      \begin{itemize}[nosep]
+      \item $n=0$ and $\atmR{\lctx}'_R = \atmR{z}$ and $\lctx'$ is empty;
+      \item $n > 0$ and $\atmR{\lctx}'_R = \atmR{s}$ and $\ainc{\lctx'}{n-1}$; or
+      \item $\atmR{\lctx}'_R$ is empty; and
+      \end{itemize}
+
+    \item
+      $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$ is impossible.
     \end{itemize}
   \end{itemize}
 \end{lemma}
 \begin{proof}
+  By structural induction on the derivation of the given denotation.
+  The second part relies on the first part in one case.
+\end{proof}
+
+% \begin{lemma}\leavevmode
+%   \begin{itemize}
+%   \item
+%     If $\lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then:
+%     \begin{itemize}[nosep]
+%     \item $\ainc{\lctx}{n}$ only if $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ are empty; and
+%     \item $\adec{\lctx}{n}$ only if $\atmL{\lctx}'_L$ is empty and either:
+%       \begin{itemize}[nosep]
+%       \item $n=0$ and $\atmR{\lctx}'_R = \atmR{z}$ and $\lctx'$ is empty;
+%       \item $n > 0$ and $\atmR{\lctx}'_R = \atmR{s}$ and $\ainc{\lctx'}{n-1}$; or
+%       \item $\atmR{\lctx}'_R$ is empty.
+%       \end{itemize}
+%     \end{itemize}
+
+%   \item
+%     If $\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}$, then:
+%     \begin{itemize}[nosep]
+%     \item $\ainc{\octx}{n}$ only if $\atmR{\octx}_L$ is empty and either $\atmL{\octx}_R = \atmL{i}$ or $\atmL{\octx}_R = \atmL{d}$ or $\atmL{\octx}_R$ is empty; and
+%     \item $\adec{\octx}{n}$ only if $\atmR{\octx}_L$ and $\atmL{\octx}_R$ are empty.
+%     \end{itemize}
+%   \end{itemize}
+% \end{lemma}
+% \begin{proof}
   
-\end{proof}
+% \end{proof}
 
-\begin{lemma}
-  If $\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}$, then:
-  \begin{itemize}[nosep]
-  \item $\ainc{\octx}{n}$ only if $\atmR{\octx}_L$ is empty and either $\atmL{\octx}_R = \atmL{i}$ or $\atmL{\octx}_R = \atmL{d}$ or $\atmL{\octx}_R$ is empty; and
-  \item $\adec{\octx}{n}$ only if $\atmR{\octx}_L$ and $\atmL{\octx}_R$ are empty.
-  \end{itemize}
-\end{lemma}
-\begin{proof}
-  Each part is proved by structural induction on the denotation's derivation, with the second part depending on the first.
-\end{proof}
+% \begin{lemma}\label{lem:ordered-bisimilarity:counter-ireduces}
+%   If $\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}$, then:
+%   \begin{itemize}[nosep]
+%   \item $\ainc{\octx}{n}$ only if $\atmR{\octx}_L$ is empty and either $\atmL{\octx}_R = \atmL{i}$ or $\atmL{\octx}_R = \atmL{d}$ or $\atmL{\octx}_R$ is empty; and
+%   \item $\adec{\octx}{n}$ only if $\atmR{\octx}_L$ and $\atmL{\octx}_R$ are empty.
+%   \end{itemize}
+% \end{lemma}
+% \begin{proof}
+%   Each part is proved by structural induction on the denotation's derivation, with the second part depending on the first.
+% \end{proof}
 
-Using this \lcnamecref{??}, we may prove the correspondence between denotation and bisimilarity:
+Using this \lcnamecref{lem:ordered-bisimilarity:oo-counter-bisim-easy}, we may prove the correspondence between denotation and bisimilarity.
+It is especially interesting that the proof of this \lcnamecref{thm:oo-counter-bisim} is quite modular, relying heavily on the choreography's adequacy.
+We conjecture that this proof pattern will be useful in proving \lcnamecrefs{thm:oo-counter-bisim} about bisimilarities for other choreographies.
+%
 \thmoocounterbisim*
 \begin{proof}
   We prove each direction separately.
@@ -2510,7 +2834,7 @@ Using this \lcnamecref{??}, we may prove the correspondence between denotation a
       \,.
     \end{lgathered}
   \end{equation*}
-  We shall show that $\simu{R}$ progresses to its reflexive closure and then conclude, by \cref{??}, that $\simu{R}$ is contained within rewriting bisimilarity.
+  We shall show that $\simu{R}$ progresses to its reflexive closure and then conclude, by \cref{thm:bisim-technique-up-to-refl}, that $\simu{R}$ is contained within rewriting bisimilarity.
   \begin{description}
   \item[Immediate output bisimulation]
     Assume that $\octx \simu{R} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$; we must show that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \lctx$.
@@ -2520,7 +2844,8 @@ Using this \lcnamecref{??}, we may prove the correspondence between denotation a
     \begin{itemize}
     \item
       Consider the case in which $\ainc{\octx}{n}$ and $\ainc{\lctx}{n}$.
-      A straightforward induction on the derivation of $\ainc{\lctx}{n}$ shows that $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ must both be empty.
+      % A straightforward induction on the derivation of $\ainc{\lctx}{n}$
+      \Cref{lem:ordered-bisimilarity:oo-counter-bisim-easy} shows that $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ must both be empty.
       The required $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \lctx$ is then trivial.
 
     \item
@@ -2582,7 +2907,7 @@ Using this \lcnamecref{??}, we may prove the correspondence between denotation a
     \begin{itemize}[listparindent=\parindent]
     \item
       Consider the case in which $\ainc{\octx}{n}$ and $\ainc{\lctx}{n}$, for some natural number $n$.
-      According to \cref{??}, the input transition is either $\ireduces{#1 \oc \atmL{i}}{\lctx}{\lctx'}$ or $\ireduces{#1 \oc \atmL{d}}{\lctx}{\lctx'}$.
+      According to \cref{lem:ordered-bisimilarity:oo-counter-bisim-easy}, the input transition is either $\ireduces{#1 \oc \atmL{i}}{\lctx}{\lctx'}$ or $\ireduces{#1 \oc \atmL{d}}{\lctx}{\lctx'}$.
       \begin{itemize}
       \item
         If the input transition $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$ is $\ireduces{#1 \oc \atmL{i}}{\lctx}{\lctx'}$, then  apply the $\jrule{$\atmL{i}$-I}$ rule to deduce that $\ainc{\octx \oc \atmL{i}}{n+1}$ and $\ainc{\lctx \oc \atmL{i}}{n+1}$.
@@ -2595,8 +2920,7 @@ Using this \lcnamecref{??}, we may prove the correspondence between denotation a
 
     \item 
       Consider the case in which $\adec{\octx}{n}$ and $\adec{\lctx}{n}$, for some $n$.
-      By \cref{??}, the input transition can only be $\ireduces{#1}{\lctx}{\lctx'}$, and so $\lctx \reduces \lctx'$.
-      It follows from $\adec{}{}$-preservation~\parencref{??} that $\adec{\lctx'}{n}$; we conclude that $\octx \Reduces\simu{R} \lctx'$, as required.
+      By \cref{lem:ordered-bisimilarity:oo-counter-bisim-easy}, this input transition is impossible.
     \end{itemize}
 
   \item[Reduction bisimulation]
@@ -2606,7 +2930,7 @@ Using this \lcnamecref{??}, we may prove the correspondence between denotation a
     Otherwise, if $\adec{\octx}{n}$ and $\adec{\lctx}{n}$ for some natural number $n$, then $\adec{}{}$-preservation similarly allows us to conclude that $\octx \Reduces\simu{R} \lctx'$.
 
   \item[Emptiness bisimulation]
-    This is vacuously true.
+    This is vacuously true because $(\octxe)$ has no denotation under $\ainc{}{}$ and $\adec{}{}$.
   \end{description}
 
   \item
@@ -2621,13 +2945,13 @@ Using this \lcnamecref{??}, we may prove the correspondence between denotation a
     \begin{itemize}
     \item
       Consider the case in which $n = 0$.
-      By big-step adequacy of decrements~\parencref{thm:msg-dec-big-adequacy}, $\octx \Reduces \atmR{z}$.
+      By big-step adequacy of decrements~\parencref{cor:oo-counter-adequacy}, $\octx \Reduces \atmR{z}$.
       Because $\octx$ and $\lctx$ are bisimilar, $\lctx \Reduces\rframe{\osim}{\atmR{z}} \atmR{z}$.
       According to big-step adequacy of decrements again, $\lctx$ eventually emits $\atmR{z}$ only if its denotation is $n' = 0$, and so $n = 0 = n'$.
 
     \item 
       Consider the case in which $n > 0$.
-      By big-step adequacy of decrements~\parencref{thm:msg-dec-big-adequacy}, $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
+      By big-step adequacy of decrements~\parencref{cor:oo-counter-adequacy}, $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
       Because $\octx$ and $\lctx$ are bisimilar, $\lctx \Reduces\rframe{\osim}{\atmR{s}} \octx' \oc \atmR{s}$; in other words, $\lctx \Reduces \lctx' \oc \atmR{s}$ for some $\lctx'$ such that $\octx' \osim \lctx'$.
       According to big-step adequacy of decrements again, $\lctx$ eventually emits $\atmR{s}$ only if $n' > 0$ and $\ainc{\lctx'}{n'-1}$.
       By the inductive hypothesis, it follows that $n-1 = n'-1$, and so $n = n'$ as required.
@@ -2642,6 +2966,7 @@ Using this \lcnamecref{??}, we may prove the correspondence between denotation a
   \end{enumerate}
   \end{itemize}
 \end{proof}
+
 
 
 % \begin{theorem}[Adequacy of binary counter decrements]
@@ -2670,47 +2995,86 @@ Using this \lcnamecref{??}, we may prove the correspondence between denotation a
 % \end{theorem}
 
 
-\subsection{An alternative specification of a binary counter}
+\subsection{A comment on atom directions and bisimilarity}
 
-The above description of a binary counter, repeated here%
-\begin{marginfigure}
-  \begin{equation*}
-    \begin{lgathered}
-      e \defd (e \fuse b_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d}) \\
-      b_0 \defd (\up \dn b_1 \pmir \atmL{i}) \with (\atmL{d} \fuse b'_0 \pmir \atmL{d}) \\
-      b_1 \defd (\atmL{i} \fuse b_0 \pmir \atmL{i}) \with (b_0 \fuse \atmL{s} \pmir \atmL{d}) \\
-      b'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp b_1 \fuse \atmR{s})
-    \end{lgathered}
-  \end{equation*}
-  \caption{An object-oriented specification of a binary counter}
-\end{marginfigure}
-for convenience, could be described as object-oriented.
-Like objects, the processes $e$, $b_0$, and $b_1$ dispatch on incoming messages $\atmL{i}$ and $\atmL{d}$, and the process $b'_0$ dispatches on incoming messages $\atmR{z}$ and $\atmR{s}$.%
-\footnote{For a study of the relationship between (session-typed) processes and objects, see \textcite{Balzer+Pfenning:AGERE15}.}
+This \lcnamecref{thm:oo-counter-bisim} gives us the opportunity to remark on the interplay between atoms' directionality and rewriting bisimilarity.
 
-Alternatively, we could specify the binary counter in a dual way: like functions are applied to data, the processes $i$ and $d$ act on incoming messages $\atmR{e}$, $\atmR{b}_0$, and $\atmR{b}_1$, and the processes $z$ and $s$ act on incoming $\atmL{b}'_0$ messages.
-\begin{equation*}
-  \begin{lgathered}
-    i \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp i \fuse \atmR{b}_0) \\
-    d \defd (\atmR{e} \limp \up \dn z) \with (\atmR{b}_0 \limp d \fuse \atmL{b}'_0) \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse s) \\
-    z \defd \up \dn z \pmir \atmL{b}'_0 \\
-    s \defd \atmR{b}_1 \fuse s \pmir \atmL{b}'_0
-  \end{lgathered}
-\end{equation*}
-In contrast with the earlier object-oriented specification, this specification could be described as functional in style.
-\begin{equation*}
-  \atmR{e} \oc \atmR{b}_1 \oc i \Reduces \atmR{e} \oc i \oc \atmR{b}_0 \Reduces \atmR{e} \oc \atmR{b}_1 \oc \atmR{b}_1
-\end{equation*}
+Suppose that the formula-as-process ordered rewriting framework was designed without assigning direction to atoms.
+Instead of the directional atoms $\atmL{a}$ and $\atmR{a}$, the framework would have only un(i)directional\fixnote{bidirectional?} atoms $\atm{a}$.
+The definition of rewriting bisimilarity would also be ever so slightly revised to use the un(i)directed atoms.
+Rewriting bisimilarity would be the largest symmetric relation $\simu{R}$ to satisfy:
+\begin{description}[noitemsep]
+\item[Output bisimulation]
+  If $\octx \simu{R}\Reduces \atm{\lctx}'_L \oc \lctx' \oc \atm{\lctx}'_R$, then $\octx \Reduces\lrframe{\atm{\lctx}'_L}{\simu{R}}{\atm{\lctx}'_R} \atm{\lctx}'_L \oc \lctx' \oc \atm{\lctx}'_R$.
+\item[Input bisimulation]
+  If $\atm{\lctx}_L \oc \octx \oc \atm{\lctx}_R \lrframe{\atm{\lctx}_L}{\simu{R}}{\atm{\lctx}_R}\Reduces \lctx'$, then $\atm{\lctx}_L \oc \octx \oc \atm{\lctx}_R \Reduces\simu{R} \lctx'$.
+\end{description}
 
-Intuitively, we should expect these two specifications to be equivalent descriptions of a binary counter.
-To make this equivalence concrete, we might imagine defining a binary relation $\simu{D}$ on binary counters that makes the duality precise;
-for example, $e \oc b_1 \oc \atmL{i} \simu{D} \atmR{e} \oc \atmR{b}_1 \oc i$.
+Unfortunately, this un(i)directed notion of bisimilarity would be too fine.
+Without atom directions to distinguish messages intended as inputs from those intended as outputs, input messages could be incorrectly observed as outputs.
+In practice, this means that bisimilarity would rule out desirable equivalences.
 
-However, in defining the duality relation, we implicitly observe and compare the counters' internal structures.
-Although certainly possible at the meta-level, this is somewhat unsatisfying because it doesn't compare the counters' \emph{behaviors}.
-There ought to be a way to characterize the counters' equivalence using bisimilarity.
+Consider, for example, $\defp{e}$ and $\defp{e} \oc \defp{b}_0$.
+These two counters have the same denotation -- both represent $0$.
+Nevertheless, in opposition to \cref{thm:oo-counter-bisim} for directed atoms, $\defp{e}$ and $\defp{e} \oc \defp{b}_0$ would \emph{not} be bisimilar when using un(i)directed atoms.
 
-Doing so requires a few small changes to 
+To see why, suppose, for the sake of deriving a contradiction, that $\defp{e} \osim \defp{e} \oc \defp{b}_0$.
+Because $\defp{e} \oc \defp{b}_0 \oc \atm{d} \Reduces \atm{z} \oc \defp{b}'_0$, it follows from the input bisimulation property that $\defp{e} \oc \atm{d} \Reduces\osim \atm{z} \oc \defp{b}'_0$.
+There are only two contexts that can arise from $\defp{e} \oc \atm{d}$, so either $\defp{e} \oc \atm{d} \osim \atm{z} \oc \defp{b}'_0$ or $\atm{z} \osim \atm{z} \oc \defp{b}'_0$.
+\begin{itemize}
+\item The former is impossible because $\atm{z} \oc \defp{b}'_0$ cannot produce $\atm{d}$ on the right (nor on the left) and so violates output bisimilarity.
+
+\item The latter is also impossible.
+It has an output of $\atm{z}$ on the left of $\atm{z} \oc \defp{b}'_0$, from which the output bisimulation property yields $(\octxe) \osim \defp{b}'_0$.
+From the input bisimulation property, $\atm{a} \osim \defp{b}'_0 \oc \atm{a}$ follows, for any atom $\atm{a}$.
+And that violates output bisimulation because $\defp{b}'_0 \oc \atm{a}$, which does not reduce, cannot match the left output that $\atm{a}$ makes.
+\end{itemize}
+
+The key feature of this counterexample is that atoms' lack of direction means that the output bisimilarity condition also applies to atoms intended to act as inputs ($\atm{d}$ and $\atm{a}$, for instance).
+Just as atom directions were used in \cref{??} to prevent a process from capturing a message it just sent, so do atom directions prevent \emph{input} messages from being observed.
+
+
+% \subsection{An alternative specification of a binary counter}
+
+% The above description of a binary counter, repeated here%
+% \begin{marginfigure}
+%   \begin{equation*}
+%     \begin{lgathered}
+%       e \defd (e \fuse b_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d}) \\
+%       b_0 \defd (\up \dn b_1 \pmir \atmL{i}) \with (\atmL{d} \fuse b'_0 \pmir \atmL{d}) \\
+%       b_1 \defd (\atmL{i} \fuse b_0 \pmir \atmL{i}) \with (b_0 \fuse \atmL{s} \pmir \atmL{d}) \\
+%       b'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp b_1 \fuse \atmR{s})
+%     \end{lgathered}
+%   \end{equation*}
+%   \caption{An object-oriented specification of a binary counter}
+% \end{marginfigure}
+% for convenience, could be described as object-oriented.
+% Like objects, the processes $e$, $b_0$, and $b_1$ dispatch on incoming messages $\atmL{i}$ and $\atmL{d}$, and the process $b'_0$ dispatches on incoming messages $\atmR{z}$ and $\atmR{s}$.%
+% \footnote{For a study of the relationship between (session-typed) processes and objects, see \textcite{Balzer+Pfenning:AGERE15}.}
+
+% Alternatively, we could specify the binary counter in a dual way: like functions are applied to data, the processes $i$ and $d$ act on incoming messages $\atmR{e}$, $\atmR{b}_0$, and $\atmR{b}_1$, and the processes $z$ and $s$ act on incoming $\atmL{b}'_0$ messages.
+% \begin{equation*}
+%   \begin{lgathered}
+%     i \defd (\atmR{e} \limp \atmR{e} \fuse \atmR{b}_1) \with (\atmR{b}_0 \limp \atmR{b}_1) \with (\atmR{b}_1 \limp i \fuse \atmR{b}_0) \\
+%     d \defd (\atmR{e} \limp \up \dn z) \with (\atmR{b}_0 \limp d \fuse \atmL{b}'_0) \with (\atmR{b}_1 \limp \atmR{b}_0 \fuse s) \\
+%     z \defd \up \dn z \pmir \atmL{b}'_0 \\
+%     s \defd \atmR{b}_1 \fuse s \pmir \atmL{b}'_0
+%   \end{lgathered}
+% \end{equation*}
+% In contrast with the earlier object-oriented specification, this specification could be described as functional in style.
+% \begin{equation*}
+%   \atmR{e} \oc \atmR{b}_1 \oc i \Reduces \atmR{e} \oc i \oc \atmR{b}_0 \Reduces \atmR{e} \oc \atmR{b}_1 \oc \atmR{b}_1
+% \end{equation*}
+
+% Intuitively, we should expect these two specifications to be equivalent descriptions of a binary counter.
+% To make this equivalence concrete, we might imagine defining a binary relation $\simu{D}$ on binary counters that makes the duality precise;
+% for example, $e \oc b_1 \oc \atmL{i} \simu{D} \atmR{e} \oc \atmR{b}_1 \oc i$.
+
+% However, in defining the duality relation, we implicitly observe and compare the counters' internal structures.
+% Although certainly possible at the meta-level, this is somewhat unsatisfying because it doesn't compare the counters' \emph{behaviors}.
+% There ought to be a way to characterize the counters' equivalence using bisimilarity.
+
+% Doing so requires a few small changes to 
 
 
 
@@ -3011,159 +3375,159 @@ Doing so requires a few small changes to
 % \end{description}
 
 
-\begin{equation*}
-  \begin{lgathered}
-    c \defd (i \fuse c \pmir \atmL{i}) \with (d \fuse \atmL{u} \pmir \atmL{d}) \\
-    z \defd (\up \dn z \pmir \atmL{b}'_0) \with (\atmR{z} \pmir \atmL{u}) \\
-    s \defd (\atmR{b}_1 \fuse s \pmir \atmL{b}'_0) \with (c \fuse \atmR{s} \pmir \atmL{u})
-  \end{lgathered}
-\end{equation*}
+% \begin{equation*}
+%   \begin{lgathered}
+%     c \defd (i \fuse c \pmir \atmL{i}) \with (d \fuse \atmL{u} \pmir \atmL{d}) \\
+%     z \defd (\up \dn z \pmir \atmL{b}'_0) \with (\atmR{z} \pmir \atmL{u}) \\
+%     s \defd (\atmR{b}_1 \fuse s \pmir \atmL{b}'_0) \with (c \fuse \atmR{s} \pmir \atmL{u})
+%   \end{lgathered}
+% \end{equation*}
 
-\begin{inferences}
-  \infer{\iainc{\atmR{e}}{0}}{}
-  \and
-  \infer{\iainc{\lctx \oc \atmR{b}_0}{2n}}{
-    \iainc{\lctx}{n}}
-  \and
-  \infer{\iainc{\lctx \oc \atmR{b}_1}{2n+1}}{
-    \iainc{\lctx}{n}}
-  \and
-  \infer{\iainc{\lctx \oc i}{n+1}}{
-    \iainc{\lctx}{n}}
-  \\
-  \infer{\iainc{\atmR{e} \fuse \atmR{b}_1}{1}}{}
-  \and
-  \infer{\iainc{\lctx \oc (i \fuse \atmR{b}_0)}{2(n+1)}}{
-    \iainc{\lctx}{n}}
-\end{inferences}
+% \begin{inferences}
+%   \infer{\iainc{\atmR{e}}{0}}{}
+%   \and
+%   \infer{\iainc{\lctx \oc \atmR{b}_0}{2n}}{
+%     \iainc{\lctx}{n}}
+%   \and
+%   \infer{\iainc{\lctx \oc \atmR{b}_1}{2n+1}}{
+%     \iainc{\lctx}{n}}
+%   \and
+%   \infer{\iainc{\lctx \oc i}{n+1}}{
+%     \iainc{\lctx}{n}}
+%   \\
+%   \infer{\iainc{\atmR{e} \fuse \atmR{b}_1}{1}}{}
+%   \and
+%   \infer{\iainc{\lctx \oc (i \fuse \atmR{b}_0)}{2(n+1)}}{
+%     \iainc{\lctx}{n}}
+% \end{inferences}
 
-\begin{inferences}
-  \infer{\eainc{\lctx \oc c}{n}}{
-    \iainc{\lctx}{n}}
-  \and
-  \infer{\eainc{\lctx \oc \atmL{i}}{n+1}}{
-    \eainc{\lctx}{n}}
-  \and
-  \infer{\eainc{\lctx \oc (i \fuse c)}{n+1}}{
-    \iainc{\lctx}{n}}
-\end{inferences}
+% \begin{inferences}
+%   \infer{\eainc{\lctx \oc c}{n}}{
+%     \iainc{\lctx}{n}}
+%   \and
+%   \infer{\eainc{\lctx \oc \atmL{i}}{n+1}}{
+%     \eainc{\lctx}{n}}
+%   \and
+%   \infer{\eainc{\lctx \oc (i \fuse c)}{n+1}}{
+%     \iainc{\lctx}{n}}
+% \end{inferences}
 
-\begin{theorem}[small-step adequacy of increments]
-  \leavevmode
-  \begin{thmdescription}
-  \item[Value soundness]
+% \begin{theorem}[small-step adequacy of increments]
+%   \leavevmode
+%   \begin{thmdescription}
+%   \item[Value soundness]
 
-  \item[Preservation]
-    If $\eainc{\lctx}{n}$ and $\lctx \reduces \lctx'$, then $\eainc{\lctx'}{n}$.
+%   \item[Preservation]
+%     If $\eainc{\lctx}{n}$ and $\lctx \reduces \lctx'$, then $\eainc{\lctx'}{n}$.
 
-  \item[Progress]
-    If $\eainc{\lctx}{n}$, then either:
-    \begin{itemize*}
-    \item $\lctx \reduces \lctx'$, for some $\lctx'$; or
-    \item $\eaval{\lctx}{n}$.
-    \end{itemize*}
+%   \item[Progress]
+%     If $\eainc{\lctx}{n}$, then either:
+%     \begin{itemize*}
+%     \item $\lctx \reduces \lctx'$, for some $\lctx'$; or
+%     \item $\eaval{\lctx}{n}$.
+%     \end{itemize*}
 
-  \item[Termination]
-    If $\eainc{\lctx}{n}$, then every rewriting sequence from $\lctx$ is finite.
-  \end{thmdescription}
-\end{theorem}
+%   \item[Termination]
+%     If $\eainc{\lctx}{n}$, then every rewriting sequence from $\lctx$ is finite.
+%   \end{thmdescription}
+% \end{theorem}
 
-\begin{inferences}
-  \infer{\iadec{\lctx \oc d}{n}}{
-    \iainc{\lctx}{n}}
-  \and
-  \infer{\iadec{\lctx \oc \atmL{b}'_0}{2n}}{
-    \iadec{\lctx}{n}}
-  \and
-  \infer{\iadec{z}{0}}{}
-  \and
-  \infer{\iadec{\lctx \oc s}{n+1}}{
-    \iainc{\lctx}{n}}
-  \\
-  \infer{\iadec{\lctx \oc (d \fuse \atmL{b}'_0)}{2n}}{
-    \iainc{\lctx}{n}}
-  \and
-  \infer{\iadec{\lctx \oc (\atmR{b}_0 \fuse s)}{2n+1}}{
-    \iainc{\lctx}{n}}
-  \and
-  \infer{\iadec{\lctx \oc (\atmR{b}_1 \fuse s)}{2n+2}}{
-    \iainc{\lctx}{n}}
-\end{inferences}
+% \begin{inferences}
+%   \infer{\iadec{\lctx \oc d}{n}}{
+%     \iainc{\lctx}{n}}
+%   \and
+%   \infer{\iadec{\lctx \oc \atmL{b}'_0}{2n}}{
+%     \iadec{\lctx}{n}}
+%   \and
+%   \infer{\iadec{z}{0}}{}
+%   \and
+%   \infer{\iadec{\lctx \oc s}{n+1}}{
+%     \iainc{\lctx}{n}}
+%   \\
+%   \infer{\iadec{\lctx \oc (d \fuse \atmL{b}'_0)}{2n}}{
+%     \iainc{\lctx}{n}}
+%   \and
+%   \infer{\iadec{\lctx \oc (\atmR{b}_0 \fuse s)}{2n+1}}{
+%     \iainc{\lctx}{n}}
+%   \and
+%   \infer{\iadec{\lctx \oc (\atmR{b}_1 \fuse s)}{2n+2}}{
+%     \iainc{\lctx}{n}}
+% \end{inferences}
 
-\begin{inferences}
-  \infer{\eadec{\lctx \oc \atmL{d}}{n}}{
-    \eainc{\lctx}{n}}
-  \and
-  \infer{\eadec{\lctx \oc \atmL{u}}{n}}{
-    \iadec{\lctx}{n}}
-  \and
-  \infer{\eadec{\atmR{z}}{0}}{}
-  \and
-  \infer{\eadec{\lctx \oc c \oc \atmR{s}}{n+1}}{
-    \iainc{\lctx}{n}}
-  \\
-  \infer{\eadec{\lctx \oc (d \fuse \atmL{u})}{n}}{
-    \iainc{\lctx}{n}}
-  \and
-  \infer{\eadec{\lctx \oc (c \fuse \atmR{s})}{n+1}}{
-    \iainc{\lctx}{n}}
-\end{inferences}
+% \begin{inferences}
+%   \infer{\eadec{\lctx \oc \atmL{d}}{n}}{
+%     \eainc{\lctx}{n}}
+%   \and
+%   \infer{\eadec{\lctx \oc \atmL{u}}{n}}{
+%     \iadec{\lctx}{n}}
+%   \and
+%   \infer{\eadec{\atmR{z}}{0}}{}
+%   \and
+%   \infer{\eadec{\lctx \oc c \oc \atmR{s}}{n+1}}{
+%     \iainc{\lctx}{n}}
+%   \\
+%   \infer{\eadec{\lctx \oc (d \fuse \atmL{u})}{n}}{
+%     \iainc{\lctx}{n}}
+%   \and
+%   \infer{\eadec{\lctx \oc (c \fuse \atmR{s})}{n+1}}{
+%     \iainc{\lctx}{n}}
+% \end{inferences}
 
 
-\begin{theorem}[Small-step adequacy of decrements]
-  \leavevmode
-  \begin{thmdescription}
-  \item[Preservation]
-    If $\eadec{\lctx}{n}$ and $\lctx \reduces \lctx'$, then $\eadec{\lctx'}{n}$.
+% \begin{theorem}[Small-step adequacy of decrements]
+%   \leavevmode
+%   \begin{thmdescription}
+%   \item[Preservation]
+%     If $\eadec{\lctx}{n}$ and $\lctx \reduces \lctx'$, then $\eadec{\lctx'}{n}$.
 
-  \item[Progress]
-    If $\eadec{\lctx}{n}$, then either:
-    \begin{itemize}[nosep]
-    \item $\lctx \reduces \lctx'$ for some $\lctx'$;
-    \item $n = 0$ and $\lctx = \atmR{z}$;
-    \item $n > 0$ and $\lctx = \lctx' \oc c \oc \atmR{s}$, for some $\lctx'$ such that $\iainc{\lctx'}{n-1}$.
-    \end{itemize}
+%   \item[Progress]
+%     If $\eadec{\lctx}{n}$, then either:
+%     \begin{itemize}[nosep]
+%     \item $\lctx \reduces \lctx'$ for some $\lctx'$;
+%     \item $n = 0$ and $\lctx = \atmR{z}$;
+%     \item $n > 0$ and $\lctx = \lctx' \oc c \oc \atmR{s}$, for some $\lctx'$ such that $\iainc{\lctx'}{n-1}$.
+%     \end{itemize}
 
-  \item[Termination]
-    If $\eadec{\lctx}{n}$, then every rewriting sequence from $\lctx$ is finite.
-  \end{thmdescription}
-\end{theorem}
+%   \item[Termination]
+%     If $\eadec{\lctx}{n}$, then every rewriting sequence from $\lctx$ is finite.
+%   \end{thmdescription}
+% \end{theorem}
 
-\begin{theorem}[Big-step adequacy of decrements]
-  If $\eadec{\lctx}{n}$, then:
-  \begin{itemize}[nosep]
-  \item $\lctx \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ only if either: $\atmL{\lctx}'_L = \atmR{\lctx}'_R = \octxe$; or $n = 0$ and $\atmL{\lctx}'_L = \octxe$ and $\atmR{\lctx}'_R = \atmR{z}$; or $n > 0$ and $\atmL{\lctx}'_L = \octxe$ and $\atmR{\lctx}'_R = \atmR{s}$;
-  \item $\lctx \Reduces \atmR{z}$ if $n = 0$;
-  \item $\lctx \Reduces \lctx' \oc c \oc \atmR{s}$ for some $\lctx'$ such that $\iainc{\lctx'}{n-1}$, if $n > 0$; and 
-  \item $\lctx \Reduces \lctx' \oc \atmR{s}$ only if $n > 0$ and $\lctx' = \lctx' \oc c$ for some $\lctx'$ such that $\iainc{\lctx'}{n-1}$.
-  \end{itemize}
-\end{theorem}
+% \begin{theorem}[Big-step adequacy of decrements]
+%   If $\eadec{\lctx}{n}$, then:
+%   \begin{itemize}[nosep]
+%   \item $\lctx \Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$ only if either: $\atmL{\lctx}'_L = \atmR{\lctx}'_R = \octxe$; or $n = 0$ and $\atmL{\lctx}'_L = \octxe$ and $\atmR{\lctx}'_R = \atmR{z}$; or $n > 0$ and $\atmL{\lctx}'_L = \octxe$ and $\atmR{\lctx}'_R = \atmR{s}$;
+%   \item $\lctx \Reduces \atmR{z}$ if $n = 0$;
+%   \item $\lctx \Reduces \lctx' \oc c \oc \atmR{s}$ for some $\lctx'$ such that $\iainc{\lctx'}{n-1}$, if $n > 0$; and 
+%   \item $\lctx \Reduces \lctx' \oc \atmR{s}$ only if $n > 0$ and $\lctx' = \lctx' \oc c$ for some $\lctx'$ such that $\iainc{\lctx'}{n-1}$.
+%   \end{itemize}
+% \end{theorem}
 
-\begin{theorem}[Big-step adequacy of decrements]
-  If $\eadec{\lctx}{n}$, then:
-  \begin{itemize}[nosep]
-  \item $\lctx \Reduces \atmR{z}$ if, and only if, $n = 0$;
-  \item $\lctx \Reduces \lctx' \oc c \oc \atmR{s}$ for some $\lctx'$ such that $\iainc{\lctx'}{n-1}$, if $n > 0$; and 
-  \item $\lctx \Reduces \lctx' \oc \atmR{s}$ only if $n > 0$ and $\lctx' = \lctx' \oc c$ for some $\lctx'$ such that $\iainc{\lctx'}{n-1}$.
-  \end{itemize}
-\end{theorem}
+% \begin{theorem}[Big-step adequacy of decrements]
+%   If $\eadec{\lctx}{n}$, then:
+%   \begin{itemize}[nosep]
+%   \item $\lctx \Reduces \atmR{z}$ if, and only if, $n = 0$;
+%   \item $\lctx \Reduces \lctx' \oc c \oc \atmR{s}$ for some $\lctx'$ such that $\iainc{\lctx'}{n-1}$, if $n > 0$; and 
+%   \item $\lctx \Reduces \lctx' \oc \atmR{s}$ only if $n > 0$ and $\lctx' = \lctx' \oc c$ for some $\lctx'$ such that $\iainc{\lctx'}{n-1}$.
+%   \end{itemize}
+% \end{theorem}
 
-\begin{theorem}
-  If $\ainc{\octx}{n}$ and $\eainc{\lctx}{n'}$, then $\octx \osim \lctx$ if, and only if, $n = n'$.
-  Similarly, if $\adec{\octx}{n}$ and $\eadec{\lctx}{n'}$, then $\octx \osim \lctx$ if, and only if, $n = n'$.
-\end{theorem}
+% \begin{theorem}
+%   If $\ainc{\octx}{n}$ and $\eainc{\lctx}{n'}$, then $\octx \osim \lctx$ if, and only if, $n = n'$.
+%   Similarly, if $\adec{\octx}{n}$ and $\eadec{\lctx}{n'}$, then $\octx \osim \lctx$ if, and only if, $n = n'$.
+% \end{theorem}
 
-\begin{proof}
-  \begin{itemize}
-  \item
-    $\adec{\octx}{0}$ and $\eadec{\atmR{z}}{0}$.
-    $\octx \Reduces \atmR{z}$
-  \item 
-    $\adec{\octx}{n+1}$ and $\eadec{\lctx \oc c \oc \atmR{s}}{n+1}$.
-    $\octx \Reduces \octx' \oc \atmR{s}$ and $\ainc{\octx'}{n}$.
-    $\octx' \simu{R} \lctx \oc c$
-  \end{itemize}
-\end{proof}
+% \begin{proof}
+%   \begin{itemize}
+%   \item
+%     $\adec{\octx}{0}$ and $\eadec{\atmR{z}}{0}$.
+%     $\octx \Reduces \atmR{z}$
+%   \item 
+%     $\adec{\octx}{n+1}$ and $\eadec{\lctx \oc c \oc \atmR{s}}{n+1}$.
+%     $\octx \Reduces \octx' \oc \atmR{s}$ and $\ainc{\octx'}{n}$.
+%     $\octx' \simu{R} \lctx \oc c$
+%   \end{itemize}
+% \end{proof}
 
 
 % \begin{theorem}\leavevmode

@@ -1,5 +1,194 @@
 \chapter{Introduction}\label{ch:introduction}
 
+\fixnote{Simple example throughout introduction?}
+
+\begin{itemize}
+\item
+  Concurrency is notoriously difficult to get right.
+  \begin{itemize}
+  \item For functional programming, Curry--Howard application of proof theory is the gold standard.
+  \item Since Girard, efforts to explain concurrency using proof theory.
+  \end{itemize}
+
+\item 
+  Two proof-theoretic ways to characterize concurrency:
+  \begin{itemize}
+  \item proof construction as concurrency
+  \item proof reduction as concurrency
+  \end{itemize}
+  Each has its own strengths and weaknesses.
+  Relatively little (none?) study of the relationship between these characterizations.
+
+\item
+  Proof reduction $\cong$ session-typed processes (SILL).
+  \begin{itemize}
+  \item Strengths: behavioral types; preservation and progress; process implementation;
+                   logical extensions suggest new features
+  \item Weaknesses: very local description (cf.\ local and global session types);
+                    synchronous communication
+  \end{itemize}
+  Good for implementation.
+
+\item
+  Proof construction $\cong$ process-as-formula (Miller et al.),
+                             multiset rewriting (Cervesato and Scedrov).
+  \begin{itemize}
+  \item Strengths: more global description (though slightly lower level than global types?);
+                   \emph{a}synchronous communication;
+  \item Weaknesses: untyped; can deadlock; less obviously extensible;
+                    specification, but not implementation
+  \end{itemize}
+  Good for specification.
+
+\item
+  Where do the proof reduction and proof construction characterizations intersect?
+  \begin{itemize}
+  \item Intersection will have strengths of both, with weaknesses of neither.
+  \item On the intersection, a proof-construction specification can be \enquote{projected} to a proof-reduction implementation.
+  \end{itemize}
+
+\item
+  To focus our attention on the essential differences between proof reduction and proof construction, we limit our investigation to chain topologies, not the more general tree topologies of SILL.
+  \begin{itemize}
+  \item Chain topologies let us treat channels namelessly, which turns out to lift a large notational burden.
+  \item In both the proof reduction and proof construction chacterizations, there are logical justifications for chain topologies.
+  \item We conjecture that our results can be straightforwardly generalized to tree topologies, with a large notational overhead, but no conceptual difficulties.
+  \end{itemize}
+
+\item
+  Outline of chapters and discussion of contributions
+
+\item
+  Abstract rewriting, specifically string rewriting, as a framework for specifying the dynamics of concurrent systems.
+  \begin{itemize}
+  \item Systems with components arranged in a linear topology with a monoidal structure 
+  \item Special case of multiset rewriting (Cervesato and Scedrov), so not a contribution of this work
+  \item Introduce running examples for the first time: NFAs and binary counters.
+    (A review of finite automata can be found in \cref{ch:finite-automata}.)
+  \end{itemize}
+
+\item
+  Ordered rewriting generalizes string rewriting to a richer set of \enquote{connectives} -- free residuated lattice, not just a free monoid
+  \begin{itemize}
+  \item Based on the ordered sequent calculus of \cref{ch:ordered-logic}
+  \item Ordered rewriting justified by refactoring the sequent calculus left rules to eliminate boilerplate.
+    \begin{itemize}
+    \item Rewriting is obtained as a fragment of the refactored calculus
+    \item This derivation appears to be an auxiliary contribution of this work
+    \end{itemize}
+  \item Roughly a special case of (Cervesato and Scedrov)
+  \item \emph{Focused} ordered rewriting to control the atomicity of individual rewriting steps
+  \end{itemize}
+
+\item 
+  Both string rewriting and (focused) ordered rewriting are global, state transformation systems.
+  \begin{itemize}
+  \item Our goal is to identify a fragment (intersection) that acts like a process calculus -- a local, formula-as-process interpretation.
+    \begin{itemize}
+    \item Propositions as process expressions, contexts as runtime process configurations, atoms as messages 
+    \item Surprisingly few changes needed: atom directions and syntactic restriction placed on implications
+    \item Not really a contribution?  (Miller et al.)
+    \end{itemize}
+  \item coinductively defined propositions, not replication, for unbounded rewriting 
+  \item Major contribution of this chapter: proceedure for choreographing string rewriting specifications into formula-as-process ordered rewriting
+    \begin{itemize}
+    \item Role assignment to each symbol -- message or process
+    \item Not all role assignments lead to sensible choreographies
+    \item String rewriting axioms used as an evaluation\fixnote{word choice?} -- specification and choreography must be bisimilar.
+      [First appearance of a bisimiarity.  States' structures are observable]
+    \item Informal description, then formal description 
+    \end{itemize}
+  \item Choreographies for binary counters and NFAs 
+    \begin{itemize}
+    \item End-to-end adequacy of choreography as a composition of specification's adequacy with bisimilarity of choreography and specification
+    \item NFA example leads to a desire for an equivalence coarser than equality 
+    \end{itemize}
+  \end{itemize}
+
+\item A notion of bisimilarity for ordered rewriting
+  \begin{itemize}
+  \item observatinal equivalence: prepositions/processes are opaque; atoms/messages are observable 
+    \begin{itemize}
+    \item very much dependent on formula-as-process interpretation
+    \end{itemize}
+  \item Contribution?  Related to (Deng et al.) but our formulation is different
+  \item Labeled bisimilarity as a sound (and complete!) proof technique for rewriting bisimilarity
+  \item Examples of bisimilarity: NFA encoding preserves bisimilarity; bisimilarity of binary counters coincides with equal denotations 
+  \end{itemize}
+
+\item That closes proof construction.  Now for proof reduction.
+
+\item Singleton logic
+  \begin{itemize}
+  \item Independently identified by (Fortier and Santocanale)
+  \end{itemize}
+\end{itemize}
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{}
+
 \begin{itemize}
 \item Computation as deduction: clear, expressive, and provably correct programs
   \begin{itemize}

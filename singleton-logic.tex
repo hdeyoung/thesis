@@ -435,6 +435,54 @@ Interestingly, because the single-antecedent restriction exactly constrains the 
 % It is odd to contemplate that a logic without an implication connective to internalize the logic's underlying hypothetical judgment could possibly be well-defined.
 % But as the metatheoretic results of the following \lcnamecref{sec:singleton-logic:seq-calc:metatheory} verify, singleton sequent caluculus is indeed well-defined, resting on the solid foundation of a verificationist meaning-theory.
 
+
+\newthought{Symmetry was} one of the motivations behind examining the single-ante\-cedent restriction and the singleton logic that results from it.
+With a sequent calculus for singleton logic, we can now make that symmetry precise.
+For instance, the $\rrule{\with}$ rule can be exactly obtained from the $\lrule{\plus}$ rule -- and \emph{vice versa} -- by reversing the turnstiles and replacing the $\plus$ connective with $\with$:
+\begin{equation*}
+  \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- B}}{
+    \slseq{A_1 |- B} & \slseq{A_2 |- B}}
+  \quad\raisebox{1.25ex}{$\leftrightsquigarrow$}\quad
+  \infer[\rrule{\with}]{A_1 \with A_2 \dashv B}{
+    A_1 \dashv B & A_2 \dashv B}
+\end{equation*}
+Applying this transformation to the other rules results in similar symmetric pairs.
+The $\jrule{CUT}$ even maps to itself.
+\begin{equation*}
+  \infer[\jrule{CUT}\smash{^B}]{\slseq{A |- C}}{
+    \slseq{A |- B} & \slseq{B |- C}}
+  \quad\raisebox{1.25ex}{$\leftrightsquigarrow$}\quad
+  \infer[\jrule{CUT}\smash{^B}]{A \dashv C}{
+    A \dashv B & B \dashv C}
+\end{equation*}
+
+To make this automorphism formal, we define an involution, $\sym*{}$, on propositions (see the adjacent \lcnamecref{fig:singleton-logic:involution})%
+\begin{marginfigure}
+  \begin{gather*}
+    \sym*{a} = \sym{a} \qquad \sym*{\sym{a}} = a
+    \\
+    \!\begin{aligned}
+      \sym*{A \plus B} &= \sym{A} \with \sym{B} \\
+      \sym*{\zero} &= \top \\
+      \sym*{A \with B} &= \sym{A} \plus \sym{B} \\
+      \sym*{\top} &= \zero
+    \end{aligned}
+  \end{gather*}
+  \caption{An involution on propositions}\label{fig:singleton-logic:involution}
+\end{marginfigure}%
+, presuming that the involution of an atom is again an atom.
+With this involution, it is relatively straightforward to state and prove symmetry:
+\begin{theorem}\label{thm:singleton-logic:symmetry}
+  $\slseq{A |- B}$ if and only if $\slseq{\sym{B} |- \sym{A}}$.
+\end{theorem}
+\begin{proof}
+  The left-to-right direction can be proved by structural induction on the derivation of $\slseq{A |- B}$.
+  The converse follows immediately, because $\sym*{}$ is an involution.
+\end{proof}
+
+Notice that the $\sym*{}$ involution is the additive fragment of the involution commonly used in one-sided sequent calculi for classical linear logic.
+In this sense, singleton logic exhibits the same symmetries as classical logic, but in an intuitionistic setting.
+
 \subsection{Metatheory: Cut elimination and identity expansion}\label{sec:singleton-logic:seq-calc:metatheory}
 
 The rules shown in \cref{fig:singleton-logic:seq-calc} certainly have the appearance of sequent calculus rules, but do they truly constitute a well-defined sequent calculus?

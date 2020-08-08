@@ -43,7 +43,7 @@ Depending on the context, it will be a subset of either $\wds{\ialph}$, $\infinw
 
 \section{Nondeterministic and \aclp*{DFA}}
 
-\begin{definition}
+\begin{definition}\label{def:finite-automata:nfa}
   \Iac{NFA} over a finite input alphabet $\ialph$ is a triple $\aut{A} = (Q, \nfapow, F)$ consisting of:
   \begin{itemize}
   \item a finite set of \vocab{states}, $Q$;
@@ -331,89 +331,62 @@ However, if both automata are \acp{DFA}, then language equivalence does imply bi
 % \end{marginfigure}
 
 
-\section{Finite transducers}
-\fixnote{Remove these?}
+\section{Infinite-word sequential transducers}
 
+Sequential and subsequential transducers\autocite{??} are usually described in terms of finite words.
+In this document, we are interested in transducers for their computational behavior rather than for the functions they induce.
+This, together with technical considerations that will become apparent in \cref{ch:process-chains}, means that we are only interested in \emph{infinite}-word sequential transducers.
+% It is also possible to consider finite-word sequential (and subsequential) transducers, but in this document we are only interested in infinite-word sequential transducers, for reasons that will become clear in \cref{ch:process-chains}.
+
+The following definition is adapted from \textcite{Beal+Carton:TCS02}.
 \begin{definition}
-  \Iac{SFT} over a finite input alphabet $\ialph$ and a finite output alphabet $\oalph$ is a tuple $\aut{T} = (Q, \sftnext, \sftout, \sftterm)$ consisting of:
+  An infinite-word sequential transducer over the finite input and output alphabets $\ialph$ and $\oalph$, respectively, is a tuple $\aut{T} = (Q, \sftnext, \sftout)$ consisting of:
   \begin{itemize}
   \item a finite set of \vocab{states}, $Q$;
-  \item a \vocab{transition function}, $\sftnext\colon Q \times \ialph \to Q$;
-  \item a \vocab{output function}, $\sftout\colon Q \times \ialph \to \finwds{\oalph}$; and
-  \item a \vocab{terminal output function}, $\sftterm\colon Q \to \finwds{\oalph}$.
+  \item a \vocab{transition function}, $\sftnext\colon Q \times \ialph \to Q$; and
+  \item an \vocab{output function}, $\sftout\colon Q \times \ialph \to \finwds{\oalph}$.
   \end{itemize}
-
-  Define a combined transition--output function $\mathord{\sftreduces}\colon Q \times \ialph \to \finwds{\oalph} \times Q$:
-  \begin{equation*}
-    q \sftreduces[\tio{a | v}] \sftnext(q, a) \text{, where $v = \sftout(q, a)$}
-  \end{equation*}
-  We then lift this function, defining a function $\mathord{\sftReducesEnd}\colon Q \times \finwds{\ialph} \to \finwds{\oalph}$ on finite input words: 
-  For each input word $w = a_1 \wc a_2 \dotsm a_n$:
-  \begin{gather*}
-    q \sftReducesEnd[w] v
-    \\ \text{if and only if} \\
-    q \sftreduces[\tio{a_1 | v_1}] q_1 \sftreduces[\tio{a_2 | v_2}] \dotsb \sftreduces[\tio{a_n | v_n}] q_n
-    \text{ and }
-    v = (v_1 \wc v_2 \dotsm v_n) \wc* \sftterm(q_n)
-    \mathrlap{\,.}
-  \end{gather*}
-
-  The \ac{SFT} $\aut{T}$ transforms, from state $q$, the input word $w$ into the output word $v$ if $(q, \emp) \sftReducesEnd[w] v$.
+  We may define a function $\mathord{\Downarrow}\colon Q \times \infinwds{\ialph} \to \infinwds{\oalph}$ as the largest function such that $(q, a \wc w) \Downarrow \sftout(q, a) \wc v$ if $(\sftnext(q, a), w) \Downarrow v$.
+  The transducer $\aut{T}$ maps, from state $q$, the infinite input word $w$ into the infinite output word $v$ if $(q, w) \Downarrow v$.
 \end{definition}
 
 
-
-\subsection{From \acp*{SFT} to proofs}
-
-\begin{equation*}
-  \begin{lgathered}
-    \finwds{\ialph} \defd \plus*[sub=_{a \in \ialph}]{a\colon\finwds{\ialph}, \emp\colon \varepsilon} \\
-    \finwds{\oalph} \defd \plus*[sub=_{a \in \oalph}]{a\colon\finwds{\oalph}, \emp\colon \varepsilon} \\
-    \slof{\finwds{\ialph} |- \hat{q} : \finwds{\oalph}} \defd
-      \caseL[a \in \ialph]{a => \spawn{\hat{q}'_a}{\selectR{\sftout}(q, a)} | \emp => \selectR{\sftterm}(q)}
-  \end{lgathered}
-\end{equation*}
-
-\subsection{From proofs to \acp*{SFT}}
-
-\begin{equation*}
-  \begin{lgathered}
-    \slof{\finwds{\ialph} |- p : \finwds{\oalph}}
-      \defd \caseL[a \in \ialph]{a => \spawn{p'_a}{\selectR{v}_{p,a}} | \emp => \spawn{e_p}{\selectR{v}'_{p,a}}} \\
-    \slof{\finwds{\ialph} |- p : \finwds{\oalph}}
-      \defd \spawn{p'}{\selectR{v}_p} \\
-    \slof{\finwds{\ialph} |- p : \varepsilon}
-      \defd \dotso \\
-    \slof{\varepsilon |- p : \finwds{\oalph}}
-      \defd \dotso
-  \end{lgathered}
-\end{equation*}
-
-
+\begin{example}
 \begin{marginfigure}
-  \begin{gather*}
-    \mathllap{\aut{T}_1 = {}}
+  \begin{equation*}
+    \mathllap{\aut{T} = {}}
     \begin{tikzpicture}[baseline=(q_0.base)]
       \graph [automaton] {
         q_0
          -> [loop above, "$\tio{a | a}$"]
-        q_0;
+        q_0
+         -> [bend left, "$\tio{b | b}$"]
+        q_1 [right=-0.5em of q_0]
+         -> [loop above, "$\tio{b | \emp}$"]
+        q_1
+         -> [bend left, "$\tio{a | a}$"]
+        q_0 ;
+        % e_0 [coordinate, below=-1.75em of q_0.south];
+        % e_1 [coordinate, below=-5.25em of q_1.south];
+        % (q_0.south) -> ["$\emp$", swap] e_0 ;
+        % (q_1.south) -> ["$\vphantom{\emp}\smash{b}$"] e_1 ;
       };
     \end{tikzpicture}
-    \\
-    \mathllap{\aut{T}_2 = {}}
-    \begin{tikzpicture}[baseline=(s_0.base)]
-      \graph [automaton] {
-        s_0
-         -> [bend left, "$\tio{a | \emp}$"]
-        s_1
-         -> [bend left, "$\tio{a | aa}$"]
-        s_0;
-      };
-    \end{tikzpicture}
-  \end{gather*}
-  \caption{Two \acp{NFA} that copy streams of $a$s.}
+  \end{equation*}
+  \caption{An infinite-word sequential transducer that compresses runs of consecutive $b$s}\label{fig:finite-automata:sft-example}
 \end{marginfigure}
+  %
+  As a concrete example consider the infinite-word transducer $\aut{T}$ over the input and output alphabets $\ialph = \oalph = \Set{ a, b }$ that is depicted in \cref{fig:finite-automata:sft-example}.
+  This transducer maps, from state $q_0$, infinite input words into words in which each run of $b$s has been compressed into a single $b$.
+  For instance, it maps $w = abbaabbba\dotsm$ to $v = abaaba\dotsm$ because $(q_0, w) \Downarrow v$.
+\end{example}
+
+
+
+% Notice that \acp{DFA} may be thought of as specialized \acp{SFT} that transduce each word to one of two output words to indicate acceptance.
+% In other words, \iac{DFA} $\aut{A} = (Q, \dfanext, F)$ over an input alphabet $\ialph$ is isomorphic to the \ac{SFT} $\aut{T} = (Q, \dfanext, \sftout, \sftterm)$ over the in put aphabet $\ialph$ and an output alphabet $\oalph = \Set{ y, n }$ where:
+% $\sftout(q, a) = \emp$ for all $(q, a) \in Q \times \ialph$; and
+% $\sftterm(q) = y$ for all $q \in F$ and $\sftterm(q) = n$ otherwise.
 
 
 % \section{\Aclp*{DPDA}}
@@ -438,38 +411,239 @@ However, if both automata are \acp{DFA}, then language equivalence does imply bi
 %   $(q, s) = (q_0, s_0) \nfareduces[\alpha_1] (q_1, s_1) \nfareduces[\alpha_2] \dotsb \nfareduces[\alpha_n] (q', s')$ with $q' \in F$.
 % \end{definition}
 
+\section{Turing machines}
 
-\section{Chains of communicating automata}
-\fixnote{Remove these?}
+In \cref{sec:process-chains:turing-machines}, we will construct session-typed processes that represent Turing machines.
+We are interested in how these machines compute, but not interested in what functions they compute.
+In other words, our focus is on computation, not computability.
+
+This means that our definitions of Turing machines differ from the definitions traditionally used, such as in \textcite{Hopcroft+Ullman:??}'s text.
+For example, we use infinite words to describe truly infinite tapes, rather than using finite words to describe the frontiers of unbounded tapes, and our machines also have no notion of acceptance.
+The specific reasons for these differences will become clear in \cref{sec:process-chains:turing-machines}.
 
 \begin{definition}
-  A \emph{chain of communicating automata} over a finite alphabet $\ialph$ is a tuple $\aut{C} = (Q, (\ialph_q)_{q \in Q}, (\oalph_q)_{q \in Q})$ consisting of:
+  A \vocab{two-way infinite tape Turing machine} over a finite alphabet $\ialph$ is a pair $\aut{M} = (Q, \delta)$ consisting of:
   \begin{itemize}
-  \item a finite set of \vocab{states}, $Q$, that is partitioned into: left- and right-reading states, $\rL{Q}$ and $\rR{Q}$; left- and right-writing states, $\wL{Q}$ and $\wR{Q}$; forking states, $\fS{Q}$; and halting states, $\hS{Q}$;
-  \item a state-indexed set of finite \vocab{left-hand alphabets}, $(\ialph_q)_{q \in Q}$, and a state-indexed set of finite \vocab{right-hand alphabets}, $(\oalph_q)_{q \in Q}$;
-  \item $\rL{\delta} \colon \Pi q{:}\rL{Q}. \ialph_q \to Q$, with the condition that $\ialph_q = \ialph_{q'}$ and $\oalph_q = \oalph_{q'}$ for all $q' \in \cod{\rL{\delta}_q}$, and $\rR{\delta} \colon (\exists q{:}\rR{Q}. \oalph_q) \to Q$;
-  \item $\wL{\delta} \colon \wL{Q} \to \exists q'{:}Q. \ialph_{q'}$ and $\wR{\delta} \colon \wR{Q} \to \exists q'{:}Q. \oalph_{q'}$; and
-  \item $\fS{\delta} \colon \fS{Q} \to Q \times Q$.
+  \item a finite set of \emph{states}, $Q$; and
+  \item a \emph{transition function} $\delta\colon Q \times \ialph \to Q \times \ialph \times \Set{\mathsf{L}, \mathsf{R}}$.
   \end{itemize}
+  The two-way infinite tape is divided into two one-way halves, with the machine's \emph{head} placed between the two halves.
+  A \emph{configuration} of $\aut{M}$ is thus either $w \itlhead{q} v$ or $w \itrhead{q} v$ for left-infinite word $w \in \ialph^{\bar{\omega}}$, right-infinite word $v \in \infinwds{\ialph}$, and state $q \in Q$.%
+  \footnote{In other words, configurations are drawn from $\ialph^{\bar{\omega}} \times (\bigcup_{q \in Q} \Set{\!{} \itlhead{q} {}, {} \itrhead{q} {}\!}) \times \infinwds{\ialph}$.}
+  The machine's head faces either the left- or right-hand half of the tape, as indicated by the notation surrounding the state $q$.
 
-  \vocab{Chain configurations}, $c$ and $d$, consist of a finite sequence of states $q_1, q_2, \dotsc, q_n \in Q$ with, for all $1 \leq i < n$, a finite word drawn from $\finwds{\ialph_{q_{i+1}}}$ between neighboring states $q_i$ and $q_{i+1}$.
-  In addition, a finite word drawn from $\finwds{\ialph_{q_1}}$ and a finite word drawn from $\finwds{\oalph_{q_n}}$ bracket the configuration.
-  Formally, then, a chain configuration is a string drawn from the set
+  To describe the machine's moves, we define a function $\treduces$ on configurations.
+  For a left-facing head, this function is given by:
   \begin{equation*}
-    \finwds{\ialph_{q_1}} q_1 \finwds{\ialph_{q_2}} q_2 \dotsm \finwds{\ialph_{q_n}} q_n \finwds{\oalph_{q_n}}
-    \,,
+      w \wc a \itlhead{q} v \treduces
+        \begin{cases*}
+          w \itlhead{q'} b \wc v & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+          w \wc b \itrhead{q'} v & if $\delta(q, a) = (q', b, \mathsf{R})$
+        \end{cases*}
   \end{equation*}
-  for some finite sequence of states $q_1, q_2, \dotsc, q_n \in Q$.
-  The chain configuration is \vocab{well-formed} if $\oalph_{q_i} = \ialph_{q_{i+1}}$ for all $1 \leq i < n$.
-
-  \begin{itemize}
-  \item $c \wc a \,q\, d \reduces c \,q'\, d$ if $\rL{\delta}_q(a) = q'$, and $c \,q\, a \wc d \reduces c \,q'\, d$ if $\rR{\delta}_q(a) = q'$;
-  \item $c \,q\, d \reduces c \wc a \,q'\, d$ if $\wL{\delta}(q) = (q', a)$, and $c \,q\, d \reduces c \,q'\, a \wc d$ if $\wR{\delta}(q) = (q', a)$;
-
-  \item $c \,q\, d \reduces c \, q' \, q'' \, d$ if $\fS{\delta}(q) = (q', q'')$;
-  \item $c \,q\, d \reduces c \, d$ if $q \in \hS{Q}$ and $\ialph_q = \oalph_q$.
-  \end{itemize}
+  Symmetrically, for a right-facing head, this function is given by:
+  \begin{equation*}
+      w \itrhead{q} a \wc v \treduces
+        \begin{cases*}
+          w \itlhead{q'} b \wc v & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+          w \wc b \itrhead{q'} v & if $\delta(q, a) = (q', b, \mathsf{R})$
+        \end{cases*}
+  \end{equation*}
+  The direction that the head faces indicates the next symbol to be read from the tape.
+  When a left-facing head is instructed to move right or a right-facing head is instructed to move left, the head's direction changes but its placement between the two tape halves does not.
 \end{definition}
+
+
+% \begin{definition}
+%   A \vocab{two-way infinite tape Turing machine} over a finite alphabet $\ialph$ is a tuple $\aut{M} = (Q, \tblank, \delta)$ consisting of:
+%   \begin{itemize}
+%   \item a finite set of \emph{states}, $Q$;
+%   \item a distinguished \emph{blank symbol}, $\tblank \in \ialph$; and
+%   \item a \emph{transition function} $\delta\colon Q \times \ialph \to Q \times \ialph \times \Set{\mathsf{L}, \mathsf{R}}$.
+%   \end{itemize}
+%   The two-way infinite tape is divided into two one-way halves, with the machine's \emph{head} placed between the two halves.
+%   A \emph{configuration} of $\aut{M}$ is thus either $w \itlhead{q} v$ or $w \itrhead{q} v$ for finite words $w, v \in \finwds{\ialph}$ and state $q \in Q$.%
+%   \footnote{In other words, configurations are drawn from $\finwds{\ialph} \times (\bigcup_{q \in Q} \Set{\!{} \itlhead{q} {}, {} \itrhead{q} {}\!}) \times \finwds{\ialph}$.}
+%   The machine's head faces either the left- or right-hand half of the tape, as indicated by the notation surrounding the state $q$.
+% %  The words $w$ and $v$ in these configurations are finite
+
+%   To describe the machine's moves, we define a function $\treduces$ on configurations.
+%   For a left-facing head, this function is given by:
+%   \begin{equation*}
+%     \begin{lgathered}
+%       w \wc a \itlhead{q} v \treduces
+%         \begin{cases*}
+%           w \itlhead{q'} b \wc v & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+%           w \wc b \itrhead{q'} v & if $\delta(q, a) = (q', b, \mathsf{R})$
+%         \end{cases*}
+%       \\
+%       \emp \itlhead{q} v \treduces \tblank \itlhead{q} v
+%     \end{lgathered}
+%   \end{equation*}
+%   Symmetrically, for a right-facing head, this function is given by:
+%   \begin{equation*}
+%     \begin{lgathered}
+%       w \itrhead{q} a \wc v \treduces
+%         \begin{cases*}
+%           w \itlhead{q'} b \wc v & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+%           w \wc b \itrhead{q'} v & if $\delta(q, a) = (q', b, \mathsf{R})$
+%         \end{cases*}
+%       \\
+%       w \itrhead{q} \emp \treduces w \itrhead{q} \tblank
+%     \end{lgathered}
+%   \end{equation*}
+%   The direction that the head faces indicates the next symbol to be read from the tape.
+%   In case a left-facing head is instructed to move right or a right-facing head is instructed to move left, the head's direction changes but its placement between the two tape halves does not.
+%   If the head reaches the finite frontier, a blank is allocated.
+% \end{definition}
+
+\begin{definition}
+  A \vocab{one-way infinite tape Turing machine} over a finite alphabet $\ialph$ is a tuple $\aut{M} = (Q, \delta, F)$ consisting of:
+  \begin{itemize}
+  \item a finite set of \emph{states}, $Q$;
+  \item a \emph{transition function} $\delta\colon Q \times \ialph \to Q \times \ialph \times \Set{\mathsf{L}, \mathsf{R}}$; and
+  \item a subset of \emph{final states}, $F \subseteq Q$.
+  \end{itemize}
+  Because the tape is only one-way infinite, a configuration of machine $\aut{M}$ is either $w \itlhead{q} v$ or $w \itrhead{q} v$ for left-infinite word $w \in \ialph^{\bar{\omega}}$, \emph{finite} word $v \in \finwds{\ialph}$, and state $q \in Q$; \ie, configurations are drawn from $\ialph^{\bar{\omega}} \times (\bigcup_{q \in Q} \Set{\!{} \itlhead{q} {}, {} \itrhead{q} {}\!}) \times \finwds{\ialph}$.
+  % The machine's head faces either the left- or right-hand half of the tape, as indicated by the notation surrounding the state $q$.
+%  The words $w$ and $v$ in these configurations are finite
+
+  To describe the machine's moves, we define a function $\treduces$ on configurations.
+  For a left-facing head, this function is given by:
+  \begin{equation*}
+      w \wc a \itlhead{q} v \treduces
+        \begin{cases*}
+          w \itlhead{q'} b \wc v & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+          w \wc b \itrhead{q'} v & if $\delta(q, a) = (q', b, \mathsf{R})$
+        \end{cases*}
+  \end{equation*}
+  This is exactly as it was for the two-way infinite tape Turing machines.
+  Because the tape is only one-way infinite, the right-facing head's treatment differs:
+  \begin{equation*}
+    \!\begin{aligned}
+      w \itrhead{q} a \wc v \treduces {} &
+        \begin{cases*}
+          w \itlhead{q'} b \wc v & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+          w \wc b \itrhead{q'} v & if $\delta(q, a) = (q', b, \mathsf{R})$
+        \end{cases*}
+      \\
+      w \itrhead{q} \emp \treduces {} &
+        \begin{cases*}
+          w & if $q \in F$ \\
+          w \itlhead{q} \emp & if $q \notin F$
+        \end{cases*}
+    \end{aligned}
+  \end{equation*}
+  When a right-facing head reaches the finite end of the tape, its behavior depends on whether the state is final.
+  If the state is final, the machine terminates; otherwise, the machine remains in the same state but effectively moves left one symbol (by turning to face left).
+\end{definition}
+
+Notice that the machine does not terminate as soon as it enters a final state -- it must also reach the finite end of the tape.
+It is up to the machine's programmer, by appropriately crafting the transition function $\delta$, to ensure that final states eventually lead the machine to the tape's finite end.
+
+% \begin{definition}
+%   A \vocab{one-way infinite tape Turing machine} over a finite alphabet $\ialph$ is a tuple $\aut{M} = (Q, \tblank, \delta)$ consisting of:
+%   \begin{itemize}
+%   \item a finite set of states, $Q$;
+%   % \item a finite input alphabet, $\ialph \subset \oalph$;
+%   \item a distinguished blank symbol, $\tblank \in \ialph$; and
+%   \item a \emph{transition function} $\delta\colon Q \times \ialph \to Q \times \ialph \times \Set{\mathsf{L}, \mathsf{R}}$.
+%   \end{itemize}
+%   A configuration of $\aut{M}$ is either $w \itlhead{q} v$ or $w \itrhead{q} v$ for words $w,v \in \finwds{\ialph}$ and states $q \in Q$.%
+%   \footnote{In other words, configurations are drawn from $\finwds{\ialph} \times (\bigcup_{q \in Q} \Set{\itlhead{q}, \itrhead{q}}) \times \finwds{\ialph}$.}
+%   The middle portion of a configuration, either $\itlhead{q}$ or $\itrhead{q}$, represents $\aut{M}$'s \emph{finite control}, which consists of the machine's current state together with the direction of the next symbol to be read.
+
+%   We define a function $\treduces$ on these configurations.
+%   If the machine's finite control is facing leftward and reads an $a$, it writes a symbol in place of the $a$, optionally changes the finite control's state, and then either advances or turns to face rightward, according to the transition function $\delta$.
+%   \begin{equation*}
+%     % \begin{lgathered}
+%       w \wc a \itlhead{q} v \treduces
+%         \begin{cases*}
+%           w \itlhead{q'} b \wc v & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+%           w \wc b \itrhead{q'} v & if $\delta(q, a) = (q', b, \mathsf{R})$
+%         \end{cases*}
+%     %   \\
+%     %   \emp \itlhead{q} v \treduces \tblank \itlhead{q} v
+%     % \end{lgathered}
+%   \end{equation*}
+%   Otherwise, if the configuration is $\emp \itlhead{q} v$, then the finite control has reached the left-hand frontier of the tape; because the tape is unbounded to the left, a new, blank cell is allocated in this case.
+%   \begin{equation*}
+%     \emp \itlhead{q} v \treduces \tblank \itlhead{q} v
+%   \end{equation*}
+
+%   A right-facing finite control is treated symmetrically, except that the right-hand end of the tape is fixed.
+%   To ensure that the finite control does not run off the end of the tape, its direction
+%   \begin{equation*}
+%     \begin{lgathered}
+%       w \itrhead{q} a \wc v \treduces
+%         \begin{cases*}
+%           w \itlhead{q'} b \wc v & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+%           w \wc b \itrhead{q'} v & if $\delta(q, a) = (q', b, \mathsf{R})$
+%         \end{cases*}
+%       \\
+%       w \itrhead{q} \emp \treduces w \itlhead{q} \emp
+%     \end{lgathered}
+%   \end{equation*}
+
+% \end{definition}
+
+% \begin{definition}
+%   A \vocab{two-way infinite tape Turing machine} over a finite alphabet $\ialph$ is a tuple $(Q, \tblank, \delta)$ consisting of:
+%   \begin{itemize}
+%   \item a finite set of states, $Q$;
+%   \item a distinguished blank symbol, $\tblank \in \ialph$; and
+%   \item a transition function, $\delta\colon Q \times \ialph \to Q \times \ialph \times \Set{\mathsf{L}, \mathsf{R}}$.
+%   \end{itemize}
+%   A configuration of $\aut{M}$ is a triple $(w, q, v) \in \finwds{\ialph} \times \bigl((\Set{\mathord{\itlhead}} \times Q) \union (Q \times \Set{\mathord{\itrhead}})\bigr) \times \finwds{\ialph}$.
+%   Depending on the direction that the machine's head is facing and whether it is at the frontier, there are several possible transitions:
+%   \begin{equation*}
+%     \begin{tabular}{@{}r@{\enspace}l@{\enspace}l@{}}
+%       $w \wc a \itlhead q \oc v \treduces w \itlhead q'_a \oc b \wc v$ \\
+%       and $w \oc q \itrhead a \wc v \treduces w \itlhead q'_a \oc b \wc v$
+%         & if & $\delta(q, a) = (q'_a, b, \mathsf{L})$
+%       \\[1ex]
+%       $w \wc a \itlhead q \oc v \treduces w \wc b \oc q'_a \itrhead v$ \\
+%       and $w \oc q \itrhead a \wc v \treduces w \wc b \oc q'_a \itrhead v$
+%         & if & $\delta(q, a) = (q'_a, b, \mathsf{R})$
+%       \\[1ex]
+%       $\emp \itlhead q \oc v \treduces \tblank \itlhead q \oc v$ \\
+%       and $w \oc q \itrhead \emp \treduces w \oc q \itrhead \tblank$
+%     \end{tabular}
+%   \end{equation*}
+% \end{definition}
+
+
+% \section{Chains of communicating automata}
+% \fixnote{Remove these?}
+
+% \begin{definition}
+%   A \emph{chain of communicating automata} over a finite alphabet $\ialph$ is a tuple $\aut{C} = (Q, (\ialph_q)_{q \in Q}, (\oalph_q)_{q \in Q})$ consisting of:
+%   \begin{itemize}
+%   \item a finite set of \vocab{states}, $Q$, that is partitioned into: left- and right-reading states, $\rL{Q}$ and $\rR{Q}$; left- and right-writing states, $\wL{Q}$ and $\wR{Q}$; forking states, $\fS{Q}$; and halting states, $\hS{Q}$;
+%   \item a state-indexed set of finite \vocab{left-hand alphabets}, $(\ialph_q)_{q \in Q}$, and a state-indexed set of finite \vocab{right-hand alphabets}, $(\oalph_q)_{q \in Q}$;
+%   \item $\rL{\delta} \colon \Pi q{:}\rL{Q}. \ialph_q \to Q$, with the condition that $\ialph_q = \ialph_{q'}$ and $\oalph_q = \oalph_{q'}$ for all $q' \in \cod{\rL{\delta}_q}$, and $\rR{\delta} \colon (\exists q{:}\rR{Q}. \oalph_q) \to Q$;
+%   \item $\wL{\delta} \colon \wL{Q} \to \exists q'{:}Q. \ialph_{q'}$ and $\wR{\delta} \colon \wR{Q} \to \exists q'{:}Q. \oalph_{q'}$; and
+%   \item $\fS{\delta} \colon \fS{Q} \to Q \times Q$.
+%   \end{itemize}
+
+%   \vocab{Chain configurations}, $c$ and $d$, consist of a finite sequence of states $q_1, q_2, \dotsc, q_n \in Q$ with, for all $1 \leq i < n$, a finite word drawn from $\finwds{\ialph_{q_{i+1}}}$ between neighboring states $q_i$ and $q_{i+1}$.
+%   In addition, a finite word drawn from $\finwds{\ialph_{q_1}}$ and a finite word drawn from $\finwds{\oalph_{q_n}}$ bracket the configuration.
+%   Formally, then, a chain configuration is a string drawn from the set
+%   \begin{equation*}
+%     \finwds{\ialph_{q_1}} q_1 \finwds{\ialph_{q_2}} q_2 \dotsm \finwds{\ialph_{q_n}} q_n \finwds{\oalph_{q_n}}
+%     \,,
+%   \end{equation*}
+%   for some finite sequence of states $q_1, q_2, \dotsc, q_n \in Q$.
+%   The chain configuration is \vocab{well-formed} if $\oalph_{q_i} = \ialph_{q_{i+1}}$ for all $1 \leq i < n$.
+
+%   \begin{itemize}
+%   \item $c \wc a \,q\, d \reduces c \,q'\, d$ if $\rL{\delta}_q(a) = q'$, and $c \,q\, a \wc d \reduces c \,q'\, d$ if $\rR{\delta}_q(a) = q'$;
+%   \item $c \,q\, d \reduces c \wc a \,q'\, d$ if $\wL{\delta}(q) = (q', a)$, and $c \,q\, d \reduces c \,q'\, a \wc d$ if $\wR{\delta}(q) = (q', a)$;
+
+%   \item $c \,q\, d \reduces c \, q' \, q'' \, d$ if $\fS{\delta}(q) = (q', q'')$;
+%   \item $c \,q\, d \reduces c \, d$ if $q \in \hS{Q}$ and $\ialph_q = \oalph_q$.
+%   \end{itemize}
+% \end{definition}
 
 
 %%% Local Variables:

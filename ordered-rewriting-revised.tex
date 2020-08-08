@@ -292,7 +292,7 @@ This calculus is sound and complete with respect to the ordered sequent calculus
   The critical cases are the left rules; they are resolved along the lines of the sketches shown in \cref{fig:ordered-rewriting:fuse-refactoring,fig:ordered-rewriting:limp-refactoring-2}.
 \end{proof}
 
-\subsection{An ordered rewriting framework}
+\subsection{An ordered rewriting framework}\label{sec:ordered-rewriting:unfocused}
 
 Thus far, we have used the decomposition judgment, $\octx \reduces \octx'$, and its rules as the basis for a reconfigured sequent-like calculus for ordered logic.
 % But this refactoring also leads naturally to a rewriting system grounded in ordered logic.
@@ -423,7 +423,7 @@ To state and prove soundness, we must first define an operation $\bigfuse \octx$
 
 
 
-\subsection{Properties of the ordered rewriting framework}
+\subsection{Properties of the ordered rewriting framework}\label{sec:ordered-rewriting:concurrency}
 
 As we did for the string rewriting framework, we can evaluate the above ordered rewriting framework for confluence, termination, and, most importantly, concurrency.
 
@@ -883,7 +883,7 @@ and so
 \section{Using shifts to control focusing}
 
 With careful placement of shifts, it is possible to control the behavior of focused rewriting.
-It is even possible to embed the unfocused ordered rewriting framework of \cref{sec:??} and a weakly focused ordered rewriting framework within focused ordered rewriting in an operationally faithful way, as we now show.
+It is even possible to embed the unfocused ordered rewriting framework of \cref{sec:ordered-rewriting:unfocused} and a weakly focused ordered rewriting framework within focused ordered rewriting in an operationally faithful way, as we now show.
 % in \cref{sec:ordered-rewriting:embed-unfocused,sec:ordered-rewriting:embed-weakly-focused}.
 % But first, we discuss a minimal polarization strategy for propositions.
 
@@ -967,7 +967,7 @@ It is even possible to embed the unfocused ordered rewriting framework of \cref{
 % %   If $\embed{\octx_1} \reduces \np{\octx}_2$, then $\octx_1 \Reduces \octx_2$ for some $\octx_2$ such that $\embed{\octx_2} = \np{\octx}_2$.
 % % \end{theorem}
 
-\subsection{Embedding unfocused ordered rewriting}
+\subsection{Embedding unfocused ordered rewriting}\label{sec:ordered-rewriting:embed-unfocused}
 
 With careful placement of additional, non-minimal shifts, it is possible to embed unfocused ordered rewriting within the focused ordered rewriting framework in a operationally faithful way.
 Specifically, we can define a mapping, $\embed*{}$, from contexts of unpolarized propositions to contexts of negative propositions and positive atoms in a way that strongly respects the operational behavior of unfocused ordered rewriting:
@@ -1077,7 +1077,7 @@ For example, with weakly focused rewriting,
 \end{equation*}
 where the inversion of $\p{c} \fuse \p{a}$ is now an atomic step of its own.
 
-This weakly focused rewriting discipline could be achieved as an independent system with the rules shown in \cref{??}.
+This weakly focused rewriting discipline could be achieved as an independent system with the rules shown in \cref{fig:ordered-rewriting:weak-focusing}.
 Notice that weakly focused rewriting restricts the left- and right-handed implications to have only atomic premises.
 Although weak focusing is well-defined for arbitrary implications\autocite{??}, it is not clear how to give a rewriting interpretation of weak focusing unless this restriction is made.
 
@@ -1115,7 +1115,7 @@ Although weak focusing is well-defined for arbitrary implications\autocite{??}, 
   \infer[\jrule{$\reduces$C}]{\p{\octx}_L \oc \p{\octx} \oc \p{\octx}_R \reduces \p{\octx}_L \oc \p{\octx'{}} \oc \p{\octx}_R}{
     \p{\octx} \reduces \p{\octx'{}}}
 \end{inferences}
-\caption{A framework for \emph{weakly} focused ordered rewriting}
+\caption{A framework for \emph{weakly} focused ordered rewriting}\label{fig:ordered-rewriting:weak-focusing}
 \end{figure}
 
 In fact, there is a better approach than using weakly focused ordered rewriting as yet another independent rewriting system.

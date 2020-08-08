@@ -478,7 +478,7 @@ We can make these similarities explicit by defining a homomorphism, $\pf*{-}$, f
   \caption{A homomorphism from chains to process expressions}
 \end{marginfigure}%
 %
-This function is type-preserving:
+This homomorphism is type-preserving:
 \begin{theorem}
   If $\slcof{A |- \chn : B}$, then $\slof{A |- \pf{\chn} : B}$.
 \end{theorem}
@@ -559,8 +559,12 @@ This function is type-preserving:
 % \end{marginfigure}
 
 At first, the distinction between offering and using a service may seem a bit odd, given that we placed so much emphasis on the symmetry of singleton sequents $\slseq{A |- B}$.
-Singleton sequents are indeed syntactically symmetric, but because we view them as (binary) hypothetical judgments, a judgmental asymmetry between the antecedent and consequent remains.
-It is this judgmental asymmetry that is reflected in the provider--client, offer--use asymmetry.
+Singleton sequents are indeed symmetric, as \cref{thm:singleton-logic:symmetry} showed.
+But imposing a provider--client, offer--use distinction is useful for placing our process chains and expressions within existing conceptual frameworks for session-typed concurrency.
+In particular, the distinction helps to relate this process interpretation of singleton logic back to the SILL interpretation of linear logic\autocite{??}.
+
+% but because we view them as (binary) hypothetical judgments, a judgmental asymmetry between the antecedent and consequent remains.
+% It is this judgmental asymmetry that is reflected in the provider--client, offer--use asymmetry.
 
 
 % If a chain $\chn_1$ offers a service $B$ along its right-hand channel and a chain $\chn_2$ uses the same service $B$ along its left-hand channel, then the two chains may be composed end to end as $\chn_1 \cc \chn_2$:
@@ -896,14 +900,15 @@ Unfortunately, there are many relatively simple computational behaviors that can
 For instance, a transducer process that receives, one-by-one, a stream of input symbols and forms an output stream by replacing each $b$ with an $a$ cannot be represented.
 
 The solution is to introduce coinductively defined types, in a manner reminiscent of the coinductively defined propositions, $\n{\defp{p}} \defd \n{A}$, seen in \cref{??}.
-However, coinductively defined types are not particularly useful if process expressions remain finitary, so we also introduce mutually recursive processes: $\slof{A |- p : C} \defd P$.
+We will often write coinductively defined types with Greek letters, such as $\alpha \defd A$.
+Coinductively defined types are not particularly useful if process expressions remain finitary, so we also introduce mutually coinductively defined process expressions: $\slof{A |- \defp{p} : C} \defd P$.
 
-That these definitions are coinductive is guaranteed by requiring that along every cycle among defined types and processes there is a type constructor\fixnote{??} or process expression constructor.\footnote{This generalizes the local contractivity condition described by \textcite{Gay+Hole:AI05}.}
-This justifies an \emph{equi}\-recursive treatment of types in which type definitions may be silently unfolded (or folded) at will.
+That these definitions are coinductive is guaranteed by requiring that along every cycle among defined types and processes there is a type constructor or process expression constructor.\footnote{This generalizes the local contractivity condition described by \textcite{Gay+Hole:AI05}.}
+This justifies an \emph{equi}\-recursive treatment of types in which type definitions may be silently unfolded (or re-folded) at will.
 
 As with coinductively defined propositions, these type and process expression definitions are coinductive in only a syntactic sense.
 In particular, the coinductively defined process expressions are not necessarily behaviorally coinductive, \ie, productive.
-For example, $p \defd \caseL{a => \spawn{\selectR{a}}{p}}$ is not a productive process -- after receiving an initial message $\selectR{a}$, $p$ divergeswithout sending or receiving any further messages.
+For example, $\defp{p} \defd \caseL{a => \spawn{\selectR{a}}{p}}$ is not a productive process -- after receiving an initial message $\selectR{a}$, $p$ diverges without sending or receiving any further messages.
 
 Once coinductively defined types and process expressions are added, there is, strictly speaking, no longer a Curry--Howard isomorphism between session-typed process chains and the semi-axiomatic proofs of singleton logic.
 % Extending the session-type system for process chains with recursive type and process definitions means that, strictly speaking, there is no longer a Curry--Howard isomorphism with singleton logic's Hilbert system.
@@ -911,57 +916,470 @@ Importantly, however, the core system remains unchanged and still enjoys the iso
 The situation is once again analogous to the Curry--Howard isomorphism between intuitionistic natural deduction and the simply-typed $\lambda$-calculus:
 When the $\lambda$-calculus is extended with recursive types and functions, the meaning of the type constuctor for simple function types remains unchanged and still isomorphic with intuitionistic implication.
 
+Just as a Curry--Howard isomorphism can be recovered in the $\lambda$-calculus when general recursive types are restricted to inductive and coinductive types, work by \textcite{Derakhshan+Pfenning:??} and \textcite{Somayyajula+Pfenning:??} shows that a Curry--Howard isomorphism between session-typed process chains and (sub-)singleton sequent calculus proofs can be recovered if types are inductive or behaviorally coinductive.
 
 
 \section{Examples}
 
+\subsection{Binary counter}
+
+We can once again revisit binary counters, this time as an example of session-typed process chains.
+
+\paragraph*{Session types}
+
+A natural number in binary will be represented by a process chain of type $\slcof{\ctre |- \ctr}$, where $\ctr$ is a session type that 
+describes the service that a counter offers
+% offers the client a choice between incrementing and decrementing the counter
+and $\ctre$ is a type parameter that represents a terminated counter.
+
+The type $\ctr$ of counters is given by
+\begin{equation*}
+  \ctr \defd \with*{ i: \ctr , d: \plus*{ z: \ctre , s: \ctr } }
+  \,
+\end{equation*}
+and describes a service that offers the client a choice between incrementing ($i$ branch) and decrementing ($d$ branch) the counter:
+\begin{itemize}
+\item
+  If the client chooses to increment the counter, then the incremented counter again offers the same service, $\ctr$, to the client.
+\item
+  Otherwise, if the client chooses to decrement the counter, then the provider replies with either $\selectR{z}$ or $\selectR{s}$ depending on the counter's value.
+  \begin{itemize}
+  \item
+    If the counter's value is $0$, it cannot be decremented further and so it emits $\selectR{z}$ and then terminates at type $\ctre$.
+  \item
+    If the counter's value is some strictly positive natural number $n$, then the provider signals that by emitting $\selectR{s}$ and then continues as a counter of value $n-1$ that offers service $\ctr$.
+  \end{itemize}
+\end{itemize}
+As a shorthand, we can introduce a type $\ctrd$ of decrement responses:
 \begin{equation*}
   \begin{lgathered}
-    ? \defd
-      \with*{ i: ? , d: \plus*{ z: ? , s: ? } }
-    \\
-    \slof{? |- e : ?} \defd
-      \caseR{ i => \spawn{e}{b_1}
+    \ctr \defd \with*{ i: \ctr , d: \ctrd } \\
+    \ctrd \defd \plus*{ z: \ctre , s: \ctr }
+    \,.
+  \end{lgathered}
+\end{equation*}
+
+\paragraph*{Process expressions}
+
+A counter will be a big-endian chain of processes $\defp{b}_0$ and $\defp{b}_1$, prefixed by a process $\defp{e}$.
+For example, the chain $\defp{e} \cc \defp{b}_1 \cc \defp{b}_0$ would represent a counter of value $2$.
+For these chains to have type $\slcof{\ctre |- \ctr}$, the process expressions $\defp{b}_0$ and $\defp{b}_1$ must have type $\slof{\ctr |- \ctr}$, while $\defp{e}$ must have type $\slof{\ctre |- \ctr}$.
+%
+In addition, to implement decrements involving $\defp{b}_0$, it is also convenient to have a coinductively defined process expression $\defp{b}'_0$ of type $\slof{\ctrd |- \ctrd}$.
+
+These process expressions are defined by 
+\begin{equation*}
+  \begin{lgathered}
+    \slof{ \ctre |- \defp{e} : \ctr } \defd
+      \caseR{ i => \spawn{\defp{e}}{\defp{b}_1}
             | d => \selectR{z} }
     \\
-    \slof{? |- b_0 : ?} \defd
-      \caseR{ i => b_1
-            | d => \spawn{\selectL{d}}{b'_0} }
+    \slof{ \ctr |- \defp{b}_0 : \ctr } \defd
+      \caseR{ i => \defp{b}_1
+            | d => \spawn{\selectL{d}}{\defp{b}'_0} }
     \\
-    \slof{? |- b_1 : ?} \defd
-      \caseR{ i => \spawn{\selectL{i}}{b_0}
-            | d => \spawn{b_0}{\selectR{s}} }
+    \slof{ \ctr |- \defp{b}_1 : \ctr } \defd
+      \caseR{ i => \spawn{\selectL{i}}{\defp{b}_0}
+            | d => \spawn{\defp{b}_0}{\selectR{s}} }
     \\
-    \slof{\plus*{ z: ? , s: ? } |- b'_0 : \plus*{ z: ? , s: ? }} \defd
+    \slof{ \ctrd |- \defp{b}'_0 : \ctrd } \defd
       \caseL{ z => \selectR{z}
-            | s => \spawn{b_1}{\selectR{s}} }
+            | s => \spawn{\defp{b}_1}{\selectR{s}} }
   \end{lgathered}
 \end{equation*}
+For instance, a $\defp{b}_1$ process that receives the $\selectL{i}$ increment message will spawn, in place, neighboring threads of control for $\selectL{i}$ and $\defp{b}_0$ and then terminate the original thread of control.
+In effect, this sends the $\selectL{i}$ increment message to the more significant bits as a carry and flips this bit to $\defp{b}_1$.
 
+As a second example, a $\defp{b}_0$ process that receives the $\selectL{d}$ decrement message should decrement the counter formed by the more significant bits and then analyze the response with a $\defp{b}'_0$ process.
+% We need to introduce one more coinductively defined process expression, $\defp{b}'_0$, that serves to analyze the response and then produce its own response; $\defp{b}'_0$ therefore must have type $\slof{\ctrd |- \ctrd}$.
+% \begin{equation*}
+%   \slof{ \ctrd |- \defp{b}'_0 : \ctrd } \defd
+%     \caseL{ z => \selectR{z}
+%           | s => \spawn{\defp{b}_1}{\selectR{s}} }
+% \end{equation*}
+\begin{itemize}
+\item If that $\defp{b}'_0$ process receives a response of $\selectR{z}$, then the more significant bits had value $0$ and so must the counter as a whole.
+  According to the type $\ctrd$, the current thread of control must produce a response of type $\slof{\ctre |- \ctrd}$, which is easily done by sending $\selectR{z}$.
+\item Otherwise, if the $\defp{b}'_0$ process receives a response of $\selectR{s}$, then the more significant bits had value $n+1$, for some $n \geq 0$, and the counter as a whole must have value $2n+1$ after the decrement.
+  This is accomplished by emitting $\selectR{s}$ and replacing $\defp{b}'_0$ with a recursive call to $\defp{b}_1$.
+\end{itemize}
+
+As an example of these processes in action, observe that $\defp{e} \cc \defp{b}_1 \cc \selectL{i} \cc \selectL{d}$ has the following trace, among others.
+\begin{align*}
+  \MoveEqLeft[.5]
+  \defp{e} \cc \defp{b}_1 \cc \selectL{i} \cc \selectL{d} \\
+    &\reduces \defp{e} \cc (\spawn{\selectL{i}}{\defp{b}_0}) \cc \selectL{d}
+     \reduces \defp{e} \cc \selectL{i} \cc \defp{b}_0 \cc \selectL{d} \\
+    &\reduces \defp{e} \cc \selectL{i} \cc (\spawn{\selectL{d}}{\defp{b}'_0})
+     \reduces \defp{e} \cc \selectL{i} \cc \selectL{d} \cc \defp{b}'_0 \\
+    &\reduces (\spawn{\defp{e}}{\defp{b}_1}) \cc \selectL{d} \cc \defp{b}'_0
+     \reduces \defp{e} \cc \defp{b}_1 \cc \selectL{d} \cc \defp{b}'_0 \\
+    &\reduces \defp{e} \cc (\spawn{\defp{b}_0}{\selectR{s}}) \cc \defp{b}'_0
+     \reduces \defp{e} \cc \defp{b}_0 \cc \selectR{s} \cc \defp{b}'_0 \\
+    &\reduces \defp{e} \cc \defp{b}_0 \cc (\spawn{\defp{b}_1}{\selectR{s}})
+     \reduces \defp{e} \cc \defp{b}_0 \cc \defp{b}_1 \cc \selectR{s}
+\end{align*}
+
+
+
+\subsection{Sequential transducers}
+
+By this point in this document, the reader will likely expect either \acp{DFA} or \acp{NFA} as our next example of session-typed process chains.
+Instead, we will use sequential transducers, as introduced in \cref{ch:finite-automata}.
+
+\paragraph*{Session types}
+
+We should first construct a type that describes the words over an alphabet $\ialph$, respectively.
+However, because the language formulated in this \lcnamecref{ch:process-chains} does not have inductive types, we cannot describe the finite words $\finwds{\ialph}$ alone.
+With the inductive session types studied by \textcite{Derakhshan+Pfenning:??} and \textcite{Somayyajula+Pfenning:??}, that would be possible, but we do not pursue that extension here.
+
+Instead, we will construct a type that describes the \emph{infinite} words over alphabet $\ialph$:
+\begin{equation*}
+  % \begin{lgathered}
+    \infinwds{\ialph} \defd \plus*[sub=_{a \in \ialph}]{ a: \infinwds{\ialph} } % \\
+    % \infinwds{\oalph} \defd \plus*[sub=_{b \in \oalph}]{ b: \infinwds{\oalph} }
+  \,.
+  % \end{lgathered}
+\end{equation*}
+A process that offers type $\infinwds{\ialph}$ is one that emits a sequence of messages that correspond to an infinite word over $\ialph$.
+For instance, when given by the following definition, $\slof{\epsilon |- \defp{w} : \infinwds{\ialph}}$ is a process that corresponds to the infinite word $w = abbabb\dotsm$:
+\begin{equation*}
+  \slof{\epsilon |- \defp{w} : \infinwds{\ialph}} \defd
+    \spawn{\defp{w}}{(\spawn{\spawn{\selectR{b}}{\selectR{b}}}{\selectR{a}})}
+  \,.
+\end{equation*}
+Notice that the type parameter $\epsilon$ is never used directly and could be replaced with any type $A$.
+
+Using this type, we can now implement \emph{infinite}-word sequential transducers with well-typed process expressions.
+
+
+
+% Nevertheless, we can use the following types to describe \emph{all} words, finite or infinite, over $\ialph$ and $\oalph$, respectively:
+% \begin{equation*}
+%   \begin{lgathered}
+%     \str \defd \plus*[sub=_{a \in \ialph}]{ a: \str , \eow: \stre } \\
+%     \str[\oalph] \defd \plus*[sub=_{b \in \oalph}]{ b: \str[\oalph] , \eow: \stre }
+%   \,.
+%   \end{lgathered}
+% \end{equation*}
+% A process of type $\slof{\stre |- \str[\ialph]}$ is then one that emits a sequence of messages that corresponds to a word over $\ialph$.
+
+\paragraph*{Process expressions}
+
+Let $\aut{T} = (Q, \sftnext, \sftout)$ be an infinite-word sequential transducer over the input and output alphabets $\ialph$ and $\oalph$, respectively.
+Each state $q \in Q$ maps words from $\infinwds{\ialph}$ to $\infinwds{\oalph}$, and therefore ought to correspond to a process expression $\defp{q}$ of type $\slof{\infinwds{\ialph} |- \infinwds{\oalph}}$:
+\begin{equation*}
+  \slof{\infinwds{\ialph} |- \defp{q} : \infinwds{\oalph}} \defd
+    \caseL[a \in \ialph]{ a => \spawn{\defp{q}'}{\rev{\selectR{w}}} }  \text{\enspace where $\sftnext(q, a) = q'$ and $\sftout(q, a) = w$.}
+\end{equation*}
+(The anti-homomorphism $\rev{\selectR{w}}$ is defined in the adjacent \lcnamecref{fig:process-chains:transducer-rev}.
+It is notationally identical to, but formally distinct from, the anti-homomorphism from words to contexts of right-directed atoms~(\cref{fig:??}).
+However, as we will see in \cref{ch:??}, the two anti-homomorphisms are conceptually related.)%
+\begin{marginfigure}[-5\baselineskip]
   \begin{equation*}
-    \begin{lgathered}
-      \finwds{\ialph} \defd
-        \plus*{ a: \finwds{\ialph} , b: \finwds{\ialph} , \eow: \one }
-      \\
-      \begin{aligned}
-        \slof{\finwds{\ialph} |- q_0 : \plus*{ ?: \one , ?: \one }} &\defd
-          \caseL{a => q_0 | b => q_1 | \eow => \selectR{?}}
-        \\
-        \slof{\finwds{\ialph} |- q_1 : \plus*{ ?: \one , ?: \one }} &\defd
-          \caseL{a => q_1 | b => q_1 | \eow => \selectR{??}}
-      \end{aligned}
-    \end{lgathered}
+    \rev{\selectR{w}} =
+    \begin{cases*}
+      \fwd & if $w = \emp$ \\
+      \spawn{\rev{\selectR{w}_0}}{\selectR{a}} & if $w = a \wc w_0$
+    \end{cases*}
   \end{equation*}
+  \caption{An anti-homomorphism from $\finwds{\oalph}$ to processes of type $\slof{\infinwds{\oalph} |- \infinwds{\oalph}}$}\label{fig:process-chains:transducer-rev}
+\end{marginfigure}
 
+For a concrete example, recall from \cref{ch:finite-automata} the infinite-word sequential transducer over $\ialph = \oalph = \Set{ a , b }$ (repeated in the adjacent \lcnamecref{fig:process-chains:sft-example}) that compresses each run of $b$s within the input word into a single $b$.%
+\begin{marginfigure}[-1\baselineskip]
+  \begin{equation*}
+    \mathllap{\aut{T} = {}}
+    \begin{tikzpicture}[baseline=(q_0.base)]
+      \graph [automaton] {
+        q_0
+         -> [loop above, "$\tio{a | a}$"]
+        q_0
+         -> [bend left, "$\tio{b | b}$"]
+        q_1 [right=-0.5em of q_0]
+         -> [loop above, "$\tio{b | \emp}$"]
+        q_1
+         -> [bend left, "$\tio{a | a}$"]
+        q_0 ;
+        % e_0 [coordinate, below=-1.75em of q_0.south];
+        % e_1 [coordinate, below=-5.25em of q_1.south];
+        % (q_0.south) -> ["$\emp$", swap] e_0 ;
+        % (q_1.south) -> ["$\vphantom{\emp}\smash{b}$"] e_1 ;
+      };
+    \end{tikzpicture}
+  \end{equation*}
+  \caption{An infinite-word sequential transducer that compresses runs of consecutive $b$s.  (Repeated from \cref{fig:finite-automata:sft-example}.)}\label{fig:process-chains:sft-example}
+\end{marginfigure}
+Because $\ialph = \oalph = \Set{ a , b }$, the types for input and output words are defined as:
 \begin{equation*}
   \begin{lgathered}
-    \finwds{\ialph} \defd
-      \plus*[sub=_{a \in \ialph}]{ a: \finwds{\ialph} , \eow: \one }
+    \infinwds{\ialph} \defd
+      \plus*{ a: \infinwds{\ialph} , b: \infinwds{\ialph} }
     \\
-    \slof{\finwds{\ialph} |- q : \plus*{ ?: \one , ?: \one }} \defd
-      \caseL[a \in \ialph]{ a => q'_a | \eow => \selectR{F}(q) }
+    \infinwds{\oalph} \defd
+      \plus*{ a: \infinwds{\oalph} , b: \infinwds{\oalph} }
+    \,.
   \end{lgathered}
 \end{equation*}
+Following the encoding laid out above, the states $q_0$ and $q_1$ become process expressions $\defp{q}_0$ and $\defp{q}_1$ of type $\slof{ \infinwds{\ialph} |- \infinwds{\oalph} }$ defined by:
+\begin{equation*}
+  \begin{lgathered}
+    \slof{ \infinwds{\ialph} |- \defp{q}_0 : \infinwds{\oalph} } \defd
+      \caseL{ a => \spawn{\defp{q}_0}{\selectR{a}}
+            | b => \spawn{\defp{q}_1}{\selectR{b}} }
+    \\
+    \slof{ \infinwds{\ialph} |- \defp{q}_1 : \infinwds{\oalph} } \defd
+      \caseL{ a => \spawn{\defp{q}_0}{\selectR{a}}
+            | b => \spawn{\defp{q}_1}{\fwd} }
+    \,.
+  \end{lgathered}
+\end{equation*}
+
+Sequential transducers are closed under composition\autocite{??}.
+To represent the composition of two infinite-word sequential transducers $\aut{T}_1$ and $\aut{T}_2$ as a well-typed process, we could simply construct their composition, $\aut{T} = \aut{T}_2 \circ \aut{T}_1$, as a sequential transducer in its own right and then represent the transducer $\aut{T}$ as a well-typed process.
+
+Even easier, however, is to directly compose the processes that represent the transducers $\aut{T}_1$ and $\aut{T}_2$.
+If $\aut{T}_1$ and $\aut{T}_2$ are in states $q$ and $s$, respectively, then the processes $\slof{\infinwds{\ialph} |- \defp{q} : \infinwds{\oalph}}$ and $\slof{\infinwds{\oalph} |- \defp{s} : \infinwds{\Delta}}$ are well-typed and the process $\slof{\infinwds{\ialph} |- \spawn{\defp{q}}{\defp{s}} : \infinwds{\Delta}}$  describes the current state of the composition, $\aut{T} = \aut{T}_2 \circ \aut{T}_1$.
+In fact, \textcite{DeYoung+Pfenning:APLAS16} prove -- in a very closely related, if slightly different, framework -- that cut elimination actually constructs a normal-form process for the transducer $\aut{T}$.
+
+\subsection{Turing machines}\label{sec:process-chains:turing-machines}
+
+\paragraph*{Two-way infinite tape Turing machine}
+
+Let $\aut{M} = (Q, \delta)$ be a two-way infinite tape Turing machine over alphabet $\ialph$.
+We imagine the two-way infinite tape as divided into two one-way infinite halves with the machine's finite control, or head, sitting between them.
+Each of these halves will be represented as a stream of symbols from $\ialph$, directed inward toward $\aut{M}$'s head.
+As such, these two one-way infinite halves are described by the following dual types:%
+\footnote{The involution $\sym*{}$ was defined in \cref{??}, but not for coinductively defined propositions.
+  Here we use $\sym*{\infinwds{\ialph}}$ merely as the name of a coinductively defined type, though the choice of name is intended to evoke the duality with the type $\infinwds{\ialph}$.}%
+\begin{equation*}
+  \begin{lgathered}
+    \infinwds{\ialph} \defd \plus*[sub=_{a \in \ialph}]{ a: \infinwds{\ialph} } \\
+    \sym*{\infinwds{\ialph}} \defd \with*[sub=_{a \in \ialph}]{ a : \sym*{\infinwds{\ialph}} }
+  \,.
+  \end{lgathered}
+\end{equation*}
+% The type $\infinwds{\ialph}$ describes the left half of the two-way infinite tape: a process that offers $\infinwds{\ialph}$ will emit to its right-hand client an infinite stream of tape symbols.
+% Dually, the type $\sym*{\infinwds{\ialph}}$ describes the right half of the two-way infinite tape: a process that uses $\sym*{\infinwds{\ialph}}$ will emit to its left-hand provider an infinite stream of tape symbols.
+That is, a process of type $\slof{ A |- \infinwds{\ialph} }$, for some $A$, acts as the left-hand one-way infinite half of the tape, whereas a process of the dual type, $\slof{ \sym*{\infinwds{\ialph}} |- B }$ for some $B$, acts as the right-hand one-way infinite half of the tape.
+
+Because the machine's head sits between these two halves of the two-way infinite tape,
+% As the finite control sits between the two halves of the two-way infinite tape,
+it ought to correspond to a process of type $\slof{\infinwds{\ialph} |- \sym*{\infinwds{\ialph}}}$.
+Indeed, for each state $q \in Q$, we will define two process expressions, $\slof{\infinwds{\ialph} |- \tlhead{\defp{q}} : \sym*{\infinwds{\ialph}}}$ and $\slof{\infinwds{\ialph} |- \trhead{\defp{q}} : \sym*{\infinwds{\ialph}}}$, for the two heads possible in state $q$:
+\begin{equation*}
+  \begin{lgathered}
+    \slof{ \infinwds{\ialph} |- \tlhead{\defp{q}} : \sym*{\infinwds{\ialph}} } \defd
+      \mathsf{caseL}_{a \in \ialph}\left(
+        a \Rightarrow
+          \begin{cases*}
+            \spawn{\tlhead{\defp{q}'}}{\selectL{b}} & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+            \spawn{\selectR{b}}{\trhead{\defp{q}'}} & if $\delta(q, a) = (q', b, \mathsf{R})$
+          \end{cases*} \right)
+  \\
+    \slof{ \infinwds{\ialph} |- \trhead{\defp{q}} : \sym*{\infinwds{\ialph}} } \defd
+      \mathsf{caseR}_{a \in \ialph}\left(
+        a \Rightarrow
+          \begin{cases*}
+            \spawn{\tlhead{\defp{q}'}}{\selectL{b}} & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+            \spawn{\selectR{b}}{\trhead{\defp{q}'}} & if $\delta(q, a) = (q', b, \mathsf{R})$
+          \end{cases*} \right)
+  \end{lgathered}
+\end{equation*}
+That is, a left-facing head begins by reading a symbol from its left.
+Depending on the symbol that is read, the machine writes a new symbol in its place and then either advances the head to the left or otherwise turns the head to face the right.
+Writing a new symbol is accomplished by spawning a message directed toward the head.
+Right-facing heads are symmetric.
+
+Notice that the tape in this process implementation is truly two-way infinite.
+This is consistent with the model presented in \cref{ch:??}, but differs from the traditional model of a Turing machine.
+In the traditional model, the tape might more accurately be described as two-way \emph{unbounded} -- at any given moment, the tape is finite, but can be extended.
+If we wanted to prove the adequacy of our process implementation adequate with respect to traditional Turing machines, we would have to prove adequacy for infinite tapes that behave as merely unbounded, using a distinguished blank symbol.
+
+
+% Notice a subtle difference between this implementation and the mathematical model described in \cref{ch:??}.
+% In the mathematical model, configurations used finite strings to represent the two one-way halves of the two-way infinite tape.
+% This was possible because of an invariant on the tape's contents: after a finite number of moves, the tape contained only finitely many non-blank symbols.%
+% \footnote{In this sense, the tape might more accurately be described as two-way \emph{unbounded}.}
+% However, in the implementation presented here, the types $\infinwds{\ialph}$ and $\sym*{\infinwds{\ialph}}$ do not make the same guarantee -- as previously explained, our language's types do not include the inductive types that would be necessary to enforce the finiteness invariant.
+% Instead, we are the mercy of the processes of types $\slof{A |- \infinwds{\ialph}}$ and $\slof{\sym*{\infinwds{\ialph}} |- B}$ that represent the two tape halves to behave properly and eventually emit only blank symbols.
+
+\paragraph*{One-way infinite tape Turing machine}
+
+Because the head of a two-way infinite tape machine corresponds to a process of type $\slof{ \infinwds{\ialph} |- \sym*{\infinwds{\ialph}} }$, it is not possible to easily compose two such machines using cut, as we had done for sequential transducers.
+The types simply do not match:
+\begin{equation*}
+  \slof{ \infinwds{\ialph} |- \tlhead{\defp{q}} : \sym*{\infinwds{\ialph}} } \neq \slof{ \infinwds{\ialph} |- \trhead{\defp{s}} : \sym*{\infinwds{\ialph}} }
+  \,.
+\end{equation*}
+However, if we use one-way infinite tape Turing machines, composition of machines is possible.
+
+We will use the following types.
+The type $\infinwds{\ialph}$ is the same as above, but we introduce a type $\sym*{\finwds{\ialph}}$ that will be used in describing the one-way infinite tape's finite end.
+\begin{equation*}
+  \begin{lgathered}
+    \infinwds{\ialph} \defd \plus*[sub=_{a \in \ialph}]{ a : \infinwds{\ialph} } \\
+    \sym*{\finwds{\ialph}} \defd \with*[sub=_{a \in \ialph}]{ a : \sym*{\finwds{\ialph}} , \eow : \infinwds{\ialph} }
+  \end{lgathered}
+\end{equation*}
+In particular, the label $\eow$ will be used to mark the tape's finite end.
+
+The type name $\sym*{\finwds{\ialph}}$ was chosen to suggest a left-directed finite string, but should not be taken too literally -- as previously mentioned, the language presented in this \lcnamecref{ch:process-chains} does not have the inductive types that would be necessary to enforce finiteness.
+Notice, too, that any process that offers the type $\sym*{\finwds{\ialph}}$ continues by offering $\infinwds{\ialph}$ when $\selectL{\eow}$ is received, which will be crucial in composing machines (although not exactly what would be expected of a strict dual of $\finwds{\ialph}$).
+
+The machine's head ought to correspond to a process of type $\slof{ \infinwds{\ialph} |- \sym*{\finwds{\ialph}} }$.
+For each state $q \in Q$, we will define a process $\slof{ \infinwds{\ialph} |- \tlhead{\defp{q}} : \sym*{\finwds{\ialph}} }$ just like we did for the two-way infinite tape machines:
+\begin{equation*}
+    \slof{ \infinwds{\ialph} |- \tlhead{\defp{q}} : \sym*{\finwds{\ialph}} } \defd
+      \mathsf{caseL}_{a \in \ialph}\left(
+        a \Rightarrow
+          \begin{cases*}
+            \spawn{\tlhead{\defp{q}'}}{\selectL{b}} & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+            \spawn{\selectR{b}}{\trhead{\defp{q}'}} & if $\delta(q, a) = (q', b, \mathsf{R})$
+          \end{cases*} \right)
+\end{equation*}
+
+For each state $q \in Q$, we will also define a process $\slof{ \infinwds{\ialph} |- \trhead{\defp{q}} : \sym*{\finwds{\ialph}} }$ for the right-facing head in state $q$.
+This process is mainly like the process definition for a right-facing head in the two-way infinite tape Turing machine.
+The difference is that here we have a $\eow$ branch, owing to the presence of label $\eow$ in the type $\sym*{\finwds{\ialph}}$:
+\begin{equation*}
+    \slof{ \infinwds{\ialph} |- \trhead{\defp{q}} : \sym*{\finwds{\ialph}} } \defd
+      \mathsf{caseR}_{a \in \ialph}\left(
+        \begin{array}{@{}r@{}l@{}}
+          a \Rightarrow {} &
+            \begin{cases*}
+              \spawn{\tlhead{\defp{q}'}}{\selectL{b}} & if $\delta(q, a) = (q', b, \mathsf{L})$ \\
+              \spawn{\selectR{b}}{\trhead{\defp{q}'}} & if $\delta(q, a) = (q', b, \mathsf{R})$
+            \end{cases*}
+          \\[4\jot]
+          \mid \eow \Rightarrow {} &
+            \begin{cases*}
+              \fwd & if $q \in F$ \\
+              \mathrlap{\spawn{\tlhead{\defp{q}}}{\selectL{\eow}}} \hphantom{\spawn{\tlhead{\defp{q}'}}{\selectL{b}}} & otherwise
+            \end{cases*}
+        \end{array} \right)
+\end{equation*}
+Just like the mathematical model of a one-way infinite tape Turing machine, the behavior of a right-facing head that reaches the finite end of the tape depends on whether the current state is final.
+If it is final, then the forwarding process causes the machine's head to terminate, leaving the tape.
+Otherwise, if the state is not final, then the head is turned to the left using $\spawn{\tlhead{\defp{q}}}{\selectL{\eow}}$, where the message $\selectL{\eow}$ is recreated to preserve our marking of the tape's end.
+
+Thus, to start a machine, we would use the process
+\begin{equation*}
+  \slof{ \infinwds{\ialph} |- \spawn{\tlhead{\defp{q}}}{\selectL{\eow}} : \infinwds{\ialph} }
+  \,.
+\end{equation*}
+Notice that this type can be readily composed.
+States $q$ and $s$ from different machines could be easily composed with cut:
+\begin{equation*}
+  \slof{ \infinwds{\ialph} |- \spawn{(\spawn{\tlhead{\defp{q}}}{\selectL{\eow}})}{(\spawn{\tlhead{\defp{s}}}{\selectL{\eow}})} : \infinwds{\ialph} }
+  \,.
+\end{equation*}
+This form of composition is sequential, not parallel, because the left-facing head $\tlhead{\defp{s}}$ must block until the preceding machine terminates and forwards its tape on to $\tlhead{\defp{s}}$.
+
+% Rather than situating the machine's head below a cell on a two-way infinite tape, it will be convenient to think of the head as \begin{enumerate*}[label=\emph{(\roman*)}] \item occuring between the two one-way halves of the tape, and \item facing either the left half or right half of the tape. \end{enumerate*}
+% Thus, each state in the Turing machine will correspond to two processes, $\tlhead{\defp{q}}$ and $\trhead{\defp{q}}$, for the state's left- and right-facing instances, respectively.
+
+% These processes will be typed as $\slof{\tape |- \tlhead{\defp{q}} : \epat}$ and $\slof{\tape |- \trhead{\defp{q}} : \epat}$
+
+% \begin{equation*}
+%   \begin{lgathered}
+%     \tape \defd \plus*[sub=_{a \in \ialph}]{ a: \tape , \eow: \tapee } \\
+%     \epat \defd \with*[sub=_{a \in \ialph}]{ a: \epat , \eow: \tape }
+%   \end{lgathered}
+% \end{equation*}
+
+% \begin{equation*}
+%   \begin{lgathered}
+%     \infinwds{\ialph} \defd \plus*[sub=_{a \in \ialph}]{ a: \infinwds{\ialph} } \\
+%     \finwds{\ialph}_{\with} \defd \with*[sub=_{a \in \ialph}]{ a: \finwds{\ialph}_{\with} , \eow: \infinwds{\ialph} }
+%   \end{lgathered}
+% \end{equation*}
+
+
+% \begin{equation*}
+%   \slof{ \infinwds{\ialph} |- \tlhead{\defp{q}} : \finwds{\ialph}_{\with} } \defd
+%     \mathsf{caseL}_{a \in \ialph}
+%     \left\lparen
+%         a \Rightarrow
+%           \begin{cases*}
+%              \spawn{\tlhead{\defp{q}'_a}}{\selectL{a}'}
+%                & if $\delta(q, a) = (q'_a, a', \mathsf{L})$
+%              \\
+%              \spawn{\selectR{a}'}{\trhead{\defp{q}'_a}}
+%                & if $\delta(q, a) = (q'_a, a', \mathsf{R})$
+%            \end{cases*}
+%     \right\rparen
+% \end{equation*}
+
+% \begin{equation*}
+%   \slof{ \infinwds{\ialph} |- \trhead{\defp{q}} : \finwds{\ialph}_{\with} } \defd
+%     \mathsf{caseR}_{a \in \ialph}
+%     \left\lparen
+%       \begin{array}{@{}l@{}}
+%         \hphantom{\mid {}}
+%         a \Rightarrow
+%           \begin{cases*}
+%             \spawn{\tlhead{\defp{q}'_a}}{\selectL{a}'}
+%               & if $\delta(q, a) = (q'_a, a', \mathsf{L})$
+%             \\
+%             \spawn{\selectR{a}'}{\trhead{\defp{q}'_a}}
+%               & if $\delta(q, a) = (q'_a, a', \mathsf{R})$
+%           \end{cases*}
+%       \\[3ex]
+%         \mid \eow \Rightarrow \spawn{\trhead{\defp{q}}}{\selectL{\eow}}
+%       \end{array}
+%     \right\rparen
+% \end{equation*}
+
+
+% \begin{equation*}
+%   \slof{ \tape |- \tlhead{\defp{q}} : \epat } \defd
+%     \mathsf{caseL}_{a \in \ialph}
+%     \left\lparen
+%       \begin{array}{@{}l@{}}
+%         \hphantom{\mid {}}
+%         a \Rightarrow
+%           \begin{cases*}
+%              \spawn{\tlhead{\defp{q}'_a}}{\selectL{a}'}
+%                & if $\delta(q, a) = (q'_a, a', \mathsf{L})$
+%              \\
+%              \spawn{\selectR{a}'}{\trhead{\defp{q}'_a}}
+%                & if $\delta(q, a) = (q'_a, a', \mathsf{R})$
+%            \end{cases*}
+%       \\[3ex]
+%         \mid \eow \Rightarrow \spawn{\selectR{\eow}}
+%                                     {\spawn{\selectR{\tblank}}{\tlhead{\defp{q}}}}
+%       \end{array}
+%     \right\rparen
+% \end{equation*}
+
+% \begin{equation*}
+%   \slof{ \tape |- \trhead{\defp{q}} : \epat } \defd
+%     \mathsf{caseR}_{a \in \ialph}
+%     \left\lparen
+%       \begin{array}{@{}l@{}}
+%         \hphantom{\mid {}}
+%         a \Rightarrow
+%           \begin{cases*}
+%             \spawn{\tlhead{\defp{q}'_a}}{\selectL{a}'}
+%               & if $\delta(q, a) = (q'_a, a', \mathsf{L})$
+%             \\
+%             \spawn{\selectR{a}'}{\trhead{\defp{q}'_a}}
+%               & if $\delta(q, a) = (q'_a, a', \mathsf{R})$
+%           \end{cases*}
+%       \\[3ex]
+%         \mid \eow \Rightarrow \spawn{\spawn{\trhead{\defp{q}}}{\selectL{\tblank}}}
+%                                     {\selectL{\eow}}
+%       \end{array}
+%     \right\rparen
+% \end{equation*}
+
+
+% Tape |- q1 : epaT    q1 reads from either side
+% epaT |- q2 : Tape    q2 writes to either side
+% Tape |- q3 : Tape    q3 reads from the left and writes to the right
+% epaT |- q4 : epaT    q4 writes to the left and reads from the right
+
 
 
 % \section{Automata and transducers}

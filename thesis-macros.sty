@@ -147,8 +147,8 @@
 
 \DeclareAcronym { SFT }
   {
-    short = SFT ,
-    long = subsequential~finite~transducer ,
+    short = ST ,
+    long = sequential~transducer ,
     short-indefinite = an
   }
 
@@ -368,13 +368,13 @@
 \NewDocumentCommand \misa { } { \__thesis_misa: }
 \cs_new:Npn \__thesis_misa: { \__thesis_asim: ^{-1} }
 
-\NewDocumentCommand \tape { o }
-  {
-    \IfNoValueTF {#1}
-      \__thesis_tape:
-      { \__thesis_tape: \sb{#1} }
-  }
-\cs_new:Npn \__thesis_tape: { \text{\sffamily tape} }
+% \NewDocumentCommand \tape { o }
+%   {
+%     \IfNoValueTF {#1}
+%       \__thesis_tape:
+%       { \__thesis_tape: \sb{#1} }
+%   }
+% \cs_new:Npn \__thesis_tape: { \text{\sffamily tape} }
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -565,6 +565,79 @@
 
 \NewDocumentCommand \mist { } { \__thesis_mist: }
 \cs_new:Npn \__thesis_mist: { \mathrel { \__thesis_tsim: ^{-1} } }
+
+
+\NewDocumentCommand \ctr { } { \__thesis_ctr: }
+\cs_new:Npn \__thesis_ctr: { \kappa }
+
+\NewDocumentCommand \ctre { } { \__thesis_ctre: }
+\cs_new:Npn \__thesis_ctre: { \epsilon }
+
+\NewDocumentCommand \ctrd { } { \__thesis_ctrd: }
+\cs_new:Npn \__thesis_ctrd: { \rho }
+
+\NewDocumentCommand \str { O{\ialph} } { \__thesis_str:n {#1} }
+\cs_new:Npn \__thesis_str:n #1 { \wds{#1} }
+
+\NewDocumentCommand \stre { } { \__thesis_stre: }
+\cs_new:Npn \__thesis_stre: { \epsilon }
+
+\NewDocumentCommand \tape { O{\ialph} } { \__thesis_tape:n {#1} }
+\cs_new:Npn \__thesis_tape:n #1 { \mathsf{Tape}\sb{#1} }
+
+\NewDocumentCommand \tapee { } { \__thesis_tapee: }
+\cs_new:Npn \__thesis_tapee: { \epsilon }
+
+
+\NewDocumentCommand \treduces { } { \__thesis_treduces: }
+\cs_new:Npn \__thesis_treduces: { \longrightarrow }
+
+\newcommand\vartextvisiblespace[1][.5em]{%
+  \makebox[#1]{%
+    \kern.07em
+    \vrule height.3ex
+    \hrulefill
+    \vrule height.3ex
+    \kern.07em
+  }% <-- don't forget this one!
+}
+
+\NewDocumentCommand \tblank { } { \__thesis_tblank: }
+\cs_new:Npn \__thesis_tblank: { \text{\vartextvisiblespace} }
+
+\NewDocumentCommand \tlhead { m } { \__thesis_lhead:n {#1} }
+\cs_new:Npn \__thesis_lhead:n #1 { \prescript{\triangleleft}{}{\vphantom{q}}#1 }
+
+\NewDocumentCommand \trhead { m } { \__thesis_rhead:n {#1} }
+\cs_new:Npn \__thesis_rhead:n #1 { #1\vphantom{q}^{\triangleright} }
+
+
+\NewDocumentCommand \itlhead { m } { \__thesis_ilhead:n {#1} }
+\cs_new:Npn \__thesis_ilhead:n #1 { \mathbin{\triangleleft} #1 \mathbin{\scriptstyle \square} }
+
+\NewDocumentCommand \itrhead { m } { \__thesis_irhead:n {#1} }
+\cs_new:Npn \__thesis_irhead:n #1 { \mathbin{\scriptstyle \square} #1 \mathbin{\triangleright} }
+
+\NewDocumentCommand \congsimu { s m m } { \IfBooleanTF {#1} { \__thesis_congsimu_star:nn {#2} {#3} } { \__thesis_congsimu:nn {#2} {#3} } }
+\cs_new:Npn \__thesis_congsimu:nn #1#2 { \mathrel{(\__thesis_congsimu_star:nn{#1}{#2})} }
+\cs_new:Npn \__thesis_congsimu_star:nn #1#2 { \mathord{\simu{S}}(#1, #2) }
+
+\NewDocumentCommand \epat { O{\ialph} } { \__thesis_epat:n {#1} }
+\cs_new:Npn \__thesis_epat:n #1 { \mathsf{epaT}\sb{#1} }
+
+\NewDocumentCommand \epate { } { \__thesis_epate: }
+\cs_new:Npn \__thesis_epate: { \epsilon }
+
+
+\NewDocumentCommand \sym { s m }
+  {
+    \IfBooleanTF {#1}
+      { \__thesis_sym_star:n {#2} }
+      { \__thesis_sym:n {#2} }
+  }
+\cs_new:Npn \__thesis_sym:n #1 { #1^{\bot} }
+\cs_new:Npn \__thesis_sym_star:n #1 { \tl_if_empty:nTF {#1} {\sym{(-)}} {\sym{(#1)}} }
+
 
 %%%%%%%%%%%
 %% Other %%

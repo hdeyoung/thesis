@@ -201,7 +201,7 @@ A summary of string rewriting is shown in \cref{fig:string-rewriting:summary}.
   \caption{A string rewriting framework}\label{fig:string-rewriting:summary}
 \end{figure}
 
-\subsection{Properties of the string rewriting framework}
+\subsection{Properties of the string rewriting framework}\label{sec:string-rewriting:concurrency}
 
 As an abstract rewriting system, the above string rewriting framework can be evaluated for several properties: confluence, termination, and, of particular interest to us, concurrency.
 
@@ -296,7 +296,7 @@ We may also evaluate string rewriting for confluence.
 Confluence requires that all strings with a common ancestor be joinable, \ie, that $w'_1 \secudeR\Reduces w'_2$ implies $w'_1 \Reduces\secudeR w'_2$, for all strings $w'_1$ and $w'_2$.
 
 Because string rewriting is an asymmetric, committed-choice relation, some nondeterministic choices are irreversible.
-For example, under the axioms of our running example (\cref{eq:string-rewriting:signature-example}), $a \wc b$ can be nondeterministically rewritten into either $a$ or $\emp$, as shown in \cref{fig:string-rewriting:abb-complete}%
+For example, under the axioms of our running example (\cref{eq:string-rewriting:example-signature}), $a \wc b$ can be nondeterministically rewritten into either $a$ or $\emp$, as shown in \cref{fig:string-rewriting:abb-complete}%
 % \begin{marginfigure}
 %   \begin{equation*}
 %     \begin{tikzcd}
@@ -506,7 +506,7 @@ To use string rewriting to describe an increment operation on binary representat
 Given a binary number $\octx$ that represents $n$, we may append $i$ to form an active%
 \footnote{The \enquote*{active}, \enquote*{latent}, and \enquote*{passive} terminology is borrowed from \textcite{Pfenning+Simmons:LICS09}.
   Active strings are immediately rewritable, but latent strings are rewritable only when combined with other, passive strings.
-  The blurry line between latent and passive strings is exploited in \cref{ch:choreographies} when we discuss choreographies.}%
+  The blurry line between latent and passive strings is exploited in \cref{ch:formula-as-process} when we discuss choreographies.}%
 , computational string, $\octx \oc i$.
 For $i$ to adequately represent the increment operation, the string $\octx \oc i$ must meet two conditions, captured by the following global desiderata:
 % \begin{theorem}\label{thm:increment-structural-adequacy}
