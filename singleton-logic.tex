@@ -1819,8 +1819,10 @@ which does not violate the single-antecedent restriction.
 
 \section{Other related work}\label{sec:singleton-logic:related-work}
 
-The singleton sequent calculus (in an infinitary variant) appears in work by \citeauthor{Fortier+Santocanale:CSL13} on cut elimination for circular proofs of inductive and coinductive types.\autocites{Santocanale:FOSSACS02}{Fortier+Santocanale:CSL13}
+The singleton sequent calculus (in its infinitary variant) appears independently in work by \citeauthor{Fortier+Santocanale:CSL13} on cut elimination for circular proofs of inductive and coinductive types.\autocites{Santocanale:FOSSACS02}{Fortier+Santocanale:CSL13}
 They seem to have arrived at the single-antecedent restriction from category-theoretic semantic considerations.
+\Citeauthor{Fortier+Santocanale:CSL13} do not develop a semi-axiomatic sequent calculus for singleton logic; that is a contribution of this work.
+
 
 CSL '12 paper on asynchronous Curry--Howard for linear logic\fixnote{Belongs in next chapter}
 
@@ -1828,8 +1830,8 @@ CSL '12 paper on asynchronous Curry--Howard for linear logic\fixnote{Belongs in 
 
 \subsection{Connections to Basic Logic}
 
-\Textcite{Sambin+:JSL00} propose Basic Logic in which connectives are defined by a single \emph{definitional equation}.
-For example, the definitional equation for alternative conjunction in ordered logic would be
+\Textcite{Sambin+:JSL00} propose a system called Basic Logic in which connectives are defined by a single \emph{definitional equation}.
+If we apply their ideas to ordered logic, for example, the definitional equation for alternative conjunction would be
 \begin{equation*}
   \infer=[\with]{\oseq{\octx |- A \with B}}{
     \oseq{\octx |- A} & \oseq{\octx |- B}}
@@ -1845,7 +1847,7 @@ Read top-down, the rule is a \emph{formation} rule; read bottom-up, the rule is 
   \infer[\jrule{$\with$IR}_2]{\oseq{\octx |- B}}{
     \oseq{\octx |- A \with B}}
 \end{equation*}
-The formation rule is the same as the usual sequent calculus right rule for alternative conjunction, and the implicit reflection rules correspond to natural deduction elimination rules for $\with$.
+The formation rule for alternative conjunction is the same as its usual sequent calculus right rule, and the implicit reflection rules correspond to natural deduction elimination rules for $\with$.
 
 To arrive at the usual sequent calculus left rules for alternative conjunction, \citeauthor{Sambin+:JSL00} proceed by way of what they call \emph{axioms of reflection}.
 They obtain these axioms by trivializing the implicit reflection rules:
@@ -1878,6 +1880,11 @@ Alternatively, the implicit reflection rules could be obtained from the explicit
   \end{equation*}
 }
 So, in fact, the implicit and explicit reflection rules and axioms are all equivalent in the presence of $\jrule{CUT}$.
+
+These axioms of reflection are exactly the axioms that we use in our semi-axiomatic sequent calculus in place of the usual left rules.
+(They are also the same as the decomposition rules for $\with$ from the refactored ordered sequent calculus~\parencref{fig:??} of \cref{ch:ordered-rewriting}.)
+Their process of obtaining the explicit reflection rules by combining the axioms of reflection with $\jrule{CUT}$ matches the way that we derive the usual left rules in our semi-axiomatic sequent calculus.
+However, \citeauthor{Sambin+:JSL00} appear to have considered the axioms of reflection only as the means to an end, and do not appear to have considered a calculus with these axioms as primitive rules, nor a cut elimination procedure involving the axioms.
 
 % \newthought{As another example} of this process, consider the definitional equation for ordered conjunction:
 % \begin{equation*}

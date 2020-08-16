@@ -1022,6 +1022,23 @@ As an example of these processes in action, observe that $\defp{e} \cc \defp{b}_
 
 
 
+\begin{equation*}
+  \begin{lgathered}
+    \defp{\imath} \defd \caseL{e => \spawn{\selectR{e}}{\selectR{b}_1}
+                             | b_0 => \selectR{b}_1
+                             | b_1 => \spawn{\defp{\imath}}{\selectR{b}_0}}
+    \\
+    \defp{d} \defd \caseL{e => \selectR{z}
+                        | b_0 => \spawn{\defp{d}}{\defp{b}'_0}
+                        | b_1 => \spawn{\selectR{b}_0}{\selectR{s}}}
+    \\
+    \defp{b}'_0 \defd \caseL{z => \selectR{z}
+                           | s => \spawn{\defp{d}}{\defp{b}'_0}}
+  \end{lgathered}
+\end{equation*}
+
+
+
 \subsection{Sequential transducers}
 
 By this point in this document, the reader will likely expect either \acp{DFA} or \acp{NFA} as our next example of session-typed process chains.

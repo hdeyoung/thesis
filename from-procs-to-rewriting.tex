@@ -692,7 +692,7 @@ By embedding definitions, we arrive at exactly the same coinductively defined pr
 (Once again, the same definitions arise from the weakly focused, strongly bisimilar embedding.)
 
 % \paragraph*{\aclp*{DFA}}
-The same holds true for \acp{DFA}.
+The same holds true for \acp{DFA}.\fixnote{But process definitions for \acp{DFA} were not introduced -- only for sequential transducers!}
 Embedding the \ac{DFA} process definitions from \cref{??} yields the same coinductively defined propositions as in the object-oriented and functional choreographies from \cref{??}:
 \begin{align*}
   \trsig{q \defd \caseL[a \in \ialph]{a => q'_a | \eow => \selectR{F}(q)}}
@@ -714,6 +714,21 @@ Embedding the \ac{DFA} process definitions from \cref{??} yields the same coindu
   \,,
 \end{align*}
 respectively.
+
+
+\begin{align*}
+  \trsig{\defp{q} \defd \caseL[a \in \ialph]{a => \spawn{\defp{q}'}{\rev{\selectR{w}}}}}
+    &= \bigl(
+         \n{\defp{q}} \defd
+           {\textstyle \bigwith_{a \in \ialph}(\atmR{a} \limp \up (\dn \n{\defp{q}'{}} \fuse \rev{\atmR{w}}))}
+       \bigr)
+ \shortintertext{and} 
+  \trsig{\defp{a} \defd \caseR[q \in Q]{q => \spawn{\selectL{q}'}{\rev{\defp{w}{}}}}}
+    &= \bigl(
+         \n{\defp{a}} \defd {\textstyle \bigwith_{q \in Q}(\up (\atmL{q}' \fuse \rev{\defp{w}}) \pmir \atmL{q})}
+       \bigr)
+  \,,
+\end{align*}
 
 
 
