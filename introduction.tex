@@ -38,47 +38,106 @@ We want to identify fragments of proof reduction and proof construction that can
   \itshape [...] form a bridge between distinct notions of concurrency in computational interpretations of ordered logic based on proof construction, on one hand, and proof reduction, on the other hand.
 \end{quotation}
 
-\newthought{\Cref{part:preliminaries} reviews} some necessary background information: definitions of finite automata~\parencref{ch:finite-automata} and a sequent calculus presentation of ordered logic~\parencref{ch:ordered-logic}.
+
+\section{Overview}
+
+\Cref{part:preliminaries} reviews some necessary background information: definitions of finite automata~\parencref{ch:finite-automata} and a sequent calculus presentation of ordered logic~\parencref{ch:ordered-logic}.
 The reader who has some familiarity with these topics should feel free to skim or skip these \lcnamecrefs{ch:finite-automata}, returning to them only as needed.
 
-\newthought{\Cref{part:proof-construction} then delves} into a proof-construction approach to concurrency, beginning in \cref{ch:string-rewriting} with a review of a string rewriting framework for specifying the dynamics of concurrent systems whose components are arranged into a linear topology and have a monoidal structure.
+\begin{figure}[tp]
+  \centering
+  \begin{tikzpicture}
+    \node [draw, align=center] (sr)
+      {\emph{String rewriting specifications}\\
+       \emph{of concurrent systems}\\
+       (\Cref{ch:string-rewriting})};
+
+    \node [draw, align=center, right=of sr] (or)
+      {\emph{Ordered rewriting}\\
+       (\Cref{ch:ordered-rewriting})};
+
+    \node [draw, align=center, right=of or] (fp)
+      {\emph{Formula-as-process ordered rewriting}\\
+       (\Cref{ch:formula-as-process})};
+
+    \draw (sr) edge[<->, bend right=20, edge node={node [below, align=center] {\emph{Choreographies}\\(\Cref{ch:choreographies})}}] (fp);
+
+    \node [draw, align=center, below=of or] (pc)
+      {\emph{Process chains}\\(\Cref{ch:process-chains})};
+  \end{tikzpicture}
+  \caption{A summary of this document}
+  \label{fig:introduction:summary}
+\end{figure}
+
+% \clearpage
+\subsection{Concurrency as proof construction}
+
+\Cref{part:proof-construction} then delves into a proof-construction approach to concurrency, beginning in \cref{ch:string-rewriting} with a review of a string rewriting framework for specifying the dynamics of concurrent systems.
+Specifically, string rewriting can be used for systems whose components are arranged into a linear topology and have a monoidal structure.
 % Concurrency in these string rewriting specifications arises by treating the interleaving of independent rewriting steps, an equivalence sometimes known as concurrent equality\autocite{Watkins+:CMU02}.
-In string rewriting, disjoint segments of a string may be rewritten independently, and concurrency arises when the various interleavings of these independent rewritings are treated as equivalent.
-Using string rewriting in this way is 
-% This application of string rewriting can be seen as 
-a restricted instance\fixnote{special case/generalization?} of using multiset rewriting for concurrent specification.\autocite{Meseguer:TCS92}
+Because 
+% In string rewriting,
+disjoint segments of a string may be rewritten independently,
+% and
+concurrency arises when the various interleavings of these independent rewritings are treated as equivalent.
+String rewriting is an instance\fixnote{restricted instance, special case, generalization?} of multiset rewriting, so these ideas are not new, but [...].\autocite{Meseguer:TCS92}
+% Using string rewriting in this way is 
+% % This application of string rewriting can be seen as 
+% a restricted instance\fixnote{special case/generalization?} of using multiset rewriting for concurrent specification.\autocite{Meseguer:TCS92}
 \Cref{ch:string-rewriting} closes by introducing
 % In \cref{sec:string-rewriting:??,sec:string-rewriting:??}, we introduce
 specifications for two systems that will be used as running examples throughout this document: \aclp*{NFA}~\parencref{sec:string-rewriting:nfa} and binary counters~\parencref{sec:string-rewriting:binary-counter}.
 
+\Cref{part:proof-construction} purports to give a proof-construction approach to concurrency, but string rewriting, while indeed a model of\fixnote{framework for?} concurrency, is not obviously connected to proof construction.
+% superficially appears to be unconnected to proof construction.
+For that, \cref{ch:ordered-rewriting} turns our attention toward the Lambek calculus and ordered logic\fixnote{rewriting / sequent calculus?}.
 
-This \lcnamecref{part:proof-construction} purports to give a proof-construction approach to concurrency, but string rewriting, while indeed a model\fixnote{framework?} of concurrency, superficially appears to be unconnected to proof construction.
-
-\Cref{ch:ordered-rewriting} 
-
-
-
-Algebraically, string rewriting applies to free monoids.
-Implicit in \citeauthor{Lambek:AMM58}'s calculus for categorial grammars is a notion of rewriting that enriches the underlying algebraic structure to free \emph{residuated} monoids;
-\citeauthor{Lambek:AMM58}'s calculus was later extended to free residuated lattices\autocites{Lambek:SLIM61}{Kanazawa:LLI92}.
-\Cref{ch:ordered-rewriting} presents a version of this \emph{ordered rewriting} framework,
-% , which we call \emph{ordered rewriting}.
-deriving it from the ordered sequent calculus reviewed in \cref{ch:ordered-logic}.
+Implicit in \citeauthor{Lambek:AMM58}'s calculus for categorial grammars is a notion of rewriting for free residuated monoids.%
+\footnote{\Citeauthor{Lambek:AMM58}'s calculus was later extended to free residuated lattices~\parencites{Lambek:SLIM61}{Kanazawa:LLI92}.}
+\Cref{ch:ordered-rewriting} presents \emph{ordered rewriting}, a related rewriting framework for free residuated lattices, which we will derive from the ordered sequent calculus.
+% [...] that will be derived from the ordered sequent calculus reviewed in \cref{ch:ordered-logic}.
 As we will see, the sequent calculus's left rules share a large amount of boilerplate -- only very little of each left rule is devoted to the primary task of decomposing the principal proposition.
-In response, we argue for refactoring the ordered sequent calculus, introducing a new judgment to decouple decomposition from the surrounding boilerplate.
-To the best of our knowledge, this refactoring of the sequent calculus left rules is a new way of justifying
+In response, we argue for a refactoring of the ordered sequent calculus, introducing a new judgment to decouple decomposition from the surrounding boilerplate.
+% , and we then obtain ordered rewriting as a decomposition-centered fragment of the refactored calculus.
+Ordered rewriting is then exactly
+% falls out as a
+the decomposition-centered fragment of the refactored sequent calculus.
+To the best of our knowledge, our refactoring of the sequent calculus left rules appears to be a new way of deriving rewriting from existing proof theory.
+% logically.
+
+As in string rewriting, ordered rewriting [...] disjoint segments of the ordered context to be rewritten independently, and concurrency arises when the different interleavings of these independent rewritings are treated indistinguishably.
+And so ordered rewriting is the proof-construction characterization of concurrecy that we were looking for.
 
 \Cref{ch:ordered-rewriting} closes by extending ordered rewriting with ideas from focusing\autocites{Andreoli:JLC92} to better control the atomicity of individual rewriting steps.
-The particular formulation, we use the pattern judgments of higher-order focusing\autocite{Zeilberger:POPL08}.
+The particular formulation we choose is \citeauthor{Zeilberger:POPL08}'s higher-order focusing\autocite{Zeilberger:POPL08}.
+In its focused form, ordered rewriting is closely related to the exponential-free fragment of \citeauthor{Simmons:CMU12}'s SLS framework.\autocite{Simmons:CMU12}
 
 
-Despite being concurrent, both string rewiting and (focused) ordered rewriting lack an immediate notion of local execution.
-Both systems are global, state-transformation models of concurrency that presume the existence of a central conductor that orchestrates the computation.
-Global rewriting, although reasonable for concurrent specifications, will not map well to locally executing process implementations that a proof-reduction approach to concurrency suggests -- the gap is simply too large.
+% Algebraically, string rewriting applies to free monoids.
+% Implicit in \citeauthor{Lambek:AMM58}'s calculus for categorial grammars is a notion of rewriting that enriches the underlying algebraic structure to free \emph{residuated} monoids;
+% \citeauthor{Lambek:AMM58}'s calculus was later extended to free residuated lattices\autocites{Lambek:SLIM61}{Kanazawa:LLI92}.
+% \Cref{ch:ordered-rewriting} presents a version of this \emph{ordered rewriting} framework,
+% % , which we call \emph{ordered rewriting}.
+% deriving it from the ordered sequent calculus reviewed in \cref{ch:ordered-logic}.
+% As we will see, the sequent calculus's left rules share a large amount of boilerplate -- only very little of each left rule is devoted to the primary task of decomposing the principal proposition.
+% In response, we argue for refactoring the ordered sequent calculus, introducing a new judgment to decouple decomposition from the surrounding boilerplate.
+% To the best of our knowledge, this refactoring of the sequent calculus left rules is a new way of justifying
 
-Inspired by the process-as-formula view of linear logic\autocites{Miller:??}{Cervesato+Scedrov:IC09}, \cref{ch:formula-as-process} responds by presenting a local, message-passing\fixnote{\emph{formula-as-process}?} interpretation of focused ordered rewriting:
+% \Cref{ch:ordered-rewriting} closes by extending ordered rewriting with ideas from focusing\autocites{Andreoli:JLC92} to better control the atomicity of individual rewriting steps.
+% The particular formulation, we use the pattern judgments of higher-order focusing\autocite{Zeilberger:POPL08}.
+
+
+\newthought{Despite being models} of concurrency, both string rewiting and (focused) ordered rewriting lack an immediate notion of local execution.
+Both frameworks are global, state-transformation models [of concurrency] that presume the existence of a central conductor that orchestrates the computation.
+Global rewriting, although reasonable for concurrent specifications, will not map well to the locally executing process implementations that a proof-reduction approach to concurrency will eventually suggest in \cref{part:proof-reduction} -- the gap is simply too large.
+
+Strongly inspired by the process-as-formula view of linear logic\autocites{Miller:ELP92}{Cervesato+Scedrov:IC09}, \cref{ch:formula-as-process} responds to this dilemma by presenting a local, message-passing\fixnote{\emph{formula-as-process}?} interpretation of focused ordered rewriting:
 non-atomic propositions are viewed as static process expressions; ordered contexts, as runtime process configurations; and atomic propositions, as messages.
-Surprisingly few modifications of \cref{ch:ordered-rewriting}'s focused ordered rewriting framework are required to enable this formula-as-process interpretation: assigning a left-to-right or right-to-left direction to each atomic proposition, and placing a [...] syntactic restriction on implications.
+Surprisingly, only two simple modifications of \cref{ch:ordered-rewriting}'s focused ordered rewriting framework are required to enable this message-passing interpretation.
+% First, atomic propositions are partitioned in two: [...].
+% Second, a syntactic restriction is placed on implications: $\atmR{a} \limp \n{B}$ and $\n{B} \pmir \atmL{a}$.
+
+% : assigning a left-to-right or right-to-left direction to each atomic proposition, and placing a [...] syntactic restriction on implications.
 
 [local interaction semantics]
 
@@ -95,6 +154,12 @@ However, surprisingly subtle interactions between replication and order make rec
 % Surprisingly few modifications of the focused ordered rewriting framework are required to enable this formula-as-process interpretation: assigning a left-to-right or right-to-left direction to each atom, and placing a [...] syntactic restriction on implications.
 
 
+\newthought{To summarize} what we have so far, (focused) ordered rewriting has provided an explanation of concurrency as proof construction and, looking ahead to our ultimate goal, the message-passing interpretation identifies a fragment of focused ordered rewriting that admits a local, process-like model of concurrency.
+But how do the string rewriting specifications of \cref{ch:string-rewriting} fit into this puzzle?
+
+\Cref{ch:choreographies}
+
+
 \Cref{ch:choreographies} presents one of the major contributions of this work: a procedure for \emph{choreographing} string rewriting specifications into formula-as-process ordered rewriting [...].
 To choreograph a string rewriting specification, [...].
 
@@ -104,6 +169,8 @@ For instance, if both
 
 \Cref{part:proof-construction} closes with
 
+
+\subsection{Concurrency as proof reduction}
 
 \newthought{\Cref{part:proof-reduction} offers} a different proof-theoretic explanation of concurrency -- concurrency as proof reduction.
 
