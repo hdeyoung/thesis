@@ -6,7 +6,8 @@
   tufte-book,
   notoc,
   biblatex={
-    citestyle=authoryear-icomp,
+    citestyle=authoryear,
+    % citestyle=authortitle-icomp,
     autocite=footnote,
     maxcitenames=3,
     bibstyle=authoryear,
@@ -17,6 +18,9 @@
     isbn=false,
   }
 ]{tufte-thesis}
+
+\usepackage{xpatch}
+% \xapptobibmacro{cite}{\setunit{\nametitledelim}\printfield{year}}{}{}
 
 \input{preamble}
 

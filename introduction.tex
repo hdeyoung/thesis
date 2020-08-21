@@ -3,42 +3,71 @@
 With the increasingly complex, distributed nature of today's software systems, concurrency is ubiquitous.
 Concurrency facilitates distributed computation by structuring systems as nondeterministic compositions of simpler subsystems.
 But, being nondeterministic, concurrent systems are notoriously difficult to get right: 
-subtle races and deadlocks can occur in even the most rigorously tested of systems.
+subtle races and deadlocks can be lurking in even the most extensively tested of systems.
 
-At the same time, decades of research into connections between proof theory and programming languages -- beginning with \citeauthor{Curry:PNAS34}'s observation that simplification of axiomatic proofs corresponds to a form of computation based on combinatory reduction\autocite{Curry:PNAS34}, and notably continuing with \citeauthor{Howard:69}'s discovery of an isomorphism between intuitionistic natural deduction and the simply-typed $\lambda$-calculus\autocite{Howard:69} -- have firmly established the principle of \emph{computation as deduction} as the gold standard for clear, expressive, and provably correct programs.
+At the same time, decades of research into connections between proof theory and programming languages -- beginning with \citeauthor{Curry:PNAS34}'s observation that simplification of axiomatic proofs corresponds to\fixnote{ a form of computation based on} combinatory reduction\autocite{Curry:PNAS34}, and notably continuing with \citeauthor{Howard:69}'s discovery of an isomorphism between intuitionistic natural deduction and the simply-typed $\lambda$-calculus\autocite{Howard:69} -- have firmly established the principle of \emph{computation as deduction} as the gold standard for clear, expressive, and provably correct programs.
 Computation-as-deduction interpretations of intuitionistic logic, for example, are the foundations for both the typed functional\autocite{Martin-Lof:LMPS80} and logic\autocites{Miller+:PAL91}{Andreoli:JLC92} programming paradigms.
 
-Since \citeauthor{Girard:TCS87} introduced linear logic\autocite{Girard:TCS87} and suggested the possibility of connections with concurrency, [...].
-Along two different proof-theoretic paths: \emph{concurrency as proof reduction} and \emph{concurrency as proof construction}.
+The computation-as-deduction idea has also been successfully applied to concurrent programming, originating from \citeauthor{Girard:TCS87}'s suggestion of possible connections between linear logic and concurrency\autocite{Girard:TCS87}.
+These research efforts have been directed along two different proof-theoretic paths: \emph{concurrency as proof reduction} and \emph{concurrency as proof construction}.
 
-Under a concurrency-as-proof-reduction view, processes are mapped to linear sequent proofs or proof nets and cut elimination corresponds to concurrent, message-passing communication.
+% Since \citeauthor{Girard:TCS87} introduced linear logic\autocite{Girard:TCS87} and suggested the possibility of connections with concurrency, researchers have been studying 
+% Along two different proof-theoretic paths: \emph{concurrency as proof reduction} and \emph{concurrency as proof construction}.
 
+Under a concurrency-as-proof-reduction view, processes are mapped to linear sequent proofs or proof nets.
+Proof reduction, in the form of cut elimination, thus corresponds to concurrent, message-passing communication.
+This view was pioneered by \textcite{Abramsky:TCS93} and later extended to a true Curry--Howard isomorphism with the intuitionistic linear sequent calculus by \citeauthor{Caires+Pfenning:CONCUR10} with \citeauthor{Toninho:CMU15}\autocites{Caires+Pfenning:CONCUR10}{Caires+:TLDI12}{Caires+:MSCS16}.
+Under this isomorphism, propositions are types -- specifically, binary \emph{session types}\autocite{Honda:CONCUR93} that describe the interaction protocol to which a process adheres.
+And concurrency arises when the various interleavings of independent proof reductions are treated indistinguishably.
 
-Under a concurrency-as-proof-construction view, the search for a proof, according to a fixed strategy, forms the basis of computation, with the permutability of inference rules as the source of concurrency.
-This proof construction view is perhaps best encapsulated by the \emph{process-as-formula} encoding, in which process constructors correspond to linear logical connectives\autocite{Miller:ELP92}.
- 
+Under the other, concurrency-as-proof-construction view, the search for a proof, according to a fixed strategy, forms the basis of concurrent computation.
+This proof construction tack is perhaps best encapsulated by the \emph{process-as-formula} encoding, in which process constructors correspond to linear logical connectives\autocite{Miller:ELP92}.
+Concurrency then arises from the permutability of inference rules within a proof or partial proof.
 
-Each of these two approaches has its own strengths and weaknesses.
+Each of these two approaches to concurrency as deduction has its own strengths and weaknesses.
 The proof-reduction approach excels at
 % is particularly good when it comes to 
 implementation.
-Based on \citeauthor{??}'s isomorphism, proofs are directly process implementations. 
-Because cut elimination procedure [...], the proof-reduction approach lends itself more naturally to synchronous, not asynchronous, communication.
-Properties of cut elimination ensure that the proof-reduction approach also enjoys session-type preservation and progress theorems -- well-typed processes will never deadlock.\footnote{But can livelock, unless coinductive types are used.}
+Based on \citeauthor{Caires+:MSCS16}'s isomorphism, proofs are immediately and directly well-typed process implementations.\fixnote{Citation for concrete implementation needed?}
+Properties of cut elimination also ensure that the proof-reduction approach enjoys session-type preservation and progress theorems -- well-typed processes will never deadlock.\footnote{But they can livelock or diverge, unless coinductive types are used~\parencite{Derakhshan+Pfenning:LMCS20}.}
 
-On the other hand, the proof-construction approach is better suited to the task of specifying the behavior of concurrent systems.
+However, the proof-reduction approach does have its weaknesses.
+Owing to the structure of the cut elimination procedure, the proof-reduction approach lends itself more naturally to synchronous communication, whereas asynchronous communication is often desired in practice.\fixnote{Reasonable claim?}
+Also, because processes are generally long-running or non-terminating, recursion is even more important than in functional programming, and it is not obvious how to incorporate recursion in a logically justified way within the session type isomorphism.%
+\footnote{Recursion can be incorporated in functional languages in a logically justified way, using inductive and coinductive types~\parencite{Mendler:LICS87}.
+\Textcites{Derakhshan+Pfenning:LMCS20}{Somayyajula+Pfenning:20} are investigating logically justified inductive and coinductive session types.}
+
+In contrast to proof reduction, the proof-construction approach excels at the task of specifying the behavior of concurrent systems.
 It gives a more global description of the system by focusing on the interactions between processes, without prescribing how those interactions should occur.
-Because computation is captured by the search for a proof, the proof-construction approach lends itself more naturally to \emph{a}synchronous communication.
+Because computation is captured by the search for a proof, the proof-construction approach reflects \emph{a}synchronous communication.
+Moreover, recursion is relatively easy to incorporate because the logical aspects of proof construction are confined to provability, rather than proofs.\fixnote{Correct?}
 
-To gain the strengths of both approaches without the weaknesses of either, we would like to identify a kind of intersection between concurrency as proof reduction and concurrency as proof-construction.
+On the flip side, however, it is not obvious how to extract well-behaved, local process implementations from these global specifications.
+And, being untyped, the proof-construction approach does not enjoy type preservation and progress theorems like the concurrency-as-proof-reduction view does -- computation can easily deadlock.
+
+In short, the strengths and weaknesses of the proof-reduction and proof-construction approaches are almost exactly opposite each other.
+To gain the strengths of both approaches without the weaknesses of either, we would like to identify a kind of intersection between concurrency as proof reduction and concurrency as proof construction.
 We want to identify fragments of proof reduction and proof construction that can be put in bijective correspondence.
+On these fragments, we will be able to give global specifications of concurrent systems, while still being able to extract local implementations.
+
+To focus our attention on the essential aspects of and relationship between the proof-reduction and proof-construction approaches to concurrency as deduction, we will limit our investigation in this document to processes arranged in chain topologies, as opposed to the more general tree topologies that \citeauthor{Caires+:MSCS16}'s isomorphism supports.
+
+Chain topologies allow us to treat channels namelessly -- each process has exactly two channels, one with its unique left-hand neighbor and one with its right-hand neighbor -- which lifts an inessential but large notational burden.
+In both the proof-reduction and proof-construction characterizations of concurrency, chain topologies exist as logically motivated fragments of the general case.
+
+Thus, the remainder of this document serves to establish the following thesis statement.
+% Thus, we arrive at the following thesis.
 \begin{quotation}
   \normalsize
-  Thesis statement.
-  \itshape [...] form a bridge between distinct notions of concurrency in computational interpretations of ordered logic based on proof construction, on one hand, and proof reduction, on the other hand.
+  % Thesis statement.
+  \itshape Session types form a bridge between distinct notions of concurrency in computational interpretations of ordered and singleton\fixnote{Does this addition deflate the thesis statement?} logics based on proof construction, on one hand, and proof reduction, on the other hand.
 \end{quotation}
 
+We also conjecture that the results contained in this document can be generalized in a relatively straightforward way to tree topologies.
+This will introduce a moderately large notational overhead, but should present no conceptual difficulties.
+The propositional ordered logic used for proof-construction-as-concurrency would be replaced with first-order linear logic, and the singleton logic used for proof-reduction-as-concurrency would be replaced with propositional linear logic.
 
+\clearpage
 \section{Overview}
 
 \Cref{part:preliminaries} reviews some necessary background information: definitions of finite automata~\parencref{ch:finite-automata} and a sequent calculus presentation of ordered logic~\parencref{ch:ordered-logic}.
@@ -69,7 +98,7 @@ The reader who has some familiarity with these topics should feel free to skim o
   \label{fig:introduction:summary}
 \end{figure}
 
-% \clearpage
+\clearpage
 \subsection{Concurrency as proof construction}
 
 \Cref{part:proof-construction} then delves into a proof-construction approach to concurrency, beginning in \cref{ch:string-rewriting} with a review of a string rewriting framework for specifying the dynamics of concurrent systems.
@@ -160,11 +189,12 @@ But how do the string rewriting specifications of \cref{ch:string-rewriting} fit
 \Cref{ch:choreographies}
 
 
-\Cref{ch:choreographies} presents one of the major contributions of this work: a procedure for \emph{choreographing} string rewriting specifications into formula-as-process ordered rewriting [...].
+\Cref{ch:choreographies} presents one  of the major contributions of this work: a procedure for \emph{choreographing} string rewriting specifications into formula-as-process ordered rewriting [...].
 To choreograph a string rewriting specification, [...].
 
 However, not all role assignments give rise to sensible choreographies.
 For instance, if both
+
 
 
 \Cref{part:proof-construction} closes with
@@ -172,39 +202,43 @@ For instance, if both
 
 \subsection{Concurrency as proof reduction}
 
-\newthought{\Cref{part:proof-reduction} offers} a different proof-theoretic explanation of concurrency -- concurrency as proof reduction.
+\Cref{part:proof-reduction} offers a different proof-theoretic explanation of concurrency -- concurrency as proof reduction.
 
 \Cref{ch:singleton-logic} presents \emph{singleton logic}, a substructural intuitionistic logic that exhibits many of the symmetries of classical logic by restricting sequents to have exactly one antecedent\footnote{And one consequent.}.
 Singleton sequents are thus $\slseq{A |- C}$, as opposed to the sequents $\oseq{\octx |- C}$ found in ordered logic, for example.
 (An infinitary variant of singleton logic was independently identified by \citeauthor{Santocanale:FOSSACS02} with Fortier\autocites{Santocanale:FOSSACS02}{Fortier+Santocanale:CSL13}, motivated by categorical semantic concerns.)
-\Cref{sec:??} verifies that singleton logic's sequent calculus satisfies cut and identity elimination, which ensure that singleton logic has a well-defined proof-theoretic semantics.
-
-Because of the single-antecedent restriction, proof terms for singleton logic are variable-free and form a monoid with the $\jrule{CUT}$ rule as the monoid operation.
-That such a severe restriction on the structure of sequents yields a well-defined logic that will prove to be computationally useful is quite surprising.
+\Cref{sec:??} verifies that singleton logic's sequent calculus satisfies cut and identity elimination, which ensure that singleton logic has a well-defined proof-theoretic semantics.%
+\fixnote{Because of the single-antecedent restriction, proof terms for singleton logic are variable-free and form a monoid with the $\jrule{CUT}$ rule as the monoid operation.}
+That such a severe restriction on the structure of sequents yields a well-defined logic\fixnote{ that will prove in \cref{ch:process-chains} to be computationally useful} is quite surprising.
 
 Of course, sequent calculi are not the only way to present logics, with natural deduction and axiomatic systems being two notable alternatives.
 \Cref{ch:singleton-logic} continues by introducing a novel presentation of singleton logic -- its \emph{semi-axiomatic sequent calculus}.
 As suggested by its name, the semi-axiomatic sequent calculus blends the sequent calculus with axiomatic features.
-Its rules are the same as those of the sequent calculus, except that all right rules for positive connectives and all left rules for negative connectives are replaced with axioms.
-For example, 
-\begin{equation*}
-  \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
-    \slseq{A |- B_1}}
-  \text{ is replaced by the axiom }
-  \infer[\rrule{\plus}_1']{\slseq{B_1 |- B_1 \plus B_2}}{}
-\end{equation*}
-At first glance, these replacements might seem unmotivated.
-Is it even possible to prove cut elimination for such a system?
+Its rules are the same as those of the sequent calculus, except that some rules\footnote{Specifically, all right rules for positive connectives and all left rules for negative connectives.} are replaced with axioms.
+% For example, 
+% \begin{equation*}
+%   \infer[\rrule{\plus}_1]{\slseq{A |- B_1 \plus B_2}}{
+%     \slseq{A |- B_1}}
+%   \text{ is replaced by the axiom }
+%   \infer[\rrule{\plus}_1']{\slseq{B_1 |- B_1 \plus B_2}}{}
+% \end{equation*}
+At first glance, making such replacements might seem unmotivated --
+is it even possible to prove cut elimination for such a system?
 % and perhaps [...].
 
 No, it is not possible to eliminate \emph{all} cuts from semi-axiomatic proofs.
 But, interestingly, the cuts that remain are nevertheless well-behaved: they are analytic cuts that satisfy the subformula property.
-So, although cut elimination does not, strictly speaking, hold for the semi-axiomatic sequent calculus, a proof normalization result does.
-Key to this normalization procedure 
+So, although cut elimination does not, strictly speaking, hold for the semi-axiomatic sequent calculus, a proof normalization result based on cut reduction does hold, as shown in \cref{??}.
+Key to this normalization procedure are several novel \emph{associative cut reductions} and a slightly unusual justification for their termination.
 
-The essential ideas behind the semi-axiomatic calculus appear to be widely applicable.
+The principal cut reductions that appear in semi-axiomatic proof normalization are also notable.
+Because axioms hold such a prominent position in the calculus, none of these principal reductions preserve their [...] cut[s], with only one of the cut's two constituent proofs contributing to the reduced result.
+% the principal cut reductions that appear in semi-axiomatic proof normalization all eliminate their [...] cuts.
+% No principal cut reduction ends 
+For this reason, the principal cut reductions are reminiscent of asynchronous message-passing communication.
+
+The essential ideas behind the semi-axiomatic calculus appear to be widely applicable, extending beyond singleton logic.
 Follow-up work with Pfenning and Pruiksma has extended the concept of semi-axiomatic sequent calculi to intuitionistic propositional logic\autocite{DeYoung+:FSCD20}, and we conjecture that semi-axiomatic sequent calculi exist for all intuitionistic logics with cut-free\fixnote{??} sequent calculi, including linear logic and ordered logic.
-
 
 
 
@@ -217,19 +251,53 @@ Follow-up work with Pfenning and Pruiksma has extended the concept of semi-axiom
 % \Cref{ch:singleton-logic} continues by introducing a novel presentation of singleton logic -- its \emph{semi-axiomatic sequent calculus}.
 
 
-\Cref{ch:process-chains} develops a Curry--Howard interpretation of singleton logic's semi-axiomatic sequent calculus.
+
+
+
+
+\newthought{\Cref{ch:process-chains}}, following up on the observation that the semi-axiomatic sequent calculus's principal cut reductions have the same structure as asynchronous message-passing communication, develops a session-typed process calculus from singleton logic's semi-axiomatic sequent calculus.
 % correspondence of semi-axiomatic proofs in singleton logic with session-typed processes that communicate by asynchronous message passing.
-Under this interpretation, propositions correspond to session types that describe a process's behavior; proofs, to processes arranged in a linear topology; and proof reduction, to asynchrnous message-passing communication between processes.
-This is closely related to \citeauthor{Caires+:MSCS??}'s Curry--Howard interpretation of the intuitionistic linear sequent calculus as a session-typed $\pi$-calculus, but with two key differences.
-First, the effect that singleton logic's single-antecedent restriction has on proof structure means that the corresponding processes have a linear topology, as opposed to the tree topology of SILL processes.
-Second, and arguably more important, the proof reductions of the semi-axiomatic sequent calculus correspond to asynchronous communication.
+Under this Curry--Howard interpretation, propositions correspond to session types that describe a process's behavior; proofs, to processes arranged in a linear topology; and proof reduction, to asynchronous message-passing communication between processes.
+
+This is very closely related to SILL, \citeauthor{Caires+:MSCS16}'s Curry--Howard interpretation of the intuitionistic linear sequent calculus as a session-typed $\pi$-calculus\autocites{Caires+Pfenning:CONCUR10}{Caires+:MSCS16}, but with two key differences.
+First, singleton logic's single-antecedent restriction affects proof structure in such a way that the corresponding processes have a linear topology, as opposed to the tree topology of SILL processes.
+Second, and arguably more important, the proof reductions of the semi-axiomatic sequent calculus correspond to asynchronous message-passing communication, whereas SILL, being based on a standard sequent calculus, most naturally corresponds to synchronous communication.%
+\footnote{An earlier paper~\parencite{DeYoung+:CSL12} attempted to give an asynchronous interpretation of the intuitionistic linear sequent calculus, but, in hindsight, that work seems rather ad hoc and unsatisfactory when compared with the asynchronous interpretation of semi-axiomatic sequent calculus.}
+
+The idea of restricting processes to have a linear topology is also present in work by \textcite{Dezani-Ciancaglini+:PLACES14}.
+
+In \cref{sec:process-chains:??}, coinductively defined types and processes are introduced to make unbounded computation possible.
+This takes the calculus outside of a true isomorphism, with the coinductive definitions being extralogical.
+But research by \textcites{Derakhshan+Pfenning:LMCS20}{Somayyajula+Pfenning:20} on logical justifications for behaviorally inductive and coinductive session types could be adapted here to restore a true isomorphism.
+
+\Cref{ch:process-chains} closes with some example programs.
+Process definitions are given for the binary counter~\parencref{sec:process-chains:??}, infinite-word sequential transducers~\parencref{sec:process-chains:??}, as a twist on the recurring \acs*{NFA} example, and Turing machines~\parencref{sec:process-chains:??}.
 
 
-\newthought{\Cref{part:comparison} studies} the relationship between these two proof-theoretic characterizations of concurrency -- concurrency as proof construction, on the one hand, as exemplified by the (focused) ordered rewriting and choreographies of \cref{part:proof-construction}; and concurrency as proof reduction, on the other hand, as exemplified by singleton logic's semi-axiomatic sequent calculus and the process chains of \cref{part:proof-reduction}.
-\Cref{ch:??} begins by formalizing the formula-as-process view of ordered rewriting by defining an embedding of session-typed process chains into ordered rewriting.
-We prove that this embedding serves as a bisimulation between process chains and ordered contexts\fixnote{propositions?} -- between concurrency as proof reduction and concurrency as proof construction.
-The embedded is natural [...].
+\subsection{A relationship between proof construction and proof reduction}
 
+\Cref{part:comparison} studies the relationship between the two proof-theoretic characterizations of concurrency -- concurrency as proof construction, on the one hand, as exemplified by the (focused) ordered rewriting and choreographies of \cref{part:proof-construction}; and concurrency as proof reduction, on the other hand, as exemplified by singleton logic's semi-axiomatic sequent calculus and the process chains of \cref{part:proof-reduction}.
+\Cref{ch:??} begins by formalizing the message-passing view of ordered rewriting by defining an embedding of session-typed process chains into ordered rewriting.
+This embedding serves as a bisimulation between process chains and ordered contexts\fixnote{propositions?} -- between concurrency as proof reduction and concurrency as proof construction.
+
+The embedding is quite natural in two respects.  
+First, it elegantly maps process constructors to ordered logical connectives, with process composition corresponding to ordered conjuction, for example.
+Second, when applied to the example processes from \cref{ch:process-chains}, the embedded results in the same coinductively defined propositions used as choreographies in \cref{ch:choreographies}.
+
+Additionally, because the embedding is an injective mapping, syntactically speaking, its left inverse provides a way to construct processes from a large subset of ordered propositions.
+Thus, we can use the embedding to reverse-engineer a session type system for ordered rewriting in which well-typed processes correspond to well-typed propositions, and vice versa.
+
+
+This aspect can be seen as a proof-theoretic analogue of multiparty session types.\autocite{Honda+:POPL08}
+In multiparty session types, binary session types are generalized to conversations among several parties.
+Conversations in their entirety are specified using global session types, which can then be projected to binary session types for each pair of participants; these projections are close to implementations.
+
+Intuitively, global types for multiparty sessions serve the same purpose as our choreographies: both describe the conversation as a whole.
+And, because both extract local information from a global description, the projection of local types from global types is related to our embedding of well-typed processes as choreographies.
+Moreover, our framework has the advantage of generating implementations directly from choreographies, whereas the multiparty session type discipline generates only local types that programmers must then implement.
+
+
+\subsection{Concluding thoughts}
 
 
 \fixnote{Simple example throughout introduction?}
