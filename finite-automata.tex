@@ -1,8 +1,8 @@
-\chapter{Preliminaries: Binary relations and automata}\label{ch:automata}\label{ch:finite-automata}
+\chapter{Binary relations and automata}\label{ch:automata}\label{ch:finite-automata}
 
 In this \lcnamecref{ch:automata}, we review the definitions of alphabets, words, languages, and automata that we will use in the running examples throughout this document.
 % The classic text by \textcite{Hopcroft+Ullman:??} is a excellent reference.
-Our definitions, though equivalent to the classical ones found in \textcite{Hopcroft+:06}'s text, differ slightly, having been tuned for the particular applications in this document.
+Our definitions, though equivalent to the classical ones found in \citeauthor{Hopcroft+:06}'s text\autocite{Hopcroft+:06}, differ slightly, having been tuned for the particular applications in this document.
 
 First, however, we describe our notaional conventions for binary relations.
 
@@ -44,7 +44,8 @@ Depending on the context, it will be a subset of either $\wds{\ialph}$, $\infinw
 \section{Nondeterministic and \aclp*{DFA}}
 
 \begin{definition}\label{def:finite-automata:nfa}
-  \Iac{NFA} over a finite input alphabet $\ialph$ is a triple $\aut{A} = (Q, \nfapow, F)$ consisting of:
+  \emph{\Iac{NFA}}
+   over a finite input alphabet $\ialph$ is a triple $\aut{A} = (Q, \nfapow, F)$ consisting of:
   \begin{itemize}
   \item a finite set of \vocab{states}, $Q$;
   \item a \vocab{transition function}, $\nfapow\colon Q \times \ialph \to \pow{Q}$ such that $\nfapow(q, a) \neq \emptyset$ for all states $q \in Q$ and input symbols $a \in \ialph$; and
@@ -65,7 +66,7 @@ Notice that, unlike the classical definition of \acp{NFA}, this definition does 
 This is because we will be primarily interested in the operational aspects of \iac{NFA}, rather than its linguistic aspects.
 
 \begin{example}
-  \begin{marginfigure}
+  \begin{marginfigure}[4.5\baselineskip]
     \begin{equation*}
       \mathllap{\aut{A}_1 = {}}
       \begin{tikzpicture}[baseline=(q_0.base)]
@@ -92,12 +93,12 @@ This is because we will be primarily interested in the operational aspects of \i
 \end{example}
 
 \begin{definition}
-  \Iacf{DFA} over a finite input alphabet $\ialph$ is \iac{NFA} $\aut{A} = (Q, \nfapow, F)$ over $\ialph$ in which $\nfapow(q, a)$ is a singleton set for all states $q$ and input symbols $a$.
+  \emph{\Iacf{DFA}} over a finite input alphabet $\ialph$ is \iac{NFA} $\aut{A} = (Q, \nfapow, F)$ over $\ialph$ in which $\nfapow(q, a)$ is a singleton set for all states $q$ and input symbols $a$.
   In this case, we write $\dfanext$ for the function from $Q \times \ialph$ to $Q$ that underlies $\nfapow$.
 \end{definition}
 
 \begin{example}
-  \begin{marginfigure}
+  \begin{marginfigure}[1.5\baselineskip]
     \begin{equation*}
       \mathllap{\aut{A}_2 = {}}
       \begin{tikzpicture}[baseline=(s_0.base)]
@@ -333,14 +334,14 @@ However, if both automata are \acp{DFA}, then language equivalence does imply bi
 
 \section{Infinite-word sequential transducers}
 
-Sequential and subsequential transducers\autocite{??} are usually described in terms of finite words.
+Sequential and subsequential transducers\autocites{Ginsburg+Rose:CJM66}{Schuetzenberger:TCS77}  are usually described in terms of finite words.
 In this document, we are interested in transducers for their computational behavior rather than for the functions they induce.
 This, together with technical considerations that will become apparent in \cref{ch:process-chains}, means that we are only interested in \emph{infinite}-word sequential transducers.
 % It is also possible to consider finite-word sequential (and subsequential) transducers, but in this document we are only interested in infinite-word sequential transducers, for reasons that will become clear in \cref{ch:process-chains}.
 
-The following definition is adapted from \textcite{Beal+Carton:TCS02}.
+The following definition is adapted from \textfootcite{Beal+Carton:TCS02}.
 \begin{definition}
-  An infinite-word sequential transducer over the finite input and output alphabets $\ialph$ and $\oalph$, respectively, is a tuple $\aut{T} = (Q, \sftnext, \sftout)$ consisting of:
+  An \emph{infinite-word sequential transducer} over the finite input and output alphabets $\ialph$ and $\oalph$, respectively, is a triple $\aut{T} = (Q, \sftnext, \sftout)$ consisting of:
   \begin{itemize}
   \item a finite set of \vocab{states}, $Q$;
   \item a \vocab{transition function}, $\sftnext\colon Q \times \ialph \to Q$; and
@@ -352,7 +353,7 @@ The following definition is adapted from \textcite{Beal+Carton:TCS02}.
 
 
 \begin{example}
-\begin{marginfigure}
+\begin{marginfigure}[5\baselineskip]
   \begin{equation*}
     \mathllap{\aut{T} = {}}
     \begin{tikzpicture}[baseline=(q_0.base)]
@@ -417,7 +418,7 @@ In \cref{sec:process-chains:turing-machines}, we will construct session-typed pr
 We are interested in how these machines compute, but not interested in what functions they compute.
 In other words, our focus is on computation, not computability.
 
-This means that our definitions of Turing machines differ from the definitions traditionally used, such as in \textcite{Hopcroft+Ullman:??}'s text.
+This means that our definitions of Turing machines differ from the definitions traditionally used, such as in \citeauthor{Hopcroft+:06}'s text\autocite{Hopcroft+:06}.
 For example, we use infinite words to describe truly infinite tapes, rather than using finite words to describe the frontiers of unbounded tapes, and our machines also have no notion of acceptance.
 The specific reasons for these differences will become clear in \cref{sec:process-chains:turing-machines}.
 

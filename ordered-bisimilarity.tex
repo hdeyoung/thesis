@@ -91,7 +91,7 @@ The entire rewriting cannot occur in a single, synchronous step:
   \,.
 \end{equation*}
 
-Because ordered rewriting is asynchronous in this way, we should expect our notion of rewriting bisimilarity to have some analogy to the kinds of bisimilarities developed for asynchronous process calculi, such as the asynchronous $\pi$-calculus\autocite{Amadio+:TCS98} and asynchronous \acs*{CCS}\autocite{??}.
+Because ordered rewriting is asynchronous in this way, we should expect our notion of rewriting bisimilarity to have some analogy to the kinds of bisimilarities developed for asynchronous process calculi, such as the asynchronous $\pi$-calculus\autocite{Amadio+:TCS98} and asynchronous \acs*{CCS}\autocite{Boreale+:IC02}.
 
 % \subsection{}
 
@@ -591,7 +591,7 @@ Being $\simu{R}$-related to $\lctx$, the context $\octx$, when provided with the
 That is, we must have $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces \octx' \simu{R} \lctx'$ for some $\octx'$, which is neatly packaged as $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$.
 
 
-\newthought{The other way} to understand rewriting bisimilarity is by analogy with the asynchronous \ac{CCS}'s notion of weak bisimilarity.\autocites{Amadio+:INRIA96}{Boreale+:IC02}
+\newthought{The other way} to understand rewriting bisimilarity is by analogy with the asynchronous \ac{CCS}'s notion of weak bisimilarity.\autocites{Amadio+:TCS98}{Boreale+:IC02}
 There, a weak bisimulation can be described as a symmetric relation $\simu{R}$ on processes that satisfies three conditions:%
 \footnote{%
   The premises of these conditions are usually stated with strong transitions, but we prefer this phrasing for its similarity to rewriting bisimilarity.}

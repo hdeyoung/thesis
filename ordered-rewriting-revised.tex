@@ -10,7 +10,7 @@ In this \lcnamecref{ch:ordered-rewriting}, we develop a rewriting interpretation
 
 In \citeyear{Lambek:AMM58}, \citeauthor{Lambek:AMM58} developed a syntactic calculus, now known as the Lambek calculus, for formally describing the structure of sentences.\autocite{Lambek:AMM58}
 Words are assigned syntactic types, which roughly correspond to grammatical parts of speech.
-From a logical perspective, the Lambek calculus can [also] be viewed as a precursor to (and generalization of) \citeauthor{Girard:TCS87}'s linear logic\autocite{Girard:TCS87}\relax.\autocites{Polakow+Pfenning:MFPS99}{Polakow+Pfenning:TLCA99}
+From a logical perspective, the Lambek calculus can [also] be viewed as a precursor to (and generalization of) \citeauthor{Girard:TCS87}'s linear logic\autocites{Girard:TCS87}{Lambek:SLIM61}{Abrusci:MLQ90}{Kanazawa:LLI92}{Polakow+Pfenning:MFPS99}.
 Implicit in \citeauthor{Lambek:AMM58}'s original article is a third perspective of the calculus: string rewriting.
 
 In this \lcnamecref{ch:ordered-rewriting}, we review the Lambek calculus from a [string] rewriting perspective.
@@ -57,7 +57,7 @@ If we annotate messages with an underbar and processes with a circumflex, then $
 
 \section{Ordered resource decomposition as rewriting}
 
-\subsection{Most left rules decompose ordered resources}
+\subsection{Most left rules decompose ordered resources}\label{sec:ordered-rewriting:boilerplate}
 
 Recall two of the ordered sequent calculus's left rules, the $\lrule{\fuse}$ and $\lrule{\with}_1$ rules shown in the margin.%
 \marginnote{%
@@ -586,7 +586,7 @@ We may use this \lcnamecref{lem:ordered-rewriting:reduction} to prove that order
 
 
 
-\section{A \emph{focused} ordered rewriting framework}
+\section{A \emph{focused} ordered rewriting framework}\label{sec:ordered-rewriting:focused}
 
 The above ordered rewriting framework is based upon decomposition rules that are very fine-grained.
 Each step of rewriting decomposes a proposition into only its immediate subformulas, and no further, such as in the very fine-grained step $a \oc \bigl((a \limp c \fuse a) \with (b \limp \one)\bigr) \reduces a \oc (a \limp c \fuse a)$.
@@ -880,7 +880,7 @@ and so
   \caption{A framework for focused ordered rewriting}
 \end{figure}
 
-\section{Using shifts to control focusing}
+\section{Using shifts to control focusing}\label{sec:ordered-rewriting:shifts}
 
 With careful placement of shifts, it is possible to control the behavior of focused rewriting.
 It is even possible to embed the unfocused ordered rewriting framework of \cref{sec:ordered-rewriting:unfocused} and a weakly focused ordered rewriting framework within focused ordered rewriting in an operationally faithful way, as we now show.
@@ -1064,9 +1064,9 @@ Together, these features serve to insert a double shift, $\dn \up$, in front of 
   Indeed, as required, $\octx = A \oc (A \limp B) \reduces B = \octx'$ and $\np{\lctx'{}} = \embed{\octx'{}}$.
 \end{proof}
 
-\subsection{Embedding weakly focused ordered rewriting}
+\subsection{Embedding weakly focused ordered rewriting}\label{sec:ordered-rewriting:weak-focusing}
 
-It is similarly possible to embed \emph{weakly} focused ordered rewriting, a rewriting discipline based on weak focusing\autocites{Laurent:??}{??} in which the granularity of steps lies between that of the unfocused and (strongly\footnote{Commonly known as fully focused.}) focused ordered rewriting frameworks.
+It is similarly possible to embed \emph{weakly} focused ordered rewriting, a rewriting discipline based on weak focusing\autocites{Laurent:PhD02}{Simmons+Pfenning:CMU11} in which the granularity of steps lies between that of the unfocused and (strongly\footnote{Commonly known as fully focused.}) focused ordered rewriting frameworks.
 More specifically, weak focusing differs from (strong) focusing in that it retains chaining but abandons eager inversion.
 For example, with weakly focused rewriting,
 \begin{equation*}

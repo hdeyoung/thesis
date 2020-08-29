@@ -2,7 +2,7 @@
 
 In this \lcnamecref{ch:string-rewriting}, we consider abstract rewriting as a framework for specifying the dynamics of concurrent systems.
 This is not, of course, a new idea.
-Multiset rewriting\autocites{Cervesato+Scedrov:IC09}{Meseguer:TCS92} has previously been put forward as a state-transformation model of concurrency, and has been used to describe security protocols\autocites{Cervesato+:CSFW99}{Durgin+:JCS04}, for example.
+Multiset rewriting\autocites{Meseguer:TCS92}{Cervesato+Scedrov:IC09} has previously been put forward as a state-transformation model of concurrency, and has been used to describe security protocols\autocites{Cervesato+:CSFW99}{Durgin+:JCS04}, for example.
 Unlike in multiset rewriting, we are particularly interested in concurrent systems whose components are arranged in a linear topology and have a monoidal structure.
 Given that finite strings over an alphabet $\ialph$ form a free monoid, string rewriting, rather than multiset rewriting, is a good match for the structure we are interested in.
 
@@ -38,7 +38,27 @@ For example, although $abb$ certainly ends with $b$, the string $abb$ can be rew
 \end{equation*}
 % even though $abb$ certainly ends with $b$.
 No backtracking is performed to reconsider these choices.
-\fixnote{Bring up concurrency here?}
+
+Disjoint segments of a string may be rewritten independently.
+For example, the substring $a \wc b$ can be rewritten to $b$, and the final $b$ of $a \wc b \wc b$ can be rewritten to the empty string.
+Being independent, these rewritings can occur in either order, as shown in the adjacent \lcnamecref{fig:string-rewriting:independent1}.
+\begin{marginfigure}
+  \begin{equation*}
+    \hphantom{a \wc b \wc {}}
+    \begin{tikzcd}[ampersand replacement=\&, sep=small]
+      \& b \wc b \drar[reduces]
+      \\
+      \mathllap{a \wc b \wc {}} b
+        \urar[reduces]
+        \drar[reduces]
+      \&\& b
+      \\
+      \& \smash{a \wc b}\vphantom{a} \urar[reduces]
+    \end{tikzcd}
+  \end{equation*}
+  \caption{The interleavings of two independent rewritings}\label{fig:string-rewriting:independent1}
+\end{marginfigure}%
+Concurrency arises when the various interleavings of independent rewritings are treated indistinguishably.
 
 \newthought{The remainder of this \lcnamecref{ch:string-rewriting}} describes a string rewriting framework in more detail~\parencref{sec:string-rewriting:framework} and examines its properties, most importantly concurrent rewritings.
 Then we present two extended examples of how string rewriting may be used to specify concurrent systems: \aclp*{NFA}~\parencref{sec:string-rewriting:nfa} and binary representations of natural numbers~\parencref{sec:string-rewriting:binary-counter}.

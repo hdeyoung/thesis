@@ -1,4 +1,4 @@
-\chapter{Preliminaries: Ordered logic}\label{ch:ordered-logic}
+\chapter{Ordered logic}\label{ch:ordered-logic}
 
 % In \citeyear{Lambek:??}, \citeauthor{Lambek:??} published a seminal paper developing a formal system for describing sentence structure.
 % The Lambek calculus, when viewed from a logical perspective, forms the core of \emph{intuitionistic ordered logic}%
@@ -12,7 +12,7 @@ In its traditional form, intuitionistic logic\footnote{And classical logic, too.
 \begin{description*}[
   mode=unboxed,
   before=\unskip:\space,
-  font=\normalfont, afterlabel={,\space},
+  font=\normalfont\itshape, afterlabel={,\space},
   itemjoin=;\space, itemjoin*=; and\space%
 ]
 \item[weakening] that hypotheses need not be used
@@ -24,36 +24,36 @@ Substructural logics are so named because they reject some or all of these struc
 Most famously, linear logic\autocite{Girard:TCS87} is substructural because it rejects both weakening and contraction.
 The result is a system in which each hypothesis must be used exactly once; accordingly, linear hypotheses may be viewed as consumable resources\autocite{Girard:TCS87}.
 
-Ordered logic, also known as the (full) Lambek calculus,\autocites{Lambek:AMM58}{Abrusci:MLQ90}{Kanazawa:LLI92} goes a substructural step further.
+Ordered logic, also known as the (full) Lambek calculus,\autocites{Lambek:AMM58}{Lambek:SLIM61}{Abrusci:MLQ90}{Kanazawa:LLI92} goes a substructural step further.
 Like its linear cousin, ordered logic rejects weakening and contraction, making ordered hypotheses resources, too.
 But ordered logic additionally eschews exchange; 
 ordered hypotheses are resources that must remain in order, with no reshuffling.
 
 
-\newthought{%
-This \lcnamecref{ch:ordered-logic}%
-}
+This \lcnamecref{ch:ordered-logic}
 serves to review a sequent calculus presentation of ordered logic.
 % \Citeauthor{Lambek:AMM58} originally developed the calculus to give a formal description of sentence structure.
 % In this work, however, our interest is not mathematical linguistics but the logical foundations of concurrent computation.
-
-
-
-
-As a substructural logic, ordered logic eschews the usual structural properties of antecedents -- weakening, contraction, and exchange.
-As in \citeauthor{Girard:TCS87}'s linear logic\autocite{Girard:TCS87}, the lack of weakening and contraction properties means that each antecedent must be used exactly once within a proof.
-Ordered logic's additional lack of an exchange property means that antecedents must also remain in order within a proof.
-
-\Citeauthor{Lambek:AMM58} leveraged this noncommutativity of antecedents to give a formal description of sentence structure.
+%
+%
+%
+%
+% As a substructural logic, ordered logic eschews the usual structural properties of antecedents -- weakening, contraction, and exchange.
+% As in \citeauthor{Girard:TCS87}'s linear logic, the lack of weakening and contraction properties means that each antecedent must be used exactly once within a proof.
+% Ordered logic's additional lack of an exchange property means that antecedents must also remain in order within a proof.
+% 
+\Citeauthor{Lambek:AMM58} leveraged the noncommutativity of antecedents to give a formal description of sentence structure.
 In this work, however, our interest is not mathematical linguistics but the logical foundations of concurrent computation.
-Accordingly, the description of ordered logic in this \lcnamecref{ch:ordered-logic} has a proof-theoretic emphasis and is derived from presentations by \textcite{Pfenning:CMU16} and \textcite{Polakow+Pfenning:MFPS99}.
+Accordingly, the description of ordered logic in this \lcnamecref{ch:ordered-logic} has a proof-theoretic emphasis and is derived from presentations by \citeauthor{Polakow+Pfenning:MFPS99}\autocites{Polakow+Pfenning:MFPS99}{Pfenning:CMU16}.
 
-\Cref{sec:ordered-logic:sequent-calculus} introduces ordered logic's sequent calculus as a collection of inference rules, informally justifying them with a resource interpretation similar to that of linear logic.
-To be sure that this collection of rules constitutes a well-defined logic
-Together, cut and identity elimination \lcnamecrefs{thm:ordered-logic:cut-elimination}~\parencref{thm:ordered-logic:cut-elimination,thm:ordered-logic:id-elimination} serve to establish a proof normalization result: every proof has a corresponding verification.
+\newthought{\Cref{sec:ordered-logic:sequent-calculus} introduces} ordered logic's sequent calculus as a collection of inference rules, informally justifying them with a resource interpretation similar to that of linear logic.
 
+For this collection of rules to constitute a well-defined logic, it must have a verificationist meaning-theory in the tradition of \citeauthor{Gentzen:MZ35}, \citeauthor{Dummett:WJ76}, and \citeauthor{Martin-Lof:Siena83}\autocites{Gentzen:MZ35}{Dummett:WJ76}{Martin-Lof:Siena83}.
+Together, the cut and identity elimination \lcnamecrefs{thm:ordered-logic:cut-elimination}~\parencref[\cref{thm:ordered-logic:cut-elimination,thm:ordered-logic:id-elimination},]{sec:ordered-logic:verifications} serve to establish a proof normalization result: every proof has a corresponding verification.
 
-The reader who is familiar with ordered logic's sequent calculus and basic metatheory -- particularly the cut elimination result -- should feel free to skip this \lcnamecref{ch:ordered-logic}.
+\Cref{sec:ordered-logic:circular} sketches an extension of the ordered sequent calculus with circular propositions and proofs, and \cref{sec:ordered-logic:extensions} briefly describes several other extensions that are possible.
+
+The reader who is familiar with ordered logic's sequent calculus and its basic metatheory -- particularly the cut elimination result -- should feel free to skip this \lcnamecref{ch:ordered-logic}.
 
 
 \section{A sequent calculus presentation of ordered logic}\label{sec:ordered-logic:sequent-calculus}
@@ -660,7 +660,7 @@ Before proving the identity elimination \lcnamecref{thm:ordered-logic:id-elimina
 \end{lemma}
 %
 \begin{proof}
-  As usual\fixnote{Best reference?  Frank's lecture notes?}, by induction on the structure of the proposition $A$.
+  As usual, by induction on the structure of the proposition $A$.
   As before, we may represent this \lcnamecref{lem:ordered-logic:identity-admissibility} as an admissible rule:
   \begin{equation*}
     \infer-[\jrule{A-ID}\smash{^A}]{\oseql{A |- A}}{}
@@ -746,37 +746,61 @@ By establishing that every proof has a corresponding verification, we are now as
 
 
 
-\section{Circular propositions and proofs}
+\section{Circular propositions and proofs}\label{sec:ordered-logic:circular}
 
 By rejecting weakening and especially contraction, ordered logic as formulated above is bounded: there is exactly one of each antecedent, with no means of producing unbounded resources.
 The antecedent $A \limp A \fuse A$ will indeed transform a left-adjacent resource $A$ into a pair of resources, $A \oc A$, effectively copying the initial $A$.
 But because the antecedent $A \limp A \fuse A$ is itself a use-once resource, that is not enough to produce unbounded copies of $A$.
 
-Linear logic traditionally introduces unboundedness by way of its \enquote*{of course} exponential, $\bang A$, which is viewed as an unbounded number of copies of resource $A$ -- as many, or as few, copies of $A$ as desired.\autocite{Girard:TCS87}
-Ordered logic can be extended with a similar persistence modality\autocite{Polakow+Pfenning:??}, so that $\bang A$ is an unbounded number of resources $A$ and $\bang (A \limp B)$ is a means for transforming, an unbounded number of times, a left-adjacent $A$ into a $B$.
+Linear logic traditionally introduces unboundedness with its \enquote*{of course} exponential, $\bang A$.
+The proposition $\bang A$ is viewed as an unbounded number of copies of resource $A$ -- as many, or as few, copies of $A$ as desired.\autocite{Girard:TCS87}
+Ordered logic can be extended with a related persistence modality\autocites{Abrusci:MLQ90}{Polakow+Pfenning:TLCA99}{Polakow+Pfenning:MFPS99}, so that $\bang A$ is an unbounded number of resources $A$, and similarly $\bang (A \limp B)$ is a means for transforming, an unbounded number of times, a left-adjacent $A$ into a $B$.
+
+As the notation suggests, the modality $\bang A$ is not unrelated to process replication, $!P$, in the $\pi$-calculus.\autocite{Milner:??}
+Replication is 
 
 Like replication in \citeauthor{Milner:??}
 $\bang (p \limp p \fuse A)$
 
-Also like in the $\pi$-calculus, there is an alternative means of introducing unbounded behavior: recursive definitions, $p \defd A$.
-Recursive definitions have been studied extensively\autocites{??}, but have not, to the best of our knowledge, been previously used in the context of ordered logic.
+The modality $\bang A$ is not the only way to introduce unbounded behavior in ordered logic. 
+As in the $\pi$-calculus\autocite{??}, recursive definitions $\defp{p}\defd A$ are another path to unboundedness.
+Recursive definitions have been studied extensively\autocites{Hallnas:TCS91}{Eriksson:ELP91}{Schroeder-Heister:LICS93}{McDowell+Miller:TCS00}{Tiu+Momigliano:JAL12}, but have not, to the best of our knowledge, been previously used in the context of ordered logic.
 We conjecture that persistence is strictly more expressive than recursive definitions, but as we will see in \cref{ch:process-chains}, recursive definitions will prove to be a good match for recursive processes.
 
-\Textcite{Fortier+Santocanale:CSL13} have used recursive definitions together with circular derivations in a fragment of the linear sequent calculus, establishing a sound condition under which these definitions constitute least and greatest fixed points and these derivations constitute valid inductive and coinductive proofs.
-Extending their work, \textcite{Derakhshan+Pfenning:??} have presented a related, locally decidable condition on circular derivations in first-order intuitionistic multiplicative and additive linear logic that ensures cut elimination is productive.
+Essentially the difference between the proposition $\bang (p \limp A)$ and the definition $\defp{p} \defd A$ is one of mobility.
+The persistent resouce $p \limp A$ that derives from $\bang (p \limp A)$ can be copied anywhere into the ordered context.
+In contrast, the definition 
+
+$\bang (p \limp A)$ corresponds to $\defp{p} \defd A$.
+The problem is that $\bang A$ implies not only persistence, but also mobility.
+$\bang (p \limp q \fuse \bang (q \limp B))$
+Couples unbounded behavior to mobility.
+
+Convenience of a separate non-atomic syntactic form of proposition
+
+\begin{equation}
+  \label{eq:1}
+  \infer{\octx_L \oc \bang A \oc \octx_R \vdash C}{
+    \octx_L \oc A^* \oc \octx_R \vdash C}
+  \infer{\octx_L \oc A^* \oc \octx_R \vdash C}{
+    \octx_L \oc A^* \oc A \oc \octx_R \vdash C}
+\end{equation}
+
+\Textfootcite{Fortier+Santocanale:CSL13} have used recursive definitions together with circular derivations in a fragment of the linear sequent calculus, establishing a sound condition under which these definitions constitute least and greatest fixed points and these derivations constitute valid inductive and coinductive proofs.
+Extending their work, \textfootcite{Derakhshan+Pfenning:LMCS20} have presented a related, locally decidable condition on circular derivations in first-order intuitionistic multiplicative and additive linear logic that ensures cut elimination is productive.
 We know of no work on applying these ideas to ordered logic, but we expect that similar results ought to hold.
 In any case, in the remainder of this document we are concerned only with general recursive definitions, not inductive or coinductive definitions.
 
 \section{Other extensions}\label{sec:ordered-logic:extensions}
 
-Ordered logic can also be extended in other directions that we briefly describe here
+Ordered logic can also be extended in other directions that we briefly describe here:
 % In this \lcnamecref{sec:ordered-logic:extensions}, we give a brief overview of several extensions to the preceding ordered sequent calculus
 % \begin{itemize*}[label=, before=\unskip{:}, itemjoin={,}, itemjoin*={, and}]
 first-order universal and existential quantifiers,
  multiplicative falsehood and disjunction\autocite{Chang+:CMU03},
  a mobility modality\autocite{Polakow+Pfenning:MFPS99},
  the aforementioned persistence modality, and
- subexponentials\autocite{Kanovich+:MSCS19} and adjunctions from adjoint logic\autocite{??}.
+ subexponentials\autocites{Nigam+Miller:PPDP09}{Kanovich+:MSCS19} and adjunctions from adjoint logic\autocites{Benton:CSL94}{Pruiksma+:18}.
 These extensions are not crucial to the remainder of this dissertation, but are mentioned for the sake of completeness.
 
 % \paragraph*{First-order quantification}
@@ -804,11 +828,11 @@ Sequents are extended with a separate context of well-sorted term variables, $x{
 
 Multiplicative falsehood can be introduced into
 % along a different dimension, 
-the ordered sequent calculus like in the intuitionistic linear sequent calculus\autocite{Chang+:CMU03}:
+the ordered sequent calculus, as in the intuitionistic linear sequent calculus:
 by generalizing % can be generalized to allow
 sequents to % carry
 allow
-an empty consequent, $\oseq{\octx |- \cdot}$.
+an empty consequent, $\oseq{\octx |- (\cdot)}$.\autocite{Chang+:CMU03}
 With this new judgment form, the cut principle and left rules must be revised to allow the empty consequent.
 % For example, the $\jrule{CUT}$ and $\lrule{\fuse}$ rules are revised to:
 % \begin{inferences}
@@ -835,7 +859,7 @@ Multiplicative falsehood, $\bot$, internalizes this judgment as a proposition an
 %   \and
 %   \infer[\lrule{\bot}]{\oseq{\bot |- \cdot}}{}
 % \end{inferences}
-Multiplicative disjunction, $A \boxplus B$, can also be introduced like in the intuitionistic linear sequent calculus\autocite{Chang+:CMU03}; it requires multiple-conclusion sequents.
+Multiplicative disjunction, $A \boxplus B$, can also be introduced like in the intuitionistic linear sequent calculus; it requires multiple-conclusion sequents.\autocite{Chang+:CMU03}
 
 % \paragraph*{Mobility and persistence modalities}
 % Linear\fixnote{Circular proofs, too!}
@@ -843,8 +867,8 @@ Multiplicative disjunction, $A \boxplus B$, can also be introduced like in the i
 In addition to the aforementioned persistence modality, $\bang A$, it is possible to introduce a mobility modality, $\gnab A$.\autocite{Polakow+Pfenning:MFPS99}
 Just as persistence is subject to all of the structural properties, $\gnab A$ is subject to exchange (but neither weakening nor contraction).
 In this way, $\gnab A$ represents a mobile resource that may permute with other resources.
-Related to these modalities are subexponentials\autocite{Kanovich+:MSCS19} and adjunctions from adjoint logic\autocite{??}.
-Both subexponentials and adjunctions allow ordered logic to include multiple distinct layers, each with its own set of structural properties (that must, however, meet conditions for cut elimination).
+Related to these modalities are subexponentials\autocites{Nigam+Miller:PPDP09}{Kanovich+:MSCS19} and adjunctions from adjoint logic\autocites{Benton:CSL94}{Pruiksma+:18}.
+Both subexponentials and adjunctions allow ordered logic to include multiple distinct layers, each with its own set of structural properties (that must, however, meet certain conditions for cut elimination).
 
 
 

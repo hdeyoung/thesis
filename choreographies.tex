@@ -545,7 +545,7 @@ Although a seemingly pleasant property, termination significantly limits the exp
 For example, without unbounded rewriting, we cannot even describe producer--consumer systems or finite automata.
 
 As the proof of termination shows, rewriting is bounded precisely because contexts consist of finitely many \emph{finite} propositions.
-In multiset and ordered rewriting, unbounded behavior is traditionally introduced by way of persistent propositions that may be replicated as much as needed\autocites{??}{Polakow:CMU??}{Simmons:CMU12}.
+In multiset and ordered rewriting, unbounded behavior is traditionally introduced by way of persistent propositions that may be replicated as much as needed\autocites{Polakow:CMU01}{Watkins+:CMU02}{Simmons:CMU12}.
 This is related to \citeauthor{Milner:??}'s use of replication, $!P$, in the $\pi$-calculus\autocite{Milner:??}.
 (See \cref{??} for a more detailed discussion of replication.)
 
@@ -554,15 +554,15 @@ However, another option -- and the one that we pursue here -- is to permit circu
   \n{A}, \n{B} \Coloneqq \p{\atmR{a}} \limp \n{B} \mid \n{B} \pmir \p{\atmL{a}} \mid \n{A} \with \n{B} \mid \top \mid \n{\defp{p}}
   \,.
 \end{equation*}
-Sequent calculi with recursive definitions of this kind have been studied previously\autocites{Hallnas:??}{Erikkson:??}{Schroeder-Heister:??}{McDowell+Miller:??}{Tiu+Momigliano:??}, but, to the best of our knowledge, the use of coinductive definitions in the context of logically motivated rewriting systems is new.
+Sequent calculi with recursive definitions of this kind have been studied previously\autocites{Hallnas:TCS91}{Eriksson:ELP91}{Schroeder-Heister:LICS93}{McDowell+Miller:TCS00}{Tiu+Momigliano:JAL12}, but, to the best of our knowledge, the use of coinductive definitions in the context of logically motivated rewriting systems is new.
 
 That the definitions $\n{\defp{p}} \defd \n{A}$ are indeed coinductive is guaranteed by imposing the requirement that along every cycle among defined propositions there is a logical connective.%
-\footnote{This generalizes the local \emph{contractivity} condition described by \textcite{??}.}
+\footnote{This generalizes the local \emph{contractivity} condition described by \textcite{Gay+Hole:AI05}.}
 For example, the definition $\n{\defp{p}} \defd \p{\atmR{a}} \limp \n{\defp{p}}$ or even the definitions $\n{\defp{p}} \defd \n{\defp{q}}$ and $\n{\defp{q}} \defd \p{\atmR{a}} \limp \n{\defp{p}}$ are acceptable because $(\p{\atmR{a}} \limp \mathord{-})$ occurs along the cycle from $\n{\defp{p}}$ to itself; but the definitions $\n{\defp{p}} \defd \n{\defp{q}}$ and $\n{\defp{q}} \defd \n{\defp{p}}$ are forbidden because no logical connective occurs along the cycle.
 
 To clarify, these definitions are coinductive in only a syntactic sense; when interpreted as processes, they are not (necessarily) behaviorally coinductive.
 For example, the proposition $\n{\defp{p}}$ given by $\n{\defp{p}} \defd \atmR{a} \limp \atmR{a} \fuse \n{\defp{p}}$ does not correspond to a productive process when viewed from the formula-as-process perspective -- after receiving an initial message $\atmR{a}$, the process $\n{\defp{p}}$ diverges without sending or receiving any further messages.
-Therefore, our coinductively defined propositions are \emph{not} greatest fixed points (or coinductive proofs) in the sense of \textcite{Fortier+Santocanale:CSL13}.
+Therefore, our coinductively defined propositions are \emph{not} greatest fixed points (or coinductive proofs) in the sense of \citeauthor{Fortier+Santocanale:CSL13}\autocite{Fortier+Santocanale:CSL13}.
 
 % That the definitions $\n{\defp{p}} \defd \n{A}$ are indeed coinductive is guaranteed by imposing the requirement that all definitions be \emph{contractive}\autocite{??} -- \ie, that the body of each definition begin with a logical connective, logical constant, or atomic proposition at the top level.
 % Contractivity rules out definitions like $\n{\defp{p}} \defd \n{\defp{p}}$ that do not correspond to sensible coinductive propositions and also to rule out sensible but inessential definitions like $\n{\defp{p}} \defd \n{\defp{q}}$.
@@ -786,7 +786,7 @@ Although perhaps well-intentioned, such a requirement seems somewhat under-motiv
 % But now, messages, as represented by the directed $\p{\atmL{a}}$ and $\p{\atmR{a}}$ atoms, make it possible to describe the interactions that a configuration $\octx$ offers to its surroundings. 
 
 
-\section{A local interaction semantics}% \label{sec:formula-as-process:transition-semantics}
+\section{A local interaction semantics}\label{sec:formula-as-process:local-interaction}% \label{sec:formula-as-process:transition-semantics}
 
 For the formula-as-process interpretation, we have thus far examined the rewriting judgment, $\octx \reduces \octx'$, and suggested that it represents a kind of reduction semantics for the underlying processes.
 % Now that we are ascribing a formula-as-process interpretation to ordered rewriting, this judgment characterizes internal reductions.
@@ -1017,7 +1017,7 @@ There is not an especially concise way to express weak input transitions using o
 % \end{proof}
 
 \clearpage
-\section{Choreographing string rewriting specifications}\label{sec:formula-as-process:choreographies}
+\section{Choreographing string rewriting specifications}\label{sec:formula-as-process:choreographies}\label{sec:choreographies:choreographies}
 
 So far in this \lcnamecref{ch:formula-as-process}, we have presented a formula-as-process refinement of the focused ordered rewriting framework and given it a local interaction semantics based on an implicit labeled transition system for output and input transitions.
 With this local interaction semantics in hand, we can return to our goal of assigning a concrete operational semantics to string rewriting specifications.
@@ -1066,7 +1066,7 @@ Without applying other, external criteria, no one choreography has more desirabl
 Most of the $3^{\lvert\sralph\rvert}$ role assignments for a specification's alphabet do not lead to adequate choreographies.
 Sometimes none of the possible role assignments produce a choreography.
 
-\subsection{Choreographies by example}
+\subsection{Choreographies by example}\label{sec:choreographies:informal}
 
 % Given a string rewriting alphabet $\sralph$, we say that a (total) map $\theta$ from finite strings over $\sralph$ to ordered contexts is a \emph{role assignment} for $\sralph$ if it is an injective monoid homomorphism from the finite strings over $\sralph$ to ordered contexts that casts each symbol $a$ in the role of either a message, $\atmL{a}$ or $\atmR{a}$, or a coinductively defined process, $\defp{a}$.
 
@@ -1180,7 +1180,7 @@ For a set of constraints to be satisfiable, three conditions must hold.
 More generally, these observations suggest that only constraints of the form $\ereduces[\orsig]{\atmR{\octx}_L \oc \defp{a} \oc \atmL{\octx}_R}{\octx'}$ are satisfiable, and that these constraints are induced by axioms of the form $w_1 \wc a \wc w_2 \reduces w'$.
 In the following \lcnamecref{sec:formula-as-process:choreograph-formal}, we leverage these ideas to present a more formal description of the above procedure for choreographing string rewriting specifications within the formula-as-process ordered rewriting framework.
 
-\subsection{A formal description of choreographing specifications}\label{sec:formula-as-process:choreograph-formal}
+\subsection{A formal description of choreographing specifications}\label{sec:formula-as-process:choreograph-formal}\label{sec:choreographies:choreograph-formal}
 
 To give a formal description of choreographing specifications, we define a judgment $\chorsig{\theta}{\srsig}{\orsig}$ that, when given a string rewriting specification $(\sralph, \srsig)$ and a role assignment $\theta$, yields formula-as-process definitions $\orsig$ that make string rewriting under $\srsig$ and formula-as-process ordered rewriting under $\orsig$ bisimilar, if such definitions exist:
 % \begin{equation*}
@@ -2140,7 +2140,7 @@ Combining these \lcnamecrefs{??} with \cref{thm:formula-as-process:choreograph-c
 
 
 
-\subsection{A functional choreography}
+\subsection{A functional choreography}\label{sec:formula-as-process:counters-functional}
 
 The object-oriented choreography is not the only choreography possible for the binary counter specification, however.
 

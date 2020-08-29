@@ -2,16 +2,16 @@
 
 In this \lcnamecref{ch:conclusion}, we discuss a few avenues for future work and then summarize the main contributions of this document.
 
-\section{Potential avenues for future work}
+\section{Potential avenues for future work}\label{sec:conclusion:nondeterminism}
 
 \subsection{From ordered rewriting to multiset rewriting, singleton processes to linear processes}
 
 One obvious avenue for future work is to extend the ideas in this document to linear logic.
-We conjecture that the string rewriting specifications of \cref{??} would be replaced with multiset rewriting specifications\autocite{??}; the formula-as-process ordered rewriting of \cref{??}, with formula-as-process linear rewriting based on the focused linear sequent calculus\autocite{??}; and the singleton processes of \cref{??}, with \textsc{sill} processes\autocite{??}.
+We conjecture that the string rewriting specifications of \cref{ch:string-rewriting} would be replaced with multiset rewriting specifications\autocite{Meseguer:TCS92}; the formula-as-process ordered rewriting of \cref{ch:formula-as-process}, with formula-as-process linear rewriting based on the focused linear sequent calculus\autocite{??}; and the singleton processes of \cref{ch:process-chains}, with \textsc{sill} processes\autocites{Caires+Pfenning:CONCUR10}{Caires+:TLDI12}{Caires+:MSCS16}{Toninho+:ESOP13}.
 
 % For the proof construction and rewriting perspective on concurrency, this would involve a shift from ordered rewriting to multiset rewriting, as understood logically in terms of the focused linear sequent calculus.
 
-For instance, in the formula-as-process ordered rewriting choreography of the binary counter~\parencref{??}, we used the coinductively defined proposition $\defp{b}_0$ given by 
+For instance, in the formula-as-process ordered rewriting choreography of the binary counter~\parencref{sec:formula-as-process:counters-oo}, we used the coinductively defined proposition $\defp{b}_0$ given by 
 \begin{equation*}
   \defp{b}_0 \defd (\up \dn \defp{b}_1 \pmir \atmL{i}) \with (\up (\atmL{d} \fuse \dn \defp{b}'_0) \pmir \atmL{d})
   \,,
@@ -28,7 +28,7 @@ With a move to rewriting based on linear logic, rather than ordered logic, we wo
 \end{equation*}
 together with similar defined linear propositions $\defp{e}(x, y)$, $\defp{b}_1(x, y)$, and $\defp{b}'_0(x, y)$.
 Here the first-order parameters $x$ and $y$ thread together propositions in the context in a way that maintains the binary counter's essential structure.
-In line with work by \textcite{Simmons+Pfenning:??}, $\defp{b}_0(x, y)$ is the \emph{destination-passing} embedding of $\defp{b}_0$.
+In line with work by \textcite{Simmons+Pfenning:HOSC11}, $\defp{b}_0(x, y)$ is the \emph{destination-passing} embedding of $\defp{b}_0$.
 In a formula-as-process interpretation, the destinations $x$ and $y$ can be viewed as channels that connect processes.
 
 This example, however, does not fully exploit the expressive power of first-order linearity because the binary counter still has a linear topology.
@@ -68,7 +68,7 @@ A conjecture is that second-order polymorphism would be needed in the rewriting 
 
 \subsection{Session-typed nondeterministic choice}
 
-In \cref{sec:??}, we leveraged the bisimilarity of process expressions and their embedding within formula-as-process ordered rewriting to reverse-engineer a session type system for ordered rewriting.
+In \cref{sec:correspond:types}, we leveraged the bisimilarity of process expressions and their embedding within formula-as-process ordered rewriting to reverse-engineer a session type system for ordered rewriting.
 In particular, from the session-typing rules for $\caseL[\ell \in L]{\ell => P_{\ell}}$ and $\caseR[\ell \in L]{\ell => P_{\ell}}$, we arrived at rules for typing deterministic choices:
 \begin{gather*}
   \infer[\lrule{\plus}]{\slof{\plus*[sub=_{\ell \in L}]{\ell:B_{\ell}} |- \dn {\textstyle \bigwith_{\ell \in L}(\atmR{\ell} \limp \up \p{A}_{\ell})} : C}}{
@@ -84,7 +84,7 @@ However, in terms of the ordered propositions alone, it would seem more natural 
   \infer{\slof{A |- \n{A}_1 \with \n{A}_2 : C}}{\vdots}
   \,.
 \end{equation*}
-Finding such a rule for the ordered proposition $\n{A}_1 \with \n{A}_2$ might then allow us, by leveraging the ideas behind the bisimilar embedding of \cref{ch:??}, to reverse-engineer a process expression for some form of well-behaved, well-typed nondeterministic choice.
+Finding such a rule for the ordered proposition $\n{A}_1 \with \n{A}_2$ might then allow us, by leveraging the ideas behind the bisimilar embedding of \cref{ch:correspond}, to reverse-engineer a process expression for some form of well-behaved, well-typed nondeterministic choice.
 
 \Textcite{Stock:JUB20} has begun to look into incorporating nondeterministic choice into session-typed processes, emphasizing the operational considerations.
 It would be interesting to consider whether his ideas can be adapted to the formula-as-process ordered rewriting framework.
@@ -97,11 +97,11 @@ It would be interesting to consider whether his ideas can be adapted to the form
 Leveraging types, their validity condition on circular proofs is locally and effectively decidable.
 An interesting question is whether their ideas might be applied to (formula-as-process) ordered rewriting.
 
-Productivity is about observable progress and even untyped ordered rewriting has a notion of observation, as embodied in ordered bisimilarity~\parencref{??}.
+Productivity is about observable progress and even untyped ordered rewriting has a notion of observation, as embodied in ordered bisimilarity~\parencref{ch:ordered-bisimilarity}.
 So it seems likely that productive ordered rewriting systems can be characterized.
 
 What is unclear is whether there is an locally and effectively decidable condition on ordered propositions that can guarantee productivity.
-The local decidability of condition on circular proofs introduced by \citeauthor{Derakhshan+Pfenning:??}
+The local decidability of condition on circular proofs introduced by \citeauthor{Derakhshan+Pfenning:LMCS20}
 % Can their validity condition on circular proofs be mapped to a condition on ordered propositions?
 very much relies on the unrolling of inductive and coinductive types.
 But ordered rewriting is untyped, at least natively, so whether productivity can be characterized in a locally decidable way is unclear.

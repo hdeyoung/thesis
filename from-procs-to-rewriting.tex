@@ -2,13 +2,13 @@
 
 \fixnote{Introduction}
 
-\section{Embedding process configurations in formula-as-process ordered rewriting}
+\section{Embedding process configurations in formula-as-process ordered rewriting}\label{sec:correspond:embed}
 
 Here we give an embedding, $\trconf{}$, of process configurations into ordered contexts from the formula-as-process rewriting framework of \cref{ch:formula-as-process}.
 % More specifically, we first define two mutually inductive translations, $\trproc[+]{}$ and $\trproc[-]{}$, that map process expressions to positive and negative propositions, respectively, and then define a homomorphism, $\trconf{}$, that maps process configurations to ordered contexts.
 For the embedding to be adequate, it must preserve the dynamics of processes -- $\trconf{}$ must serve as a bisimulation between the reduction semantics for process configurations and the formula-as-process rewriting semantics for ordered contexts.%
-\footnote{Because they relate process configuration reductions to ordered rewritings, these bisimulations are not rewriting bisimulations of the kind introduced in \cref{??}.
-  Instead, they are ordinary, unlabeled \enquote{reduction bisimulations}, using the terminology of \textcite{Sangiorgi+Walker:??}.}
+\footnote{Because they relate process configuration reductions to ordered rewritings, these bisimulations are not rewriting bisimulations of the kind introduced in \cref{ch:ordered-bisimilarity}.
+  Instead, they are ordinary, unlabeled \enquote{reduction bisimulations}, using the terminology of \textcite{Sangiorgi+Walker:CUP03}.}
 
 Ideally, the embedding $\trconf{}$ will be a \emph{strong} bisimulation, so that the correspondence is lockstep.
 Because the embedding will be a total function, it will be a strong bisimulation if the diagrams
@@ -111,7 +111,7 @@ In other words, $\trproc{\spawn{P}{Q}}$ ought to decompose compositionally in a 
 % \subsection{A weakly focused, strongly bisimilar embedding}
 
 We usually presume that the formula-as-process ordered rewriting framework is strongly focused, as described in \cref{ch:formula-as-process}.
-But suppose that we instead move to a \emph{weakly focused} framework, as sketched in \cref{??}.
+But suppose that we instead move to a \emph{weakly focused} framework, as sketched in \cref{sec:ordered-rewriting:weak-focusing}.
 Then we can define 
 \begin{equation*}
   \trproc{\spawn{P}{Q}} = \trproc{P} \fuse \trproc{Q}
@@ -167,7 +167,7 @@ The constraints on $\trproc{\caseL[\ell \in L]{\ell => Q_{\ell}}}$ can be satisf
   \,.
 \end{gather*}
 % for all $\kay \in L$.
-Of course, because the formula-as-process framework restricts left- and right-handed implications to have atomic premises of complementary direction\footnote{As described in \cref{??}.}, this suggests that we also define
+Of course, because the formula-as-process framework restricts left- and right-handed implications to have atomic premises of complementary direction\parencref{sec:formula-as-process:interpretation}, this suggests that we also define
 \begin{equation*}
   \trproc{\selectR{\kay}} = \atmR{\kay}
   \,,
@@ -187,8 +187,8 @@ Symmetrically, we also define
 \end{align*}
 
 \newthought{Coinductively defined processes} require a bit of extra care.
-As described in \cref{??}, the weakly focused ordered rewriting framework did not include coinductively defined propositions.
-Here we assume that coinductively defined negative propositions, like those of the strongly focused formula-as-process ordered rewriting framework~\parencref{??}, also exist for the weakly focused framework.%
+As described in \cref{sec:ordered-rewriting:weak-focusing}, the weakly focused ordered rewriting framework did not include coinductively defined propositions.
+Here we assume that coinductively defined negative propositions, like those of the strongly focused formula-as-process ordered rewriting framework~\parencref{sec:formula-as-process:coinductive}, also exist for the weakly focused framework.%
 \footnote{An argument can be made that the weakly focused framework should include coinductively defined propositions that are only \emph{positive}, not negative, in keeping with its partiality toward positive propositions in stable contexts.
   That is, however, at odds with the formula-as-process interpretation of coinductively defined propositions as coinductively defined processes, so we choose to have only negative defined propositions.
   Perhaps this small wrinkle could be ironed out if definitions were treated iso\-re\-cur\-sive\-ly, rather than equi\-re\-cur\-sive\-ly, but we choose not to pursue that here.}
@@ -319,7 +319,7 @@ If one insists upon strong focusing, there is nevertheless
 a way forward.
 % 
 % First,
-Recall from \cref{??} that weak focusing can be embedded within strong focusing by the careful addition of shifts.
+Recall from \cref{sec:ordered-rewriting:weak-focusing} that weak focusing can be embedded within strong focusing by the careful addition of shifts.
 The $\embed*{}$ embedding described there could be composed with the $\trproc{}$ embedding of processes described above.
 For example, the composed embedding of $\spawn{P_1}{P_2}$ would be
 \begin{equation*}
@@ -601,7 +601,7 @@ That is to say, the weakness of the bisimulation is a purely administrative arti
 
 
 \clearpage
-\subsection{Examples and other comments}
+\subsection{Examples and other comments}\label{sec:correspond:embed:examples}
 
 
 In summary, we have three distinct embeddings of process expressions and configurations within focused formula-as-process ordered rewriting.
@@ -630,7 +630,7 @@ if $\kay \in L$, but there is no configuration $\cnf'$ such that $\caseL[\ell \i
 \newthought{As examples} of the preceding embeddings, let us revisit our two running examples: binary counters and \acp{DFA}.
 
 % \paragraph*{Binary counter}
-Recall from \cref{??} that a binary counter can be implemented by the coinductively defined processes
+Recall from \cref{sec:process-chains:binary-counter} that a binary counter can be implemented by the coinductively defined processes
 \begin{equation*}
   \sig = \begin{lgathered}[t]
            \bigl(e \defd \caseR{i => \spawn{e}{b_1} | d => \selectR{z}}\bigr) \,, \\
@@ -647,11 +647,11 @@ Under the strongly focused, weakly bisimilar embedding, the process definition f
     = \bigl(\n{\defp{b}_0} \defd (\up \dn \n{\defp{b}_1} \pmir \atmL{i}) \with (\up (\atmL{d} \fuse \dn \n{\defp{b}'_0{}}) \pmir \atmL{d})\bigr)
   \,.
 \end{equation*}
-This defined proposition is \emph{exactly} the same as the one produced in \cref{??} as the object-oriented choreography of the binary counter's initial string rewriting specification.
+This defined proposition is \emph{exactly} the same as the one produced in \cref{sec:formula-as-process:counters-oo} as the object-oriented choreography of the binary counter's initial string rewriting specification.
 (Here, for completeness, we have included even the minimally necessary shifts that we would usually elide.)
 Even the $\up \dn$ double shift in front of $\n{\defp{b}_1}$ is correctly produced for free by the embedding.
 
-The same is true of the other process definitions: embedding them yields exactly the same coinductively defined propositions as in the binary counter's object-oriented choreography shown in \cref{??}.
+The same is true of the other process definitions: embedding them yields exactly the same coinductively defined propositions as in the binary counter's object-oriented choreography shown in \cref{sec:formula-as-process:counters-oo}.
 \begin{equation*}
   \trsig{\sig} =
   \orsig = \begin{lgathered}[t]
@@ -663,7 +663,7 @@ The same is true of the other process definitions: embedding them yields exactly
 \end{equation*}
 (Actually, the same definitions arise when using the weakly focused, strongly bisimilar embedding because it treats process definitions the same as the strongly focused, weakly bisimilar embedding does.)
 
-Similarly, recall the functional-style process definitions for the binary counter from \cref{??}:
+Similarly, recall the functional-style process definitions for the binary counter from \cref{sec:formula-as-process:counters-functional}:
 \begin{equation*}
   \sig' = \begin{lgathered}[t]
             \bigl(i \defd \caseL{e => \spawn{\selectR{e}}{\selectR{b}_1}
@@ -679,7 +679,7 @@ Similarly, recall the functional-style process definitions for the binary counte
 \,.
           \end{lgathered}
 \end{equation*}
-By embedding definitions, we arrive at exactly the same coinductively defined propositions as in the functional choreography of the binary counter shown in \cref{??}:
+By embedding definitions, we arrive at exactly the same coinductively defined propositions as in the functional choreography of the binary counter shown in \cref{sec:formula-as-process:counters-functional}:
 \begin{equation*}
   \trsig{\sig'} =
   \orsig' = \begin{lgathered}[t]
@@ -734,7 +734,7 @@ respectively.
 
 
 \clearpage
-\section{A session type system for ordered rewriting}
+\section{A session type system for ordered rewriting}\label{sec:correspond:types}
 
 The preceding embeddings describe bisimulations between process expressions and certain ordered propositions; process configurations and certain ordered contexts.
 Because the formula-as-process ordered rewriting frameworks are untyped, these embeddings discard type information when translating process expressions and configurations.
@@ -822,7 +822,7 @@ Instead, only the restricted propositions $\dn {\textstyle \bigwith_{\ell \in L}
 This is because we want these reverse-engineered typing rules to correspond to the image of the process expression typing rules.
 In general, $\n{A} \with \n{B}$ describes a nondeterministic choice, something that is not present in the syntax of session-typed process expressions.%
 \footnote{This suggests the possibility of introducing a well-typed form of nondeterministic choice.
-  We discuss this idea further in \cref{??}.}
+  We discuss this idea further in \cref{sec:conclusion:nondeterminism}.}
 Even so, the \lcnamecref{thm:embed:type-props} is quite strong.
 
 As a final remark, we would like to point out that the $0$-ary forms of the above $\lrule{\plus}$ and $\rrule{\with}$ rules need careful consideration.
@@ -857,7 +857,7 @@ We may prove the following \lcnamecref{thm:embed:type-sig}.
 
 
 \newthought{Ordered contexts} can be given session-typing rules, too.
-Once again, we can derive these rules by applying the embeddings to the configuration typing rules of \cref{??}.
+Once again, we can derive these rules by applying the embeddings to the configuration typing rules of \cref{sec:process-chains:typed-chains}.
 However, the particulars of ordered contexts differ between the weakly focused and strongly focused frameworks: weakly focused contexts are built from positive propositions, whereas strongly focused contexts are built from negative propositions and positive atoms.
 So we will actually have two sets of session-typing rules for ordered contexts, using the one that matches the style of focusing in effect.
 

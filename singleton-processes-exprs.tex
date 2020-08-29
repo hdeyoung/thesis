@@ -3,11 +3,11 @@
 In the previous \lcnamecref{ch:singleton-logic}, we took a purely proof-theoretic view of singleton logic and its semi-axiomatic sequent calculus.
 The proof terms assigned to semi-axiomatic sequent proofs were simply syntactic objects,
 % and the proof of the admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:cut-admissible} described a meta-level function for manipulating these syntactic objects.
-and the proof of non-analytic cut elimination~\parencref{thm:singleton-logic:hilbert:cut-elimination} described a meta-level function for normalizing these syntactic objects.
+and the proof of non-analytic cut elimination~\parencref{thm:singleton:hilbert:cutelim} described a meta-level function for normalizing these syntactic objects.
 
 Even in a purely proof-theoretic setting, however, the computational suggestions of these syntactic manipulations were too strong to ignore:
 % In proving the admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:cut-admissible},
-We saw that the principal cases in the proof of admissibility of non-analytic cuts~\parencref{lem:singleton-logic:hilbert:cut-admissible}%
+We saw that the principal cases in the proof of admissibility of non-analytic cuts~\parencref{lem:singleton-logic:hilbert:cut-admissibility}%
 \marginnote{%
   \vspace*{-\abovedisplayskip}
   \begin{align*}
@@ -22,7 +22,7 @@ We saw that the principal cases in the proof of admissibility of non-analytic cu
 are reminiscent of asynchronous message-passing communication.
 Following the rich tradition of Curry--Howard isomorphisms between logics and computational systems, this \lcnamecref{ch:process-chains} therefore pursues a concurrent computational interpretation of the semi-axiomatic sequent calculus for singleton logic.
 
-In particular, we will see that singleton propositions can be interpreted as session types that describe patterns of interprocess communication~\parencref{??}; semi-axiomatic sequent proofs can be interpreted as chains of session-typed processes~\parencref{??}; and cut reduction can be interpreted as asynchronous message-passing communication~\parencref{??}.
+In particular, we will see that singleton propositions can be interpreted as session types that describe patterns of interprocess communication~\parencref{sec:process-chains:typed-processes}; semi-axiomatic sequent proofs can be interpreted as chains of session-typed processes~\parencref{sec:process-chains:typed-chains}; and cut reduction can be interpreted as asynchronous message-passing communication~\parencref{sec:process-chains:reductions}.
 % \footnote{As we will see in \cref{??}, Hilbert-style proofs may also be viewed as well-behaved chains of the communicating automata familiar from \cref{??}.}
 For instance, a proof of $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$ corresponds to a process that sends a message carrying some label $\kay \in L$ and then continues communicating according to pattern $A_{\kay}$.
 
@@ -46,16 +46,16 @@ The use of semi-axiomatic sequent proofs enables a clean and direct interpretati
 % Alternatively, Hilbert-style proofs can be seen as well-behaved chains of communicating automata from \cref{??}.
 
 
-\newthought{We begin}, in \cref{sec:process-chains:?}, by introducing process chains in their untyped form as finite sequences of processes arranged in a linear topoloogy.
-Then, in \cref{??}, we describe the structure of well-typed process expressions that may be used in these chains, and show that the session-typing rules for process expressions correspond to the rules of the semi-axiomatic sequent calculus;
-\cref{??} presents session-typing rules for the process chains themselves.
-In \cref{??}, we assign an operational semantics to process chains; this operational semantics arises naturally from the semi-axiomatic proof normalization procedure given in the previous \lcnamecref{ch:singleton-logic}.
-Lastly, \cref{??} describes coinductively defined type and process definitions.
+\newthought{We begin}, in \cref{sec:process-chains:untyped-chains}, by introducing process chains in their untyped form as finite sequences of processes arranged in a linear topoloogy.
+Then, in \cref{sec:process-chains:typed-processes}, we describe the structure of well-typed process expressions that may be used in these chains, and show that the session-typing rules for process expressions correspond to the rules of the semi-axiomatic sequent calculus;
+\cref{sec:process-chains:typed-chains} presents session-typing rules for the process chains themselves.
+In \cref{sec:process-chains:reductions}, we assign an operational semantics to process chains; this operational semantics arises naturally from the semi-axiomatic proof normalization procedure given in the previous \lcnamecref{ch:singleton-logic}.
+Lastly, \cref{sec:process-chains:coinductive} describes coinductively defined type and process definitions.
 
 
-\section{Process chains and process expressions}
+\section{Process chains and process expressions}\label{sec:process-chains:interpretation}
 
-\subsection{Untyped process chains}
+\subsection{Untyped process chains}\label{sec:process-chains:untyped-chains}
 
 We envision a process chain, $\chn$, as a (possibly empty) finite sequence of processes $(P_i)_{i=1}^{n}$, each with its own independent thread of control and arranged in a linear topology.
 As depicted in the adjacent \lcnamecref{fig:singleton-processes:chain-topology},%
@@ -116,7 +116,7 @@ The notation for a composition $\chn_1 \cc \chn_2$ is intended to recall paralle
 However, unlike $\pi$-calculus composition, parallel composition of chains is \emph{not} commutative because the sequential order of processes within a chain matters.
 
 
-\subsection{Session-typed process expressions}
+\subsection{Session-typed process expressions}\label{sec:process-chains:typed-processes}
 
 Thus far, we have examined the overall structure of (untyped) process chains without detailing the internal structure of individual processes.
 % Thus far, we have diligently avoided describing the specific internals of processes.
@@ -331,7 +331,7 @@ The process expression $\spawn{P_1}{P_2}$ spawns threads of control, so $\fwd$, 
 % % \end{equation*}
 % % Clearly reminiscent of the principal cut reduction $\nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => N_{\ell}}} = N_{\kay}$.
 
-\subsection{Session-typed process chains}
+\subsection{Session-typed process chains}\label{sec:process-chains:typed-chains}
 
 With the session-typing system for process expressions in hand, session types can be assigned to process chains, too.
 We use a session-typing judgment
@@ -634,7 +634,7 @@ In particular, the distinction helps to relate this process interpretation of si
 \end{figure}
 
 \clearpage
-\subsection{From admissibility of non-analytic cuts to an operational semantics}
+\subsection{From admissibility of non-analytic cuts to an operational semantics}\label{sec:process-chains:reductions}
 
 In the previous \lcnamecref{ch:singleton-logic}, we presented a procedure for normalizing semi-axio\-matic sequent proofs in singleton logic.
 Proof normalization was important to establish
@@ -643,11 +643,11 @@ In this \lcnamecref{ch:process-chains}, however, our perspective has shifted fro
 And so normalization is no longer appropriate -- we now want to expose the concurrent computational behavior, not just normal forms.
 The situation is analogous to that of intuitionistic natural deduction and simply-typed functional computation: there, proof normalization occurs in the premise of the implication introduction rule but the usual operational semantics for functional computation does not reduce under function abstractions.
 
-In fact, the difference is even starker here because, once recursive process definitions are introduced~\parencref{sec:??}, many useful processes will be nonterminating.
+In fact, the difference is even starker here because, once recursive process definitions are introduced~\parencref{sec:process-chains:coinductive}, many useful processes will be nonterminating.
 Thus, there is no clear notion of value, as exists in functional computation.
 Nevertheless, in good Curry--Howard fashion, the principal cases of semi-axiomatic proof normalization will still directly inform the operational semantics of processes.
 
-\newthought{In the previous \lcnamecref{sec:??},} the description of how proof terms are reinterpreted as process expressions already hinted at a computational strategy.
+\newthought{In the previous \lcnamecref{sec:process-chains:typed-processes},} the description of how proof terms are reinterpreted as process expressions already hinted at a computational strategy.
 Here we present that operational semantics in its full detail.
 
 The operational semantics for process chains is centered around \emph{reduction}, a binary relation on chains which we write as $\reduces$;
@@ -780,7 +780,7 @@ The operational semantics formalizes these notions in rules that decompose $\spa
   \end{gather*}
   \caption{Pictorial representations of the reductions for $\spawn{P_1}{P_2}$ and $\fwd$}
 \end{marginfigure}%
-Because process chains are always considered up to associativity and unit laws, these reduction rules (along with the above $\cc$-compatibility rules) reflect the associative and identity normalization steps in the proof of admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:?}.
+Because process chains are always considered up to associativity and unit laws, these reduction rules (along with the above $\cc$-compatibility rules) reflect the associative and identity normalization steps in the proof of admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:cut-admissibility}.
 For example, just as
 \begin{gather*}
   \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} \\
@@ -894,12 +894,12 @@ The session-typing rules and operational semantics enjoy preservation and progre
 \end{proof}
 
 \clearpage
-\section{Coinductively defined types and process expressions}
+\section{Coinductively defined types and process expressions}\label{sec:process-chains:coinductive}
 
 Unfortunately, there are many relatively simple computational behaviors that cannot be described by the finitary session types thus far.
 For instance, a transducer process that receives, one-by-one, a stream of input symbols and forms an output stream by replacing each $b$ with an $a$ cannot be represented.
 
-The solution is to introduce coinductively defined types, in a manner reminiscent of the coinductively defined propositions, $\n{\defp{p}} \defd \n{A}$, seen in \cref{??}.
+The solution is to introduce coinductively defined types, in a manner reminiscent of the coinductively defined propositions, $\n{\defp{p}} \defd \n{A}$, seen in \cref{sec:formula-as-process:coinductive}.
 We will often write coinductively defined types with Greek letters, such as $\alpha \defd A$.
 Coinductively defined types are not particularly useful if process expressions remain finitary, so we also introduce mutually coinductively defined process expressions: $\slof{A |- \defp{p} : C} \defd P$.
 
@@ -916,12 +916,12 @@ Importantly, however, the core system remains unchanged and still enjoys the iso
 The situation is once again analogous to the Curry--Howard isomorphism between intuitionistic natural deduction and the simply-typed $\lambda$-calculus:
 When the $\lambda$-calculus is extended with recursive types and functions, the meaning of the type constuctor for simple function types remains unchanged and still isomorphic with intuitionistic implication.
 
-Just as a Curry--Howard isomorphism can be recovered in the $\lambda$-calculus when general recursive types are restricted to inductive and coinductive types, work by \textcite{Derakhshan+Pfenning:??} and \textcite{Somayyajula+Pfenning:??} shows that a Curry--Howard isomorphism between session-typed process chains and (sub-)singleton sequent calculus proofs can be recovered if types are inductive or behaviorally coinductive.
+Just as a Curry--Howard isomorphism can be recovered in the $\lambda$-calculus when general recursive types are restricted to inductive and coinductive types, work by \textcite{Derakhshan+Pfenning:LMCS20} and \textcite{Somayyajula+Pfenning:20} shows that a Curry--Howard isomorphism between session-typed process chains and (sub-)singleton sequent calculus proofs can be recovered if types are inductive or behaviorally coinductive.
 
 
 \section{Examples}
 
-\subsection{Binary counter}
+\subsection{Binary counter}\label{sec:process-chains:binary-counter}
 
 We can once again revisit binary counters, this time as an example of session-typed process chains.
 
@@ -1039,7 +1039,7 @@ As an example of these processes in action, observe that $\defp{e} \cc \defp{b}_
 
 
 
-\subsection{Sequential transducers}
+\subsection{Sequential transducers}\label{sec:process-chains:transducer}
 
 By this point in this document, the reader will likely expect either \acp{DFA} or \acp{NFA} as our next example of session-typed process chains.
 Instead, we will use sequential transducers, as introduced in \cref{ch:finite-automata}.
@@ -1048,7 +1048,7 @@ Instead, we will use sequential transducers, as introduced in \cref{ch:finite-au
 
 We should first construct a type that describes the words over an alphabet $\ialph$, respectively.
 However, because the language formulated in this \lcnamecref{ch:process-chains} does not have inductive types, we cannot describe the finite words $\finwds{\ialph}$ alone.
-With the inductive session types studied by \textcite{Derakhshan+Pfenning:??} and \textcite{Somayyajula+Pfenning:??}, that would be possible, but we do not pursue that extension here.
+With the inductive session types studied by \textcite{Derakhshan+Pfenning:LMCS20} and \textcite{Somayyajula+Pfenning:20}, that would be possible, but we do not pursue that extension here.
 
 Instead, we will construct a type that describes the \emph{infinite} words over alphabet $\ialph$:
 \begin{equation*}
@@ -1091,7 +1091,7 @@ Each state $q \in Q$ maps words from $\infinwds{\ialph}$ to $\infinwds{\oalph}$,
 \end{equation*}
 (The anti-homomorphism $\rev{\selectR{w}}$ is defined in the adjacent \lcnamecref{fig:process-chains:transducer-rev}.
 It is notationally identical to, but formally distinct from, the anti-homomorphism from words to contexts of right-directed atoms~(\cref{fig:??}).
-However, as we will see in \cref{ch:??}, the two anti-homomorphisms are conceptually related.)%
+However, as we will see in \cref{ch:correspond}, the two anti-homomorphisms are conceptually related.)%
 \begin{marginfigure}[-5\baselineskip]
   \begin{equation*}
     \rev{\selectR{w}} =
@@ -1167,7 +1167,7 @@ Let $\aut{M} = (Q, \delta)$ be a two-way infinite tape Turing machine over alpha
 We imagine the two-way infinite tape as divided into two one-way infinite halves with the machine's finite control, or head, sitting between them.
 Each of these halves will be represented as a stream of symbols from $\ialph$, directed inward toward $\aut{M}$'s head.
 As such, these two one-way infinite halves are described by the following dual types:%
-\footnote{The involution $\sym*{}$ was defined in \cref{??}, but not for coinductively defined propositions.
+\footnote{The involution $\sym*{}$ was defined in \cref{fig:singleton-logic:involution}, but not for coinductively defined propositions.
   Here we use $\sym*{\infinwds{\ialph}}$ merely as the name of a coinductively defined type, though the choice of name is intended to evoke the duality with the type $\infinwds{\ialph}$.}%
 \begin{equation*}
   \begin{lgathered}
@@ -1209,7 +1209,7 @@ Writing a new symbol is accomplished by spawning a message directed toward the h
 Right-facing heads are symmetric.
 
 Notice that the tape in this process implementation is truly two-way infinite.
-This is consistent with the model presented in \cref{ch:??}, but differs from the traditional model of a Turing machine.
+This is consistent with the model presented in \cref{ch:finite-automata}, but differs from the traditional model of a Turing machine.
 In the traditional model, the tape might more accurately be described as two-way \emph{unbounded} -- at any given moment, the tape is finite, but can be extended.
 If we wanted to prove the adequacy of our process implementation adequate with respect to traditional Turing machines, we would have to prove adequacy for infinite tapes that behave as merely unbounded, using a distinguished blank symbol.
 

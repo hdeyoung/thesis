@@ -2,18 +2,18 @@
 
 Intuitionistic sequents are typically asymmetric:
 in an intuitionistic sequent $\Gamma \vdash A$, there are finitely many antecedents, all collected into the context $\Gamma$, yet there is only a single consequent, $A$.%
-\footnote{Or, at most one consequent if multiplicative falsehood is included~\parencref[see, for example,]{sec:ordered-logic:mult-falsehood}.}
+\footnote{Or, at most one consequent if multiplicative falsehood is included~\parencref[see, for example,]{sec:ordered-logic:extensions}.}
 We might naturally wonder if a greater degree of symmetry can be brought to sequents.
 % Of course, classical sequents in calculi such as Gentzen's LK\autocite{Gentzen:??} do enjoy a pleasant symmetry, but does there exist an \emph{intuitionistic} logic whose sequent calculus presentation uses symmetric sequents?
-Of course, classical sequents in calculi such as Gentzen's LK\autocite{Gentzen:} are symmetric, but does there exist an \emph{intuitionistic} logic whose sequent calculus presentation enjoys a similarly pleasant symmetry?
+Of course, classical sequents in calculi such as Gentzen's LK\autocite{Gentzen:MZ35} are symmetric, but does there exist an \emph{intuitionistic} logic whose sequent calculus presentation enjoys a similarly pleasant symmetry?
 
-One approach might be to permit finitely many consequents, as in multiple-conclusion sequent calculi for intuitionistic logic\autocites{Maehara:NMJ54}{Kleene:NH52}{dePaiva+:??}, but \citeauthor{Steinberger:JPL11}\autocite{Steinberger:JPL11} raises troubling concerns about the validity of meaning-theoretic explanations of such calculi, primarily that the meanings of the logical connectives are not properly independent but inextricably linked with the meaning of disjunction.
+One approach might be to permit finitely many consequents, as in multiple-conclusion sequent calculi for intuitionistic logic\autocites{Maehara:NMJ54}{Kleene:NH52}, but \citeauthor{Steinberger:JPL11}\autocite{Steinberger:JPL11} raises troubling concerns about the validity of meaning-theoretic explanations of such calculi, primarily that the meanings of the logical connectives are not properly independent but inextricably linked with the meaning of disjunction.
 
 So, in this \lcnamecref{ch:singleton-logic}, we will instead follow a dual path to symmetry and examine a restriction in which sequents have exactly one antecedent -- no more and no less.
 We call this requirement the \emph{single-antecedent restriction}; the sequent calculus to which it leads, the \emph{singleton sequent calculus}; and the underlying logic, \emph{singleton logic}.
 That such a severe restriction on the structure of sequents yields a well-defined, computationally useful logic is quite surprising.
 
-\newthought{Aside from} motivations of symmetry, the single-antecedent restriction is sensible within each branch of the computational trinity\autocite{Harper:??} -- proof theory, category theory, and type theory -- as we sketch in \cref{sec:singleton-logic:restriction}.
+\newthought{Aside from} motivations of symmetry, the single-antecedent restriction is sensible within each branch of the computational trinity\autocite{Harper:ET11} -- proof theory, category theory, and type theory -- as we sketch in \cref{sec:singleton-logic:restriction}.
 This \lcnamecref{ch:singleton-logic} will thereafter focus on the proof-theoretic consequences of the single-antecedent restriction.
 % [This \lcnamecref{ch:singleton-logic} is primarily devoted to the proof-theoretic consequences of the single-antecedent restriction, so the operational aspects are mostly postponed to \cref{ch:singleton-processes}.]
 
@@ -30,15 +30,15 @@ Together, the cut elimination and identity elimination metatheorems identify the
 Yet there are certainly other presentations of logics besides sequent calculi, so, in \cref{sec:singleton-logic:hilbert}, we develop a Hilbert-style axiomatization of singleton logic.
 This Hilbert system can also be viewed as a variant of the sequent calculus, so we dub it the \emph{semi-axiomatic sequent calculus}\autocite{DeYoung+:FSCD20}.
 % Our interest in a Hilbert system is not, however, zoological;
-An analysis of its basic metatheory~\parencref{sec:singleton-logic:hilbert:metatheory} begins to suggest the basis of a Curry--Howard interpretation of semi-axiomatic sequent proofs as chains of well-typed, asynchronously communicating processes.
-\Cref{ch:singleton-processes} will be devoted to developing that observation more fully.
+An analysis of its basic metatheory~\parencref{sec:singleton-logic:sax:cutelim} begins to suggest the basis of a Curry--Howard interpretation of semi-axiomatic sequent proofs as chains of well-typed, asynchronously communicating processes.
+\Cref{ch:process-chains} will be devoted to developing that observation more fully.
 
 % Although the single-antecedent restriction precludes a true Hilbert system, we are able to consruct a Hilbert-like system that can also be viewed as a variant of the singleton sequent calculus.
 
 
 % \Cref{sec:singleton-logic:hilbert:metatheory} establishes the admissibility of a modus ponens-like rule, and contrasts the proof with that of admissibility of cut from \cref{sec:singleton-logic:metatheory}.
 
-Finally, \cref{sec:singleton-logic:subsingleton} briefly overviews several possible extensions to singleton logic, including a \emph{sub}\-singleton extension that relaxes the single-antecedent restriction and permits an empty context.
+Finally, \cref{sec:singleton-logic:extensions} briefly overviews several possible extensions to singleton logic, including a \emph{sub}\-singleton extension that relaxes the single-antecedent restriction and permits an empty context.
 
 
 
@@ -91,7 +91,7 @@ Finally, \cref{sec:singleton-logic:subsingleton} briefly overviews several possi
 
 As sketched above, the \emph{single-antecedent restriction} demands that each sequent contain exactly one antecedent, so that sequents are $\slseq{A |- B}$ instead of $\Gamma \vdash B$.
 
-In addition to providing sequents with an elegant symmetry between antecedents and consequents, the single-antecedent restriction is a worthwhile object of investigation when viewed from the perspective of each branch of the computational trinity\autocite{Harper:??} -- proof theory, category theory, and type theory:
+In addition to providing sequents with an elegant symmetry between antecedents and consequents, the single-antecedent restriction is a worthwhile object of investigation when viewed from the perspective of each branch of the computational trinity\autocite{Harper:ET11} -- proof theory, category theory, and type theory:
 %
 \begin{description}[parsep=0pt, listparindent=\parindent]
 \item[Proof theory]
@@ -120,7 +120,7 @@ In addition to providing sequents with an elegant symmetry between antecedents a
   The single-antecedent restriction is exactly what results from these considerations, and the singleton sequent calculus will have a cleaner, more direct categorical semantics because of it.
 
 \item[Type theory]
-  In \citeauthor{Caires+:??}'s SILL type theory\autocite{Caires+:??} based on intuitionistic linear logic, each well-typed process $P$ acts as a client of multiple services $(A_i)_{i=1}^n$ along channels $(x_i)_{i=1}^n$, while simultaneously offering a service $A$ of its own along a single channel $x$.
+  In \citeauthor{Caires+:MSCS16}'s SILL type theory\autocites{Caires+Pfenning:CONCUR10}{Caires+:TLDI12}{Toninho+:ESOP13}{Caires+:MSCS16} based on intuitionistic linear logic, each well-typed process $P$ acts as a client of multiple services $(A_i)_{i=1}^n$ along channels $(x_i)_{i=1}^n$, while simultaneously offering a service $A$ of its own along a single channel $x$.
   Thus, networks of well-typed processes have a tree topology, as depicted in the neighboring display.\fixnote{fix diagram}%
   \marginnote{\centering
     \begin{tikzpicture}
@@ -162,7 +162,7 @@ Having sketched proof-theoretic, category-theoretic, and type-theoretic reasons 
 
 % Once we impose the single-antecedent restriction upon sequents, all of the rules from the sequent calculus for intuitionistic ordered logic must be reconsidered.
 
-\newthought{One approach} to constructing a singleton sequent calculus is to take the intuitionistic ordered sequent calculus of \cref{??}, apply the single-antecedent restriction to each rule's sequents, and solve the constraints that that restriction imposes.
+\newthought{One approach} to constructing a singleton sequent calculus is to take the intuitionistic ordered sequent calculus of \cref{ch:ordered-logic}, apply the single-antecedent restriction to each rule's sequents, and solve the constraints that that restriction imposes.
 % upon the ordered sequent calculus's rules.
 
 For instance, consider the ordered cut rule (see neighboring display).
@@ -427,7 +427,7 @@ A simple structural induction proves this:
   If\/ $\oseq{\octx |- B}$ in the $\plus$,$\with$-fragment of the ordered sequent calculus, then there exists a proposition $A$ such that $\octx = A$ and $\slseq{A |- B}$ in the $\plus$,$\with$-frag\-ment of the singleton sequent calculus.
 \end{theorem}
 
-In substructural logics and systems built upon them, the logical constants $\zero$ and $\top$ are often problematic because they indiscriminately consume any and all resources placed in front of them.\autocites{Schack-Nielsen:??}{Cervesato+:TCS00}
+In substructural logics and systems built upon them, the logical constants $\zero$ and $\top$ are often problematic because they indiscriminately consume any and all resources placed in front of them.\autocites{Cervesato+:TCS00}{Schack-Nielsen+Schuermann:IJCAR08}
 Interestingly, because the single-antecedent restriction exactly constrains the resources that those logical constants may consume, working in singleton logic is one possible way to sanitize $\zero$ and $\top$.
 
 % Second, it is worth reiterating that singleton logic, peculiarly, has no form of implication.
@@ -531,7 +531,7 @@ As usual, the cut elimination \lcnamecref{thm:singleton-logic:seq-calc:cut-elimi
 \newthought{Before proceeding} to this \lcnamecref{lem:singleton-logic:cut-admissibility}'s proof, it is worth emphasizing a subtle distinction between the singleton sequent calculus's primitive $\jrule{CUT}$ rule and the admissible cut principle that this \lcnamecref{lem:singleton-logic:cut-admissibility} establishes.
 
 To be completely formal, we could treat cut-freeness as an extrinsic, Curry-style property of proofs%
-\footnote{Contrast this with a separate, intrinsically cut-free sequent calculus in the style of Church~\parencite{Pfenning:Andrews??}.}
+\footnote{Contrast this with a separate, intrinsically cut-free sequent calculus in the style of Church~\parencite{Pfenning:Andrews08}.}
 and indicate cut-freeness by decorating the turnstile, so that $\cfslseq{A |- C}$ denotes a cut-free proof of $\slseq{A |- C}$.
 The admissible cut principle stated in \cref{lem:singleton-logic:cut-admissibility} could then be expressed as the rule
 \begin{equation*}
@@ -713,7 +713,7 @@ Identity elimination -- a slight misnomer -- transforms a proof into an identity
 \end{proof}
 
 
-\section{A semi-axiomatic sequent calculus for singleton logic}\label{sec:singleton-logic:hilbert}
+\section{A semi-axiomatic sequent calculus for singleton logic}\label{sec:singleton-logic:hilbert}\label{sec:singleton-logic:sax}
 
 Sequent calculi are not the only way to present logics, so
 % natural deduction calculi and Hilbert systems are also commonly used, for instance.
@@ -739,7 +739,7 @@ Consequently, Hilbert-style axiomatizations usually rely heavily on implication 
 %
 to effect the meanings of the logical connectives.
 
-However, as explained in \cref{??}, singleton logic does not enjoy the luxury of an implication connective.
+However, as explained in \cref{sec:singleton-logic:seq-calc}, singleton logic does not enjoy the luxury of an implication connective.
 So, for singleton logic, a true Hilbert-style axiomatization that relies on a \emph{modus ponens} rule as its only inference rule is not possible.
 Instead, for a semi-axiomatic sequent calculus of singleton logic, 
 % So in a Hilbert-style axiomatization of singleton logic,
@@ -1268,7 +1268,7 @@ Similarly, the $\lrule{\plus}$ and $\rrule{\with}$ rules are assigned the proof 
 %
 All of these terms serve as variable-free combinators.%
 %
-\subsection{Non-analytic cut elimination for the semi-axiomatic sequent calculus}
+\subsection{Non-analytic cut elimination for the semi-axiomatic sequent calculus}\label{sec:singleton-logic:sax:cutelim}
 
 With proof terms in hand, we can now return to our goal of establishing a \emph{non-analytic} cut elimination \lcnamecref{thm:singleton:hilbert:cutelim} for singleton logic's semi-axiomatic sequent calculus.
 
@@ -1882,7 +1882,7 @@ Alternatively, the implicit reflection rules could be obtained from the explicit
 So, in fact, the implicit and explicit reflection rules and axioms are all equivalent in the presence of $\jrule{CUT}$.
 
 These axioms of reflection are exactly the axioms that we use in our semi-axiomatic sequent calculus in place of the usual left rules.
-(They are also the same as the decomposition rules for $\with$ from the refactored ordered sequent calculus~\parencref{fig:??} of \cref{ch:ordered-rewriting}.)
+(They are also the same as the decomposition rules for $\with$ from the refactored ordered sequent calculus~\parencref{fig:ordered-rewriting:decompose-seq-calc} of \cref{ch:ordered-rewriting}.)
 Their process of obtaining the explicit reflection rules by combining the axioms of reflection with $\jrule{CUT}$ matches the way that we derive the usual left rules in our semi-axiomatic sequent calculus.
 However, \citeauthor{Sambin+:JSL00} appear to have considered the axioms of reflection only as the means to an end, and do not appear to have considered a calculus with these axioms as primitive rules, nor a cut elimination procedure involving the axioms.
 

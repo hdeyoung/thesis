@@ -455,7 +455,7 @@ font=\normalfont\emph }
 \DeclareFieldFormat{title}{\printtext[linked]{\mkbibemph{#1}}}
 \DeclareFieldFormat
   [article,inbook,incollection,inproceedings,patent,thesis,unpublished]
-  {title}{\mkbibquote{\printtext[linked]{#1}\isdot}}
+  {title}{\printtext[linked]{#1}\isdot}
 \DeclareFieldFormat[suppbook,suppcollection,suppperiodical]{title}
 {\printtext[linked]{#1}}
 
@@ -549,6 +549,9 @@ font=\normalfont\emph }
 
 
 \setlength{\bibhang}{\parindent}
+% \setlength{\bibnamesep}{0.5\baselineskip}
+\setlength{\bibitemsep}{0.5\baselineskip}
+\DeclareDelimFormat[bib]{nametitledelim}{\newline\bibsentence}
 
 
 %%%%%%%%%%%%%
