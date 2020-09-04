@@ -6,10 +6,10 @@
   tufte-book,
   notoc,
   biblatex={
-    citestyle=authoryear,
+    citestyle=authoryear-comp,
     % citestyle=authortitle-icomp,
     autocite=footnote,
-    maxcitenames=2,
+    maxcitenames=3,
     bibstyle=authoryear,
     mergedate=basic,
     maxbibnames=99,
@@ -24,16 +24,64 @@
 
 \input{preamble}
 
-\title{Session-Typed\\Ordered Logical\\Specifications}
-\author{Henry DeYoung}
+\usepackage{cmu-titlepage2}
+
 
 \addbibresource{thesis.bib}
+
+%% Workaround to \NoCaseChange and \tl_map_tokens:nn issue:
+% \ExplSyntaxOn
+% \cs_gset:Npn \NoCaseChange #1 { \use:n {#1} }
+% \ExplSyntaxOff
 
 \begin{document}
 
 \frontmatter
+\pagestyle{empty}
+
+\title{Session-Typed Ordered Logical Specifications}
+
+\author{Henry DeYoung}
+\date{\today}
+\Year{2020}
+\trnumber{CMU-CS-??-???}
+
+\committee{%
+  Frank Pfenning, Chair\\
+  Iliano Cervesato\\
+  Robert Harper\\
+  Andr\'{e} Platzer\\
+  Simon Gay, University of Glasgow\\
+  Carsten Sch\"{u}rmann, IT University of Copenhagen%
+}
+
+\support{This research was sponsored by ...}
+
+\disclaimer{Any opinions, findings, conclusions or recommendations
+  expressed in this publication are those of the author and do not
+  necessarily reflect the views of any sponsoring institution or
+  government.}
+
+\keywords{session types, concurrency, ordered logic, singleton logic, proof construction, proof reduction}
 
 \maketitle
+
+\pagestyle{plain}
+
+\begin{abstract}
+Concurrent systems are ubiquitous, but notoriously difficult to get right -- subtle races and deadlocks can lurk even in the most extensively tested of systems.
+In a quest to tame concurrency, researchers have successfully applied the principle of computation as deduction to concurrency in two distinct ways: concurrency as proof reduction and concurrency as proof construction.
+These two approaches to concurrency have complementary advantages, with the proof-construction approach excelling at global specification of a system's dynamics, while the proof-reduction approach is best suited to implementation of the system's components\fixnote{processes?}.
+
+This document explores the relationship between these two different proof-theoretic characterizations of concurrency, in the particular context of concurrent systems that have chain topologies.
+Along the way, we also uncover a \emph{semi-axiomatic sequent calculus} for singleton logic, which blends a standard sequent calculus with axiomatic aspects of Hilbert calculi;
+and establish a correpondence between proof normalization and asychronous message-passing communication [among processes arranged in a chain].
+\end{abstract}
+
+\begin{acknowledgments}
+  Fill this in
+\end{acknowledgments}
+
 \tableofcontents
 % \listoffigures
 % \listoftables
@@ -64,7 +112,7 @@
 %% \include{singleton-processes}
 %% \include{typed-bisim}
 
-\part{Comparing the two approaches}\label{part:comparison}
+\part{Relationship between proof construction and proof reduction}\label{part:comparison}
 
 \include{from-procs-to-rewriting}
 %% \include{session-typed-rewriting}

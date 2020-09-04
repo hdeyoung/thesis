@@ -12,12 +12,14 @@ stating merely that a substring of the form $w$ may be replaced, en masse, with 
 Nothing is said about how this replacement is achieved -- permitted rewritings just \emph{happen}, as if a central, meta-level actor schedules and otherwise coordinates rewriting, with substrings and their constituent symbols as mere passive accessories.
 
 In the previous \lcnamecref{ch:ordered-rewriting}, we presented a different rewriting framework, derived from the (focused) ordered sequent calculus and closely related to the \citeauthor{Lambek:AMM58} calculus\autocite{Lambek:AMM58}.
-Ordered rewriting, in both its unfocused and focused variants, still leaves the operational semantics abstract, as if a central, meta-level actor governs rewriting.
+Ordered rewriting, in both its unfocused and focused variants, continues to leave the operational semantics abstract, as if a central, meta-level actor governs rewriting.
 
-The string rewriting and (strongly) focused ordered rewriting frameworks are both expressive enough to describe concurrency% behaviors%
+The string rewriting and (strongly) focused ordered rewriting frameworks are both expressive enough to exhibit concurrency% behaviors%
 \footnote{See \cref{sec:string-rewriting:concurrency,sec:ordered-rewriting:concurrency}.}%
-, but without concrete operational semantics neither framework is yet suitable for our ultimate goal -- a method for extracting local, message-passing implementations from concurrent specifications.
-
+, and the ordered rewriting framework's logical foundations make it a proof-construction approach to concurrency.
+But without a concrete operational semantics neither framework is yet suitable for\fixnote{suited to} our ultimate goal -- 
+% a method for extracting local, message-passing implementations from concurrent specifications.
+to establish the relationship between proof-construction and proof-reduction descriptions of concurrency.
 %  operating at such a high level of abstraction that neither framework's operational semantics can be cleanly implemented\fixnote{word choice?} in terms of local, message-passing communication.
 
 This \lcnamecref{ch:formula-as-process} takes three significant steps toward this end, using the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} as a stepping stone.
@@ -134,7 +136,7 @@ This \lcnamecref{ch:formula-as-process} takes three significant steps toward thi
 
 % Another way to view this chapter is that it nudges ordered rewriting away from a state-transformation model of concurrency toward a process-based model.
 Even though this \lcnamecref{ch:formula-as-process} introduces a notion of process, it should be noted that computation is still driven by derivability and proof construction, not by proof reduction.
-Only in \lcnamecref{part:proof-reduction}\fixnote{check} will we begin to examine a proof-reduction account of concurrency.
+Only in \cref{part:proof-reduction} will we begin to examine a proof-reduction account of concurrency.
 
 
 % \newthought{In process calculi} like the $\pi$-calculus, a reduction semantics often plays a lesser role than a labeled transition semantics does.

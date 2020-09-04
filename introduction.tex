@@ -20,15 +20,16 @@ This view was pioneered by \citeauthor{Abramsky:TCS93}\footnote{\citeyear{Abrams
 Under this isomorphism, propositions are types -- specifically, binary \emph{session types}\autocite{Honda:CONCUR93} that describe the interaction protocol to which a process adheres.
 And concurrency arises when the various interleavings of independent proof reductions are treated indistinguishably.
 
-Under the other, concurrency-as-proof-construction view, the search for a cut-free proof, according to a fixed, non-backtracking strategy, forms the basis of concurrent computation.%
-[\footnote{A backtracking strategy is possible, but would lead to Prolog-like backward-chain\-ing logic programming.}
-\fixnote{Citation in footnote?}
-Owing to the fixed, non-backtracking strategy, proof search may fail or diverge, so partial proofs, not complete proofs, are the primary objects.]
-This proof construction tack is perhaps best encapsulated by the \emph{process-as-formula} encoding, in which process constructors correspond to linear logical connectives\autocite{Miller:??}.
-Concurrency then arises from the permutability of inference rules within a partial proof.
+Under the other, concurrency-as-proof-construction view, computation is the act of building a partial, cut-free proof by nondeterministically applying [the]\fixnote{??} inference rules one by one.
+% the search for a cut-free proof, according to a fixed, non-backtracking strategy, forms the basis of concurrent computation.%
+% [\footnote{A backtracking strategy is possible, but would lead to Prolog-like backward-chain\-ing logic programming.}
+% \fixnote{Citation in footnote?}
+% Owing to the fixed, non-backtracking strategy, proof search may fail or diverge, so partial proofs, not complete proofs, are the primary objects.]
+In our setting, this proof construction tack is perhaps best encapsulated by the \emph{process-as-formula} encoding, in which process constructors are mapped to linear logical connectives\autocite{Miller:ELP92}.
+Concurrency is then manifested by the permutability of inference rules within a partial proof.
 
 
-Despite the various research efforts into proof-reduction and proof-construction approaches to concurrency as deduction, it appears that relatively little research on the relationship between the two approaches exists in the literature, with an article by \citeauthor{Cervesato+Scedrov:IC09} being the notable instance.\autocite{Cervesato+Scedrov:IC09}
+Despite the various research efforts into proof-reduction and proof-con\-struc\-tion approaches to concurrency as deduction, it appears that relatively little research on the relationship between the two approaches exists in the literature, with an article by \citeauthor{Cervesato+Scedrov:IC09} being the notable instance.\autocite{Cervesato+Scedrov:IC09}
 In this document, we undertake a further study of the relationship between proof reduction and proof construction.
 
 \newthought{Specifically, we begin} by noticing that
@@ -41,7 +42,7 @@ Under \citeauthor{Caires+:MSCS16}'s isomorphism, proofs are immediately and dire
 Properties of cut elimination also ensure that the proof-reduction approach enjoys session-type preservation and progress theorems -- well-typed processes will never deadlock.\footnote{But they can livelock or diverge in the presence of recursive types, unless those recursive types are strictly coinductive~\parencite{Derakhshan+Pfenning:LMCS20}.}
 
 However, the proof-reduction approach does have its weaknesses.
-Owing to the binary structure of the cut elimination procedure, the proof-reduction approach lends itself more naturally to synchronous communication, whereas asynchronous communication is often more consistent with programming practice and [...]\fixnote{directly realizable?}.
+Owing to the binary structure of the cut elimination procedure, the proof-reduction approach lends itself more naturally to synchronous communication, whereas asynchronous communication is often more consistent with programming practice and more directly realizable.
 Also, because processes are generally long-running or non-terminating, recursion is even more important than in functional programming, and it is not obvious how to incorporate recursion in a logically justified way within the session type isomorphism.%
 \footnote{Recursion can be incorporated in functional languages in a logically justified way, using inductive and coinductive types~\parencite{Mendler:LICS87}.
 \Textcites{Derakhshan+Pfenning:LMCS20}{Somayyajula+Pfenning:20} are currently investigating logically justified inductive and coinductive session types.}
@@ -86,32 +87,6 @@ In this \lcnamecref{sec:introduction:overview}, we provide a high-level overview
 \Cref{part:preliminaries} reviews some necessary background information, namely definitions of finite automata~\parencref{ch:finite-automata} and a sequent calculus presentation of ordered logic\autocite{Polakow+Pfenning:MFPS99}~\parencref{ch:ordered-logic}.
 The reader who has some familiarity with these topics should feel free to skim or skip these \lcnamecrefs{ch:finite-automata}, returning to them as needed.
 
-\begin{figure}[tp]
-  \centering
-  \begin{tikzpicture}
-    \node [draw, align=center] (sr)
-      {\emph{String rewriting specifications}\\
-       \emph{of concurrent systems}\\
-       (\Cref{ch:string-rewriting})};
-
-    \node [draw, align=center, right=of sr] (or)
-      {\emph{Ordered rewriting}\\
-       (\Cref{ch:ordered-rewriting})};
-
-    \node [draw, align=center, right=of or] (fp)
-      {\emph{Formula-as-process ordered rewriting}\\
-       (\Cref{ch:formula-as-process})};
-
-    \draw (sr) edge[<->, bend right=20, edge node={node [below, align=center] {\emph{Choreographies}\\(\Cref{ch:choreographies})}}] (fp);
-
-    \node [draw, align=center, below=of or] (pc)
-      {\emph{Process chains}\\(\Cref{ch:process-chains})};
-  \end{tikzpicture}
-  \caption{A summary of this document}
-  \label{fig:introduction:summary}
-\end{figure}
-
-% \clearpage
 \subsection{Concurrency as proof construction}
 
 \Cref{part:proof-construction} then delves into a proof-construction approach to concurrency, beginning in \cref{ch:string-rewriting} with a review of a string rewriting framework for specifying the dynamics of concurrent systems.

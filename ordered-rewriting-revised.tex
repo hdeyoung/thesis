@@ -1,12 +1,38 @@
 \chapter{Ordered rewriting}\label{ch:ordered-rewriting}
 
-In the previous \lcnamecref{ch:string-rewriting}, we reviewed a framework for string rewriting specifications of concurrent systems.
-In terms of the primitive operations on strings that it supports, that framework is rather spartan, containing only concatenation and its unit.
+The previous \lcnamecref{ch:string-rewriting} reviewed a string rewriting framework for specifying the dynamics of concurrent systems that have chain topologies.
+% string rewriting specifications of concurrent systems.
+As seen in \cref{sec:string-rewriting:concurrency}, string rewriting is indeed a model of concurrency.
+But it does not have obvious connections to proof construction.
 
-Over this \lcnamecref{ch:ordered-rewriting} and the next, we increase the expressive power of string rewriting by 
+In this \lcnamecref{ch:ordered-rewriting}, we therefore turn our attention to developing a rewriting interpretation of the ordered sequent calculus shown in \cref{ch:ordered-logic}.
+% Ordered rewriting generalizes string rewriting by enriching its rather spartan algebraic structure from free monoids to free residuated lattices.
+Ordered rewriting increases the expressive power of string rewriting by enriching the rather spartan free monoidal structure to one based on free residuated lattices, in accordance with the (full) Lambek calculus\autocites{Lambek:AMM58}{Lambek:SLIM61}{Abrusci:MLQ90}{Kanazawa:LLI92}{Polakow+Pfenning:MFPS99}.
+% As a generalization of string rewriting, ordered rewriting will serve as a framework for specifying the dynamics of concurrent systems that have chain topologies.
+Like the string rewriting framework that it generalizes, ordered rewriting will serve as a framework for specifying concurrent systems that have chain topologies.
+But, being derived from the ordered sequent calculus, ordered rewriting will have the additional advantage of constituting a \emph{proof-construction} explanation of concurrency.
+
+\newthought{\Cref{sec:ordered-rewriting:rewriting} begins} by observing that many of the ordered sequent calculus's left rules share a large amount of boilerplate, with only very little of each left rule being devoted to the primary task of decomposing the principal proposition.
+By introducing a new judgment, $\octx \reduces \octx'$, for decomposing principal propositions, it is possible to refactor the ordered sequent calculus in such a way that boilerplate is almost exclusively confined to a cut principle for the decomposition judgment~\parencref{sec:ordered-rewriting:boilerplate}.
+Ordered rewriting is then exactly the decomposition-centric fragment of the refactored sequent calculus~\parencref{sec:ordered-rewriting:unfocused}.
+To the best of our knowledge, this kind of refactoring appears to be a new way of deriving a rewriting framework from existing proof theory.
+
+Like string rewriting, the ordered rewriting framework allows disjoint segments of an ordered context to be rewritten independently; concurrency arises within ordered rewriting when the various interleavings of independent rewritings are treated as indistinguishable~\parencref{sec:ordered-rewriting:concurrency}.
+
+Unfortunately, this ordered rewriting framework is based on very fine-grained decomposition, which can lead to rewriting sequences that may get stuck in undesirable and unintended ways.
+So \cref{sec:ordered-rewriting:focused} extends ordered rewriting with ideas from focusing\autocite{Andreoli:JLC92}, specifically the higher-order formulation of focusing\autocites{Zeilberger:POPL08}{Simmons:CMU12}, to allow for coarser-grained steps of decomposition.
+These coarser decompositions will be better suited to specifying the dynamics of concurrent systems.
+
+But in moving to focused ordered rewriting, nothing is lost -- with careful placement of shifts, it is possible to control the behavior of focused rewriting, as \cref{sec:ordered-rewriting:shifts} shows.
+In particular, unfocused ordered rewriting can be recovered in an operationally faithful way within this focused framework~\parencref{sec:ordered-rewriting:embed-unfocused}, and even an intermediate, weakly focused form of ordered rewriting can be embedded~\parencref{sec:ordered-rewriting:weak-focusing}.
 
 
-In this \lcnamecref{ch:ordered-rewriting}, we develop a rewriting interpretation of the ordered sequent calculus from the previous \lcnamecref{ch:ordered-logic}.
+% In terms of the primitive operations on strings that it supports, that framework is rather spartan, containing only concatenation and its unit.
+
+% Over this \lcnamecref{ch:ordered-rewriting} and the next, we increase the expressive power of string rewriting by 
+
+
+% In this \lcnamecref{ch:ordered-rewriting}, we develop a rewriting interpretation of the ordered sequent calculus from the previous \lcnamecref{ch:ordered-logic}.
 
 In \citeyear{Lambek:AMM58}, \citeauthor{Lambek:AMM58} developed a syntactic calculus, now known as the Lambek calculus, for formally describing the structure of sentences.\autocite{Lambek:AMM58}
 Words are assigned syntactic types, which roughly correspond to grammatical parts of speech.
@@ -15,7 +41,10 @@ Implicit in \citeauthor{Lambek:AMM58}'s original article is a third perspective 
 
 In this \lcnamecref{ch:ordered-rewriting}, we review the Lambek calculus from a [string] rewriting perspective.
 
-\newthought{The previous \lcnamecref{ch:string-rewriting}} showed how to use string rewriting to specify, on a global level, the [...] of concurrent systems that have a linear topology.
+
+\section{REMOVE}
+
+The previous \lcnamecref{ch:string-rewriting} showed how to use string rewriting to specify, on a global level, the [...] of concurrent systems that have a linear topology.
 Although useful for [...], these string rewriting specifications lack a clear notion of local, decentralized execution -- for each step of rewriting, the entire string is rewritten as a monolithic whole by a central conductor.
 
 Keeping in mind our ultimate goal of decentralized\fixnote{distributed?} implementations of concurrent systems, these string rewriting specifications are too abstract.
@@ -55,7 +84,7 @@ One valid choreography for this specification views each symbol $b$ as a process
 If we annotate messages with an underbar and processes with a circumflex, then $\atm{a} \oc \hat{b} \reduces \hat{b}$ and $\hat{b} \reduces \octxe$.
 
 
-\section{Ordered resource decomposition as rewriting}
+\section{Ordered resource decomposition as rewriting}\label{sec:ordered-rewriting:rewriting}
 
 \subsection{Most left rules decompose ordered resources}\label{sec:ordered-rewriting:boilerplate}
 
@@ -422,6 +451,7 @@ To state and prove soundness, we must first define an operation $\bigfuse \octx$
 \end{proof}
 
 
+\clearpage
 
 \subsection{Properties of the ordered rewriting framework}\label{sec:ordered-rewriting:concurrency}
 
@@ -1079,7 +1109,7 @@ where the inversion of $\p{c} \fuse \p{a}$ is now an atomic step of its own.
 
 This weakly focused rewriting discipline could be achieved as an independent system with the rules shown in \cref{fig:ordered-rewriting:weak-focusing}.
 Notice that weakly focused rewriting restricts the left- and right-handed implications to have only atomic premises.
-Although weak focusing is well-defined for arbitrary implications\autocite{??}, it is not clear how to give a rewriting interpretation of weak focusing unless this restriction is made.
+Although weak focusing is well-defined for arbitrary implications\autocites{Laurent:PhD02}{Simmons+Pfenning:CMU11}, it is not clear how to give a \emph{rewriting} interpretation of weak focusing unless this restriction is made.
 
 \begin{figure}[tbp]
   \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}

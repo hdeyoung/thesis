@@ -185,7 +185,11 @@
 % Table of Contents %
 %%%%%%%%%%%%%%%%%%%%%
 
+% \RequirePackage { tocloft }
+
 \setcounter{tocdepth}{2} % Show sections and subsections
+% \renewcommand{\cftpartfont}{\MakeUppercase}
+% \renewcommand{\cftchapfont}{\scshape\MakeLowercase}
 
 
 %%%%%%%%%%%%%%%%%%%

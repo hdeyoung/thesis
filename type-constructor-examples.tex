@@ -1,0 +1,77 @@
+% arara: pdflatex
+% arara: pdflatex
+\documentclass[tufte-handout]{tufte-thesis}
+
+\usepackage{logic}
+
+\begin{document}
+
+\title{Session Type Constructors: Examples}
+\author{Henry DeYoung}
+\maketitle
+
+\section{Language of $a^nb^{n+1}$}
+
+Let $L_0$ be the language $\{ a^nb^{n+1} \mid n \geq 0 \}$.
+I claim that we may represent this language as a session type $S$ where
+\begin{equation*}
+  \begin{lgathered}
+    S = Q(\plus*{b\colon \one}) \\
+    Q(\kappa_b) = \plus*{a\colon Q(\plus*{b\colon \kappa_b}), b\colon \kappa_b}
+  \end{lgathered}
+\end{equation*}
+I claim that the corresponding BPA is:
+\begin{equation*}
+  \begin{lgathered}
+    S = Q_b\,b \\
+    Q_b = a\,Q_b\,b + b
+  \end{lgathered}
+\end{equation*}
+
+\section{Language of $[^na]^na \cup [^nb]^nb$}
+
+Let $L_3$ be the language $\{ [^na]^na \mid n \geq 0 \} \cup \{ [^nb]^nb \mid n \geq 0 \}$.
+From what I recall, the session type that we wrote (modulo some renaming) was:
+\begin{equation*}
+  \begin{lgathered}
+    S = Q(\plus*{a\colon \one} , \plus*{b\colon \one}) \\
+    Q(\kappa_a, \kappa_b) = \plus*{[\colon Q(\plus*{]\colon \kappa_a}, \plus*{]\colon \kappa_b}), a\colon \kappa_a, b\colon \kappa_b}
+  \end{lgathered}
+\end{equation*}
+I think that the BPA that we wrote (again, modulo some renaming) was:
+\begin{equation*}
+  \begin{lgathered}
+    S = Q_a\,a + Q_b\,b \\
+    Q_a = [\,Q_a\,] + a \\
+    Q_a = [\,Q_b\,] + b
+  \end{lgathered}
+\end{equation*}
+
+\section{}
+
+The example on page 34 in Solomon's paper corresponds to the following type, I think.
+\begin{equation*}
+  \begin{lgathered}
+    t(x_1, x_2) = \plus*{a\colon t(\plus*{a\colon \mathit{integer}, b\colon x_1, c\colon \mathit{real}},
+                                   \plus*{a\colon \mathit{integer}, b\colon \mathit{real}, c\colon x_2}) ,
+                         b\colon x_1,
+                         c\colon x_2}
+  \end{lgathered}
+\end{equation*}
+Based on the grammar that Solomon gives on page 34, I would expect the following BPA to correspond to his $Address(integer, t)$.
+\begin{equation*}
+  \begin{lgathered}
+    t = a\,t + a\,t_b\,a + a\,t_c\,a \\
+    t_b = a\,t_b\,b + b \\
+    t_c = a\,t_c\,c + c
+  \end{lgathered}
+\end{equation*}
+This BPA does correspond to the language $\{ a^mb^na \mid m \geq n \geq 1 \} \cup \{ a^mc^na \mid m \geq n \geq 1 \}$ because $t_b$ generates the language $\{ a^ib^{i+1} \mid i \geq 0 \}$ and $t_c$ generates the language $\{ a^ic^{i+1} \mid i \geq 0 \}$.
+
+On page 34, Solomon says that 
+the nonterminals $t_b$ and $t_c$ are constructed as ``the set of paths from the root of partially expanded versions of $t$ to an occurrence of $x_1$'' and $x_2$, repectively.
+I think that sentence of Solomon's is the key to slicing a session type into BPA nonterminals.
+
+What I don't yet understand is what $\mathit{Address}(\mathit{integer},t)$ has to do with $t$ overall.
+
+\end{document}
