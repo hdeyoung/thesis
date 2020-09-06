@@ -26,13 +26,17 @@ In particular, we will see that singleton propositions can be interpreted as ses
 % \footnote{As we will see in \cref{??}, Hilbert-style proofs may also be viewed as well-behaved chains of the communicating automata familiar from \cref{??}.}
 For instance, a proof of $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$ corresponds to a process that sends a message carrying some label $\kay \in L$ and then continues communicating according to pattern $A_{\kay}$.
 
-This roughly parallels a recent line of research into a Curry--Howard isomorphism, dubbed SILL, between the intuitionistic linear sequent calculus and session-typed concurrent computation\autocites{Caires+:MSCS16}{Caires+:TLDI12} -- with two key differences.
-First, unlike SILL, we use singleton logic, not intuitionistic linear logic.
+This roughly parallels a recent line of research into a Curry--Howard isomorphism, dubbed \acs{SILL}, between the intuitionistic linear sequent calculus and session-typed concurrent computation\autocites{Caires+:MSCS16}{Caires+:TLDI12} -- with two key differences.
+First, unlike \ac{SILL}, we use singleton logic, not intuitionistic linear logic.
+This restricts the process topology to chains, rather than the tree topology that \ac{SILL} permits.
+But this restriciton should not be seen as a weakness;
+by leveraging this restriction, computation pipelines can be expressed as a logically motivated fragment.
 % However, as sketched in \cref{??}, 
-Second and most importantly, we use the \emph{semi-axiomatic} sequent calculus, rather than a standard sequent calculus like SILL does.
+
+Second and most importantly, we use the \emph{semi-axiomatic} sequent calculus, rather than a standard sequent calculus like \ac{SILL} does.
 % Third, and most importantly,
-The use of semi-axiomatic sequent proofs enables a clean and direct interpretation of cut reductions as asynchronous communication, unlike the cut-reductions-as-synchronous-communication view espoused by SILL.%
-\footnote{It is possible to give a rather ad hoc treatment of asynchronous communication using SILL's sequent proofs~\parencite{DeYoung+:CSL12}, but, in our view, the treatment of asynchronous communication using semi-axiomatic sequent proofs is far more elegant.}
+The use of semi-axiomatic sequent proofs enables a clean and direct interpretation of cut reductions as asynchronous communication, unlike the cut-reductions-as-syn\-chro\-nous-communication view espoused by \ac{SILL}.%
+\footnote{It is possible to give a rather ad hoc treatment of asynchronous communication using \ac{SILL}'s sequent proofs~\parencite{DeYoung+:CSL12}, but, in our view, the treatment of asynchronous communication using semi-axiomatic sequent proofs is far more elegant.}
 
 
 % In particular, this parallels a recent line of research into a Curry--Howard isomorphism between the intuitionistic linear sequent calculus and session-typed concurrent computation\autocites{Caires+:MSCS16}{Caires+:TLDI12}.
@@ -561,7 +565,7 @@ This homomorphism is type-preserving:
 At first, the distinction between offering and using a service may seem a bit odd, given that we placed so much emphasis on the symmetry of singleton sequents $\slseq{A |- B}$.
 Singleton sequents are indeed symmetric, as \cref{thm:singleton-logic:symmetry} showed.
 But imposing a provider--client, offer--use distinction is useful for placing our process chains and expressions within existing conceptual frameworks for session-typed concurrency.
-In particular, the distinction helps to relate this process interpretation of singleton logic back to the SILL interpretation of linear logic\autocite{??}.
+In particular, the distinction helps to relate this process interpretation of singleton logic back to the \ac{SILL} interpretation of linear logic\autocites{Caires+Pfenning:CONCUR10}{Caires+:TLDI12}{Caires+:MSCS16}{Toninho+:ESOP13}.
 
 % but because we view them as (binary) hypothetical judgments, a judgmental asymmetry between the antecedent and consequent remains.
 % It is this judgmental asymmetry that is reflected in the provider--client, offer--use asymmetry.

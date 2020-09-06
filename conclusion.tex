@@ -7,7 +7,7 @@ In this \lcnamecref{ch:conclusion}, we discuss a few avenues for future work and
 \subsection{From ordered rewriting to multiset rewriting, singleton processes to linear processes}
 
 One obvious avenue for future work is to extend the ideas in this document to linear logic.
-We conjecture that the string rewriting specifications of \cref{ch:string-rewriting} would be replaced with multiset rewriting specifications\autocite{Meseguer:TCS92}; the formula-as-process ordered rewriting of \cref{ch:formula-as-process}, with formula-as-process linear rewriting based on the focused linear sequent calculus\autocite{??}; and the singleton processes of \cref{ch:process-chains}, with \textsc{sill} processes\autocites{Caires+Pfenning:CONCUR10}{Caires+:TLDI12}{Caires+:MSCS16}{Toninho+:ESOP13}.
+We conjecture that the string rewriting specifications of \cref{ch:string-rewriting} would be replaced with multiset rewriting specifications\autocite{Meseguer:TCS92}; the formula-as-process ordered rewriting of \cref{ch:formula-as-process}, with formula-as-process linear rewriting based on the focused linear sequent calculus\autocite{??}; and the singleton processes of \cref{ch:process-chains}, with \acs{SILL} processes\autocites{Caires+Pfenning:CONCUR10}{Caires+:TLDI12}{Caires+:MSCS16}{Toninho+:ESOP13}.
 
 % For the proof construction and rewriting perspective on concurrency, this would involve a shift from ordered rewriting to multiset rewriting, as understood logically in terms of the focused linear sequent calculus.
 
@@ -32,8 +32,8 @@ In line with work by \textcite{Simmons+Pfenning:HOSC11}, $\defp{b}_0(x, y)$ is t
 In a formula-as-process interpretation, the destinations $x$ and $y$ can be viewed as channels that connect processes.
 
 This example, however, does not fully exploit the expressive power of first-order linearity because the binary counter still has a linear topology.
-Because \textsc{sill} processes admit tree topologies, defined propositions that use destinations in a tree topology should be allowed.
-But a judgment for checking that destinations do not form cycles would likely be needed, for otherwise a destinations-as-channels interpretation would lead to ill-formed \textsc{sill} processes.
+Because \ac{SILL} processes admit tree topologies, defined propositions that use destinations in a tree topology should be allowed.
+But a judgment for checking that destinations do not form cycles would likely be needed, for otherwise a destinations-as-channels interpretation would lead to ill-formed \ac{SILL} processes.
 
 We would also need to characterize a general procedure for choreographing multiset rewriting specifications.%
 \fixnote{??}

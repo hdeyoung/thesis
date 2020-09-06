@@ -2,6 +2,23 @@
 
 \fixnote{Introduction}
 
+\begin{itemize}
+\item Relationship between proof construction and proof reduction (fragment that can be put into bijection)
+  \begin{itemize}[nosep]
+  \item Make formula-as-process view of ordered rewriting formal by defining an embedding of session-typed processes into ordered rewriting
+    \begin{itemize}[nosep]
+    \item Mapping is a bisimulation between proof reduction and proof construction
+    \item Process constructors map to logical connectives
+    \item Embedding of the example process expressions yields the same coinductively defined propositions as used in the choreographies
+    \item Injective mapping (syntactically speaking), so also functions as a way to construct processes from (a large subset of) ordered propositions
+    \end{itemize}
+  \item Use this embedding to reverse engineer a session type system for ordered rewriting
+    \begin{itemize}[nosep]
+    \item Well-typed processes correspond to well-typed propositions and vice versa
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
 \section{Embedding process configurations in formula-as-process ordered rewriting}\label{sec:correspond:embed}
 
 Here we give an embedding, $\trconf{}$, of process configurations into ordered contexts from the formula-as-process rewriting framework of \cref{ch:formula-as-process}.

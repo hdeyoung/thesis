@@ -275,9 +275,9 @@ We further conjecture that semi-axiomatic sequent calculi exist for all intuitio
 % correspondence of semi-axiomatic proofs in singleton logic with session-typed processes that communicate by asynchronous message passing.
 Under this Curry--Howard interpretation, propositions correspond to session types that describe a process's behavior; proofs, to processes arranged in a chain topology; and proof reduction, to asynchronous message-passing communication between processes~\parencref{sec:process-chains:interpretation}.
 
-This is very closely related to SILL, the Curry--Howard interpretation of the intuitionistic linear sequent calculus as a session-typed $\pi$-calculus discovered by \citeauthor{Caires+:MSCS16}\autocites{Caires+Pfenning:CONCUR10}{Caires+:TLDI12}{Caires+:MSCS16}, but with two key differences.
-First, as previously alluded, singleton logic's single-antecedent restriction affects proof structure in such a way that the corresponding processes have a chain topology, as opposed to the tree topology of SILL processes.
-Second, and arguably more importantly, the proof reductions of the semi-axiomatic sequent calculus correspond to asynchronous message-passing communication, whereas SILL, being based on a standard sequent calculus, most naturally corresponds to synchronous communication.%
+This is very closely related to \acs{SILL}, the Curry--Howard interpretation of the intuitionistic linear sequent calculus as a session-typed $\pi$-calculus discovered by \citeauthor{Caires+:MSCS16}\autocites{Caires+Pfenning:CONCUR10}{Caires+:TLDI12}{Caires+:MSCS16}, but with two key differences.
+First, as previously alluded, singleton logic's single-antecedent restriction affects proof structure in such a way that the corresponding processes have a chain topology, as opposed to the tree topology of \ac{SILL} processes.
+Second, and arguably more importantly, the proof reductions of the semi-axiomatic sequent calculus correspond to asynchronous message-passing communication, whereas \ac{SILL}, being based on a standard sequent calculus, most naturally corresponds to synchronous communication.%
 \footnote{An earlier paper~\parencite{DeYoung+:CSL12} attempted to give an asynchronous interpretation of the intuitionistic linear sequent calculus, but, in hindsight, that work seems rather ad hoc and unsatisfactory when compared with the asynchronous interpretation of the semi-axiomatic sequent calculus.}
 \fixnote{The idea of restricting processes to have a chain topology is also present in work by \textcite{Dezani-Ciancaglini+:PLACES14}.}
 
@@ -327,183 +327,183 @@ The simplification from linear logic to ordered and singleton logics was critica
 
 
 
-\clearpage
-\section{REMOVE}
+% \clearpage
+% \section{REMOVE}
 
-\begin{itemize}
-\item
-  Concurrency is notoriously difficult to get right.
-  \begin{itemize}[nosep]
-  \item For functional programming, Curry--Howard application of proof theory is the gold standard.
-  \item Since Girard, efforts to explain concurrency using proof theory.
-  \end{itemize}
+% \begin{itemize}
+% \item
+%   Concurrency is notoriously difficult to get right.
+%   \begin{itemize}[nosep]
+%   \item For functional programming, Curry--Howard application of proof theory is the gold standard.
+%   \item Since Girard, efforts to explain concurrency using proof theory.
+%   \end{itemize}
 
-\item 
-  Two proof-theoretic ways to characterize concurrency:
-  \begin{itemize}[nosep]
-  \item proof construction as concurrency
-  \item proof reduction as concurrency
-  \end{itemize}
-  Each has its own strengths and weaknesses.
-  Relatively little (none?) study of the relationship between these characterizations.
+% \item 
+%   Two proof-theoretic ways to characterize concurrency:
+%   \begin{itemize}[nosep]
+%   \item proof construction as concurrency
+%   \item proof reduction as concurrency
+%   \end{itemize}
+%   Each has its own strengths and weaknesses.
+%   Relatively little (none?) study of the relationship between these characterizations.
 
-\item
-  Proof reduction $\cong$ session-typed processes (SILL).
-  \begin{itemize}[nosep]
-  \item Strengths: behavioral types; preservation and progress; process implementation;
-                   logical extensions suggest new features
-  \item Weaknesses: very local description (cf.\ local and global session types);
-                    synchronous communication; general recursion needed for long-running
-                    processes, but not obvious how to do that in a logically justified way
-                    (inductive types Martin-Lof)
-  \end{itemize}
-  Good for implementation.
+% \item
+%   Proof reduction $\cong$ session-typed processes (SILL).
+%   \begin{itemize}[nosep]
+%   \item Strengths: behavioral types; preservation and progress; process implementation;
+%                    logical extensions suggest new features
+%   \item Weaknesses: very local description (cf.\ local and global session types);
+%                     synchronous communication; general recursion needed for long-running
+%                     processes, but not obvious how to do that in a logically justified way
+%                     (inductive types Martin-Lof)
+%   \end{itemize}
+%   Good for implementation.
 
-\item
-  Proof construction $\cong$ process-as-formula (Miller et al.),
-                             multiset rewriting (Cervesato and Scedrov).
-  \begin{itemize}[nosep]
-  \item Strengths: more global description (though slightly lower level than global types?);
-                   \emph{a}synchronous communication; general recursion is easy here
-  \item Weaknesses: untyped; can deadlock; less obviously extensible;
-                    specification, but not implementation
-  \end{itemize}
-  Good for specification.
+% \item
+%   Proof construction $\cong$ process-as-formula (Miller et al.),
+%                              multiset rewriting (Cervesato and Scedrov).
+%   \begin{itemize}[nosep]
+%   \item Strengths: more global description (though slightly lower level than global types?);
+%                    \emph{a}synchronous communication; general recursion is easy here
+%   \item Weaknesses: untyped; can deadlock; less obviously extensible;
+%                     specification, but not implementation
+%   \end{itemize}
+%   Good for specification.
 
-\item
-  Where do the proof reduction and proof construction characterizations intersect?
-  \begin{itemize}[nosep]
-  \item Intersection will have strengths of both, with weaknesses of neither.
-  \item On the intersection, a proof-construction specification can be \enquote{projected} to a proof-reduction implementation.
-  \end{itemize}
+% \item
+%   Where do the proof reduction and proof construction characterizations intersect?
+%   \begin{itemize}[nosep]
+%   \item Intersection will have strengths of both, with weaknesses of neither.
+%   \item On the intersection, a proof-construction specification can be \enquote{projected} to a proof-reduction implementation.
+%   \end{itemize}
 
-\item
-  To focus our attention on the essential differences between proof reduction and proof construction, we limit our investigation to chain topologies, not the more general tree topologies of SILL.
-  \begin{itemize}[nosep]
-  \item Chain topologies let us treat channels namelessly, which turns out to lift a large notational burden.
-  \item In both the proof reduction and proof construction chacterizations, there are logical justifications for chain topologies.
-  \item We conjecture that our results can be straightforwardly generalized to tree topologies, with a large notational overhead, but no conceptual difficulties.
-  \item Propositional Ordered logic becomes first-order linear logic; singleton logic becomes propositional linear logic
-  \end{itemize}
+% \item
+%   To focus our attention on the essential differences between proof reduction and proof construction, we limit our investigation to chain topologies, not the more general tree topologies of SILL.
+%   \begin{itemize}[nosep]
+%   \item Chain topologies let us treat channels namelessly, which turns out to lift a large notational burden.
+%   \item In both the proof reduction and proof construction chacterizations, there are logical justifications for chain topologies.
+%   \item We conjecture that our results can be straightforwardly generalized to tree topologies, with a large notational overhead, but no conceptual difficulties.
+%   \item Propositional Ordered logic becomes first-order linear logic; singleton logic becomes propositional linear logic
+%   \end{itemize}
 
-\item
-  Outline of chapters and discussion of contributions
+% \item
+%   Outline of chapters and discussion of contributions
 
-\item
-  Abstract rewriting, specifically string rewriting, as a framework for specifying the dynamics of concurrent systems.
-  \begin{itemize}[nosep]
-  \item Systems with components arranged in a linear topology with a monoidal structure 
-  \item Special case of multiset rewriting (Cervesato and Scedrov), so not a contribution of this work
-  \item Introduce running examples for the first time: NFAs and binary counters.
-    (A review of finite automata can be found in \cref{ch:finite-automata}.)
-  \end{itemize}
+% \item
+%   Abstract rewriting, specifically string rewriting, as a framework for specifying the dynamics of concurrent systems.
+%   \begin{itemize}[nosep]
+%   \item Systems with components arranged in a linear topology with a monoidal structure 
+%   \item Special case of multiset rewriting (Cervesato and Scedrov), so not a contribution of this work
+%   \item Introduce running examples for the first time: NFAs and binary counters.
+%     (A review of finite automata can be found in \cref{ch:finite-automata}.)
+%   \end{itemize}
 
-\item
-  Ordered rewriting generalizes string rewriting to a richer set of \enquote{connectives} -- free residuated lattice, not just a free monoid
-  \begin{itemize}[nosep]
-  \item Based on the ordered sequent calculus of \cref{ch:ordered-logic}
-  \item Ordered rewriting justified by refactoring the sequent calculus left rules to eliminate boilerplate.
-    \begin{itemize}[nosep]
-    \item Rewriting is obtained as a fragment of the refactored calculus
-    \item This derivation appears to be an auxiliary contribution of this work
-    \end{itemize}
-  \item Roughly a special case of (Cervesato and Scedrov)
-  \item \emph{Focused} ordered rewriting to control the atomicity of individual rewriting steps
-  \item This is roughly what would be needed to combine OLF with CLF.
-  \end{itemize}
+% \item
+%   Ordered rewriting generalizes string rewriting to a richer set of \enquote{connectives} -- free residuated lattice, not just a free monoid
+%   \begin{itemize}[nosep]
+%   \item Based on the ordered sequent calculus of \cref{ch:ordered-logic}
+%   \item Ordered rewriting justified by refactoring the sequent calculus left rules to eliminate boilerplate.
+%     \begin{itemize}[nosep]
+%     \item Rewriting is obtained as a fragment of the refactored calculus
+%     \item This derivation appears to be an auxiliary contribution of this work
+%     \end{itemize}
+%   \item Roughly a special case of (Cervesato and Scedrov)
+%   \item \emph{Focused} ordered rewriting to control the atomicity of individual rewriting steps
+%   \item This is roughly what would be needed to combine OLF with CLF.
+%   \end{itemize}
 
-\item 
-  Both string rewriting and (focused) ordered rewriting are global, state transformation systems.
-  \begin{itemize}[nosep]
-  \item Our goal is to identify a fragment (intersection) that acts like a process calculus -- a local, formula-as-process interpretation.
-    \begin{itemize}[nosep]
-    \item Propositions as process expressions, contexts as runtime process configurations, atoms as messages 
-    \item Surprisingly few changes needed: atom directions and syntactic restriction placed on implications
-    \item Not really a contribution?  (Miller et al.)
-    \end{itemize}
-  \item coinductively defined propositions, not replication, for unbounded rewriting 
- \begin{itemize}[nosep]
-    \item Surprisingly subtle interactions between replication and order -- recursive definitions are more suitable 
-    \end{itemize}
-  \item Major contribution of this chapter: procedure for choreographing string rewriting specifications into formula-as-process ordered rewriting
-    \begin{itemize}[nosep]
-    \item Role assignment to each symbol -- message or process
-    \item Not all role assignments lead to sensible choreographies
-    \item String rewriting axioms used as an evaluation\fixnote{word choice?} -- specification and choreography must be bisimilar.
-      [First appearance of a bisimiarity.  States' structures are observable]
-    \item Informal description, then formal description 
-    \end{itemize}
-  \item Choreographies for binary counters and NFAs 
-    \begin{itemize}[nosep]
-    \item End-to-end adequacy of choreography as a composition of specification's adequacy with bisimilarity of choreography and specification
-    \item NFA example leads to a desire for an equivalence coarser than equality 
-    \end{itemize}
-  \end{itemize}
+% \item 
+%   Both string rewriting and (focused) ordered rewriting are global, state transformation systems.
+%   \begin{itemize}[nosep]
+%   \item Our goal is to identify a fragment (intersection) that acts like a process calculus -- a local, formula-as-process interpretation.
+%     \begin{itemize}[nosep]
+%     \item Propositions as process expressions, contexts as runtime process configurations, atoms as messages 
+%     \item Surprisingly few changes needed: atom directions and syntactic restriction placed on implications
+%     \item Not really a contribution?  (Miller et al.)
+%     \end{itemize}
+%   \item coinductively defined propositions, not replication, for unbounded rewriting 
+%  \begin{itemize}[nosep]
+%     \item Surprisingly subtle interactions between replication and order -- recursive definitions are more suitable 
+%     \end{itemize}
+%   \item Major contribution of this chapter: procedure for choreographing string rewriting specifications into formula-as-process ordered rewriting
+%     \begin{itemize}[nosep]
+%     \item Role assignment to each symbol -- message or process
+%     \item Not all role assignments lead to sensible choreographies
+%     \item String rewriting axioms used as an evaluation\fixnote{word choice?} -- specification and choreography must be bisimilar.
+%       [First appearance of a bisimiarity.  States' structures are observable]
+%     \item Informal description, then formal description 
+%     \end{itemize}
+%   \item Choreographies for binary counters and NFAs 
+%     \begin{itemize}[nosep]
+%     \item End-to-end adequacy of choreography as a composition of specification's adequacy with bisimilarity of choreography and specification
+%     \item NFA example leads to a desire for an equivalence coarser than equality 
+%     \end{itemize}
+%   \end{itemize}
 
-\item A notion of bisimilarity for ordered rewriting
-  \begin{itemize}[nosep]
-  \item observational equivalence: propositions/processes are opaque; atoms/messages are observable 
-    \begin{itemize}[nosep]
-    \item very much dependent on formula-as-process interpretation
-    \end{itemize}
-  \item Contribution?  Related to (Deng et al.) but our formulation is different
-  \item Labeled bisimilarity as a sound (and complete!) proof technique for rewriting bisimilarity
-  \item Examples of bisimilarity: NFA encoding preserves bisimilarity; bisimilarity of binary counters coincides with equal denotations 
-  \end{itemize}
+% \item A notion of bisimilarity for ordered rewriting
+%   \begin{itemize}[nosep]
+%   \item observational equivalence: propositions/processes are opaque; atoms/messages are observable 
+%     \begin{itemize}[nosep]
+%     \item very much dependent on formula-as-process interpretation
+%     \end{itemize}
+%   \item Contribution?  Related to (Deng et al.) but our formulation is different
+%   \item Labeled bisimilarity as a sound (and complete!) proof technique for rewriting bisimilarity
+%   \item Examples of bisimilarity: NFA encoding preserves bisimilarity; bisimilarity of binary counters coincides with equal denotations 
+%   \end{itemize}
 
-\item That closes proof construction.  Now for proof reduction.
+% \item That closes proof construction.  Now for proof reduction.
 
-\item Singleton logic
-  \begin{itemize}[nosep]
-  \item Independently identified by (Fortier and Santocanale)
-  \item A fragment based on a single antecedent restriction (closely related to additive linear/ordered logic) 
-    \begin{itemize}[nosep]
-    \item Restricted form of cut will lead to chain topology
-    \end{itemize}
-  \item Semi-axiomatic sequent calculus (contribution)
-    \begin{itemize}[nosep]
-    \item Replaces positive right rules and negative left rules with axioms (thematically related to the refactoring of the ordered sequent calculus)
-    \item Full cut elimination is not possible, but \enquote{non-analytic} cut elimination is 
-    \item Novel \enquote{associative} cut reductions are key 
-    \item Principal cut reductions match asynchronous communication
-    \item Applies as a general principle (FSCD paper)
-    \end{itemize}
-  \end{itemize}
+% \item Singleton logic
+%   \begin{itemize}[nosep]
+%   \item Independently identified by (Fortier and Santocanale)
+%   \item A fragment based on a single antecedent restriction (closely related to additive linear/ordered logic) 
+%     \begin{itemize}[nosep]
+%     \item Restricted form of cut will lead to chain topology
+%     \end{itemize}
+%   \item Semi-axiomatic sequent calculus (contribution)
+%     \begin{itemize}[nosep]
+%     \item Replaces positive right rules and negative left rules with axioms (thematically related to the refactoring of the ordered sequent calculus)
+%     \item Full cut elimination is not possible, but \enquote{non-analytic} cut elimination is 
+%     \item Novel \enquote{associative} cut reductions are key 
+%     \item Principal cut reductions match asynchronous communication
+%     \item Applies as a general principle (FSCD paper)
+%     \end{itemize}
+%   \end{itemize}
 
-\item Session-typed process chains
-  \begin{itemize}[nosep]
-  \item Curry--Howard interpretation of singleton logic's semi-axiomatic sequent calculus
-  \item Related to SILL, with some differences
-    \begin{itemize}[nosep]
-    \item Asynchronous communication based on cut elimination
-    \item Chain topology because of single-antecedent restriction
-    \end{itemize}
-  \item Coinductively defined types and process expressions for unbounded computation
-  \item Examples: binary counter (again); infinite-word sequential transducers (twist on NFAs); Turing machines (composable)
-    \begin{itemize}[nosep]
-    \item Computational interpretation of singleton logic (with coinductively defined process expressions) is Turing-complete
-    \end{itemize}
-  \end{itemize}
+% \item Session-typed process chains
+%   \begin{itemize}[nosep]
+%   \item Curry--Howard interpretation of singleton logic's semi-axiomatic sequent calculus
+%   \item Related to SILL, with some differences
+%     \begin{itemize}[nosep]
+%     \item Asynchronous communication based on cut elimination
+%     \item Chain topology because of single-antecedent restriction
+%     \end{itemize}
+%   \item Coinductively defined types and process expressions for unbounded computation
+%   \item Examples: binary counter (again); infinite-word sequential transducers (twist on NFAs); Turing machines (composable)
+%     \begin{itemize}[nosep]
+%     \item Computational interpretation of singleton logic (with coinductively defined process expressions) is Turing-complete
+%     \end{itemize}
+%   \end{itemize}
 
-\item That closes proof reduction.
+% \item That closes proof reduction.
 
-\item Relationship between proof construction and proof reduction (fragment that can be put into bijection)
-  \begin{itemize}[nosep]
-  \item Make formula-as-process view of ordered rewriting formal by defining an embedding of session-typed processes into ordered rewriting
-    \begin{itemize}[nosep]
-    \item Mapping is a bisimulation between proof reduction and proof construction
-    \item Process constructors map to logical connectives
-    \item Embedding of the example process expressions yields the same coinductively defined propositions as used in the choreographies
-    \item Injective mapping (syntactically speaking), so also functions as a way to construct processes from (a large subset of) ordered propositions
-    \end{itemize}
-  \item Use this embedding to reverse engineer a session type system for ordered rewriting
-    \begin{itemize}[nosep]
-    \item Well-typed processes correspond to well-typed propositions and vice versa
-    \end{itemize}
-  \end{itemize}
+% \item Relationship between proof construction and proof reduction (fragment that can be put into bijection)
+%   \begin{itemize}[nosep]
+%   \item Make formula-as-process view of ordered rewriting formal by defining an embedding of session-typed processes into ordered rewriting
+%     \begin{itemize}[nosep]
+%     \item Mapping is a bisimulation between proof reduction and proof construction
+%     \item Process constructors map to logical connectives
+%     \item Embedding of the example process expressions yields the same coinductively defined propositions as used in the choreographies
+%     \item Injective mapping (syntactically speaking), so also functions as a way to construct processes from (a large subset of) ordered propositions
+%     \end{itemize}
+%   \item Use this embedding to reverse engineer a session type system for ordered rewriting
+%     \begin{itemize}[nosep]
+%     \item Well-typed processes correspond to well-typed propositions and vice versa
+%     \end{itemize}
+%   \end{itemize}
 
-\item Future work sorted into relevant sections
-\end{itemize}
+% \item Future work sorted into relevant sections
+% \end{itemize}
 
 %%% Local Variables:
 %%% mode: latex
