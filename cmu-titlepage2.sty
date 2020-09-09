@@ -110,16 +110,24 @@
 %% on the page, so they line up with the cut-out window. So we hardwire
 %% the margins for the title page so that left margin = right margin:
 %%         left margin = (8.5in - textwidth)/2
-% \oddsidemargin=8.5in
-% \advance\oddsidemargin by -\textwidth
-% \oddsidemargin=.5\oddsidemargin
-% \advance\oddsidemargin by -1in % TeX sux
+\newlength{\saveoddsidemargin}
+\setlength{\saveoddsidemargin}{\oddsidemargin}
+\oddsidemargin=8.5in
+\advance\oddsidemargin by -\textwidth
+\oddsidemargin=.5\oddsidemargin
+\advance\oddsidemargin by -1in % TeX sux
+\newlength{\saveevensidemargin}
+\setlength{\saveevensidemargin}{\evensidemargin}
+\evensidemargin=8.5in
+\advance\evensidemargin by -\textwidth
+\evensidemargin=.5\evensidemargin
+\advance\evensidemargin by -1in % TeX sux
 %
 \let\footnoterule\relax
 \vglue\@cutoutvskip
 \begin{center}
 %\begin{minipage}[t]{4.875in}   % must be a minipage due to \thanks
-\begin{minipage}[t]{4.8in}      % hackery
+%\begin{minipage}[t]{4.8in}      % hackery
 \vbox to 2in{
 \vfill
 \begin{center}
@@ -132,7 +140,7 @@
 {\large \@date\par}
 \end{center}
 \vfill}
-\end{minipage}
+%\end{minipage}
 \end{center}
 
 \vskip 3em
@@ -168,7 +176,7 @@
 
 \clearpage
 \thispagestyle{empty}
-\@ifundefined{@keywords}{}{\vspace*{\fill} {\bf Keywords:} \@keywords}
+\@ifundefined{@keywords}{}{\vspace*{\fill} \noindent{\bf Keywords:} \@keywords}
 \cleardoublepage
 }
 

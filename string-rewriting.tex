@@ -307,7 +307,7 @@ This is captured in the adjacent \lcnamecref{fig:string-rewriting:abb-complete} 
   \caption{When multiple occurences of $b$ are properly distinguished, a complete trace diagram can be given.}\label{fig:string-rewriting:abb-complete}
 \end{marginfigure}%
 
-More generally, this idea that the interleaving of independent actions is irrelevant is known as \vocab{concurrent equality}\autocite{Watkins+:CMU02}, and it forms the basis of concurrency\autocite{??}.
+More generally, this idea that the interleaving of independent actions is irrelevant is known as \vocab{concurrent equality}\autocite{Watkins+:CMU02}, and it forms the basis of concurrency.
 With the partial commutativity endowed by concurrent equality, the free monoid formed by rewriting sequences is, more specifically, a trace monoid.
 As such, we will frequently refer to rewriting sequences as \vocab{traces}.
 
@@ -687,7 +687,7 @@ This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then i
       \end{equation*}
       \caption{A termination measure, adapted from the standard amortized work analysis of increment for binary counters}\label{fig:string-rewriting:binary-counter:measure}
     \end{marginfigure}%
-    adapted from the standard amortized constant work analysis of increment for binary counters\autocite{??}.
+    adapted from the standard amortized constant work analysis of increment for binary counters\autocite{Cormen+:MIT09}.
     The measure $\card[i]{}$ is such that $\octx \reduces \octx'$ implies $\card[i]{\octx} > \card[i]{\octx'}$;
     % That is, if $\octx$ is a valid state and $\octx \reduces \octx'$, then $\card{\octx} > \card{\octx'}$.
     because the measure is always nonnegative, only finitely many such rewritings can occur.

@@ -1,23 +1,23 @@
 \chapter{From processes to rewriting}\label{ch:correspond}
 
-\fixnote{Introduction}
+In the previous \lcnamecrefs{ch:singleton-logic}, we have presented two different proof-theoretic characterizations of concurrency: \emph{concurrency as proof construction} and \emph{concurrency as proof reduction}.
+In this \lcnamecref{ch:correspond}, we describe the relationship between these two by identifying fragments of each that can be put into bijective correspondence.
 
-\begin{itemize}
-\item Relationship between proof construction and proof reduction (fragment that can be put into bijection)
-  \begin{itemize}[nosep]
-  \item Make formula-as-process view of ordered rewriting formal by defining an embedding of session-typed processes into ordered rewriting
-    \begin{itemize}[nosep]
-    \item Mapping is a bisimulation between proof reduction and proof construction
-    \item Process constructors map to logical connectives
-    \item Embedding of the example process expressions yields the same coinductively defined propositions as used in the choreographies
-    \item Injective mapping (syntactically speaking), so also functions as a way to construct processes from (a large subset of) ordered propositions
-    \end{itemize}
-  \item Use this embedding to reverse engineer a session type system for ordered rewriting
-    \begin{itemize}[nosep]
-    \item Well-typed processes correspond to well-typed propositions and vice versa
-    \end{itemize}
-  \end{itemize}
-\end{itemize}
+\Cref{sec:correspond:embed} makes the formula-as-process view of ordered rewriting~\parencref{ch:choreographies} formal by embedding session-typed processes~\parencref{ch:process-chains} into ordered rewriting.
+This embedding is execution-preserving, serving as a bisimulation between the proof-reduction and proof-construction approaches to concurrency.
+
+The embedding is quite natural.
+Process constructors elegantly map to ordered logical connectives, most notably with process composition, $\spawn{}{}$, embedding as ordered conjunction, $\fuse$.
+
+(In fact, instead of a single embedding, there are three closely related embeddings -- a weakly focused, strongly bisimilar embedding~\parencref{sec:embed:weak-focused-string-bisim}; a strongly focused, strongly bisimilar embedding~\parencref{sec:embed:strong-focused-strong-bisim}; and a strongly focused, weakly bisimilar embedding~\parencref{sec:embed:strong-focused-weak-bisim} -- that trade off the character of focusing discipline (strong vs.\ weak) and character of the bisimulation (strong vs.\ weak) against how directly this correspondence between process constructors and logical connectives is exposed.)
+
+\Cref{sec:correspond:embed:examples} examines the embeddings in the context of the binary counter and \ac{DFA}\fixnote{include \ac{DFA}?}.
+Pleasingly, when the example process expressions of \cref{sec:process-chains:examples} are embedded in ordered rewriting, we arrive at exactly the same coinductively defined propositions as used in the choreographies of \cref{sec:formula-as-process:counters,sec:formula-as-process:nfa}.
+
+Lastly, the embedding is, syntactically speaking, an injective mapping, and its left inverse can be leveraged to construct process expressions from (a large subset of) ordered propositions.
+In \cref{sec:correspond:types}, we use this idea to reverse-engineer a session-type system for formula-as-process ordered rewriting.
+Well-typed process expressions embed to propositions that are well-typed under this new system, and vice versa.
+     
 
 \section{Embedding process configurations in formula-as-process ordered rewriting}\label{sec:correspond:embed}
 

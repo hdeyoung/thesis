@@ -1,62 +1,95 @@
 \chapter{Bisimilarity for ordered rewriting}\label{ch:ordered-bisimilarity}
 
-With the shift from the global, state-transformation view of ordered rewriting put forth in \cref{ch:ordered-rewriting} to the local, formula-as-process view developed in the preceding \lcnamecref{ch:formula-as-process}, we are now in a position to examine how individual propositions and contexts behave and interact.%
-\fixnote{Because each proposition has its own \emph{local} thread of control, we can describe a proposition's behavior only to the extent that that behavior can be witnessed by an external observer.}
+With the shift from the global, state-transformation view of ordered rewriting put forth in \cref{ch:ordered-rewriting} to the local, formula-as-process view developed in the preceding \lcnamecref{ch:formula-as-process}, we are now in a position to examine how individual propositions and, more generally, contexts behave and interact.
+% \fixnote{Because each proposition has its own \emph{local} thread of control, we can describe a proposition's behavior only to the extent that that behavior can be witnessed by an external observer.}
+And, in line with other, process calculi descriptions of concurrency, it is then natural to ask when two propositions or contexts have the same behavior.
+% , \ie, when two propositions are \emph{bisimilar}.
 
-According to the formula-as-process view, each proposition has its own \emph{local} thread of control.
-This locality means that a proposition's\fixnote{or context's?} behavior can be described only to the extent that that behavior can be witnessed by an external observer.
-Locality, together with the local interaction semantics of \cref{??}, also suggests\fixnote{dictates?} what may be observed:
-A proposition's structure is opaque; only outward-directed atoms, which are viewed as output messages, are observable.
-Thus
+We will consider two propositions or contexts to have the same behavior only if an external observer witnesses them producing the same observables under all conditions.%
+\fixnote{if there is no experiment that will eventually distinguish them.}
+% But that raises the question of what is observable.
+But then what is observable?
+According to the formula-as-process view, each proposition has its own local thread of control.
+This locality, together with the output transitions of \cref{??}, suggests what may be observed:
+A proposition's structure is opaque; only outward-directed atoms that are located at the edge of an ordered context are observable.
+
+% According to the formula-as-process view, each proposition has its own \emph{local} thread of control.
+% This locality means that a proposition's\fixnote{or context's?} behavior can be described only to the extent that that behavior can be witnessed by an external observer.
+% Locality, together with the local interaction semantics of \cref{??}, also suggests\fixnote{dictates?} what may be observed:
+% A proposition's structure is opaque; only outward-directed atoms, which are viewed as output messages, are observable.
+% Moreover, because the output transitions apply only to outward-directed atoms that are located at the edges of an ordered context, it is only the atoms there that are observable.
+
+\fixnote{Difference between bisimilarity and testing equivalence?}
+
+Following the vast literature on various forms of bisimilarity%
+\footnote{See \textcite{??} for a survey.}%
+, this \lcnamecref{ch:ordered-bisimilarity} therefore develops a notion of \emph{ordered rewriting bisimilarity} in which atoms are observable and [...].
+
+Intuitively, for example, the contexts $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ and $\atmR{b}$ ought to be considered behaviorally equivalent: there is no circumstance under which anything other than $\atmR{b}$ can be observed from $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$.
+In particular, the atom $\atmR{a}$ at the left edge of the context $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ cannot be observed because it is directed inward and therefore acting as an input to, not an output from, $(\atmR{a} \limp \atmR{b})$.
+
+As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ ought to be considered behaviorally equivalent, intuitively because they are logically equivalent\footnote{That is, $\oseq{\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \dashv|- (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}}$.}.
 
 % (Implicit in the local interaction semantics of \cref{??} is the idea that atoms ought to be observable but that non-atomic propositions are opaque.
 % A proposition's neighbors can discover its behavior only by sending it messages and observing the atoms that it sends as replies.)
 
-Intuitively, for example, the contexts $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ and $\atmR{b}$ should have the same observable behavior: an internal reduction transforms $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ into $\atmR{b}$, and no other interactions -- reductions, input transitions, nor output transitions -- are possible from $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$.
-In particular, the atom $\atmR{a}$ at the left edge of the context $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ cannot be observed because it is directed inward and therefore acting as an input to, not an output from, $\atmR{a} \limp \atmR{b}$.
+% Intuitively, for example, the contexts $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ and $\atmR{b}$ should have the same observable behavior: an internal reduction transforms $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ into $\atmR{b}$, and no other interactions -- reductions, input transitions, nor output transitions -- are possible from $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$.
+% In particular, the atom $\atmR{a}$ at the left edge of the context $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ cannot be observed because it is directed inward and therefore acting as an input to, not an output from, $\atmR{a} \limp \atmR{b}$.
 
-As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ ought to be behaviorally equivalent, intuitively because they are logically equivalent\footnote{That is, $\oseq{\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \dashv|- (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}}$.}.
+% As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ ought to be behaviorally equivalent, intuitively because they are logically equivalent\footnote{That is, $\oseq{\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \dashv|- (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}}$.}.
 
-\newthought{Following the vast} literature on various forms of bisimilarity\footnote{See \textcite{??} for a survey.}, we will develop a notion of \emph{ordered rewriting bisimilarity} on ordered contexts, $\octx \osim \lctx$.
-In \cref{sec:??}, we define rewriting bisimilarity and present a few examples of contexts that are \emph{not} bisimilar under this definition.
+\newthought{\Cref{sec:ordered-bisimilarity:??} begins} by defining rewriting bisimilarity (along with a few auxiliary notions) and then presents a few examples of contexts that are \emph{not} bisimilar under this definition.
 
 However, it will prove to be cumbersome to use rewriting bisimilarity's definition alone to establish that two contexts are bisimilar, a problem that is familiar from process calculi bisimilarities.
 Therefore, in \cref{sec:ordered-bisimilarity:labeled-bisim}, we present \emph{labeled bisimilarity}, a sound proof technique for rewriting bisimilarity -- ordered contexts that are labeled bisimilar will also be rewriting bisimilar.
-Unlike the $\pi$-calculus's labeled bisimilarity, our labeled bisimilarity is surprisingly complete for rewriting bisimilarity -- contexts that are rewriting bisimilar will also be labeled bisimilar.
+Unlike the $\pi$-calculus's labeled bisimilarity, our labeled bisimilarity is, surprisingly, complete for rewriting bisimilarity -- contexts that are rewriting bisimilar will also be labeled bisimilar.
 
 This \lcnamecref{ch:ordered-bisimilarity} concludes with several applications of ordered rewriting bisimilarity to our now-familiar running examples, binary counters and \aclp*{NFA}.
 \Cref{sec:ordered-bisimilarity:nfa} proves that \ac{NFA}-bisimilar states have rewriting-bisimilar encodings under the functional choreography described in \cref{sec:formula-as-process:nfa-functional}, which allows us to finally rephrase the choreography's adequacy in a clean and stratified form.
 And \cref{sec:ordered-bisimilarity:counter} proves that binary counters are rewriting-bisimilar if, and only if, they have the same denotation.
 
+
+
+% \newthought{Following the vast} literature on various forms of bisimilarity\footnote{See \textcite{??} for a survey.}, we will develop a notion of \emph{ordered rewriting bisimilarity} on ordered contexts, $\octx \osim \lctx$.
+% In \cref{sec:??}, we define rewriting bisimilarity and present a few examples of contexts that are \emph{not} bisimilar under this definition.
+
+% However, it will prove to be cumbersome to use rewriting bisimilarity's definition alone to establish that two contexts are bisimilar, a problem that is familiar from process calculi bisimilarities.
+% Therefore, in \cref{sec:ordered-bisimilarity:labeled-bisim}, we present \emph{labeled bisimilarity}, a sound proof technique for rewriting bisimilarity -- ordered contexts that are labeled bisimilar will also be rewriting bisimilar.
+% Unlike the $\pi$-calculus's labeled bisimilarity, our labeled bisimilarity is surprisingly complete for rewriting bisimilarity -- contexts that are rewriting bisimilar will also be labeled bisimilar.
+
+% This \lcnamecref{ch:ordered-bisimilarity} concludes with several applications of ordered rewriting bisimilarity to our now-familiar running examples, binary counters and \aclp*{NFA}.
+% \Cref{sec:ordered-bisimilarity:nfa} proves that \ac{NFA}-bisimilar states have rewriting-bisimilar encodings under the functional choreography described in \cref{sec:formula-as-process:nfa-functional}, which allows us to finally rephrase the choreography's adequacy in a clean and stratified form.
+% And \cref{sec:ordered-bisimilarity:counter} proves that binary counters are rewriting-bisimilar if, and only if, they have the same denotation.
+
 Our rewriting bisimilarity is strongly inspired by the contextual bisimilarity for linear contexts put forth by \textcite{Deng+:MSCS16}.
 
 
-\section{Toss?}
+% \section{Toss?}
 
-The previous \lcnamecref{ch:formula-as-process} introduced a formula-as-process view of the focused ordered rewriting framework, and showed how to use it to provide local, message-passing choreographies of the global, string rewriting specifications seen in \cref{ch:string-rewriting}.
-The formula-as-process ordered rewriting framework brings (focused) ordered rewriting more in line with process calculi, such as the $\pi$-calculus.
+% The previous \lcnamecref{ch:formula-as-process} introduced a formula-as-process view of the focused ordered rewriting framework, and showed how to use it to provide local, message-passing choreographies of the global, string rewriting specifications seen in \cref{ch:string-rewriting}.
+% The formula-as-process ordered rewriting framework brings (focused) ordered rewriting more in line with process calculi, such as the $\pi$-calculus.
 
-Much more than functional programming, process calculi emphasize observational equivalence.
-Owing to their distributed nature, processes are opaque -- only messages are observable.
-A client can't peer inside a process to see its internal structure;
-a client can only send the process messages and observe any messages that the process sends as a reply.
+% Much more than functional programming, process calculi emphasize observational equivalence.
+% Owing to their distributed nature, processes are opaque -- only messages are observable.
+% A client can't peer inside a process to see its internal structure;
+% a client can only send the process messages and observe any messages that the process sends as a reply.
 
-So far, the formula-as-process ordered rewriting framework does not enjoy a notion of observational equivalence.
-In this \lcnamecref{ch:ordered-bisimilarity}, we resolve that deficiency.
-In keeping with the large body of work on bisimilarity for message-passing processes\autocite{??}, we develop a notion of bisimilarity for ordered contexts.
-Two contexts are judged to be bisimilar if there is no experiment that will eventually distinguish them.
+% So far, the formula-as-process ordered rewriting framework does not enjoy a notion of observational equivalence.
+% In this \lcnamecref{ch:ordered-bisimilarity}, we resolve that deficiency.
+% In keeping with the large body of work on bisimilarity for message-passing processes\autocite{??}, we develop a notion of bisimilarity for ordered contexts.
+% Two contexts are judged to be bisimilar if there is no experiment that will eventually distinguish them.
 
-In process calculi, processes are usually treated as opaque, being defined by their behavior rather than their internal structure.
-(This emphasis differs from that of functional programming.)
-A client can only observe
+% In process calculi, processes are usually treated as opaque, being defined by their behavior rather than their internal structure.
+% (This emphasis differs from that of functional programming.)
+% A client can only observe
 
-But process calculi are usually equipped with a notion of observational equivalence, which formula-as-process ordered rewriting does not yet enjoy.
-In this \lcnamecref{ch:ordered-bisimilarity}, we develop an observational equivalence for ordered rewriting.
-% This \lcnamecref{ch:ordered-bisimilarity} explores the question of when two propositions have equivalent behavior under this process-as-formula view.
-In keeping with the large body of work on bisimilarity for message-passing processes\autocite{??}, we develop a notion of bisimilarity for ordered propositions.
-This \vocab{ordered rewriting bisimilarity} treats the atomic propositions as the sole observables, in keeping with their interpretation as messages.
+% But process calculi are usually equipped with a notion of observational equivalence, which formula-as-process ordered rewriting does not yet enjoy.
+% In this \lcnamecref{ch:ordered-bisimilarity}, we develop an observational equivalence for ordered rewriting.
+% % This \lcnamecref{ch:ordered-bisimilarity} explores the question of when two propositions have equivalent behavior under this process-as-formula view.
+% In keeping with the large body of work on bisimilarity for message-passing processes\autocite{??}, we develop a notion of bisimilarity for ordered propositions.
+% This \vocab{ordered rewriting bisimilarity} treats the atomic propositions as the sole observables, in keeping with their interpretation as messages.
 
-Messages are observable, but processes are opaque.
+% Messages are observable, but processes are opaque.
 
 
 
@@ -436,23 +469,36 @@ Because ordered rewriting is asynchronous in this way, we should expect our noti
 
 \section{Rewriting bisimilarity}\label{sec:ordered-bisimilarity:rewriting-bisimilarity}
 
-With the shift from a global, state transformation view of ordered rewriting to a local, \enquote{formula-as-process} view, it is now possible to consider how the individual \enquote{formula-as-process} -- or, more generally, \enquote{context-as-configuration} -- components behave and how they interact with each other.
-Because each component has its own, local thread of control, we can describe its behavior only to the extent that its behavior is observable.
-To the extent that its behavior can be witnessed by an external observer
+% With the shift from a global, state transformation view of ordered rewriting to a local, \enquote{formula-as-process} view, it is now possible to consider how the individual \enquote{formula-as-process} -- or, more generally, \enquote{context-as-configuration} -- components behave and how they interact with each other.
+% Because each component has its own, local thread of control, we can describe its behavior only to the extent that its behavior is observable.
+% To the extent that its behavior can be witnessed by an external observer
 
-Now that we can decompose concurrent systems into individual \enquote{formula-as-process} -- or \enquote{context-as-configuration} -- components, 
+% Now that we can decompose concurrent systems into individual \enquote{formula-as-process} -- or \enquote{context-as-configuration} -- components, 
 
-Intuitively, for example, the contexts\fixnote{configurations?} $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ and $\atmR{b}$ should be behaviorally equivalent: an internal reduction transforms $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ into $\atmR{b}$, and no other interactions -- reductions or input or output transitions -- are possible from $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$.
-As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ should also be behaviorally equivalent, intuitively because they are logically equivalent.
+% Intuitively, for example, the contexts\fixnote{configurations?} $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ and $\atmR{b}$ should be behaviorally equivalent: an internal reduction transforms $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ into $\atmR{b}$, and no other interactions -- reductions or input or output transitions -- are possible from $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$.
+% As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ should also be behaviorally equivalent, intuitively because they are logically equivalent.
 
-Following the vast literature on various forms of bisimilarity\footnote{See \textcite{??} for a survey.}, we will develop a notion of \vocab{rewriting bisimilarity} on ordered contexts.
-First, we need a few auxiliary definitions.
+% Following the vast literature on various forms of bisimilarity\footnote{See \textcite{??} for a survey.}, we will develop a notion of \vocab{rewriting bisimilarity} on ordered contexts.
+% First, we need a few auxiliary definitions.
 
-related to Deng et al.
+% related to Deng et al.
 
 
 
-In this \lcnamecref{sec:ordered-bisimilarity:rewriting-bisimilarity}, we define \emph{ordered rewriting bisimilarity}, a notion of observational equivalence for ordered contexts.
+Consistent with the local interaction semantics of \cref{??}, we have taken atoms to be observable.
+An atom's direction and location within a larger context are crucial to its observability.
+For example, in $\atmL{a} \oc \octx$ and $\octx \oc \atmR{b}$, the atoms $\atmL{a}$ and $\atmR{b}$, respectively, are observable because they are in position to be received by an observer.
+The observer $(\up \p{A} \pmir \atmL{a})$ can receive $\atmL{a}$ from $\atmL{a} \oc \octx$, and the observer $(\atmR{b} \limp \up \p{B})$ can receive $\atmR{b}$ from $\octx \oc \atmR{b}$:
+\begin{equation*}
+  (\up \p{A} \pmir \atmL{a}) \oc (\atmL{a} \oc \octx) \reduces \p{A} \oc \octx
+  \quad\text{and}\quad
+  (\octx \oc \atmR{b}) \oc (\atmR{b} \limp \up \p{B}) \reduces \octx \oc \p{B}
+  \,.
+\end{equation*}
+
+
+
+In this \lcnamecref{sec:ordered-bisimilarity:rewriting-bisimilarity}, we define \emph{ordered rewriting bisimilarity}, a notion of behavioral equivalence for ordered contexts.
 Before that, however, we must define a few auxiliary relations on contexts.
 %
 \begin{definition}[Framed binary relations]\label{def:ordered-bisimilarity:framed-relation}
