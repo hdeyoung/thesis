@@ -42,7 +42,7 @@ No backtracking is performed to reconsider these choices.
 Disjoint segments of a string may be rewritten independently.
 For example, the substring $a \wc b$ can be rewritten to $b$, and the final $b$ of $a \wc b \wc b$ can be rewritten to the empty string.
 Being independent, these rewritings can occur in either order, as shown in the adjacent \lcnamecref{fig:string-rewriting:independent1}.
-\begin{marginfigure}
+\begin{marginfigure}[-\baselineskip]
   \begin{equation*}
     \hphantom{a \wc b \wc {}}
     \begin{tikzcd}[ampersand replacement=\&, sep=small]
@@ -81,7 +81,7 @@ Algebraically, strings form a free (noncommutative) monoid over symbols $a \in \
 \end{equation*}
 where the monoid operation is string concatenation, denoted by $w_1 \wc w_2$, and the unit element is the empty string, denoted by $\emp$.%
 % and $a$ is a symbol drawn from the alphabet $\ialph$.%
-\footnote{Strings are isomorphic to the finite words used by automata~\parencref{ch:automata}, but the two serve different conceptual roles in this dissertation.}
+\footnote[][-2.25\baselineskip]{Strings are isomorphic to the finite words used by automata~\parencref{ch:automata}, but the two serve different conceptual roles in this dissertation.}
 
 As a monoid, strings are equivalent up to associativity and unit laws (see adjacent \lcnamecref{fig:string-rewriting:monoid-laws}).%
 \begin{marginfigure}
@@ -228,7 +228,7 @@ As an abstract rewriting system, the above string rewriting framework can be eva
 \paragraph*{Concurrency}
 As an example multi-step rewriting sequence, observe that $a \wc b \wc b \Reduces \emp$, under the axioms of our running example~(\cref{eq:string-rewriting:example-signature}).
 In fact, as shown in the adjacent \lcnamecref{fig:string-rewriting:abb}%
-\begin{marginfigure}
+\begin{marginfigure}[2\baselineskip]
   \begin{equation*}
     \hphantom{a \wc b \wc {}}
     \begin{tikzcd}%[/tikz/baseline=]
@@ -268,7 +268,7 @@ This sequence's two rewriting steps are not independent because the $b$ that par
 This is captured in the adjacent \lcnamecref{fig:string-rewriting:abb-complete} by distinguishing the two $b$s with subscripts.
 % This sequence's rewriting of $a \wc b$ into $b$ is not independent of the rewriting of the leftmost $b$ because the 
 %
-\begin{marginfigure}
+\begin{marginfigure}[-10\baselineskip]
   \begin{equation*}
     \begin{tikzcd}%[/tikz/baseline=]
       &
@@ -353,7 +353,7 @@ Given \iac{NFA} $\aut{A} = (Q, \nfapow, F)$ over an input alphabet $\ialph$, the
   \infer{a \wc q \reduces q'_a}{}
   \enspace\text{for each transition $q \nfareduces[a] q'_a$.}
 \end{equation*}
-In addition, the \ac{NFA}'s acceptance criteria is captured by introducing a distinguished symbol $\eow$ to act as an end-of-word marker, along with axioms\fixnote{Check these with choreography}
+In addition, the \ac{NFA}'s acceptance criteria is captured by introducing a distinguished symbol $\eow$ to act as an end-of-word marker, along with axioms
 \begin{equation*}
   \infer{\eow \wc q \reduces F(q)}{}
   \enspace\text{for each state $q$, where }
@@ -373,7 +373,7 @@ where $F(q)$ is defined as above.
 
 For a concrete instance of this encoding, recall from \cref{ch:automata} the \ac{NFA} (repeated in the adjacent \lcnamecref{fig:string-rewriting:nfa-example-ends-b})%
 %
-\begin{marginfigure}
+\begin{marginfigure}[-8\baselineskip]
   \begin{equation*}
     \mathllap{\aut{A}_1 = {}}
     \begin{tikzpicture}[baseline=(q_0.base)]
@@ -414,7 +414,7 @@ Indeed, just as the \ac{NFA} $\aut{A}_1$ accepts the input word $abb$, its rewri
 
 More generally, this string rewriting specification of \acp{NFA} adequately describes their operational semantics, in the sense that it simulates all \ac{NFA} transitions.
 Given the reversal (anti-)\-homo\-morph\-ism for finite words defined in the adjacent \lcnamecref{fig:string-rewriting:reversal}%
-\begin{marginfigure}
+\begin{marginfigure}[-8\baselineskip]
   \begin{align*}
     \rev*{w_1 \wc w_2} &= \rev{w_2} \oc \rev{w_1} \\
     \rev{\emp} &= \emp \\
@@ -457,7 +457,7 @@ Here we present a string rewriting specification of these \emph{binary counters}
 
 In this setting, we represent a natural number in binary by a string that consists of a big-endian sequence of symbols $b_0$ and $b_1$, prefixed by the symbol $e$; leading $b_0$s are permitted.
 For example, both $\octx = e \oc b_1$ and $\octx' = e \oc b_0 \oc b_1$ are valid binary representations of the natural number $1$.%
-\footnote{Replace $\octx$ with $w$ or $c$?}
+\fixnote{Replace $\octx$ with $w$ or $c$?}
 
 To be more precise, we inductively define a relation, $\aval{}{}$, that assigns to each binary representation a unique natural number denotation.
 If $\aval{\octx}{n}$, we say that $\octx$ denotes, or represents, natural number $n$ in binary.
@@ -509,7 +509,7 @@ The adequacy of the $\aval{}{}$ relation is proved as the following \lcnamecref{
 Notice that the above $\jrule{$e$-V}$ and $\jrule{$b_0$-V}$ rules overlap when the denotation is $0$, giving rise to the leading $b_0$s that make the $\aval{}{}$ relation non-injective:
 for example, both $\aval{e \oc b_1}{1}$ and $\aval{e \oc b_0 \oc b_1}{1}$ hold.
 However, if the $\jrule{$b_0$-V}$ is restricted to \emph{nonzero} even numbers, then each natural number has a unique, canonical representation that is free of leading $b_0$s.%
-\footnote{%
+\footnote[][-10\baselineskip]{%
   A restriction of the $b_0$ rule to nonzero even numbers is:
   \begin{equation*}
     \infer{\aval{\octx \oc b_0}{2n}}{
@@ -538,7 +538,7 @@ For $i$ to adequately represent the increment operation, the string $\octx \oc i
     $\octx \oc i \Reduces\aval{}{n+1}$ -- that is, \emph{some} rewriting sequence results in a binary representation of $n+1$; and
   \item
     % \emph{any} computation from $\octx \oc i$ results in a binary representation of $n+1$ -- that is, $\octx \oc i \Reduces\aval{}{n'}$ only if $n' = n+1$.%
-    $\octx \oc i \Reduces \octx'$ implies $\octx' \Reduces\aval{}{n+1}$ -- that is, \emph{any} rewriting sequence from $\octx \oc i$ can\fixnote{??} result in a binary representation of $n+1$.
+    $\octx \oc i \Reduces \octx'$ implies $\octx' \Reduces\aval{}{n+1}$ -- that is, \emph{any} rewriting sequence from $\octx \oc i$ can result in a binary representation of $n+1$.
   \end{itemize}
 % \end{theorem}
 % \noindent
@@ -833,7 +833,7 @@ At first glance, the $\jrule{$d$-D}$ rule may look a bit odd:
 Why is the denotation unchanged by a decrement, $\octx \oc d$?
 Because the operation is more accurately characterized as head-unary normalization, it makes sense that the denotation remains unchanged.
 The operation described by $d$ does not change the binary counter's value -- it only expresses that same value in a different form.%
-\footnote{Once again, the valid intermediate states could also be enumerated more explicitly and syntactically with a grammar and denotation function:%
+\footnote[][-15\baselineskip]{Once again, the valid intermediate states could also be enumerated more explicitly and syntactically with a grammar and denotation function:%
 \begin{align*}
   \octx &\Coloneqq e \mid \octx \oc b_0 \mid \octx \oc b_1 \mid \octx \oc i \\
   \lctx &\Coloneqq \octx \oc d \mid \lctx \oc b'_0 \mid z \mid \octx \oc s

@@ -123,7 +123,7 @@ This is because we will be primarily interested in the operational aspects of \i
 
 \subsection{\acs*{NFA} bisimilarity}
 
-In later \lcnamecrefs{ch:ordered-bisimilarity}, we will refer to a notion of bisimilarity for \acp{NFA} that was originally developed by \textcite{Milner:??}.
+In later \lcnamecrefs{ch:ordered-bisimilarity}, we will refer to a notion of bisimilarity for \acp{NFA} that was originally developed by \textfootcite{Milner:??}.
 
 In general, two objects are bisimilar if they cannot be distinguished by an observer.
 Here, \ac{NFA} bisimilarity is a relation on states, and the observer may provide an input word and observe whether the word is accepted or rejected by the given state.
@@ -132,7 +132,7 @@ Here, \ac{NFA} bisimilarity is a relation on states, and the observer may provid
 \begin{definition}% [\ac*{NFA} bisimilarity]
   Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over an input alphabet $\ialph$.
   An \emph{\acs{NFA} bisimulation} on $\aut{A}$ is a \emph{symmetric} binary relation on states, $\mathord{\simu{R}} \subseteq Q \times Q$, that satisfies the following conditions.
-  \begin{thmdescription}
+  \begin{thmdescription}[noitemsep]
   \item[Input bisimulation]
     If $q \simu{R}\nfareduces[a] s'$, then $q \nfareduces[a]\simu{R} s'$.
     % (See the adjacent \lcnamecref{fig:nfa-bisim:diagrams}.)% 

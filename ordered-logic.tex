@@ -98,7 +98,7 @@ Algebraically, ordered contexts $\octx$ form a free noncommutative monoid:
 where the monoid operation is concatenation, denoted by juxtaposition, and the unit element is the empty context, denoted by $(\octxe)$.
 (We will also sometimes use the metavariable $\lctx$ for \emph{ordered} contexts.)
 As a monoid, ordered contexts are equivalent up to associativity and unit laws (see adjacent \lcnamecref{fig:ordered-logic:monoid-laws}).%
-\begin{marginfigure}
+\begin{marginfigure}[-4.65\baselineskip]
   \begin{gather*}
     (\octx_1 \oc \octx_2) \oc \octx_3 = \octx_1 \oc (\octx_2 \oc \octx_3) \\
     (\octxe) \oc \octx = \octx = \octx \oc (\octxe)
@@ -755,36 +755,25 @@ But because the antecedent $A \limp A \fuse A$ is itself a use-once resource, th
 Linear logic traditionally introduces unboundedness with its \enquote*{of course} exponential, $\bang A$.
 The proposition $\bang A$ is viewed as an unbounded number of copies of resource $A$ -- as many, or as few, copies of $A$ as desired.\autocite{Girard:TCS87}
 Ordered logic can be extended with a related persistence modality\autocites{Abrusci:MLQ90}{Polakow+Pfenning:TLCA99}{Polakow+Pfenning:MFPS99}, so that $\bang A$ is an unbounded number of resources $A$, and similarly $\bang (A \limp B)$ is a means for transforming, an unbounded number of times, a left-adjacent $A$ into a $B$.
+%
+As the notation suggests, the modality $\bang A$ is not unrelated to process replication, $!P$, in the $\pi$-calculus.\autocite{Milner:CUP99}
+A replication $!P$ represents an unbounded number of processes $P$ in parallel composition, $P \mid P \mid \dotsb$, in much the same way as $\bang A$ represents an unbounded number of resources $A$.
 
-As the notation suggests, the modality $\bang A$ is not unrelated to process replication, $!P$, in the $\pi$-calculus.\autocite{Milner:??}
-Replication is 
-
-Like replication in \citeauthor{Milner:??}
-$\bang (p \limp p \fuse A)$
-
-The modality $\bang A$ is not the only way to introduce unbounded behavior in ordered logic. 
-As in the $\pi$-calculus\autocite{??}, recursive definitions $\defp{p}\defd A$ are another path to unboundedness.
+But the modality $\bang A$ is not the only way to introduce unbounded behavior in ordered logic.
+As in the $\pi$-calculus\autocites{Milner+:IC92a}{Milner+:IC92b}, recursive definitions are another path to unboundedness.
 Recursive definitions have been studied extensively\autocites{Hallnas:TCS91}{Eriksson:ELP91}{Schroeder-Heister:LICS93}{McDowell+Miller:TCS00}{Tiu+Momigliano:JAL12}, but have not, to the best of our knowledge, been previously used in the context of ordered logic.
-We conjecture that persistence is strictly more expressive than recursive definitions, but as we will see in \cref{ch:process-chains}, recursive definitions will prove to be a good match for recursive processes.
+We conjecture that persistence is strictly more expressive than recursive definitions
 
-Essentially the difference between the proposition $\bang (p \limp A)$ and the definition $\defp{p} \defd A$ is one of mobility.
-The persistent resouce $p \limp A$ that derives from $\bang (p \limp A)$ can be copied anywhere into the ordered context.
-In contrast, the definition 
+In ordered logic, the difference between the exponential and recursive definitions is essentially one of mobility.
+% The proposition $\bang (p \limp A)$ makes unbounded number of resources $p \limp A$ possible by moving $p \limp A$ into a persistent context, from which $p \limp A$ can be copied \emph{anywhere} into the ordered context, as often as desired.
+% the proposition $\bang (p \limp A)$ and the definition $\defp{p} \defd A$ is one of mobility.
+The persistent resouce $p \limp A$ that derives from $\bang (p \limp A)$ can be copied \emph{anywhere} into the ordered context.
+By making the exponential a first-class logical connective, this mobility can be exploited.
+For example, the proposition $\bang (p \limp a \fuse \bang p)$ would allow $p$ to move anywhere within the ordered context.
+In contrast, recursive definitions decouple unbounded behavior from mobility and are not first-class.
+The definition $\defp{p} \defd a \fuse \defp{p}$ is the nearest we can get to $\bang (p \limp a \fuse \bang p)$, and this definition does not imply mobility.
+As we will see in \cref{ch:process-chains}, recursive definitions will therefore prove to be a good match for recursive processes, which ought not to be able to move around within a configuration just because they have unbounded behavior.
 
-$\bang (p \limp A)$ corresponds to $\defp{p} \defd A$.
-The problem is that $\bang A$ implies not only persistence, but also mobility.
-$\bang (p \limp q \fuse \bang (q \limp B))$
-Couples unbounded behavior to mobility.
-
-Convenience of a separate non-atomic syntactic form of proposition
-
-\begin{equation}
-  \label{eq:1}
-  \infer{\octx_L \oc \bang A \oc \octx_R \vdash C}{
-    \octx_L \oc A^* \oc \octx_R \vdash C}
-  \infer{\octx_L \oc A^* \oc \octx_R \vdash C}{
-    \octx_L \oc A^* \oc A \oc \octx_R \vdash C}
-\end{equation}
 
 \Textfootcite{Fortier+Santocanale:CSL13} have used recursive definitions together with circular derivations in a fragment of the linear sequent calculus, establishing a sound condition under which these definitions constitute least and greatest fixed points and these derivations constitute valid inductive and coinductive proofs.
 Extending their work, \textfootcite{Derakhshan+Pfenning:LMCS20} have presented a related, locally decidable condition on circular derivations in first-order intuitionistic multiplicative and additive linear logic that ensures cut elimination is productive.
@@ -797,10 +786,11 @@ Ordered logic can also be extended in other directions that we briefly describe 
 % In this \lcnamecref{sec:ordered-logic:extensions}, we give a brief overview of several extensions to the preceding ordered sequent calculus
 % \begin{itemize*}[label=, before=\unskip{:}, itemjoin={,}, itemjoin*={, and}]
 first-order universal and existential quantifiers,
- multiplicative falsehood and disjunction\autocite{Chang+:CMU03},
- a mobility modality\autocite{Polakow+Pfenning:MFPS99},
+ multiplicative falsehood and disjunction, %\autocite{Chang+:CMU03},
+ a mobility modality, %\autocite{Polakow+Pfenning:MFPS99},
  the aforementioned persistence modality, and
- subexponentials\autocites{Nigam+Miller:PPDP09}{Kanovich+:MSCS19} and adjunctions from adjoint logic\autocites{Benton:CSL94}{Pruiksma+:18}.
+ subexponentials, %\autocites{Nigam+Miller:PPDP09}{Kanovich+:MSCS19}
+ and adjunctions from adjoint logic. %\autocites{Benton:CSL94}{Pruiksma+:18}.
 These extensions are not crucial to the remainder of this dissertation, but are mentioned for the sake of completeness.
 
 % \paragraph*{First-order quantification}

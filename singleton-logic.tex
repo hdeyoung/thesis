@@ -17,7 +17,7 @@ That such a severe restriction on the structure of sequents yields a well-define
 This \lcnamecref{ch:singleton-logic} will thereafter focus on the proof-theoretic consequences of the single-antecedent restriction.
 % [This \lcnamecref{ch:singleton-logic} is primarily devoted to the proof-theoretic consequences of the single-antecedent restriction, so the operational aspects are mostly postponed to \cref{ch:singleton-processes}.]
 
-Having fully motivated the single-antecedent restriction, we then proceed to \cref{sec:singleton-logic:seq-calc} where we derive the singleton sequent calculus by systematically applying the restriction to the intuitionistic ordered sequent calculus of \cref{??}.
+Having fully motivated the single-antecedent restriction, we then proceed to \cref{sec:singleton-logic:seq-calc} where we derive the singleton sequent calculus by systematically applying the restriction to the intuitionistic ordered sequent calculus of \cref{ch:ordered-logic}.
 (Not all of the ordered logical connectives will be able to survive the restriction, however.
 As we will explain, it is precisely the multiplicative connectives that are absent from singleton logic.)
 
@@ -121,25 +121,26 @@ In addition to providing sequents with an elegant symmetry between antecedents a
 
 \item[Type theory]
   In \citeauthor{Caires+:MSCS16}'s \acs{SILL} type theory\autocites{Caires+Pfenning:CONCUR10}{Caires+:TLDI12}{Toninho+:ESOP13}{Caires+:MSCS16} based on intuitionistic linear logic, each well-typed process $P$ acts as a client of multiple services $(A_i)_{i=1}^n$ along channels $(x_i)_{i=1}^n$, while simultaneously offering a service $A$ of its own along a single channel $x$.
-  Thus, networks of well-typed processes have a tree topology, as depicted in the neighboring display.\fixnote{fix diagram}%
-  \marginnote{\centering
-    \begin{tikzpicture}
-      \graph [nodes={draw}, math nodes,->=o-] {
-        { / [coordinate, > "$x_1{:}A_1$"] , / [coordinate] }
-        --
-        P [circle]
-        -> ["$x{:}A$"]
-        / [coordinate];
-      };
-    \end{tikzpicture}
-
-    $\downsquigarrow$
-
-    \begin{tikzpicture}
-      \graph [nodes={draw}, math nodes] {
-        / [coordinate] -- P [circle] -> / [coordinate];
-      };
-    \end{tikzpicture}
+  Thus, networks of well-typed processes have a tree topology, as depicted in the neighboring display.%
+  \marginnote[-1.75\baselineskip]{\centering
+    \begin{tikzcd}[ampersand replacement=\&, row sep=small]
+      {} \drar[dash][sloped,above]{x_1{:}A_1}
+      \\
+      {} \rar[phantom]{\smash{\vdots}\vphantom{t}} \& |[circle,draw]| P \& {} \lar[arrow style=tikz,>={Circle[open]}][swap]{x{:}A}
+      \\
+      {} \urar[dash][sloped,below]{x_n{:}A_n}
+    \end{tikzcd}
+    \\%
+    $\downsquigarrow$%
+    \\[\baselineskip]
+    \begin{tikzcd}[ampersand replacement=\&, row sep=small]
+      {} \rar[dash]{A} \& |[circle,draw]| P \& {} \lar[arrow style=tikz, >={Circle[open]}][swap]{C}
+    \end{tikzcd}
+    % \begin{tikzpicture}
+    %   \graph [nodes={draw}, math nodes] {
+    %     / [coordinate] -- P [circle] -> / [coordinate];
+    %   };
+    % \end{tikzpicture}
   }
 
   In data pipelines, the computational processes are arranged in a strictly linear topology, with each process having exactly one upstream provider -- no more and no less.
@@ -230,7 +231,7 @@ For example, singleton sequent calculus rules for additive disjunction may also 
   
   $\begin{array}{@{}l@{}ccc@{}}
     & \text{\itshape Ordered sequent calculus} && \text{\itshape Singleton sequent calculus}
-    \\[\baselineskip]
+    \\[1ex]
 %    \subfloat[\label{fig:singleton-logic:seq-calc:derive-cut}]{\quad}
     % &
     % \infer[\mathrlap{\jrule{CUT}^B}]{\oseq{\octx'_L \oc \octx \oc \octx'_R |- C}}{

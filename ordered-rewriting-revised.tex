@@ -44,46 +44,46 @@ In particular, unfocused ordered rewriting can be recovered in an operationally 
 % In this \lcnamecref{ch:ordered-rewriting}, we review the Lambek calculus from a [string] rewriting perspective.
 
 
-\section{REMOVE}
+% \section{REMOVE}
 
-The previous \lcnamecref{ch:string-rewriting} showed how to use string rewriting to specify, on a global level, the [...] of concurrent systems that have a linear topology.
-Although useful for [...], these string rewriting specifications lack a clear notion of local, decentralized execution -- for each step of rewriting, the entire string is rewritten as a monolithic whole by a central conductor.
+% The previous \lcnamecref{ch:string-rewriting} showed how to use string rewriting to specify, on a global level, the [...] of concurrent systems that have a linear topology.
+% Although useful for [...], these string rewriting specifications lack a clear notion of local, decentralized execution -- for each step of rewriting, the entire string is rewritten as a monolithic whole by a central conductor.
 
-Keeping in mind our ultimate goal of decentralized\fixnote{distributed?} implementations of concurrent systems, these string rewriting specifications are too abstract.
-Instead, we need to expose local interactions that are left implicit in the string rewriting specifications.
+% Keeping in mind our ultimate goal of decentralized\fixnote{distributed?} implementations of concurrent systems, these string rewriting specifications are too abstract.
+% Instead, we need to expose local interactions that are left implicit in the string rewriting specifications.
 
-As an example, recall from \cref{ch:string-rewriting} the string rewriting specification of a system that may transform strings that end with $b$ into the empty string:
-\begin{equation}
-  \infer{a \oc b \reduces b}{}
-  \qquad
-  \infer{b \reduces \octxe}{}
-  \:.
-\end{equation}
-This specification is non-local in two ways:
-the central conductor must identify those substrings that can be rewritten according to one of the axioms.
-In the [...] axiom, for example, there is no description of how the symbols $a$ and $b$ would identify each other and coordinate to effect a rewriting to $b$.
+% As an example, recall from \cref{ch:string-rewriting} the string rewriting specification of a system that may transform strings that end with $b$ into the empty string:
+% \begin{equation}
+%   \infer{a \oc b \reduces b}{}
+%   \qquad
+%   \infer{b \reduces \octxe}{}
+%   \:.
+% \end{equation}
+% This specification is non-local in two ways:
+% the central conductor must identify those substrings that can be rewritten according to one of the axioms.
+% In the [...] axiom, for example, there is no description of how the symbols $a$ and $b$ would identify each other and coordinate to effect a rewriting to $b$.
 
-To [...], we introduce \vocab{choreographies}, which refine string rewriting specifications by consistently assigning each symbol one of two roles: message or process.
-\begin{equation*}
-  \infer{\atmR{a} \oc \proc{b} \reduces \proc{b}}{}
-  \qquad\text{and}\qquad
-  \infer{\proc{b} \reduces \octxe}{}
-\end{equation*}
+% To [...], we introduce \vocab{choreographies}, which refine string rewriting specifications by consistently assigning each symbol one of two roles: message or process.
+% \begin{equation*}
+%   \infer{\atmR{a} \oc \proc{b} \reduces \proc{b}}{}
+%   \qquad\text{and}\qquad
+%   \infer{\proc{b} \reduces \octxe}{}
+% \end{equation*}
 
-a recursively defined ordered proposition, such as
-\begin{equation*}
-  \proc{b} \defd (\atmR{a} \limp \up \dn \proc{b}) \with \one
-\end{equation*}
-for the process $\proc{b}$.
+% a recursively defined ordered proposition, such as
+% \begin{equation*}
+%   \proc{b} \defd (\atmR{a} \limp \up \dn \proc{b}) \with \one
+% \end{equation*}
+% for the process $\proc{b}$.
 
-The remainder of this \lcnamecref{ch:ordered-rewriting} presents a formulation of the Lambek calculus from the ordered sequent calculus of \cref{ch:ordered-logic}.
+% The remainder of this \lcnamecref{ch:ordered-rewriting} presents a formulation of the Lambek calculus from the ordered sequent calculus of \cref{ch:ordered-logic}.
 
-Then, in 
+% Then, in 
 
 
-One valid choreography for this specification views each symbol $b$ as a process that nondeterministically receives some number of messages $a$ before terminating.
+% One valid choreography for this specification views each symbol $b$ as a process that nondeterministically receives some number of messages $a$ before terminating.
 
-If we annotate messages with an underbar and processes with a circumflex, then $\atm{a} \oc \hat{b} \reduces \hat{b}$ and $\hat{b} \reduces \octxe$.
+% If we annotate messages with an underbar and processes with a circumflex, then $\atm{a} \oc \hat{b} \reduces \hat{b}$ and $\hat{b} \reduces \octxe$.
 
 
 \section{Ordered resource decomposition as rewriting}\label{sec:ordered-rewriting:rewriting}
@@ -108,7 +108,7 @@ Let us develop a variant of the sequent calculus that factors out this boilerpla
 
 To decouple the resource decomposition from the surrounding boilerplate, we will introduce a new judgment, $\octx \reduces \octx'$, meaning \enquote{Resources $\octx$ may be decomposed into resources $\octx'$.}
 The choice of notation for this judgment is not coincidental:
-resource decomposition is, in some dimensions\fixnote{Is this enough of a qualifier?}, a generalization of the string rewriting shown in \cref{ch:string-rewriting}.
+resource decomposition is, in some dimensions, a generalization of the string rewriting shown in \cref{ch:string-rewriting}.
 
 % With this judgment in hand, the boilerplate can be factored into a uniform left rule, $\lrule{\star}$:
 With this new decomposition judgment comes a cut principle, $\jrule{CUT}^{\reduces}$, into which all of the boilerplate is factored:
@@ -453,7 +453,6 @@ To state and prove soundness, we must first define an operation $\bigfuse \octx$
 \end{proof}
 
 
-\clearpage
 
 \subsection{Properties of the ordered rewriting framework}\label{sec:ordered-rewriting:concurrency}
 
@@ -463,7 +462,7 @@ As we did for the string rewriting framework, we can evaluate the above ordered 
 
 Like string rewriting, ordered rewriting admits concurrency.
 As an example of concurrent ordered rewriting, observe that, as shown in the adjacent \lcnamecref{fig:ordered-rewriting:concurrent-example},%
-\begin{marginfigure}
+\begin{marginfigure}[3\baselineskip]
   \begin{equation*}
   \begin{tikzcd}[row sep=large, column sep=tiny]
     &
@@ -661,11 +660,11 @@ Rather than having each of these rules give rise to a separate step, we can trea
 
 The rewriting framework described above might be termed \emph{unfocused} ordered rewriting; we will now describe a focused ordered rewriting framework.
 
-This idea of using focusing to increase the granularity of rewriting steps dates back to, at least, the \acf{CLF}\autocites{??}{??} and was later streamlined in linear logic by \textcite{Cervesato+Scedrov:IC09}.
-\Textcite{Simmons:CMU12} has studied a focused ordered rewriting framework, though in a somewhat different formulation than the one we present here.
+This idea of using focusing to increase the granularity of rewriting steps dates back to, at least, the \acf{CLF}\autocite{Watkins+:CMU02} and was later streamlined in linear logic by \textfootcite{Cervesato+Scedrov:IC09}
+\Textfootcite{Simmons:CMU12} has studied a focused ordered rewriting framework, though in a somewhat different formulation than the one we present here.
 
 
-\newthought{The ordered propositions} are now polarized into positive and negative classes, or \vocab{polarities}\autocite{??}, according to the invertibility of their sequent calculus rules; two \enquote*{shift} operators, $\dn$ and $\up$, mediate between the two classes.
+\newthought{The ordered propositions} are now polarized into positive and negative classes, or \vocab{polarities}\autocite{Andreoli:JLC92}, according to the invertibility of their sequent calculus rules; two \enquote*{shift} operators, $\dn$ and $\up$, mediate between the two classes.
 \begin{align*}
   % Positive props. &
     \p{A} &\Coloneqq \p{a} \mid \p{A} \fuse \p{B} \mid \one \mid \dn \n{A}
@@ -691,7 +690,7 @@ Notice that we use the same metavariables for these polarized ordered contexts a
 
 We may also reify an ordered context $\np{\octx}$ as a positive proposition, $\bigfuse \np{\octx}$, using the operation defined in the neighboring \lcnamecref{fig:ordered-rewriting:bigfuse}%
 %
-\begin{marginfigure}
+\begin{marginfigure}[-6\baselineskip]
   \begin{align*}
     \bigfuse (\np{\octx}_1 \oc \np{\octx}_2) &= (\bigfuse \np{\octx}_1) \fuse (\bigfuse \np{\octx}_2) \\
     \bigfuse (\octxe) &= \one \\
@@ -707,7 +706,7 @@ This operation is the polarized analogue of the operation shown in \cref{fig:ord
 \newthought{Each class of propositions} is then equipped with its own focusing judgment: a \vocab{left-focus judgment}, $\lfocus{\np{\octx}_L}{\n{A}}{\np{\octx}_R}{\p{C}}$, that focuses on a negative proposition, $\n{A}$, that occurs to the left of the turnstile; and a \vocab{right-focus judgment}, $\rfocus{\np{\octx}}{\p{A}}$, that focuses on a positive proposition, $\p{A}$, that occurs to the right of the turnstile.%
 \footnote{We choose a left-facing turnstile for the right-focus judgment to emphasize its input/output mode; see the next paragraph.}
 
-Following \textcite{Zeilberger:POPL08}, each of these judgments can be read as a function that provides a form of extended decomposition -- the in-focus proposition is decomposed beyond its immediate subformulas, until subformulas of the opposite polarity are reached.
+Following \textfootcite{Zeilberger:POPL08}, each of these judgments can be read as a function that provides a form of extended decomposition -- the in-focus proposition is decomposed beyond its immediate subformulas, until subformulas of the opposite polarity are reached.
 % The judgment $\rfocus{\octx}{\p{A}}$ decomposes the in-focus proposition $\p{A}$ into the ordered context $\octx$ of negative subformulas,
 % and $\lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}}$ decomposes the in-focus proposition $\n{A}$ into the ordered contexts $\octx_L$ and $\octx_R$ and the positive subformula $\p{C}$.
 % 
@@ -778,7 +777,7 @@ are both derivable.
 % when the negative proposition $(\p{a} \limp \up (\p{c} \fuse \p{a})) \with (\p{a} \limp \up \one)$ is in focus.
 
 \newthought{A focused rewriting step arises} when a negative proposition, $\n{A}$, is put into focus and the resulting consequent, $\p{C}$, is subsequently decomposed into the ordered context.%
-\footnote{Writing $\rfocus{\np{\octx'{}}}{\p{B}}$ for the right-focus judgment gives this rule the flavor of a cut principle.}
+\footnote[][-6\baselineskip]{Writing $\rfocus{\np{\octx'{}}}{\p{B}}$ for the right-focus judgment gives this rule the flavor of a cut principle.}
 In addition, the compatibility rule $\jrule{$\reduces$C}$ is retained.
 \begin{inferences}
   \infer[\jrule{$\reduces$I}]{\np{\octx}_L \oc \n{A} \oc \np{\octx}_R \reduces \np{\octx'{}}}{
@@ -1002,54 +1001,54 @@ It is even possible to embed the unfocused ordered rewriting framework of \cref{
 \subsection{Embedding unfocused ordered rewriting}\label{sec:ordered-rewriting:embed-unfocused}
 
 With careful placement of additional, non-minimal shifts, it is possible to embed unfocused ordered rewriting within the focused ordered rewriting framework in a operationally faithful way.
-Specifically, we can define a mapping, $\embed*{}$, from contexts of unpolarized propositions to contexts of negative propositions and positive atoms in a way that strongly respects the operational behavior of unfocused ordered rewriting:
+Specifically, we can define a mapping, $\embedb*{}$, from contexts of unpolarized propositions to contexts of negative propositions and positive atoms in a way that strongly respects the operational behavior of unfocused ordered rewriting:
 \begin{itemize}[noitemsep]
-\item $\octx \reduces \octx'$ implies $\embed{\octx} \reduces \embed{\octx'{}}$; and
-\item $\embed{\octx} \reduces \np{\lctx'{}}$ implies $\octx \reduces \octx'$, for some $\octx'$ such that $\np{\lctx'{}} = \embed{\octx'{}}$.
+\item $\octx \reduces \octx'$ implies $\embedb{\octx} \reduces \embedb{\octx'{}}$; and
+\item $\embedb{\octx} \reduces \np{\lctx'{}}$ implies $\octx \reduces \octx'$, for some $\octx'$ such that $\np{\lctx'{}} = \embedb{\octx'{}}$.
 \end{itemize}
-Because $\embed*{}$ is a total function, these properties thus establish it as a \emph{strong reduction\fixnote{or just \enquote*{strong bisimulation}?} bisimulation}\autocite{Sangiorgi+Walker:CUP03}.
+Because $\embedb*{}$ is a total function, these properties thus establish it as a \emph{strong reduction bisimulation}\autocite{Sangiorgi+Walker:CUP03}.
 % By appropriately placing double shifts, $\dn \up$ or $\up \dn$, between each pair of 
 
 Essentially, this embedding inserts a double shift, $\dn \up$, in front of each proper, nonatomic subformula.
 These double shifts cause chaining and inversion to be interrupted after each step, forcing the focused rewriting to mimic the small-step behavior of unfocused rewriting.
 
-More specifically, $\embed{A}$ prepends an $\up$ shift whenever the top-level connective of $A$ has positive polarity.
-Consequently, $\embed{A}$ is either: a positive atom, exactly when $A$ is atomic; or otherwise a negative proposition.
-Also, the mapping $\embed*{}$ relies on the $\bigfuse$ operation on contexts -- thus, $\bigfuse \embed{A}$ inserts a $\dn$ shift in front of $\embed{A}$ exactly when $\embed{A}$ and hence $A$ are nonatomic.
+More specifically, $\embedb{A}$ prepends an $\up$ shift whenever the top-level connective of $A$ has positive polarity.
+Consequently, $\embedb{A}$ is either: a positive atom, exactly when $A$ is atomic; or otherwise a negative proposition.
+Also, the mapping $\embedb*{}$ relies on the $\bigfuse$ operation on contexts -- thus, $\bigfuse \embedb{A}$ inserts a $\dn$ shift in front of $\embedb{A}$ exactly when $\embedb{A}$ and hence $A$ are nonatomic.
 Together, these features serve to insert a double shift, $\dn \up$, in front of each proper, nonatomic subformula of $A$.
 
-% % $\embed*{}$, from unpolarized propositions to negative propositions and positive atoms;
-% $\embedn*{}$ and $\embedp*{}$, from unpolarized propositions to negative and positive propositions, respectively.
-% $\embedn{A}$ and $\embedp{A}$ produce negative and positive polarizations of $A$ that insert a $\dn \up$ shift in front of every proper, nonatomic subformula of $A$.
-% In addition, $\embedn{A}$ prepends an $\up$ shift whenever the top-level connective of $A$ has positive polarity, whereas $\embedn{A}$ prepends a $\dn$ shift whenever $A$ is not atomic.
-% % $\embed{A}$ produces either a positive atom or a negative polarization of $A$, according to wheter $A$ is atomic.
+% % $\embedb*{}$, from unpolarized propositions to negative propositions and positive atoms;
+% $\embedbn*{}$ and $\embedbp*{}$, from unpolarized propositions to negative and positive propositions, respectively.
+% $\embedbn{A}$ and $\embedbp{A}$ produce negative and positive polarizations of $A$ that insert a $\dn \up$ shift in front of every proper, nonatomic subformula of $A$.
+% In addition, $\embedbn{A}$ prepends an $\up$ shift whenever the top-level connective of $A$ has positive polarity, whereas $\embedbn{A}$ prepends a $\dn$ shift whenever $A$ is not atomic.
+% % $\embedb{A}$ produces either a positive atom or a negative polarization of $A$, according to wheter $A$ is atomic.
 %
 % \begin{marginfigure}
 % \begin{equation*}
 %   \begin{aligned}
-%     \embedp{A} &= \begin{cases*}
+%     \embedbp{A} &= \begin{cases*}
 %                     \p{a} & if $A = a$ \\
-%                     \dn \embedn{A} & otherwise
+%                     \dn \embedbn{A} & otherwise
 %                \end{cases*}
 %     \\
-%     \embedn{A} &= \begin{cases*}
-%                     \up (\embedp{A_1} \fuse \embedp{A_2}) & if $A = A_1 \fuse A_2$ \\
+%     \embedbn{A} &= \begin{cases*}
+%                     \up (\embedbp{A_1} \fuse \embedbp{A_2}) & if $A = A_1 \fuse A_2$ \\
 %                     \up \one & if $A = \one$ \\
-%                     \embedp{A_1} \limp \up \embedp{A_2} & if $A = A_1 \limp A_2$ \\
-%                     \up \embedp{A_2} \pmir \embedp{A_1} & if $A = A_2 \pmir A_1$ \\
-%                     \up \embedp{A_1} \with \up \embedp{A_2} & if $A = A_1 \with A_2$ \\
+%                     \embedbp{A_1} \limp \up \embedbp{A_2} & if $A = A_1 \limp A_2$ \\
+%                     \up \embedbp{A_2} \pmir \embedbp{A_1} & if $A = A_2 \pmir A_1$ \\
+%                     \up \embedbp{A_1} \with \up \embedbp{A_2} & if $A = A_1 \with A_2$ \\
 %                     \top & if $A = \top$
 %                   \end{cases*}
 %     \\
-%     \embed{A} &= \begin{cases*}
+%     \embedb{A} &= \begin{cases*}
 %                    \p{a} & if $A = a$ \\
-%                    \embedn{A} & otherwise
+%                    \embedbn{A} & otherwise
 %                  \end{cases*}
 %     \\
-%     \embed{\octx} &= \begin{cases*}
-%                        \embed{\octx_1} \oc \embed{\octx_2} & if $\octx = \octx_1 \oc \octx_2$ \\
+%     \embedb{\octx} &= \begin{cases*}
+%                        \embedb{\octx_1} \oc \embedb{\octx_2} & if $\octx = \octx_1 \oc \octx_2$ \\
 %                        (\octxe) & if $\octx = \octxe$ \\
-%                        \embed{A} & if $\octx = A$
+%                        \embedb{A} & if $\octx = A$
 %                      \end{cases*}
 %   \end{aligned}
 % \end{equation*}
@@ -1057,43 +1056,43 @@ Together, these features serve to insert a double shift, $\dn \up$, in front of 
 % \end{marginfigure}
 \begin{marginfigure}
   \begin{align*}
-    \embed*{\octx_1 \oc \octx_2} &= \embed{\octx_1} \oc \embed{\octx_2} \\
-    \embed*{\octxe} &= \octxe \\
-    \embed{a} &= \p{a} \\
-    \embed*{A \fuse B} &= \up ((\bigfuse \embed{A}) \fuse (\bigfuse \embed{B})) \\
-    \embed{\one} &= \up \one \\
-    \embed*{A \limp B} &= (\bigfuse \embed{A}) \limp \up (\bigfuse \embed{B}) \\
-    \embed*{B \pmir A} &= \up (\bigfuse \embed{B}) \pmir (\bigfuse \embed{A}) \\
-    \embed*{A \with B} &= \up (\bigfuse \embed{A}) \with \up (\bigfuse \embed{B}) \\
-    \embed{\top} &= \top
+    \embedb*{\octx_1 \oc \octx_2} &= \embedb{\octx_1} \oc \embedb{\octx_2} \\
+    \embedb*{\octxe} &= \octxe \\
+    \embedb{a} &= \p{a} \\
+    \embedb*{A \fuse B} &= \up ((\bigfuse \embedb{A}) \fuse (\bigfuse \embedb{B})) \\
+    \embedb{\one} &= \up \one \\
+    \embedb*{A \limp B} &= (\bigfuse \embedb{A}) \limp \up (\bigfuse \embedb{B}) \\
+    \embedb*{B \pmir A} &= \up (\bigfuse \embedb{B}) \pmir (\bigfuse \embedb{A}) \\
+    \embedb*{A \with B} &= \up (\bigfuse \embedb{A}) \with \up (\bigfuse \embedb{B}) \\
+    \embedb{\top} &= \top
   \end{align*}
   \caption{An embedding of unfocused ordered rewriting within focused ordered rewriting}
 \end{marginfigure}
 
 \begin{theorem}
-  The embedding $\embed{(-)}$ satisfies the following properties.
+  The embedding $\embedb{(-)}$ satisfies the following properties.
   \begin{itemize}[nosep]
-  \item If $\octx \reduces \octx'$, then $\embed{\octx} \reduces \embed{\octx'{}}$.
-  \item If $\embed{\octx} = \np{\lctx} \reduces \np{\lctx'{}}$, then $\octx \reduces \octx'$ for some $\octx'$ such that $\np{\lctx'{}} = \embed{\octx'{}}$.
+  \item If $\octx \reduces \octx'$, then $\embedb{\octx} \reduces \embedb{\octx'{}}$.
+  \item If $\embedb{\octx} = \np{\lctx} \reduces \np{\lctx'{}}$, then $\octx \reduces \octx'$ for some $\octx'$ such that $\np{\lctx'{}} = \embedb{\octx'{}}$.
   \end{itemize}
 \end{theorem}
 \begin{proof}
   The proofs of these properties require a straightforward lemma:
   for all unpolarized propositions $A$, 
   \begin{equation*}
-    \rfocus{\np{\lctx}}{\bigfuse \embed{A}} \text{\ if, and only if, } \np{\lctx} = \embed{A}
+    \rfocus{\np{\lctx}}{\bigfuse \embedb{A}} \text{\ if, and only if, } \np{\lctx} = \embedb{A}
     \,.
   \end{equation*}
 
   The first property is then proved by induction over the structure of the given rewriting step, $\octx \reduces \octx'$.
   As an example, consider the case in which $\octx = A \oc (A \limp B) \reduces B = \octx'$.
-  By definition, $\embed{\octx} = \embed{A} \oc ((\bigfuse \embed{A}) \limp \up (\bigfuse \embed{B}))$ and $\embed{\octx'{}} = \embed{B}$; we can indeed derive $\lfocus{\embed{A}}{(\bigfuse \embed{A}) \limp \up (\bigfuse \embed{B})}{}{\bigfuse \embed{B}}$ and $\rfocus{\embed{B}}{\bigfuse \embed{B}}$.
-  So, as required, $\embed{\octx} = \embed{A} \oc ((\bigfuse \embed{A}) \limp \up (\bigfuse \embed{B})) \reduces \embed{B} = \embed{\octx'{}}$.
+  By definition, $\embedb{\octx} = \embedb{A} \oc ((\bigfuse \embedb{A}) \limp \up (\bigfuse \embedb{B}))$ and $\embedb{\octx'{}} = \embedb{B}$; we can indeed derive $\lfocus{\embedb{A}}{(\bigfuse \embedb{A}) \limp \up (\bigfuse \embedb{B})}{}{\bigfuse \embedb{B}}$ and $\rfocus{\embedb{B}}{\bigfuse \embedb{B}}$.
+  So, as required, $\embedb{\octx} = \embedb{A} \oc ((\bigfuse \embedb{A}) \limp \up (\bigfuse \embedb{B})) \reduces \embedb{B} = \embedb{\octx'{}}$.
 
-  The second property is also proved by induction over the structure of the given rewriting step, this time $\embed{\octx} = \np{\lctx} \reduces \np{\lctx'{}}$.
-  As an example, consider the case in which $\lfocus{\embed{\octx_L}}{(\bigfuse \embed{A}) \limp \up (\bigfuse \embed{B})}{\embed{\octx_R}}{\p{C}}$ and $\rfocus{\np{\lctx'{}}}{\p{C}}$, for some $\octx_L$, $A$, $B$, $\octx_R$, and $\p{C}$ such that $\octx = \octx_L \oc (A \limp B) \oc \octx_R$.
-  By inversion and the aforementioned lemma, we have $\octx_L = A$, $\octx_R = (\octxe)$, $\p{C} = \bigfuse \embed{B}$, and $\np{\lctx'{}} = \embed{B}$.
-  Indeed, as required, $\octx = A \oc (A \limp B) \reduces B = \octx'$ and $\np{\lctx'{}} = \embed{\octx'{}}$.
+  The second property is also proved by induction over the structure of the given rewriting step, this time $\embedb{\octx} = \np{\lctx} \reduces \np{\lctx'{}}$.
+  As an example, consider the case in which $\lfocus{\embedb{\octx_L}}{(\bigfuse \embedb{A}) \limp \up (\bigfuse \embedb{B})}{\embedb{\octx_R}}{\p{C}}$ and $\rfocus{\np{\lctx'{}}}{\p{C}}$, for some $\octx_L$, $A$, $B$, $\octx_R$, and $\p{C}$ such that $\octx = \octx_L \oc (A \limp B) \oc \octx_R$.
+  By inversion and the aforementioned lemma, we have $\octx_L = A$, $\octx_R = (\octxe)$, $\p{C} = \bigfuse \embedb{B}$, and $\np{\lctx'{}} = \embedb{B}$.
+  Indeed, as required, $\octx = A \oc (A \limp B) \reduces B = \octx'$ and $\np{\lctx'{}} = \embedb{\octx'{}}$.
 \end{proof}
 
 \subsection{Embedding weakly focused ordered rewriting}\label{sec:ordered-rewriting:weak-focusing}
@@ -1153,7 +1152,7 @@ Although weak focusing is well-defined for arbitrary implications\autocites{Laur
 In fact, there is a better approach than using weakly focused ordered rewriting as yet another independent rewriting system.
 Instead of using weakly focused rewriting directly, we can embed it within (strongly) focused ordered rewriting by inserting shifts at specific locations and then use that embedding.
 From here on, we will exclusively use this embedding when weakly focused ordered rewriting is needed.%
-\begin{marginfigure}
+\begin{marginfigure}[2\baselineskip]
 \begin{equation*}
   \begin{aligned}
     \embed*{\p{\octx}_1 \oc \p{\octx}_2}

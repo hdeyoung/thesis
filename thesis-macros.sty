@@ -55,7 +55,7 @@
 \NewDocumentCommand \nats { } { \mathbb{N} }
 
 \NewDocumentCommand \symrej { } { \mathit{n} }
-\NewDocumentCommand \symacc { } { \emp }
+\NewDocumentCommand \symacc { } { \mathit{y} }
 \NewDocumentCommand \bin { m } { \hat{#1} }
 \NewDocumentCommand \defp { m } { \hat{#1} }
 \NewDocumentCommand \np { m } { #1 }
@@ -474,7 +474,17 @@
   }
 
 
+
+\newcommand{\pp}{}% check it's not defined
+\DeclareRobustCommand{\pp}{\mathbin{\mathpalette\pp@\relax}}
+\newcommand\pp@[2]{%
+  \mspace{0.5mu}%
+  \vcenter{\hbox{\sbox\z@{$#1.$}\rule{4\ht\z@}{4\ht\z@}}}%
+  \mspace{0.5mu}%
+}
+
 \NewDocumentCommand \embed { s m } { \IfBooleanT{#1}{(} \tl_if_empty:nTF{#2}{\mathord{-}}{#2} \IfBooleanT{#1}{)} ^{\Box} }
+\NewDocumentCommand \embedb { s m } { \IfBooleanT{#1}{(} \tl_if_empty:nTF{#2}{\mathord{-}}{#2} \IfBooleanT{#1}{)} ^{\pp} }
 \NewDocumentCommand \embedp { s m } { \IfBooleanT{#1}{(} \tl_if_empty:nTF{#2}{\mathord{-}}{#2} \IfBooleanT{#1}{)} ^{\boxplus} }
 \NewDocumentCommand \embedn { s m } { \IfBooleanT{#1}{(} \tl_if_empty:nTF{#2}{\mathord{-}}{#2} \IfBooleanT{#1}{)} ^{\boxminus} }
 
