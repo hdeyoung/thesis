@@ -122,7 +122,7 @@ In addition to providing sequents with an elegant symmetry between antecedents a
 \item[Type theory]
   In \citeauthor{Caires+:MSCS16}'s \acs{SILL} type theory\autocites{Caires+Pfenning:CONCUR10}{Caires+:TLDI12}{Toninho+:ESOP13}{Caires+:MSCS16} based on intuitionistic linear logic, each well-typed process $P$ acts as a client of multiple services $(A_i)_{i=1}^n$ along channels $(x_i)_{i=1}^n$, while simultaneously offering a service $A$ of its own along a single channel $x$.
   Thus, networks of well-typed processes have a tree topology, as depicted in the neighboring display.%
-  \marginnote[-1.75\baselineskip]{\centering
+  \marginnote[-1.25\baselineskip]{\centering
     \begin{tikzcd}[ampersand replacement=\&, row sep=small]
       {} \drar[dash][sloped,above]{x_1{:}A_1}
       \\
@@ -223,7 +223,7 @@ After these revisions, the rule contains only well-formed singleton sequents and
 
 We could equally well justify this new cut rule by first principles, as it expresses the composition of two well-formed singleton proofs.
 But the above method of considering the constraints imposed by the single-antecedent restriction is a straightforward, mechanical way ahead for the other inference rules.
-For example, singleton sequent calculus rules for additive disjunction may also be constructed in this way~\parencref[see]{fig:singleton-logic:seq-calc:derive-plus}.\fixnote{fix figure}
+For example, singleton sequent calculus rules for additive disjunction may also be constructed in this way~\parencref[see]{fig:singleton-logic:seq-calc:derive-plus}.
 %
 \begin{figure*}[tbp]
   % \captionsetup{captionskip=0pt,farskip=0pt,nearskip=0pt}
@@ -280,7 +280,7 @@ However, not all} ordered logical connectives fare as well under the single-ante
 In particular, the multiplicative connectives do not have analogues in singleton logic.
 % [, precisely because their multiplicative nature involves splitting antecedents among several premises and, in other rules, extending the context with additional antecedents.]
 % 
-\begin{marginfigure}[12\baselineskip]
+\begin{marginfigure}[7\baselineskip]
   \normalsize
   \begin{gather*}
     \infer[\rrule{\limp}]{\oseq{\octx |- B_1 \limp B_2}}{
@@ -367,6 +367,15 @@ Changing the size of the context by introducing, or sometimes removing, antecede
 \newthought{%
 \Cref{fig:singleton-logic:seq-calc}} presents the complete set of rules for propositional singleton logic's sequent calculus.
 %
+%
+% The well-formed propositions are exactly the additive propositions of ordered logic, and the complete set of inference rules has been derived from those of the ordered sequent calculus by 
+
+% There is an important observation to be made here.
+Although the propositions of singleton logic are exactly the additive propositions of ordered logic, singleton logic is \emph{not} the additive fragment of ordered logic.
+For instance, the sequent $\oseq{A \oc B |- \top}$ is provable in the additive fragment of ordered logic, but it
+% $\slseq{A \oc B |- \top}$
+is not even a well-formed sequent in the singleton sequent calculus, for the simple reason that it violates the single-antecedent restriction.
+%
 \begin{figure}[tbp]
   \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
   \begin{syntax*}
@@ -408,14 +417,6 @@ Changing the size of the context by introducing, or sometimes removing, antecede
   \vspace*{-\belowdisplayskip}
   \caption{A sequent calculus for propositional singleton logic\label{fig:singleton-logic:seq-calc}}
 \end{figure}
-%
-% The well-formed propositions are exactly the additive propositions of ordered logic, and the complete set of inference rules has been derived from those of the ordered sequent calculus by 
-
-% There is an important observation to be made here.
-Although the propositions of singleton logic are exactly the additive propositions of ordered logic, singleton logic is \emph{not} the additive fragment of ordered logic.
-For instance, the sequent $\oseq{A \oc B |- \top}$ is provable in the additive fragment of ordered logic, but it
-% $\slseq{A \oc B |- \top}$
-is not even a well-formed sequent in the singleton sequent calculus, for the simple reason that it violates the single-antecedent restriction.
 
 That said, singleton logic only differs from the additive fragment of ordered logic in its treatment of $\zero$ and $\top$ -- the $\zero$,$\top$-free fragment of singleton logic coincides exactly with the $\zero$,$\top$-free, additive fragment (that is, the $\plus$,$\with$-fragment) of ordered logic.
 % 
@@ -458,7 +459,7 @@ The $\jrule{CUT}$ even maps to itself.
 \end{equation*}
 
 To make this automorphism formal, we define an involution, $\sym*{}$, on propositions (see the adjacent \lcnamecref{fig:singleton-logic:involution})%
-\begin{marginfigure}
+\begin{marginfigure}[-4\baselineskip]
   \begin{gather*}
     \sym*{a} = \sym{a} \qquad \sym*{\sym{a}} = a
     \\
@@ -532,7 +533,7 @@ As usual, the cut elimination \lcnamecref{thm:singleton-logic:seq-calc:cut-elimi
 \newthought{Before proceeding} to this \lcnamecref{lem:singleton-logic:cut-admissibility}'s proof, it is worth emphasizing a subtle distinction between the singleton sequent calculus's primitive $\jrule{CUT}$ rule and the admissible cut principle that this \lcnamecref{lem:singleton-logic:cut-admissibility} establishes.
 
 To be completely formal, we could treat cut-freeness as an extrinsic, Curry-style property of proofs%
-\footnote{Contrast this with a separate, intrinsically cut-free sequent calculus in the style of Church~\parencite{Pfenning:Andrews08}.}
+\footnote[][-.5\baselineskip]{Contrast this with a separate, intrinsically cut-free sequent calculus in the style of Church~\parencite{Pfenning:Andrews08}.}
 and indicate cut-freeness by decorating the turnstile, so that $\cfslseq{A |- C}$ denotes a cut-free proof of $\slseq{A |- C}$.
 The admissible cut principle stated in \cref{lem:singleton-logic:cut-admissibility} could then be expressed as the rule
 \begin{equation*}
@@ -702,7 +703,7 @@ Identity elimination -- a slight misnomer -- transforms a proof into an identity
   Moreover, this proof is cut-free.
 \end{lemma}
 \begin{proof}
-  As usual\fixnote{Best reference?}, by induction on the structure of the proposition $A$.
+  As usual, by induction on the structure of the proposition $A$.
 \end{proof}
 
 \begin{theorem}[Identity elimination]
@@ -710,7 +711,7 @@ Identity elimination -- a slight misnomer -- transforms a proof into an identity
   Moreover, if the given proof is cut-free, so is the identity-long proof.
 \end{theorem}
 \begin{proof}
-  As usual\fixnote{Best reference?}, by structural induction on the proof of $\slseq{A |- C}$.
+  As usual, by structural induction on the proof of $\slseq{A |- C}$.
 \end{proof}
 
 
@@ -741,15 +742,15 @@ Consequently, Hilbert-style axiomatizations usually rely heavily on implication 
 to effect the meanings of the logical connectives.
 
 However, as explained in \cref{sec:singleton-logic:seq-calc}, singleton logic does not enjoy the luxury of an implication connective.
-So, for singleton logic, a true Hilbert-style axiomatization that relies on a \emph{modus ponens} rule as its only inference rule is not possible.
+So a true Hilbert-style axiomatization that relies on a \emph{modus ponens} rule as its only inference rule is not possible.
 Instead, for a semi-axiomatic sequent calculus of singleton logic, 
 % So in a Hilbert-style axiomatization of singleton logic,
-we will have to content ourselves with a broad interpretation of the term \enquote*{axiom schema} that encompasses zero-premise rules that derive hypothetical judgments.
+we must content ourselves with a broad interpretation of the term \enquote*{axiom schema} that encompasses zero-premise rules that derive hypothetical judgments.
 
-\newthought{To construct} a semi-axiomatic sequent calculus for singleton logic, we will ask, in turn, whether each sequent calculus rule can be reduced to an axiom schema.
+\newthought{To construct} a semi-axiomatic sequent calculus for singleton logic, we will ask, in turn, whether each sequent calculus rule can be reduced to a schema.
 
 First, consider the judgmental rules, $\jrule{ID}$ and $\jrule{CUT}$, for the identity and cut principles (see neighboring display).%
-\marginnote{%
+\marginnote[-\baselineskip]{%
   \begin{inferences}
     \infer[\mathrlap{\jrule{ID}^A}]{\slseq{A |- A}}{}
     \hphantom{\jrule{CUT}^B}
@@ -770,13 +771,7 @@ Therefore, the $\jrule{CUT}$ rule is adopted wholesale in the semi-axiomatic seq
 % Because singleton logic does not have an implication connective to internalize the hypothetical judgment, there is no obvious way to turn this rule into an axiom.
 % Both rules are therefore adopted wholesale in the Hilbert-style axiomatization.
 
-Next, consider the sequent calculus's $\rrule{\plus}_1$ inference rule.%
-\fixnote{Citation of basic logic \parencite{Sambin+:JSL00}?
-  \begin{equation*}
-    \infer={B_1 \plus B_2 \vdash C}{
-      B_1 \vdash C & B_2 \vdash C}
-  \end{equation*}
-}
+Next, consider the sequent calculus's $\rrule{\plus}_1$ inference rule.
 % ; how much can we push this rule toward an axiom?
 Using the $\jrule{ID}$ axiom schema, we can obtain a zero-premise derived rule from $\rrule{\plus}_1$:
 \begin{equation*}
@@ -1276,12 +1271,14 @@ With proof terms in hand, we can now return to our goal of establishing a \emph{
 The cut elimination procedure will normalize a semi-axiomatic proof so that any remaining cuts are analytic, specifically of the forms $\spawn{\selectL{\kay}}{P}$ or $\spawn{P}{\selectR{\kay}}$.
 As shown in the neighboring display,%
 %
-\marginnote{
+\marginnote[-3\baselineskip]{
   \begin{gather*}
     \infer[\jrule{CUT}^{A_{\kay}}]{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \spawn{\selectL{\kay}}{P} : C}}{
       \infer[\lrule{\with}']{\slof{\with*[sub=_{\ell \in L}]{\ell:A_{\ell}} |- \selectL{\kay} : A_{\kay}}}{
         \text{($\kay \in L$)}} &
       \slof{A_{\kay} |- P : C}}
+    \\[2\jot]
+    \text{and}
     \\[2\jot]
     \infer[\jrule{CUT}^{C_{\kay}}]{\slof{A |- \spawn{P}{\selectR{\kay}} : \plus*[sub=_{\ell \in L}]{\ell:C_{\ell}}}}{
       \slof{A |- P : C_{\kay}} &
@@ -1485,7 +1482,7 @@ But many of the choices that would be made in breaking ties, such as between the
     \infer-[\jrule{CE}]{\slof{A |- \ce{\spawn{P_1}{P_2}} : C}}{
       \infer[\jrule{CUT}^B]{\slof{A |- \spawn{P_1}{P_2} : C}}{
         \slof{A |- P_1 : B} & \slof{B |- P_2 : C}}}
-    =
+    =\:
     \infer-[\jrule{A-CUT}^B]{\slof{A |- \nspawn{\ce{P_1}}{\ce{P_2}} : C}}{
       \infer-[\jrule{CE}]{\slof{A |- \ce{P_1} : C}}{
         \slof{A |- P_1 : B}} &
@@ -1503,6 +1500,7 @@ But many of the choices that would be made in breaking ties, such as between the
       \ce{\caseR[\ell \in L]{\ell => P_{\ell}}} = \caseR[\ell \in L]{\ell => \ce{P_{\ell}}} \\
       \ce{\selectL{\kay}} = \selectL{\kay}
     \end{lgathered}
+    \qedhere
   \end{equation*}
 \end{proof}
 
@@ -1825,7 +1823,7 @@ They seem to have arrived at the single-antecedent restriction from category-the
 \Citeauthor{Fortier+Santocanale:CSL13} do not develop a semi-axiomatic sequent calculus for singleton logic; that is a contribution of this work.
 
 
-CSL '12 paper on asynchronous Curry--Howard for linear logic\fixnote{Belongs in next chapter}
+% CSL '12 paper on asynchronous Curry--Howard for linear logic\fixnote{Belongs in next chapter}
 
 
 
@@ -1858,7 +1856,7 @@ They obtain these axioms by trivializing the implicit reflection rules:
   \infer[\jrule{$\with$A}_2]{\oseq{A \with B |- B}}{}
 \end{equation*}
 Combining these axioms with $\jrule{CUT}$, they arrive at \emph{explicit reflection} rules:%
-\marginnote[\baselineskip]{%
+\marginnote[0.25\baselineskip]{%
   \begin{equation*}
     \infer[\jrule{CUT}^A]{\oseq{\octx'_L \oc (A \with B) \oc \octx'_R |- C}}{
       \infer[\jrule{$\with$A}_1]{\oseq{A \with B |- A}}{} &
@@ -1873,7 +1871,7 @@ Combining these axioms with $\jrule{CUT}$, they arrive at \emph{explicit reflect
     \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
 \end{equation*}
 Alternatively, the implicit reflection rules could be obtained from the explicit reflection rules by trivializing the explicit rules and then combining the resulting axioms with $\jrule{CUT}$.%
-\marginnote[-\baselineskip]{%
+\marginnote[-1.25\baselineskip]{%
   \begin{equation*}
     \infer[\jrule{CUT}^{A \with B}]{\oseq{\octx |- A}}{
       \oseq{\octx |- A \with B} &

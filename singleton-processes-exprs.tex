@@ -66,26 +66,41 @@ As depicted in the adjacent \lcnamecref{fig:singleton-processes:chain-topology},
 %
 \begin{marginfigure}
   \centering
-  \begin{tikzpicture}
-    \graph [math nodes, nodes={circle, draw}] {
-      P_0 / [coordinate]
-       --
-      P_1
-       --
-      / \dotsb [rectangle, text height=1ex, draw=none]
-       --
-      P_i
-       --
-      / \dotsb [rectangle, text height=1ex, draw=none]
-       --
-      P_n
-       --
-      / [coordinate];
-    };
-    \node [fit=(P_1) (P_i) (P_n), inner xsep=.5em,
-           draw=gray,
-           label distance=2em, label={[gray]$\chn$}] {};
-  \end{tikzpicture}
+  \begin{tikzcd}[
+    ampersand replacement = \&,
+    execute at end picture = {
+      \node [fit = (P_1) (P_i) (P_n), inner xsep = .5em,
+             draw = gray,
+             label distance = 2em, label = {[gray]$\chn$}]
+        {};
+    },
+  ]
+    {} \rar[dash] \&
+    |[circle, draw, alias=P_1]| P_1 \rar[dash][description, text height=1ex]{\displaystyle\dotsb} \&[1.2em]
+    |[circle, draw, alias=P_i]| P_i \rar[dash][description, text height=1ex]{\displaystyle\dotsb} \&[1.2em]
+    |[circle, draw, alias=P_n]| P_{\mathrlap{n}\phantom{i}} \rar[dash] \&
+    {}
+  \end{tikzcd}
+  % \begin{tikzpicture}
+  %   \graph [math nodes, nodes={circle, draw}] {
+  %     P_0 / [coordinate]
+  %      --
+  %     P_1
+  %      --
+  %     / \dotsb [rectangle, text height=1ex, draw=none]
+  %      --
+  %     P_i
+  %      --
+  %     / \dotsb [rectangle, text height=1ex, draw=none]
+  %      --
+  %     P_n
+  %      --
+  %     / [coordinate];
+  %   };
+  %   \node [fit=(P_1) (P_i) (P_n), inner xsep=.5em,
+  %          draw=gray,
+  %          label distance=2em, label={[gray]$\chn$}] {};
+  % \end{tikzpicture}
   \caption{A prototypical process chain, $\chn$}\label{fig:singleton-processes:chain-topology}
 \end{marginfigure}
 %
@@ -165,7 +180,7 @@ Specifically, the right rules define what it means for a provider to offer a par
               \quad $P_2$, then terminate the current thread of control
             \end{tabular} \\
       & $\fwd$ & Terminate the current thread of control
-    \\ \midrule
+    \\[.5ex] % \midrule
     \rlap{\emph{Internal choice, $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$}} \\
       & $\selectR{\kay}$, with $\kay \in L$
           & A message to the right-hand client, carrying label $\kay$ \\
@@ -175,7 +190,7 @@ Specifically, the right rules define what it means for a provider to offer a par
               Await a message $\selectR{\kay}$ from the left-hand provider,\\
               \quad then continue as $P_{\kay}$
             \end{tabular}
-    \\ \midrule
+    \\[5ex] % \midrule
     \rlap{\emph{External choice, $\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}$}} \\
       & $\caseR[\ell \in L]{\ell => P_{\ell}}$
           & \renewcommand{\arraystretch}{0.95}%
@@ -457,13 +472,13 @@ This condition is reflected in a cut principle for the session-typing judgment:
       / [coordinate]
        -- ["$A$"]
       C_1 / \chn_1
-       -- ["$B$"]
+       -- ["$B$" {name=B}]
       C_2 / \chn_2
        -- ["$C$"]
       / [coordinate];
     };
 
-    \node [fit=(C_1) (C_2), draw, dashed, label=below:$\chn_1 \cc \chn_2$] {};
+    \node [fit=(C_1) (C_2) (C_1.north), draw=gray, label={[gray]above:$\chn_1 \cc \chn_2$}] {};
   \end{tikzpicture}
   \caption{A well-typed process chain that uses service $A$ to offer service $B$}\label{fig:singleton-processes:well-typed-cut}
 \end{marginfigure}%
@@ -637,7 +652,7 @@ In particular, the distinction helps to relate this process interpretation of si
   \label{fig:process-chains:session-typed-summary}
 \end{figure}
 
-\clearpage
+% \clearpage
 \subsection{From admissibility of non-analytic cuts to an operational semantics}\label{sec:process-chains:reductions}
 
 In the previous \lcnamecref{ch:singleton-logic}, we presented a procedure for normalizing semi-axio\-matic sequent proofs in singleton logic.
@@ -674,58 +689,58 @@ At the heart of reduction are two symmetric rules that describe how messages are
     \text{($\kay \in L$)}}
 \end{inferences}
 %
-\begin{marginfigure}
-  \centering
-  \begin{gather*}
-    \begin{tikzpicture}
-      \graph [math nodes, nodes={draw, circle}] {
-        / [coordinate]
-         --
-        k / \selectR{\kay}
-         --
-        P / {\caseL[\ell  \in L]{\ell => P_{\ell}}} [rounded rectangle, inner ysep=.5em]
-         --
-        / [coordinate];
-      };
-    \end{tikzpicture}
-    \\\reduces\\
-    \begin{tikzpicture}
-      \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
-        / [coordinate]
-         --
-        P_{\kay}
-         --
-        / [coordinate];
-      };
-    \end{tikzpicture}
-  \end{gather*}
-  \\\text{\emph{and}}\\
-  \begin{gather*}
-    \begin{tikzpicture}
-      \graph [math nodes, nodes={draw, circle}] {
-        / [coordinate]
-         --
-        P / {\caseR[\ell  \in L]{\ell => P_{\ell}}} [rounded rectangle, inner ysep=.5em]
-         --
-        k / \selectL{\kay}
-         --
-        / [coordinate];
-      };
-    \end{tikzpicture}
-    \\\reduces\\
-    \begin{tikzpicture}
-      \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
-        / [coordinate]
-         --
-        P_{\kay}
-         --
-        / [coordinate];
-      };
-    \end{tikzpicture}
-  \end{gather*}
+% \begin{marginfigure}
+%   \centering
+%   \begin{gather*}
+%     \begin{tikzpicture}
+%       \graph [math nodes, nodes={draw, circle}] {
+%         / [coordinate]
+%          --
+%         k / \selectR{\kay}
+%          --
+%         P / {\caseL[\ell  \in L]{\ell => P_{\ell}}} [rounded rectangle, inner ysep=.5em]
+%          --
+%         / [coordinate];
+%       };
+%     \end{tikzpicture}
+%     \\\reduces\\
+%     \begin{tikzpicture}
+%       \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
+%         / [coordinate]
+%          --
+%         P_{\kay}
+%          --
+%         / [coordinate];
+%       };
+%     \end{tikzpicture}
+%   \end{gather*}
+%   \\\text{\emph{and}}\\
+%   \begin{gather*}
+%     \begin{tikzpicture}
+%       \graph [math nodes, nodes={draw, circle}] {
+%         / [coordinate]
+%          --
+%         P / {\caseR[\ell  \in L]{\ell => P_{\ell}}} [rounded rectangle, inner ysep=.5em]
+%          --
+%         k / \selectL{\kay}
+%          --
+%         / [coordinate];
+%       };
+%     \end{tikzpicture}
+%     \\\reduces\\
+%     \begin{tikzpicture}
+%       \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
+%         / [coordinate]
+%          --
+%         P_{\kay}
+%          --
+%         / [coordinate];
+%       };
+%     \end{tikzpicture}
+%   \end{gather*}
 
-  \caption{Pictorial representations of the principal reductions}
-\end{marginfigure}%
+%   \caption{Pictorial representations of the principal reductions}
+% \end{marginfigure}%
 As suggested earlier, when a process $\caseL[\ell \in L]{\ell => P_{\ell}}$ receives a message from its left-hand provider, it continues the thread of control with the indicated branch, $P_{\kay}$; the rule involving $\caseR[\ell \in L]{\ell => P_{\ell}}$ is symmetric.
 These two reduction rules mimic the principal proof normalization steps for singleton logic's semi-axiomatic sequent proofs: $\nspawn{\selectR{\kay}}{\caseL[\ell \in L]{\ell => M_{\ell}}} = M_{\kay}$ and $\nspawn{\caseR[\ell \in L]{\ell => N_{\ell}}}{\selectL{\kay}} = N_{\kay}$.
 
@@ -737,53 +752,53 @@ The operational semantics formalizes these notions in rules that decompose $\spa
   \infer{\fwd \reduces (\chne)}{}
 \end{inferences}
 %
-\begin{marginfigure}
-  \begin{gather*}
-    \begin{tikzpicture}
-      \graph [math nodes, nodes={draw, circle}] {
-        / [coordinate]
-         --
-        P / \spawn{P_1}{P_2} [rounded rectangle, inner ysep=.5em]
-         --
-        / [coordinate];
-      };
-    \end{tikzpicture}
-    \\\reduces\\
-    \begin{tikzpicture}
-      \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
-        / [coordinate]
-         --
-        P_1
-         --
-        P_2
-         --
-        / [coordinate];
-      };
-    \end{tikzpicture}
-  \\\text{\emph{and}}\\
-    \begin{tikzpicture}
-      \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
-        / [coordinate]
-         --
-        P / \fwd
-         --
-        / [coordinate];
-      };
-    \end{tikzpicture}
-    \\\reduces\\
-    \begin{tikzpicture}
-      \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
-        / [coordinate]
-         --
-        P / \phantom{\fwd} [draw=none]
-         --
-        / [coordinate];
-        (P.west) -- (P.east);
-      };
-    \end{tikzpicture}
-  \end{gather*}
-  \caption{Pictorial representations of the reductions for $\spawn{P_1}{P_2}$ and $\fwd$}
-\end{marginfigure}%
+% \begin{marginfigure}
+%   \begin{gather*}
+%     \begin{tikzpicture}
+%       \graph [math nodes, nodes={draw, circle}] {
+%         / [coordinate]
+%          --
+%         P / \spawn{P_1}{P_2} [rounded rectangle, inner ysep=.5em]
+%          --
+%         / [coordinate];
+%       };
+%     \end{tikzpicture}
+%     \\\reduces\\
+%     \begin{tikzpicture}
+%       \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
+%         / [coordinate]
+%          --
+%         P_1
+%          --
+%         P_2
+%          --
+%         / [coordinate];
+%       };
+%     \end{tikzpicture}
+%   \\\text{\emph{and}}\\
+%     \begin{tikzpicture}
+%       \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
+%         / [coordinate]
+%          --
+%         P / \fwd
+%          --
+%         / [coordinate];
+%       };
+%     \end{tikzpicture}
+%     \\\reduces\\
+%     \begin{tikzpicture}
+%       \graph [math nodes, nodes={draw, circle, inner sep=.2em}] {
+%         / [coordinate]
+%          --
+%         P / \phantom{\fwd} [draw=none]
+%          --
+%         / [coordinate];
+%         (P.west) -- (P.east);
+%       };
+%     \end{tikzpicture}
+%   \end{gather*}
+%   \caption{Pictorial representations of the reductions for $\spawn{P_1}{P_2}$ and $\fwd$}
+% \end{marginfigure}%
 Because process chains are always considered up to associativity and unit laws, these reduction rules (along with the above $\cc$-compatibility rules) reflect the associative and identity normalization steps in the proof of admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:cut-admissibility}.
 For example, just as
 \begin{gather*}
@@ -1156,12 +1171,12 @@ Following the encoding laid out above, the states $q_0$ and $q_1$ become process
   \end{lgathered}
 \end{equation*}
 
-Sequential transducers are closed under composition\autocite{??}.
+Sequential transducers are closed under composition.
 To represent the composition of two infinite-word sequential transducers $\aut{T}_1$ and $\aut{T}_2$ as a well-typed process, we could simply construct their composition, $\aut{T} = \aut{T}_2 \circ \aut{T}_1$, as a sequential transducer in its own right and then represent the transducer $\aut{T}$ as a well-typed process.
 
 Even easier, however, is to directly compose the processes that represent the transducers $\aut{T}_1$ and $\aut{T}_2$.
 If $\aut{T}_1$ and $\aut{T}_2$ are in states $q$ and $s$, respectively, then the processes $\slof{\infinwds{\ialph} |- \defp{q} : \infinwds{\oalph}}$ and $\slof{\infinwds{\oalph} |- \defp{s} : \infinwds{\Delta}}$ are well-typed and the process $\slof{\infinwds{\ialph} |- \spawn{\defp{q}}{\defp{s}} : \infinwds{\Delta}}$  describes the current state of the composition, $\aut{T} = \aut{T}_2 \circ \aut{T}_1$.
-In fact, \textcite{DeYoung+Pfenning:APLAS16} prove -- in a very closely related, if slightly different, framework -- that cut elimination actually constructs a normal-form process for the transducer $\aut{T}$.
+In fact, \textfootcite{DeYoung+Pfenning:APLAS16} prove -- in a very closely related, if slightly different, framework -- that cut elimination actually constructs a normal-form process for the transducer $\aut{T}$.
 
 \subsection{Turing machines}\label{sec:process-chains:turing-machines}
 

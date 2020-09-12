@@ -1941,79 +1941,80 @@ This would allow \cref{lem:single-input-atom} to be reused, and would also strea
 Unfortunately, such a proof has been elusive so far.
 So, instead, we will prove the following \lcnamecref{lem:ordered-bisimilarity:append-left} by handling the context $\lctx_L$ all at once.
 The proof rehashes cases from \cref{lem:single-input-atom} and is not particularly enlightening beyond what was already presented there.
-For that reason, the majority of the following \lcnamecref{lem:ordered-bisimilarity:append-left}'s proof is postponed to \cref{app:bisim}.
+For that reason, the proof is elided.
+% majority of the following \lcnamecref{lem:ordered-bisimilarity:append-left}'s proof is postponed to \cref{app:bisim}.
 %
 \begin{lemma}\label{lem:ordered-bisimilarity:append-left}
   If $\simu{R}$ is a labeled bisimulation, then, for each context $\lctx_L$, there exists a labeled bisimulation that contains $\lframe{\lctx_L}{\simu{R}}$.
 \end{lemma}
-\begin{proof}
-  Let $\mathord{\simu{S}}$ be the relation such that $\octx \simu{S} \lctx$ if, and only if, there exists a context $\lctx_L$ such that $\octx \lframe{\lctx_L}{\simu{R}} \lctx$.
-  We will show that $\simu{S}$ is a labeled bisimulation.
-  \begin{description}
-  \item[Immediate output bisimulation]
-    Assume that $\octx \lframe{\lctx_L}{\simu{R}} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
-    we must show that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{S}}{\atmR{\lctx}'_R} \lctx$.
-    We distinguish three cases according to where the right edge of $\lctx_L$ occurs in $\lctx$.
-    \begin{itemize}
-    \item Consider the case in which the right edge of $\lctx_L$ occurs in either $\atmL{\lctx}'_L$ or $\lctx'$ -- that is, the case in which $\atmL{\lctx}'_L = \lctx_L \oc \atmL{\lctx}''_L$ for some $\atmL{\lctx}''_L$.
-      Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation property after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\lrframe{\atmL{\lctx}''_L}{\simu{R}}{\atmR{\lctx}'_R})}} \lctx$.
-      Reduction is closed under framing, so we may conclude that $\octx \Reduces\lrframe[\big]{(\lctx_L \atmL{\lctx}''_L)}{\simu{R}}{\atmR{\lctx}'_R} \lctx$, as required.
+% \begin{proof}
+%   Let $\mathord{\simu{S}}$ be the relation such that $\octx \simu{S} \lctx$ if, and only if, there exists a context $\lctx_L$ such that $\octx \lframe{\lctx_L}{\simu{R}} \lctx$.
+%   We will show that $\simu{S}$ is a labeled bisimulation.
+%   \begin{description}
+%   \item[Immediate output bisimulation]
+%     Assume that $\octx \lframe{\lctx_L}{\simu{R}} \lctx = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$;
+%     we must show that $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{S}}{\atmR{\lctx}'_R} \lctx$.
+%     We distinguish three cases according to where the right edge of $\lctx_L$ occurs in $\lctx$.
+%     \begin{itemize}
+%     \item Consider the case in which the right edge of $\lctx_L$ occurs in either $\atmL{\lctx}'_L$ or $\lctx'$ -- that is, the case in which $\atmL{\lctx}'_L = \lctx_L \oc \atmL{\lctx}''_L$ for some $\atmL{\lctx}''_L$.
+%       Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation property after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\lrframe{\atmL{\lctx}''_L}{\simu{R}}{\atmR{\lctx}'_R})}} \lctx$.
+%       Reduction is closed under framing, so we may conclude that $\octx \Reduces\lrframe[\big]{(\lctx_L \atmL{\lctx}''_L)}{\simu{R}}{\atmR{\lctx}'_R} \lctx$, as required.
 
-    \item Consider the case in which the right edge of $\lctx_L$ occurs in $\lctx'$ -- that is, the case in which $\lctx' = \lctx'_1 \oc \lctx'_2$ for some $\lctx'_1$ and $\lctx'_2$ such that $\lctx_L = \atmL{\lctx}'_L \oc \lctx'_1$.
-      Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation property after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_R})}} \lctx$.
-      Reduction is closed under framing, so $\octx \Reduces\lrframe[\big]{\atmL{\lctx}'_L}{\lframe{\lctx'_1}{\simu{R}}}{\atmR{\lctx}'_R} \lctx$, as required.
+%     \item Consider the case in which the right edge of $\lctx_L$ occurs in $\lctx'$ -- that is, the case in which $\lctx' = \lctx'_1 \oc \lctx'_2$ for some $\lctx'_1$ and $\lctx'_2$ such that $\lctx_L = \atmL{\lctx}'_L \oc \lctx'_1$.
+%       Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation property after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_R})}} \lctx$.
+%       Reduction is closed under framing, so $\octx \Reduces\lrframe[\big]{\atmL{\lctx}'_L}{\lframe{\lctx'_1}{\simu{R}}}{\atmR{\lctx}'_R} \lctx$, as required.
 
-    \item Consider the case in which the right edge of $\lctx_L$ occurs in $\atmR{\lctx}'_R$ -- that is, the case in which $\atmR{\lctx}'_R = \atmR{\lctx}'_{R1} \oc \atmR{\lctx}'_{R2}$ for some $\atmR{\lctx}'_{R1}$ and $\atmR{\lctx}'_{R2}$ such that $\lctx_L = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_{R1}$.
-      Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation properties after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_{R2}})}} \lctx$.
-      Reduction is closed under framing, so $\octx \Reduces\lrframe{\lctx_L}{\simu{R}}{\atmR{\lctx}'_{R2}} \lctx = \lctx_L \oc \atmR{\lctx}'_{R2}$.
-      We can also appeal to $\simu{R}$'s emptiness bisimulation property after framing off $(\atmL{\lctx}'_L \oc \lctx')$ and $\atmR{\lctx}'_{R2}$ and deduce that $\octx \Reduces\lrframe[\big]{(\atmL{\lctx}'_L \lctx')}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_{R1}})}}{\atmR{\lctx}'_{R2}} \lctx$.
-      Once again, reduction is closed under framing, so we conclude that $\octx \Reduces\lrframe[\big]{\atmL{\lctx}'_L}{\lframe{\lctx'}{\simu{R}}}{\atmR{\lctx}'_R} \lctx$, as required.
-    \end{itemize}
+%     \item Consider the case in which the right edge of $\lctx_L$ occurs in $\atmR{\lctx}'_R$ -- that is, the case in which $\atmR{\lctx}'_R = \atmR{\lctx}'_{R1} \oc \atmR{\lctx}'_{R2}$ for some $\atmR{\lctx}'_{R1}$ and $\atmR{\lctx}'_{R2}$ such that $\lctx_L = \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_{R1}$.
+%       Because $\simu{R}$ is a labeled bisimulation, we can appeal to its immediate output bisimulation properties after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_{R2}})}} \lctx$.
+%       Reduction is closed under framing, so $\octx \Reduces\lrframe{\lctx_L}{\simu{R}}{\atmR{\lctx}'_{R2}} \lctx = \lctx_L \oc \atmR{\lctx}'_{R2}$.
+%       We can also appeal to $\simu{R}$'s emptiness bisimulation property after framing off $(\atmL{\lctx}'_L \oc \lctx')$ and $\atmR{\lctx}'_{R2}$ and deduce that $\octx \Reduces\lrframe[\big]{(\atmL{\lctx}'_L \lctx')}{\mathrel{(\Reduces\rframe{\simu{R}}{\atmR{\lctx}'_{R1}})}}{\atmR{\lctx}'_{R2}} \lctx$.
+%       Once again, reduction is closed under framing, so we conclude that $\octx \Reduces\lrframe[\big]{\atmL{\lctx}'_L}{\lframe{\lctx'}{\simu{R}}}{\atmR{\lctx}'_R} \lctx$, as required.
+%     \end{itemize}
 
-  \item[Immediate input bisimulation]
-    Assume that $\octx \lframe{\lctx_L}{\simu{R}} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$;
-    we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{S} \lctx'$.
+%   \item[Immediate input bisimulation]
+%     Assume that $\octx \lframe{\lctx_L}{\simu{R}} \lctx$ and $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$;
+%     we must show that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{S} \lctx'$.
 
-    According to 
-    \begin{itemize}
-    \item 
-      Consider the case in which $\lctx_L$ only consists of (possibly zero) right-directed messages.
-      In this case, an input transition $\ireduces{\atmR{\lctx}_L \oc \lctx_L \oc #1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'}$ exists, for some $\lctx_0$ such that $\octx \lframe{\lctx_L}{\simu{R}} \lctx_L \oc \lctx_0 = \lctx$.
-      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property to deduce that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$, as required.
+%     According to 
+%     \begin{itemize}
+%     \item 
+%       Consider the case in which $\lctx_L$ only consists of (possibly zero) right-directed messages.
+%       In this case, an input transition $\ireduces{\atmR{\lctx}_L \oc \lctx_L \oc #1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'}$ exists, for some $\lctx_0$ such that $\octx \lframe{\lctx_L}{\simu{R}} \lctx_L \oc \lctx_0 = \lctx$.
+%       Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property to deduce that $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$, as required.
 
-    \item
-      Consider the case in which some part of $\lctx_L$ does not participate in the input transition -- that is, the case in which $\lctx_L = \lctx'_L \oc \atmR{\lctx}'_L$ and $\atmR{\lctx}_L$ is empty and $\ireduces{\atmR{\lctx}'_L \oc #1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'_0}$ and $\lctx'_L \oc \lctx'_0 = \lctx'$.
-      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property after framing off $\lctx'_L$ and deduce that $\octx \oc \atmL{\lctx}_R \lframe{\lctx'_L}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
-      Reduction is closed under framing, so we conclude that $\octx \oc \atmL{\lctx}_R \Reduces\lframe{\lctx'_L}{\simu{R}} \lctx'$, as required.
-    \end{itemize}
+%     \item
+%       Consider the case in which some part of $\lctx_L$ does not participate in the input transition -- that is, the case in which $\lctx_L = \lctx'_L \oc \atmR{\lctx}'_L$ and $\atmR{\lctx}_L$ is empty and $\ireduces{\atmR{\lctx}'_L \oc #1 \oc \atmL{\lctx}_R}{\lctx_0}{\lctx'_0}$ and $\lctx'_L \oc \lctx'_0 = \lctx'$.
+%       Because $\simu{R}$ is a labeled bisimulation, we may appeal to its immediate input bisimulation property after framing off $\lctx'_L$ and deduce that $\octx \oc \atmL{\lctx}_R \lframe{\lctx'_L}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
+%       Reduction is closed under framing, so we conclude that $\octx \oc \atmL{\lctx}_R \Reduces\lframe{\lctx'_L}{\simu{R}} \lctx'$, as required.
+%     \end{itemize}
 
-  \item[Reduction bisimulation]
-    Assume that $\octx \lframe{\lctx_L}{\simu{R}} \lctx \reduces \lctx'$;
-    we must show that $\octx \Reduces\simu{S} \lctx'$.
-    We distinguish cases on the origin of the given reduction.
-    \begin{itemize}
-    \item
-      Consider the case in which the reduction arises from the $\simu{R}$-related component alone -- that is, the case in which $\octx \lframe[\big]{\lctx_L}{\mathrel{(\simu{R}\reduces)}} \lctx'$.
-      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its reduction bisimulation property after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
-      Reduction is closed under framing, so we may conclude that $\octx \Reduces\lframe{\lctx_L}{\simu{R}} \lctx'$, as required.
+%   \item[Reduction bisimulation]
+%     Assume that $\octx \lframe{\lctx_L}{\simu{R}} \lctx \reduces \lctx'$;
+%     we must show that $\octx \Reduces\simu{S} \lctx'$.
+%     We distinguish cases on the origin of the given reduction.
+%     \begin{itemize}
+%     \item
+%       Consider the case in which the reduction arises from the $\simu{R}$-related component alone -- that is, the case in which $\octx \lframe[\big]{\lctx_L}{\mathrel{(\simu{R}\reduces)}} \lctx'$.
+%       Because $\simu{R}$ is a labeled bisimulation, we may appeal to its reduction bisimulation property after framing off $\lctx_L$ and deduce that $\octx \lframe[\big]{\lctx_L}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
+%       Reduction is closed under framing, so we may conclude that $\octx \Reduces\lframe{\lctx_L}{\simu{R}} \lctx'$, as required.
 
-    \item
-      Consider the case in which the reduction arises from an input transition on the $\simu{R}$-related component -- that is, the case in which $\lctx_L = \lctx'_L \oc \atmR{\lctx}_L$ and $\ireduces{\atmR{\lctx}_L \oc #1}{\lctx}{\lctx'_0}$ and $\lctx'_L \oc \lctx'_0 = \lctx'$ for some contexts $\lctx'_L$, $\atmR{\lctx}_L$, and $\lctx'_0$.
-      Because $\simu{R}$ is a labeled bisimulation, we may appeal to its reduction bisimulation property after framing off $\lctx'_L$ and deduce that $\octx \lframe[\big]{\lctx'_L}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
-      Reduction is closed under framing, so we may conclude that $\octx \Reduces\lframe{\lctx'_L}{\simu{R}} \lctx'$, as required.
-    \end{itemize}
+%     \item
+%       Consider the case in which the reduction arises from an input transition on the $\simu{R}$-related component -- that is, the case in which $\lctx_L = \lctx'_L \oc \atmR{\lctx}_L$ and $\ireduces{\atmR{\lctx}_L \oc #1}{\lctx}{\lctx'_0}$ and $\lctx'_L \oc \lctx'_0 = \lctx'$ for some contexts $\lctx'_L$, $\atmR{\lctx}_L$, and $\lctx'_0$.
+%       Because $\simu{R}$ is a labeled bisimulation, we may appeal to its reduction bisimulation property after framing off $\lctx'_L$ and deduce that $\octx \lframe[\big]{\lctx'_L}{\mathrel{(\Reduces\simu{R})}} \lctx'$.
+%       Reduction is closed under framing, so we may conclude that $\octx \Reduces\lframe{\lctx'_L}{\simu{R}} \lctx'$, as required.
+%     \end{itemize}
 
-  \item[Emptiness bisimulation]
-    Assume that $\octx \lframe{\lctx_L}{\simu{R}} (\octxe)$;
-    we must show that:
-    $\atmR{\lctx} \oc \octx \Reduces\rframe{\simu{S}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$; and $\octx \oc \atmL{\lctx} \lframe{\atmL{\lctx}}{\simu{S}} \atmL{\lctx}$ for all $\atmL{\lctx}$.
+%   \item[Emptiness bisimulation]
+%     Assume that $\octx \lframe{\lctx_L}{\simu{R}} (\octxe)$;
+%     we must show that:
+%     $\atmR{\lctx} \oc \octx \Reduces\rframe{\simu{S}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$; and $\octx \oc \atmL{\lctx} \lframe{\atmL{\lctx}}{\simu{S}} \atmL{\lctx}$ for all $\atmL{\lctx}$.
 
-    It can only be that $\lctx_L$ is empty, and so $\octx \simu{R} (\octxe)$.
-    Because $\simu{R}$ is a labeled bisimulation, it follows that: $\atmR{\lctx} \oc \octx \Reduces\rframe{\simu{R}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$; and $\octx \oc \atmL{\lctx} \lframe{\atmL{\lctx}}{\simu{R}} \atmL{\lctx}$ for all $\atmL{\lctx}$.
-  %
-  \qedhere
-  \end{description}
-\end{proof}
+%     It can only be that $\lctx_L$ is empty, and so $\octx \simu{R} (\octxe)$.
+%     Because $\simu{R}$ is a labeled bisimulation, it follows that: $\atmR{\lctx} \oc \octx \Reduces\rframe{\simu{R}}{\atmR{\lctx}} \atmR{\lctx}$ for all $\atmR{\lctx}$; and $\octx \oc \atmL{\lctx} \lframe{\atmL{\lctx}}{\simu{R}} \atmL{\lctx}$ for all $\atmL{\lctx}$.
+%   %
+%   \qedhere
+%   \end{description}
+% \end{proof}
 
 
 
@@ -2195,12 +2196,12 @@ For that reason, the majority of the following \lcnamecref{lem:ordered-bisimilar
 \end{theorem}
 \begin{proof}
   Assume that $\octx_1 \osim \lctx_1$ and $\octx_2 \osim \lctx_2$.
-  Notice that $\octx_1 \oc \octx_2 \lframe{\octx_1}{\osim} \octx_1 \oc \lctx_2 \rframe{\osim}{\lctx_2} \lctx_1 \oc \lctx_2$.
+  Notice that $\octx_1 \oc \octx_2 \lframe{\octx_1}{\osim} \octx_1 \oc \lctx_2$ and that $\octx_1 \oc \lctx_2 \rframe{\osim}{\lctx_2} \lctx_1 \oc \lctx_2$.
 
   Rewriting bisimilarity is a labeled bisimulation~\parencref{thm:ordered-bisimilarity:labeled-complete}.
-  By \cref{lem:ordered-bisimilarity:append-left}, there exists a labeled bisimulation that contains $\lframe{\octx_1}{\osim}$.
-  According to \cref{thm:labeled-proof-technique}, rewriting bisimilarity therefore contains $\lframe{\octx_1}{\osim}$.
-  By symmetric reasoning, rewriting bisimilarity must also contain $\rframe{\osim}{\lctx_2}$.
+  According to \cref{lem:ordered-bisimilarity:append-left}, there exists a labeled bisimulation that contains $\lframe{\octx_1}{\osim}$.
+  By \cref{thm:labeled-proof-technique}, rewriting bisimilarity therefore contains $\lframe{\octx_1}{\osim}$.
+  Using symmetric reasoning, rewriting bisimilarity must also contain $\rframe{\osim}{\lctx_2}$.
 
   Applying these to the previous observation, $\octx_1 \oc \octx_2 \osim \octx_1 \oc \lctx_2 \osim \lctx_1 \oc \lctx_2$.
   Because rewriting bisimilarity is transitive~\parencref{thm:ordered-bisimilarity:equivalence}, we conclude that $\octx_1 \oc \octx_2 \osim \lctx_1 \oc \lctx_2$.
@@ -2378,11 +2379,11 @@ For that reason, the majority of the following \lcnamecref{lem:ordered-bisimilar
 
 
 
-\clearpage
+% \clearpage
 \section{Example of rewriting bisimilarity: \Aclp*{NFA}}\label{sec:ordered-bisimilarity:nfa}
 
 Recall from \cref{sec:formula-as-process:nfa-bisim} the conjecture that bisimilar \ac{NFA} states have bisimilar encodings and vice versa.
-Once established, this will allow us to rephrase soundness and completeness of the \ac{NFA} choreography in a properly stratified way: $\atmR{a} \oc \defp{q} \reduces_{\orsig}\osim \defp{q}'$ if, and only if, $q \nfareduces[a]\asim q'$.
+As outlined there, establishing this result will allow us to rephrase soundness and completeness of the \ac{NFA} choreography in a properly stratified way: $\atmR{a} \oc \defp{q} \reduces_{\orsig}\osim \defp{q}'$ if, and only if, $q \nfareduces[a]\asim q'$.
 More precisely, we will prove the following \lcnamecref{thm:nfa-bisim-osim}.
 \begin{restatable*}[
   label=thm:nfa-bisim-osim
@@ -2758,6 +2759,7 @@ For instance, both $\defp{e} \oc \atmL{i} \oc \defp{b}_1$ and $\defp{e} \oc \def
 %   \and
 %   \infer[\jrule{$\defp{b}_1$-I}]{\ainc{\octx \oc \defp{b}_1}{2n+1}}{
 %     \ainc{\octx}{n}}
+
 %   \and
 %   \infer[\jrule{$\atmL{i}$-I}]{\ainc{\octx \oc \atmL{i}}{n+1}}{
 %     \ainc{\octx}{n}}

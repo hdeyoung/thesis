@@ -12,6 +12,7 @@
     autocite=footnote,
     maxcitenames=2,
     bibstyle=authoryear,
+    dashed=false,
     mergedate=basic,
     maxbibnames=99,
     backref=true,
@@ -71,7 +72,7 @@
 
 \begin{abstract}
 \normalsize
-Concurrent systems are ubiquitous, but notoriously difficult to get right -- subtle races and deadlocks can lurk even in the most extensively tested of systems.
+Concurrent systems are ubiquitous, but notoriously difficult to get right: subtle races and deadlocks can lurk even in the most extensively tested of systems.
 In a quest to tame concurrency, researchers have successfully applied the principle of computation as deduction to concurrency in two distinct ways: concurrency as proof reduction and concurrency as proof construction.
 These two approaches to concurrency have complementary advantages, with the proof-construction approach excelling at global specification of a system's dynamics, while the proof-reduction approach is best suited to implementation of the system's components\fixnote{processes?}.
 
@@ -79,11 +80,11 @@ This document explores the relationship between these two different proof-theore
 To focus on the essential aspects of their relationship, the exploration is carried out in the context of concurrent systems that have chain topologies.
 From a proof-construction perspective, chain topologies arise from ordered logic; from a proof-reduction perspective, they arise from \emph{singleton logic}, the variant of ordered logic that restricts sequents to have exactly one antecedent.
 
-In this context,\fixnote{ this document explores this relationship as follows.} a rewriting framework is systematically derived from the ordered sequent calculus, and a \emph{message-passing} fragment of that rewriting framework is identified.
+In this context, a rewriting framework is systematically derived from the ordered sequent calculus, and a \emph{message-passing} fragment of that rewriting framework is identified.
 String rewriting specifications of concurrent systems can be \emph{choreographed} into this fragment, and the fragment supports a notion of bisimilarity.
-Along the way, we also uncover a \emph{semi-axiomatic sequent calculus} for singleton logic, which blends a standard sequent calculus with axiomatic aspects of Hilbert calculi;
+Along the way, we also uncover a \emph{semi-axiomatic sequent calculus} for singleton logic, which blends a standard sequent calculus with axiomatic aspects of Hilbert systems;
 and establish a correspondence between proof normalization and asychronous message-passing communication.
-Ultimately, the message-passing processes can be faithfully embedded within the message-passing ordered rewriting framework.
+Ultimately, the message-passing processes can be faithfully embedded within the message-pass\-ing ordered rewriting framework.
 \end{abstract}
 
 % \begin{acknowledgments}

@@ -184,7 +184,7 @@ The constraints on $\trproc{\caseL[\ell \in L]{\ell => Q_{\ell}}}$ can be satisf
   \,.
 \end{gather*}
 % for all $\kay \in L$.
-Of course, because the formula-as-process framework restricts left- and right-handed implications to have atomic premises of complementary direction\parencref{sec:formula-as-process:interpretation}, this suggests that we also define
+Of course, because the formula-as-process framework restricts left- and right-handed implications to have atomic premises of complementary direction \parencref{sec:formula-as-process:interpretation}, this suggests that we also define
 \begin{equation*}
   \trproc{\selectR{\kay}} = \atmR{\kay}
   \,,
@@ -269,7 +269,7 @@ for all $\kay \in L$.
 
 \newthought{%
 In total, the embedding} of process configurations and process expressions into a weakly focused formula-as-process ordered rewriting framework is summarized in \cref{fig:process-embedding:weak-focus-strong-bisim}.
-\begin{marginfigure}
+\begin{marginfigure}[-28\baselineskip]
   \begin{align*}
     \trconf{\cnf_1 \cc \cnf_2} &= \trconf{\cnf_1} \oc \trconf{\cnf_2} \\
     \trconf{\cnfe} &= (\octxe) \\
@@ -356,13 +356,13 @@ Using such a composition via $\trconf{P} = \embed{\trproc{P}}$ would turn $\trco
   %
   \shortintertext{and}
   %
-    \trsig{\sig, (\defp{p} \defd P)}
-      &= \trsig{\sig} , \left(\n{\defp{p}} \defd
+    \trsig{\sig, (\defp{p} \defd P)} &\phantom{{} = {}} \\
+                   \quad\mathrlap{= \trsig{\sig} , \left(\n{\defp{p}} \defd
            \begin{cases*}
              \embed{\trproc{P}} & if $P \neq \selectL{\kay}$ and $P \neq \selectR{\kay}$ \\
              \up \embed{\trproc{P}} & otherwise
            \end{cases*}
-         \right)
+         \right)}
     \\
     \trconf{\sige} &= (\orsige)
   % %
@@ -617,7 +617,7 @@ That is to say, the weakness of the bisimulation is a purely administrative arti
 
 
 
-\clearpage
+% \clearpage
 \subsection{Examples and other comments}\label{sec:correspond:embed:examples}
 
 
@@ -750,7 +750,7 @@ respectively.
 
 
 
-\clearpage
+% \clearpage
 \section{A session type system for ordered rewriting}\label{sec:correspond:types}
 
 The preceding embeddings describe bisimulations between process expressions and certain ordered propositions; process configurations and certain ordered contexts.
@@ -923,7 +923,7 @@ With these rules, we can prove a result of the now familiar form.
 
 
 
-\footnote{Careful with the 0-ary forms because you could end up with $\slof{\zero |- \top : C}$ and \emph{also} $\slof{A |- \top : \top}$.}
+\fixnote{Careful with the 0-ary forms because you could end up with $\slof{\zero |- \top : C}$ and \emph{also} $\slof{A |- \top : \top}$.}
 
 
 %%% Local Variables:

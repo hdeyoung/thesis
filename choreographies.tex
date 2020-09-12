@@ -548,7 +548,7 @@ For example, without unbounded rewriting, we cannot even describe producer--cons
 
 As the proof of termination shows, rewriting is bounded precisely because contexts consist of finitely many \emph{finite} propositions.
 In multiset and ordered rewriting, unbounded behavior is traditionally introduced by way of persistent propositions that may be replicated as much as needed\autocites{Polakow:CMU01}{Watkins+:CMU02}{Simmons:CMU12}.
-This is related to \citeauthor{Milner:??}'s use of replication, $!P$, in the $\pi$-calculus\autocite{Milner:??}.
+This is related to \citeauthor{Milner:CUP99}'s use of replication, $!P$, in the $\pi$-calculus\autocite{Milner:CUP99}.
 (See \cref{??} for a more detailed discussion of replication.)
 
 However, another option -- and the one that we pursue here -- is to permit circular negative propositions in the form of mutually coinductive definitions, $\n{\defp{p}} \defd \n{A}$, where the grammar of negative propositions is extended to include these coinductively defined propositions:
@@ -580,7 +580,7 @@ Syntactically, these signatures are given by the grammar
 \end{equation*}
 A signature $\orsig$ is well-formed if every $\n{\defp{p}}$ that occurs in the body of a definition itself has a definition in $\orsig$.
 
-\newthought{By analogy with} recursive types from functional programming\autocite{??}, we must then decide whether to treat the coinductive definitions $\n{\defp{p}} \defd \n{A}$ \emph{iso}\-recursively or \emph{equi}\-recursively.\fixnote{equi-coinductively?}
+\newthought{By analogy with} recursive types from functional programming\footnote{See \textcite{Pierce:MIT02}, for example.}, we must then decide whether to treat the coinductive definitions $\n{\defp{p}} \defd \n{A}$ \emph{iso}\-recursively or \emph{equi}\-recursively.\fixnote{equi-coinductively?}
 Under an equirecursive treatment, definitions may be silently unrolled or rolled at will;
 in other words, $\n{\defp{p}}$ is literally \emph{equal} to its unrolling: $\n{\defp{p}} = \n{A}$.
 In contrast, under an isorecursive treatment, unrolling a coinductively defined proposition would count only as an explicit rule for the left-focus judgment: $\n{\defp{p}} \neq \n{A}$ but the adjacent $\lrule{\defd}$ rule would be present.%
@@ -2125,7 +2125,7 @@ Combining these \lcnamecrefs{??} with \cref{thm:formula-as-process:choreograph-c
   label=cor:choreographies:oo-counter-adequacy
 ]{corollary}{coroocounteradequacy}
   The following hold.
-  \begin{thmdescription}
+  \begin{thmdescription}[nosep]
   \item[Preservation]
     If $\ainc{\octx}{n}$ and $\octx \reduces_{\orsig} \octx'$, then $\ainc{\octx'}{n}$.
     If $\adec{\octx}{n}$ and $\octx \reduces_{\orsig} \octx'$, then $\adec{\octx'}{n}$.

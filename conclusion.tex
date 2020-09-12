@@ -1,13 +1,24 @@
 \chapter{Conclusion}\label{ch:conclusion}
 
-In this \lcnamecref{ch:conclusion}, we discuss a few avenues for future work and then summarize the main contributions of this document.
+In this document, we have explored two proof-theoretic characterizations of concurrency -- proof construction and proof reduction -- in the context of concurrent systems that have chain topologies.
+
+On the proof-construction side, we have shown a new way of systematically deriving a rewriting framework from the ordered sequent calculus~\parencref{ch:ordered-rewriting}, and identified a message-passing fragment of that framework~\parencref{ch:choreographies}.
+We have shown how to take string rewriting specifications of concurrent systems~\parencref{ch:string-rewriting} and choreograph them into message-passing ordered rewriting~\parencref{ch:choreographies}.
+
+On the proof-reduction side, we have uncovered a semi-axiomatic sequent calculus for singleton logic, a logic that restricts sequents to have exactly one antecedent~\parencref{ch:singleton-logic}.
+We have demonstrated that the semi-axiomatic nature of this calculus gives rise to a clean correspondence between proof normalization and asynchronous message-passing communication~\parencref{ch:process-chains}.
+
+Lastly, we have shown that the asynchronous processes that arise from the semi-axiomatic sequent calculus for singleton logic can be fathfully embedded within the message-passing ordered rewriting framework~\parencref{ch:correspond}.
+This has provided a relationship between the proof-construction and proof-reduction characterizations of concurrency.
+
+This document now closes by discussing a few avenues for future work.
 
 \section{Potential avenues for future work}\label{sec:conclusion:nondeterminism}
 
 \subsection{From ordered rewriting to multiset rewriting, singleton processes to linear processes}
 
 One obvious avenue for future work is to extend the ideas in this document to linear logic.
-We conjecture that the string rewriting specifications of \cref{ch:string-rewriting} would be replaced with multiset rewriting specifications\autocite{Meseguer:TCS92}; the formula-as-process ordered rewriting of \cref{ch:formula-as-process}, with formula-as-process linear rewriting based on the focused linear sequent calculus\autocite{??}; and the singleton processes of \cref{ch:process-chains}, with \acs{SILL} processes\autocites{Caires+Pfenning:CONCUR10}{Caires+:TLDI12}{Caires+:MSCS16}{Toninho+:ESOP13}.
+We conjecture that the string rewriting specifications of \cref{ch:string-rewriting} would be replaced with multiset rewriting specifications\autocite{Meseguer:TCS92}; the formula-as-process ordered rewriting of \cref{ch:formula-as-process}, with formula-as-process linear rewriting based on the focused linear sequent calculus\autocites{Miller:ELP92}{Cervesato+Scedrov:IC09}; and the singleton processes of \cref{ch:process-chains}, with \acs{SILL} processes\autocite{Caires+:MSCS16}.
 
 % For the proof construction and rewriting perspective on concurrency, this would involve a shift from ordered rewriting to multiset rewriting, as understood logically in terms of the focused linear sequent calculus.
 
@@ -35,8 +46,7 @@ This example, however, does not fully exploit the expressive power of first-orde
 Because \ac{SILL} processes admit tree topologies, defined propositions that use destinations in a tree topology should be allowed.
 But a judgment for checking that destinations do not form cycles would likely be needed, for otherwise a destinations-as-channels interpretation would lead to ill-formed \ac{SILL} processes.
 
-We would also need to characterize a general procedure for choreographing multiset rewriting specifications.%
-\fixnote{??}
+We would also need to characterize a general procedure for choreographing multiset rewriting specifications, in the vein of what was presented in \cref{ch:choreographies} for string rewriting specifications.
 
 
 \subsection{First-order extension}
@@ -55,7 +65,7 @@ It would be nice if the extralogical $\atmL{\mathsf{tm}}$ and $\atmR{\mathsf{tm}
 It seems that, even in an asynchronous calculus, the $\atmL{\mathsf{tm}}$ and $\atmR{\mathsf{tm}}$ atoms provide the small but necessary amount of synchronization to ensure that the intended term $t$ is used to instantiate the receiving proposition's universal quantifier.
 However, it does seem plausible that terms could be packaged with the transmission of other labels, such as $\atmL{\kay}(t)$, which would hide  $\atmL{\mathsf{tm}}$ and $\atmR{\mathsf{tm}}$.
 
-It would also be interesting to consider how session-typed processes with second-order polymorphism\autocite{??} would be embedded in the rewriting framework.
+It would also be interesting to consider how session-typed processes with second-order polymorphism\autocite{Caires+:ESOP13} would be embedded in the rewriting framework.
 A conjecture is that second-order polymorphism would be needed in the rewriting framework so that the embedding could be something like 
 \begin{equation*}
   \begin{lgathered}[t]
@@ -86,15 +96,15 @@ However, in terms of the ordered propositions alone, it would seem more natural 
 \end{equation*}
 Finding such a rule for the ordered proposition $\n{A}_1 \with \n{A}_2$ might then allow us, by leveraging the ideas behind the bisimilar embedding of \cref{ch:correspond}, to reverse-engineer a process expression for some form of well-behaved, well-typed nondeterministic choice.
 
-\Textcite{Stock:JUB20} has begun to look into incorporating nondeterministic choice into session-typed processes, emphasizing the operational considerations.
+\Textfootcite{Stock:JUB20} has begun to look into incorporating nondeterministic choice into session-typed processes, emphasizing the operational considerations.
 It would be interesting to consider whether his ideas can be adapted to the formula-as-process ordered rewriting framework.
 
 
 \subsection{Induction and coinduction, termination and productivity}
 
-\fixnote{Add reference to Siva's work}
-\Textcite{Derakhshan+Pfenning:LMCS20} have developed an infinitary calculus in which inductive and coinductive session types can be used to guarantee the termination and productivity of well-typed processes in a Curry--Howard interpretation of singleton logic.
+\Textfootcite{Derakhshan+Pfenning:LMCS20} have developed an infinitary calculus in which inductive and coinductive session types can be used to guarantee the termination and productivity of well-typed processes in a Curry--Howard interpretation of singleton logic.
 Leveraging types, their validity condition on circular proofs is locally and effectively decidable.
+\Textfootcite{Somayyajula+Pfenning:20} have done something similar with sized types.
 An interesting question is whether their ideas might be applied to (formula-as-process) ordered rewriting.
 
 Productivity is about observable progress and even untyped ordered rewriting has a notion of observation, as embodied in ordered bisimilarity~\parencref{ch:ordered-bisimilarity}.
@@ -110,7 +120,27 @@ But ordered rewriting is untyped, at least natively, so whether productivity can
 Also, unlike proofs, rewriting traces are constructed from open-ended derivations.
 Does that open-endedness in any way affect the existence or shape of the productivity condition?
 
-\section{Conclusion}
+\subsection{A correspondence between generative invariants and session types}
+
+\Textfootcite{Simmons:CMU12} describes \emph{generative invariants} as a way to express invariants of ordered logical specifications.
+These generative invariants generalize context-free grammars, as well as regular worlds from \textsc{lf}.
+A generative invariant for a binary counter specification in his framework has similarities to the session type for binary counters given in \cref{sec:process-chains:binary-counter}:
+\begin{align*}
+  \mathsf{ctr} &\defd e \with (\mathsf{ctr} \fuse b_0) \with (\mathsf{ctr} \fuse b_1) \with (\mathsf{ctr} \fuse i) \\
+  \mathsf{ctr}' &\defd z \with (\mathsf{ctr} \fuse s) \with (\mathsf{ctr} \fuse d) \with (\mathsf{ctr}' \fuse b'_0) \\[1ex]
+  \ctr &\defd \with*{ i: \ctr , d: \plus*{ z: \ctre , s: \ctr } }
+\end{align*}
+It would be interesting to investigate whether these similarities can be extrapolated to a correspondence between generative invariants and session types.
+If so, generative invariants might serve as a form of session typing for ordered rewriting that is more native than the system presented in \cref{sec:correspond:types}.
+
+% In addition, the generative invariant for the binary counter looks a lot like the object-oriented choreography, but in an abstracted form:
+% \begin{align*}
+%   \mathsf{ctr} &\defd (\mathsf{ctr} \fuse i) \with \bigl((z \with (\mathsf{ctr} \fuse s)) \fuse d\bigr)
+%   \\
+%   \defp{e} &\defd (\defp{e} \fuse \defp{b}_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d}) \\
+%   \defp{b}_0 &\defd (\up \dn \defp{b}_1 \pmir \atmL{i}) \with (\atmR{z} \pmir \atmL{d}) \\
+% \end{align*}
+
 
 
 %%% Local Variables:
