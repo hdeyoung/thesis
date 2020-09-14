@@ -938,7 +938,7 @@ When the $\lambda$-calculus is extended with recursive types and functions, the 
 Just as a Curry--Howard isomorphism can be recovered in the $\lambda$-calculus when general recursive types are restricted to inductive and coinductive types, work by \textcite{Derakhshan+Pfenning:LMCS20} and \textcite{Somayyajula+Pfenning:20} shows that a Curry--Howard isomorphism between session-typed process chains and (sub-)singleton sequent calculus proofs can be recovered if types are inductive or behaviorally coinductive.
 
 
-\section{Examples}\label{sec:process-chain:examples}
+\section{Examples}\label{sec:process-chains:examples}
 
 \subsection{Binary counter}\label{sec:process-chains:binary-counter}
 
@@ -1109,7 +1109,7 @@ Each state $q \in Q$ maps words from $\infinwds{\ialph}$ to $\infinwds{\oalph}$,
     \caseL[a \in \ialph]{ a => \spawn{\defp{q}'}{\rev{\selectR{w}}} }  \text{\enspace where $\sftnext(q, a) = q'$ and $\sftout(q, a) = w$.}
 \end{equation*}
 (The anti-homomorphism $\rev{\selectR{w}}$ is defined in the adjacent \lcnamecref{fig:process-chains:transducer-rev}.
-It is notationally identical to, but formally distinct from, the anti-homomorphism from words to contexts of right-directed atoms~(\cref{fig:??}).
+It is notationally identical to, but formally distinct from, the anti-homomorphism from words to contexts of right-directed atoms~(\cref{fig:formula-as-process:msg-rev}).
 However, as we will see in \cref{ch:correspond}, the two anti-homomorphisms are conceptually related.)%
 \begin{marginfigure}[-5\baselineskip]
   \begin{equation*}

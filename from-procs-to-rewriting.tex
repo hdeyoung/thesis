@@ -9,7 +9,7 @@ This embedding is execution-preserving, serving as a bisimulation between the pr
 The embedding is quite natural.
 Process constructors elegantly map to ordered logical connectives, most notably with process composition, $\spawn{}{}$, embedding as ordered conjunction, $\fuse$.
 
-(In fact, instead of a single embedding, there are three closely related embeddings -- a weakly focused, strongly bisimilar embedding~\parencref{sec:embed:weak-focused-string-bisim}; a strongly focused, strongly bisimilar embedding~\parencref{sec:embed:strong-focused-strong-bisim}; and a strongly focused, weakly bisimilar embedding~\parencref{sec:embed:strong-focused-weak-bisim} -- that trade off the character of focusing discipline (strong vs.\ weak) and character of the bisimulation (strong vs.\ weak) against how directly this correspondence between process constructors and logical connectives is exposed.)
+(In fact, instead of a single embedding, there are three closely related embeddings -- a weakly focused, strongly bisimilar embedding~\parencref{sec:embed:weak-focused-strong-bisim}; a strongly focused, strongly bisimilar embedding~\parencref{sec:embed:strong-focused-strong-bisim}; and a strongly focused, weakly bisimilar embedding~\parencref{sec:embed:strong-focused-weak-bisim} -- that trade off the character of focusing discipline (strong vs.\ weak) and character of the bisimulation (strong vs.\ weak) against how directly this correspondence between process constructors and logical connectives is exposed.)
 
 \Cref{sec:correspond:embed:examples} examines the embeddings in the context of the binary counter and \ac{DFA}\fixnote{include \ac{DFA}?}.
 Pleasingly, when the example process expressions of \cref{sec:process-chains:examples} are embedded in ordered rewriting, we arrive at exactly the same coinductively defined propositions as used in the choreographies of \cref{sec:formula-as-process:counters,sec:formula-as-process:nfa}.
@@ -710,7 +710,7 @@ By embedding definitions, we arrive at exactly the same coinductively defined pr
 
 % \paragraph*{\aclp*{DFA}}
 The same holds true for \acp{DFA}.\fixnote{But process definitions for \acp{DFA} were not introduced -- only for sequential transducers!}
-Embedding the \ac{DFA} process definitions from \cref{??} yields the same coinductively defined propositions as in the object-oriented and functional choreographies from \cref{??}:
+Embedding the \ac{DFA} process definitions from \cref{??} yields the same coinductively defined propositions as in the functional and object-oriented choreographies from \cref{sec:formula-as-process:nfa-functional,sec:formula-as-process:nfa-oo}:
 \begin{align*}
   \trsig{q \defd \caseL[a \in \ialph]{a => q'_a | \eow => \selectR{F}(q)}}
     &= \bigl(

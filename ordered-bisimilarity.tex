@@ -2,16 +2,17 @@
 
 With the shift from the global, state-transformation view of ordered rewriting put forth in \cref{ch:ordered-rewriting} to the local, formula-as-process view developed in the preceding \lcnamecref{ch:formula-as-process}, we are now in a position to examine how individual propositions and, more generally, contexts behave and interact.
 % \fixnote{Because each proposition has its own \emph{local} thread of control, we can describe a proposition's behavior only to the extent that that behavior can be witnessed by an external observer.}
-And, in line with other, process calculi descriptions of concurrency, it is then natural to ask when two propositions or contexts have the same behavior.
+And, in line with other, process calculi descriptions of concurrency, it is then natural to ask when two contexts have the same behavior.
 % , \ie, when two propositions are \emph{bisimilar}.
 
-We will consider two propositions or contexts to have the same behavior only if an external observer witnesses them producing the same observables under all conditions.%
-\fixnote{if there is no experiment that will eventually distinguish them.}
+We will consider two contexts to have the same behavior only if there is no experiment by an external observer that will eventually yield an observable distinction.
+% witnesses them producing the same observables under all conditions.%
+% \fixnote{if there is no experiment that will eventually distinguish them.}
 % But that raises the question of what is observable.
 But then what is observable?
 According to the formula-as-process view, each proposition has its own local thread of control.
-This locality, together with the output transitions of \cref{??}, suggests what may be observed:
-A proposition's structure is opaque; only outward-directed atoms that are located at the edge of an ordered context are observable.
+This locality, together with the output transitions defined in \cref{sec:formula-as-process:local-interaction}, suggests what may be observed:
+A proposition's structure is opaque; only outward-directed \emph{atomic} propositions that are located at the edge of an ordered context are observable.
 
 % According to the formula-as-process view, each proposition has its own \emph{local} thread of control.
 % This locality means that a proposition's\fixnote{or context's?} behavior can be described only to the extent that that behavior can be witnessed by an external observer.
@@ -19,16 +20,13 @@ A proposition's structure is opaque; only outward-directed atoms that are locate
 % A proposition's structure is opaque; only outward-directed atoms, which are viewed as output messages, are observable.
 % Moreover, because the output transitions apply only to outward-directed atoms that are located at the edges of an ordered context, it is only the atoms there that are observable.
 
-\fixnote{Difference between bisimilarity and testing equivalence?}
-
-Following the vast literature on various forms of bisimilarity%
-\footnote{See \textcite{??} for a survey.}%
-, this \lcnamecref{ch:ordered-bisimilarity} therefore develops a notion of \emph{ordered rewriting bisimilarity} in which atoms are observable and [...].
+% \fixnote{Difference between bisimilarity and testing equivalence?}
 
 Intuitively, for example, the contexts $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ and $\atmR{b}$ ought to be considered behaviorally equivalent: there is no circumstance under which anything other than $\atmR{b}$ can be observed from $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$.
 In particular, the atom $\atmR{a}$ at the left edge of the context $\atmR{a} \oc (\atmR{a} \limp \atmR{b})$ cannot be observed because it is directed inward and therefore acting as an input to, not an output from, $(\atmR{a} \limp \atmR{b})$.
 
 As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ ought to be considered behaviorally equivalent, intuitively because they are logically equivalent\footnote{That is, $\oseq{\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \dashv|- (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}}$.}.
+
 
 % (Implicit in the local interaction semantics of \cref{??} is the idea that atoms ought to be observable but that non-atomic propositions are opaque.
 % A proposition's neighbors can discover its behavior only by sending it messages and observing the atoms that it sends as replies.)
@@ -38,7 +36,12 @@ As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \l
 
 % As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ ought to be behaviorally equivalent, intuitively because they are logically equivalent\footnote{That is, $\oseq{\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \dashv|- (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}}$.}.
 
-\newthought{\Cref{sec:ordered-bisimilarity:??} begins} by defining rewriting bisimilarity (along with a few auxiliary notions) and then presents a few examples of contexts that are \emph{not} bisimilar under this definition.
+\newthought{Following the vast literature} on various forms of bisimilarity%
+\footnote{See \textcite{??} for a survey.}%
+, this \lcnamecref{ch:ordered-bisimilarity} therefore develops a notion of \emph{ordered rewriting bisimilarity} in which atoms are observable.
+%\footnote{We do not consider divergence to be observable, so this behavioral equivalence is not testing equivalence.}
+%
+\Cref{sec:ordered-bisimilarity:??} begins by defining rewriting bisimilarity (along with a few auxiliary notions) and then presents a few examples of contexts that are \emph{not} bisimilar under this definition.
 
 However, it will prove to be cumbersome to use rewriting bisimilarity's definition alone to establish that two contexts are bisimilar, a problem that is familiar from process calculi bisimilarities.
 Therefore, in \cref{sec:ordered-bisimilarity:labeled-bisim}, we present \emph{labeled bisimilarity}, a sound proof technique for rewriting bisimilarity -- ordered contexts that are labeled bisimilar will also be rewriting bisimilar.
@@ -46,7 +49,7 @@ Unlike the $\pi$-calculus's labeled bisimilarity, our labeled bisimilarity is, s
 
 This \lcnamecref{ch:ordered-bisimilarity} concludes with several applications of ordered rewriting bisimilarity to our now-familiar running examples, binary counters and \aclp*{NFA}.
 \Cref{sec:ordered-bisimilarity:nfa} proves that \ac{NFA}-bisimilar states have rewriting-bisimilar encodings under the functional choreography described in \cref{sec:formula-as-process:nfa-functional}, which allows us to finally rephrase the choreography's adequacy in a clean and stratified form.
-And \cref{sec:ordered-bisimilarity:counter} proves that binary counters are rewriting-bisimilar if, and only if, they have the same denotation.
+And \cref{sec:ordered-bisimilarity:counter} proves that binary counters under the object-oriented choreography of \cref{sec:formula-as-process:counters-oo} are rewriting-bisimilar if, and only if, they have the same denotation.
 
 
 
@@ -61,7 +64,7 @@ And \cref{sec:ordered-bisimilarity:counter} proves that binary counters are rewr
 % \Cref{sec:ordered-bisimilarity:nfa} proves that \ac{NFA}-bisimilar states have rewriting-bisimilar encodings under the functional choreography described in \cref{sec:formula-as-process:nfa-functional}, which allows us to finally rephrase the choreography's adequacy in a clean and stratified form.
 % And \cref{sec:ordered-bisimilarity:counter} proves that binary counters are rewriting-bisimilar if, and only if, they have the same denotation.
 
-Our rewriting bisimilarity is strongly inspired by the contextual bisimilarity for linear contexts put forth by \textcite{Deng+:MSCS16}.
+\fixnote{Our rewriting bisimilarity is strongly inspired by the contextual bisimilarity for linear contexts put forth by \textcite{Deng+:MSCS16}.}
 
 
 % \section{Toss?}
@@ -467,7 +470,7 @@ Because ordered rewriting is asynchronous in this way, we should expect our noti
 %   By structural induction on the given input transition.
 % \end{proof}
 
-\section{Rewriting bisimilarity}\label{sec:ordered-bisimilarity:rewriting-bisimilarity}
+\section{Ordered rewriting bisimilarity}\label{sec:ordered-bisimilarity:rewriting-bisimilarity}
 
 % With the shift from a global, state transformation view of ordered rewriting to a local, \enquote{formula-as-process} view, it is now possible to consider how the individual \enquote{formula-as-process} -- or, more generally, \enquote{context-as-configuration} -- components behave and how they interact with each other.
 % Because each component has its own, local thread of control, we can describe its behavior only to the extent that its behavior is observable.
@@ -485,8 +488,8 @@ Because ordered rewriting is asynchronous in this way, we should expect our noti
 
 
 
-Consistent with the local interaction semantics of \cref{??}, we have taken atoms to be observable.
-An atom's direction and location within a larger context are crucial to its observability.
+As mentioned above, we will take atoms to be observable, consistent with the local interaction semantics and output transitions defined in \cref{??}.
+It is worth reiterating that an atom's direction and location within a larger context are crucial to its observability.
 For example, in $\atmL{a} \oc \octx$ and $\octx \oc \atmR{b}$, the atoms $\atmL{a}$ and $\atmR{b}$, respectively, are observable because they are in position to be received by an observer.
 The observer $(\up \p{A} \pmir \atmL{a})$ can receive $\atmL{a}$ from $\atmL{a} \oc \octx$, and the observer $(\atmR{b} \limp \up \p{B})$ can receive $\atmR{b}$ from $\octx \oc \atmR{b}$:
 \begin{equation*}
@@ -495,11 +498,26 @@ The observer $(\up \p{A} \pmir \atmL{a})$ can receive $\atmL{a}$ from $\atmL{a} 
   (\octx \oc \atmR{b}) \oc (\atmR{b} \limp \up \p{B}) \reduces \octx \oc \p{B}
   \,.
 \end{equation*}
+But these same atoms cannot be observed in $\octx \oc \atmL{a}$ and $\atmR{b} \oc \octx$ when $\octx$ is nonempty, precisely because their new locations do not complement their directions: 
+Given the syntactic restriction imposed on left- and right-hand implications, no implication placed to the right of $\atmL{a}$ will be able to consume $\atmL{a}$; likewise for implications placed to the left of $\atmR{b}$.
+In other words, the observable atoms are exactly those atoms that are immediately outgoing.
 
+Recall from \cref{??} that ordered rewriting is asynchronous: $(\up \p{A} \pmir \atmL{a}) \oc (\atmL{a} \fuse \p{B}) \Reduces \p{A} \oc \p{B}$ is not possible in a single, synchronous step.
+We should therefore expect our notion of rewriting bisimilarity to have some analogy to the kinds of bisimilarities developed for the asynchronous $\pi$-calculus\autocite{Amadio+:TCS98} and asynchronous \acs{CCS}\autocite{Boreale+:IC02}.
+In particular, that means that input processes or, in our case, implications ought not to be directly observable.
 
+Instead, the asynchronous nature of rewriting leads us to the type of experiment that external observers may perform: provide the contexts with some incoming messages (or none at all) and observe any outgoing messages that are eventually produced.
+If the two contexts eventually produce different outgoing messages, then observing those messages will allow us to distinguish the two contexts.
 
-In this \lcnamecref{sec:ordered-bisimilarity:rewriting-bisimilarity}, we define \emph{ordered rewriting bisimilarity}, a notion of behavioral equivalence for ordered contexts.
-Before that, however, we must define a few auxiliary relations on contexts.
+Lastly, we will not consider the time or number of computational steps to be observable\footnote{Nor do we consider divergence to be observable, so we do not pursue testing equivalence, only bisimilarity.} -- all that matters is whether the same outputs are eventually produced\fixnote{from the same inputs}.
+The resulting bisimilarity will therefore be a weak bisimilarity.
+
+So, to summarize, our ordered rewriting bisimilarity will be an asynchronous, weak bisimilarity with two conditions: [...]\fixnote{??}.\footnote{We could combine the two conditions into a monolithic one, but that becomes rather unwieldy.}
+This combination of asynchronous weak bisimilarity with observable atoms means that our definition of ordered rewriting bisimilarity will be similar to \citeauthor{Deng+:MSCS16}'s contextual similarity, although the particulars of our definition will be different.
+
+We are nearly ready to define ordered rewriting bisimilarity, but we first must define a few auxiliary relations on contexts.
+% In this \lcnamecref{sec:ordered-bisimilarity:rewriting-bisimilarity}, we define \emph{ordered rewriting bisimilarity}, a notion of behavioral equivalence for ordered contexts.
+% Before that, however, we must define a few auxiliary relations on contexts.
 %
 \begin{definition}[Framed binary relations]\label{def:ordered-bisimilarity:framed-relation}
   Let $\simu{R}$ be a binary relation on ordered contexts.
@@ -534,26 +552,26 @@ If two contexts may eventually produce different outgoing messages, then observi
 % We may also perform simple experiments on contexts: provide the contexts with some incoming messages (or none at all) and observe any outgoing messages that are eventually produced.%
 In particular, we do not allow the time or number of computational steps to be observed -- all that matters is whether the same outputs are eventually produced from the same inputs.
 The resulting bisimilarity will therefore be a weak bisimilarity.
-\footnote{We could equivalently combine these into one monolithic condition: If $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
-  \begin{equation*}
-    \begin{tikzcd}[ampersand replacement=\&, sep=large]
-      \atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R
-        \rar[relation, "\lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}"]
-        \dar[Reduces, exists]
-      \&
-      \atmR{\lctx}_L \oc \lctx \oc \atmL{\lctx}_R
-        \dar[Reduces]
-      \\
-      \atmL{\lctx}'_L \oc \octx' \oc \atmL{\lctx}'_R
-        \rar[relation, exists, "\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmL{\lctx}'_R}"]
-      \&
-      \atmL{\lctx}'_L \oc \lctx' \oc \atmL{\lctx}'_R
-    \end{tikzcd}
-  \end{equation*}
-  However, this formulation is unwieldy, so we prefer the separate output and input bisimulation conditions.}
+% \footnote{We could equivalently combine these into one monolithic condition: If $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+%   \begin{equation*}
+%     \begin{tikzcd}[ampersand replacement=\&, sep=large]
+%       \atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R
+%         \rar[relation, "\lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}"]
+%         \dar[Reduces, exists]
+%       \&
+%       \atmR{\lctx}_L \oc \lctx \oc \atmL{\lctx}_R
+%         \dar[Reduces]
+%       \\
+%       \atmL{\lctx}'_L \oc \octx' \oc \atmL{\lctx}'_R
+%         \rar[relation, exists, "\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmL{\lctx}'_R}"]
+%       \&
+%       \atmL{\lctx}'_L \oc \lctx' \oc \atmL{\lctx}'_R
+%     \end{tikzcd}
+%   \end{equation*}
+%   However, this formulation is unwieldy, so we prefer the separate output and input bisimulation conditions.}
 
  they have the same input and output behavior.
-Based on this principle, we arrive at the following notion of rewriting bisimilarity.
+Based on this principle, we arrive at the following notion of rewriting bisimilarity with output and input conditions.\footnote{We could equivalently combine the two conditions into a monolithic one, but that becomes rather unwieldy.}
 We will state its definition first and then justify that definition on the basis of observable indistinguishability.
 %
 \begin{definition}\label{def:ordered-bisimilarity:bisim}
@@ -635,6 +653,8 @@ Expanding slightly, there exists a context $\lctx$ such that $\octx \simu{R} \lc
 In other words, once provided with the incoming messages $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$, the context $\lctx$ can eventually evolve to $\lctx'$.
 Being $\simu{R}$-related to $\lctx$, the context $\octx$, when provided with the same incoming messages, must be able to evolve to a context that is $\simu{R}$-related to $\lctx'$, otherwise $\octx$ and $\lctx$ could be distinguished by how they react to $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$.
 That is, we must have $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces \octx' \simu{R} \lctx'$ for some $\octx'$, which is neatly packaged as $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\simu{R} \lctx'$.
+
+
 
 
 \newthought{The other way} to understand rewriting bisimilarity is by analogy with the asynchronous \ac{CCS}'s notion of weak bisimilarity.\autocites{Amadio+:TCS98}{Boreale+:IC02}
@@ -900,7 +920,7 @@ Instead of defining labeled bisimulations directly, we use a refactorization, st
 
 The immediate output, immediate input, and reduction bisimulation conditions are all single-step forms of rewriting bisimilarity's output and input bisimulation conditions~\parencref{def:ordered-bisimilarity:bisim} and reduction bisimulation property~\parencref{thm:bisim-reduction-closure}.
 The emptiness bisimulation condition, on the other hand, is necessary for labeled bisimilarity to be complete.
-A similar condition appears in \textcite{Deng+:MSCS16}'s simulation preorder.
+A similar condition appears in \citeauthor{Deng+:MSCS16}'s\autocite{Deng+:MSCS16} simulation preorder.
 
 Emptiness bisimulation is equivalent to requiring that $\octx \simu{R} (\octxe)$ implies both $\octx \Reduces (\octxe)$ and $(\octxe) \simu{S} (\octxe)$.%
 \footnote{See \cref{thm:emptiness-bisim-equiv} for a proof sketch.}
@@ -2207,7 +2227,7 @@ For that reason, the proof is elided.
   Because rewriting bisimilarity is transitive~\parencref{thm:ordered-bisimilarity:equivalence}, we conclude that $\octx_1 \oc \octx_2 \osim \lctx_1 \oc \lctx_2$.
 \end{proof}
 
-\begin{corollary}
+\begin{corollary}\label{cor:ordered-bisimilarity:congruence}
   Rewriting bisimilarity is a congruence.
 \end{corollary}
 
@@ -2732,7 +2752,7 @@ Recall from \cref{sec:formula-as-process:counters-oo} its object-oriented choreo
     \defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \defp{b}_1 \fuse \atmR{s})
   \end{lgathered}
 \end{equation*}
-Also, recall that denotations were assigned directly to choreographed counters using $\aval{\octx}{n}$, $\ainc{\octx}{n}$, and $\adec{\octx}{n}$ judgments.
+Also, recall that denotations were assigned directly to choreographed counters using the $\aval{\octx}{n}$, $\ainc{\octx}{n}$, and $\adec{\octx}{n}$ judgments.
 
 Intuitively, any two counters that have the same denotation ought to be indistinguishable.
 After all, the only two operations that we have on counters are increment and head-unary normalization (also known as decrement), and both of these are reflected in the denotation.
@@ -2780,7 +2800,7 @@ For instance, both $\defp{e} \oc \atmL{i} \oc \defp{b}_1$ and $\defp{e} \oc \def
 
 % With these relations, 
 We can state and prove that counters with equal denotations are bisimilar, and conversely, that bisimilar counters have equal denotations.
-\begin{restatable}[
+\begin{restatable*}[
   label=thm:oo-counter-bisim
 ]{theorem}{thmoocounterbisim}
   If either
@@ -2788,7 +2808,7 @@ We can state and prove that counters with equal denotations are bisimilar, and c
   \item $\ainc{\octx}{n}$ and $\ainc{\lctx}{n'}$ or
   \item $\adec{\octx}{n}$ and $\adec{\lctx}{n'}$
   \end{enumerate*}, then $\octx \osim \lctx$ if, and only if, $n = n'$.
-\end{restatable}
+\end{restatable*}
 
 Before proving this \lcnamecref{thm:oo-counter-bisim}, recall the big-step adequacy of decrements for the choreography.
 \coroocounteradequacy*
@@ -2865,7 +2885,7 @@ Using this \lcnamecref{lem:ordered-bisimilarity:oo-counter-bisim-easy}, we may p
 It is especially interesting that the proof of this \lcnamecref{thm:oo-counter-bisim} is quite modular, relying heavily on the choreography's adequacy.
 We conjecture that this proof pattern will be useful in proving \lcnamecrefs{thm:oo-counter-bisim} about bisimilarities for other choreographies.
 %
-\thmoocounterbisim*
+\thmoocounterbisim
 \begin{proof}
   We prove each direction separately.
   \begin{itemize}
@@ -2898,20 +2918,36 @@ We conjecture that this proof pattern will be useful in proving \lcnamecrefs{thm
 
     \item
       Consider the case in which $\adec{\octx}{n}$ and $\adec{\lctx}{n}$.
-    According to big-step adequacy of decrements for the choreography~\parencref{thm:msg-dec-big-adequacy}, there are three cases that derive from $\lctx$.
+    According to \cref{lem:ordered-bisimilarity:oo-counter-bisim-easy}, there are three cases.
+    In all cases, $\atmL{\lctx}'_L$ is empty.
     \begin{itemize}
-    \item 
-      Consider the case in which $\adec{\octx}{0}$ and $\lctx = \adec{\atmR{z}}{0}$.
-      According to big-step adequacy of decrements for the choreography, $\octx \Reduces \atmR{z}$ and so, indeed, $\octx \Reduces\rframe{\reflc{\simu{R}}}{\atmR{z}} \atmR{z} = \lctx$.
-
-    \item 
-      Consider the case in which $\adec{\octx}{n}$ and $n > 0$ and $\lctx = \lctx' \oc \atmR{s}$ and $\ainc{\lctx'}{n-1}$.
-      According to big-step adequacy of decrements for the choreography, $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
-      It immediately follows that $\octx \Reduces\rframe{\simu{R}}{\atmR{s}} \lctx' \oc \atmR{s} = \lctx$.
-
     \item
-      Consider the case in which $\adec{\octx}{n}$ and $\adec{\lctx}{n}$, with both $\atmL{\lctx}'_L$ and $\atmR{\lctx}'_R$ empty.
-      The required $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \lctx$ is trivial.
+      Consider the case in which $\atmR{\lctx}'_R$ is empty.
+      Then $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \lctx$ is trivial.
+
+    \item 
+      Consider the case in which $n=0$ and $\lctx = \atmR{\lctx}'_R = \atmR{z}$.
+      According to the big-step adequacy of decrements for the object-oriented choreography~\parencref{cor:choreographies:oo-counter-adequacy}, $\octx \Reduces \atmR{z}$.
+      The required $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \atmR{z} = \lctx$ follows immediately.
+
+    \item 
+      Consider the case in which $n > 0$ and $\lctx = \lctx' \oc \atmR{s}$ with $\ainc{\lctx'}{n-1}$.
+      According to the big-step adequacy of decrements for the choreography~\parencref{cor:choreographies:oo-counter-adequacy}, $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
+      Therefore, $\octx' \simu{R} \lctx'$.
+      The required $\octx \Reduces\lrframe{\atmL{\lctx}'_L}{\reflc{\simu{R}}}{\atmR{\lctx}'_R} \lctx' \oc \atmR{s} = \lctx$ follows.
+
+    % \item 
+    %   Consider the case in which $\adec{\octx}{0}$ and $\adec{\lctx}{0}$.
+    %   $\octx \Reduces \atmR{z}$ and $\lctx \Reduces \atmR{z}$
+
+    % \item 
+    %   Consider the case in which $\adec{\octx}{0}$ and $\lctx = \adec{\atmR{z}}{0}$.
+    %   According to big-step adequacy of decrements for the choreography, $\octx \Reduces \atmR{z}$ and so, indeed, $\octx \Reduces\rframe{\reflc{\simu{R}}}{\atmR{z}} \atmR{z} = \lctx$.
+
+    % \item 
+    %   Consider the case in which $\adec{\octx}{n}$ and $n > 0$ and $\lctx = \lctx' \oc \atmR{s}$ and $\ainc{\lctx'}{n-1}$.
+    %   According to big-step adequacy of decrements for the choreography, $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
+    %   It immediately follows that $\octx \Reduces\rframe{\simu{R}}{\atmR{s}} \lctx' \oc \atmR{s} = \lctx$.
     \end{itemize}
     \end{itemize}
 
@@ -2984,7 +3020,7 @@ We conjecture that this proof pattern will be useful in proving \lcnamecrefs{thm
   \item
     To prove the converse, that bisimilar counters have equal denotations, we shall prove that 
     \begin{enumerate}[noitemsep]
-    \item If $\adec{\octx}{n}$ and $\adec{\lctx}{n'}$ and $\octx \osim \lctx$, then $n = n'$.
+    \item If $\adec{\octx}{n}$ and $\adec{\lctx}{n'}$ and $\octx \osim \lctx$, then $n = n'$.\label{item:dec-hyp}
     \item If $\ainc{\octx}{n}$ and $\ainc{\lctx}{n'}$ and $\octx \osim \lctx$, then $n = n'$.
     \end{enumerate}
     using a lexicographic induction, first on the denotation $n$ and then on the inductive hypothesis used, with $\text{1} < \text{2}$.
@@ -2995,20 +3031,20 @@ We conjecture that this proof pattern will be useful in proving \lcnamecrefs{thm
       Consider the case in which $n = 0$.
       By big-step adequacy of decrements~\parencref{cor:oo-counter-adequacy}, $\octx \Reduces \atmR{z}$.
       Because $\octx$ and $\lctx$ are bisimilar, $\lctx \Reduces\rframe{\osim}{\atmR{z}} \atmR{z}$.
-      According to big-step adequacy of decrements again, $\lctx$ eventually emits $\atmR{z}$ only if its denotation is $n' = 0$, and so $n = 0 = n'$.
+      According to big-step adequacy of decrements again~\parencref{cor:choreographies:oo-counter-adequacy}, $\lctx$ eventually emits $\atmR{z}$ only if its denotation is $n' = 0$, and so $n = 0 = n'$.
 
     \item 
       Consider the case in which $n > 0$.
-      By big-step adequacy of decrements~\parencref{cor:oo-counter-adequacy}, $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
+      By big-step adequacy of decrements~\parencref{cor:choreographies:oo-counter-adequacy}, $\octx \Reduces \octx' \oc \atmR{s}$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
       Because $\octx$ and $\lctx$ are bisimilar, $\lctx \Reduces\rframe{\osim}{\atmR{s}} \octx' \oc \atmR{s}$; in other words, $\lctx \Reduces \lctx' \oc \atmR{s}$ for some $\lctx'$ such that $\octx' \osim \lctx'$.
-      According to big-step adequacy of decrements again, $\lctx$ eventually emits $\atmR{s}$ only if $n' > 0$ and $\ainc{\lctx'}{n'-1}$.
+      According to big-step adequacy of decrements again~\parencref{cor:choreographies:oo-counter-adequacy}, $\lctx$ eventually emits $\atmR{s}$ only if $n' > 0$ and $\ainc{\lctx'}{n'-1}$.
       By the inductive hypothesis, it follows that $n-1 = n'-1$, and so $n = n'$ as required.
     \end{itemize}
     
   \item Assume that $\ainc{\octx}{n}$ and $\ainc{\lctx}{n'}$ and $\octx \osim \lctx$.
     By applying the $\jrule{$\atmL{d}$-D}$ rule, we may deduce that $\adec{\octx \oc \atmL{d}}{n}$ and $\adec{\lctx \oc \atmL{d}}{n'}$.
-    Moreover, because rewriting bisimilarity is a congruence~\parencref{??}, $\octx \oc \atmL{d} \osim \lctx \oc \atmL{d}$.
-    By part~\ref{item:??} of the inductive hypothesis, we conclude that $n = n'$, as required.
+    Moreover, because rewriting bisimilarity is a congruence~\parencref{cor:ordered-bisimilarity:congruence}, $\octx \oc \atmL{d} \osim \lctx \oc \atmL{d}$.
+    By part~\ref{item:dec-hyp} of the inductive hypothesis, we conclude that $n = n'$, as required.
   %
   \qedhere
   \end{enumerate}

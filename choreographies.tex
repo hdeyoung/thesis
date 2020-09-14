@@ -549,7 +549,7 @@ For example, without unbounded rewriting, we cannot even describe producer--cons
 As the proof of termination shows, rewriting is bounded precisely because contexts consist of finitely many \emph{finite} propositions.
 In multiset and ordered rewriting, unbounded behavior is traditionally introduced by way of persistent propositions that may be replicated as much as needed\autocites{Polakow:CMU01}{Watkins+:CMU02}{Simmons:CMU12}.
 This is related to \citeauthor{Milner:CUP99}'s use of replication, $!P$, in the $\pi$-calculus\autocite{Milner:CUP99}.
-(See \cref{??} for a more detailed discussion of replication.)
+(See \cref{sec:ordered-logic:circular} for a more detailed discussion of replication.)
 
 However, another option -- and the one that we pursue here -- is to permit circular negative propositions in the form of mutually coinductive definitions, $\n{\defp{p}} \defd \n{A}$, where the grammar of negative propositions is extended to include these coinductively defined propositions:
 \begin{equation*}
@@ -589,7 +589,7 @@ In contrast, under an isorecursive treatment, unrolling a coinductively defined 
     \text{($(\n{\defp{p}} \defd \n{A}) \in \orsig$)} &
     \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{_{\orsig} \p{C}}}$}
 
-Because these coinductively defined propositions are not generative\autocite{??}, there is not much difference between the equirecursive and isorecursive treatments.
+Because these coinductively defined propositions are not generative, there is not much difference between the equirecursive and isorecursive treatments.\autocite{Amadio+Cardelli:TPLS93}
 We choose an equirecursive treatment of definitions simply because the accompanying generous notion of equality helps to minimize the conceptual overhead of coinductively defined propositions.
 % As a simple example, under the equirecursive definition $\n{\defp{p}} \defd \p{\atmR{a}} \limp \up \dn \n{\defp{p}}$, we have the trace
 % \begin{equation*}
@@ -2364,7 +2364,7 @@ Given \iac{NFA} $\aut{A} = (Q, \nfapow, F)$\fixnote{symbol?} over an input alpha
 As a second extended example of a choreography, we would now like to choreograph this specification in the formula-as-process ordered rewriting framework.
 As with the binary counter specification, there are, in fact, two distinct choreographies for this string rewriting specification of \acp{NFA} -- one functional and one object-oriented.
 
-\subsection{A functional choreography}\label{ch:formula-as-process:nfa-functional}
+\subsection{A functional choreography}\label{sec:formula-as-process:nfa-functional}
 
 Let $\theta$ be%
 \marginnote{$
