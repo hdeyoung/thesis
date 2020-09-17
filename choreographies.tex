@@ -14,15 +14,16 @@ Nothing is said about how this replacement is achieved -- permitted rewritings j
 In the previous \lcnamecref{ch:ordered-rewriting}, we presented a different rewriting framework, derived from the (focused) ordered sequent calculus and closely related to the \citeauthor{Lambek:AMM58} calculus\autocite{Lambek:AMM58}.
 Ordered rewriting, in both its unfocused and focused variants, continues to leave the operational semantics abstract, as if a central, meta-level actor governs rewriting.
 
-The string rewriting and (strongly) focused ordered rewriting frameworks are both expressive enough to exhibit concurrency% behaviors%
+The string rewriting and (strongly) focused ordered rewriting frameworks are both expressive enough to specify the dynamics of concurrent systems that have chain topologies% behaviors%
 \footnote{See \cref{sec:string-rewriting:concurrency,sec:ordered-rewriting:concurrency}.}%
 , and the ordered rewriting framework's logical foundations make it a proof-construction approach to concurrency.
 But without a concrete operational semantics neither framework is yet suitable for\fixnote{suited to} our ultimate goal -- 
 % a method for extracting local, message-passing implementations from concurrent specifications.
 to establish the relationship between proof-construction and proof-reduction descriptions of concurrency.
 %  operating at such a high level of abstraction that neither framework's operational semantics can be cleanly implemented\fixnote{word choice?} in terms of local, message-passing communication.
+In other words, string re-writing and focused ordered re-writing frameworks are well-suited to specification but not to programming.
 
-This \lcnamecref{ch:formula-as-process} takes three significant steps toward this end, using the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} as a stepping stone.
+This \lcnamecref{ch:formula-as-process} takes three significant steps away from pure specifacation and toward programming, using the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} as a stepping stone.
 \begin{itemize}[listparindent=\parindent, itemsep=\dimexpr\itemsep+\parsep\relax, parsep=0pt]
 \item
   In \cref{sec:formula-as-process:interpretation}, we refine the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} into one that can be given a \emph{formula-as-process} interpretation%
@@ -471,7 +472,7 @@ The compatibility rule, $\jrule{$\reduces$C}$, remains unchanged.
   \caption{A formula-as-process ordered rewriting framework}\label{fig:formula-as-process:framework}
 \end{figure}
 
-\clearpage
+% \clearpage
 \subsection{Comments}\label{sec:formula-as-process:comments}\label{sec:formula-as-process:typing}
 
 Now we are in a position to understand how the two principal syntactic changes -- atom directions and atomic premises for implications -- combine to endow the otherwise untyped processes with a modicum of static typing.
@@ -589,7 +590,7 @@ In contrast, under an isorecursive treatment, unrolling a coinductively defined 
     \text{($(\n{\defp{p}} \defd \n{A}) \in \orsig$)} &
     \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{_{\orsig} \p{C}}}$}
 
-Because these coinductively defined propositions are not generative, there is not much difference between the equirecursive and isorecursive treatments.\autocite{Amadio+Cardelli:TPLS93}
+Because these coinductively defined propositions are not generative, there is not much difference between the equirecursive and isorecursive treatments.\autocite{Amadio+Cardelli:TOPLAS93}
 We choose an equirecursive treatment of definitions simply because the accompanying generous notion of equality helps to minimize the conceptual overhead of coinductively defined propositions.
 % As a simple example, under the equirecursive definition $\n{\defp{p}} \defd \p{\atmR{a}} \limp \up \dn \n{\defp{p}}$, we have the trace
 % \begin{equation*}
@@ -604,8 +605,9 @@ As previously mentioned, the proposition $\n{\defp{p}}$ given by $\n{\defp{p}} \
 Yet it cannot be successfully put into left focus -- there are no contexts $\atmR{\octx}_L$ and $\atmL{\octx}_R$ and positive consequent $\p{C}$ for which $\lfocus{\atmR{\octx}_L}{\n{\defp{p}}}{\atmL{\octx}_R}{\p{C}}$ is derivable.
 To derive a left-focus judgment on $\n{\defp{p}}$, the finite context $\atmR{\octx}_L$ would need to hold an infinite stream of $\p{\atmR{a}}$ atoms -- an impossible feat for the inductively defined, and hence finite, contexts like $\atmR{\octx}_L$ that we consider here.%
 \footnote{%
-  \Textcite{Miller:??} presents a system with infinite focusing phases, which would certainly permit definitions like $\n{\defp{p}} \defd \p{\atmR{a}} \limp \n{\defp{p}}$ to be put into focus.
-  We do not pursue that generalization here because we want rewriting to occur on finite contexts only.}
+  \Textcite{Baelde+Miller:LPAR07} present a focusing system for least and greatest fixed points in linear logic that allows focus on fixed points such as $\n{\defp{p}} \defd \p{\atmR{a}} \limp \n{\defp{p}}$ to either continue or blur.
+  We do not pursue that generalization, nor a generalization to circular focusing phases (which would necessitate infinite contexts).}
+% because we want rewriting to occur on finite contexts only.}
 
 % However, because the left-focus judgment is defined inductively, not coinductively, there are some recursively defined negative propositions that cannot successfully be put into focus.
 % Under the definition $\n{\defp{p}} \defd \p{\atmR{a}} \limp \n{\defp{p}}$, for example, there are no contexts $\atmR{\octx}_L$ and $\atmL{\octx}_R$ and positive consequent $\p{C}$ for which $\lfocus{\atmR{\octx}_L}{\n{\defp{p}}}{\atmL{\octx}_R}{\p{C}}$ is derivable.
@@ -788,7 +790,7 @@ Although perhaps well-intentioned, such a requirement seems somewhat under-motiv
 % But now, messages, as represented by the directed $\p{\atmL{a}}$ and $\p{\atmR{a}}$ atoms, make it possible to describe the interactions that a configuration $\octx$ offers to its surroundings. 
 
 
-\section{A local interaction semantics}\label{sec:formula-as-process:local-interaction}% \label{sec:formula-as-process:transition-semantics}
+\section{A local interaction semantics}\label{sec:formula-as-process:local-interaction}\label{sec:formula-as-process:transition-semantics}
 
 For the formula-as-process interpretation, we have thus far examined the rewriting judgment, $\octx \reduces \octx'$, and suggested that it represents a kind of reduction semantics for the underlying processes.
 % Now that we are ascribing a formula-as-process interpretation to ordered rewriting, this judgment characterizes internal reductions.
@@ -900,7 +902,9 @@ Two of these rules allow the external inputs expected by an input transition to 
     \text{($\atmR{\octx}_L \neq (\octxe)$ or $\atmL{\octx}_R \neq (\octxe)$)}}
 \end{inferences}
 For example, the $\jrule{$[\atmR{a}]$C}$ rule: if $\octx$ can reduce to $\octx'$ upon input of surrounding $\atmR{\octx}_L \oc \atmR{a}$ and $\atmL{\octx}_R$, then $\atmR{a} \oc \octx$ can reduce to $\octx'$ upon input of surrounding $\atmR{\octx}_L$ and $\atmL{\octx}_R$.
-In other words, in the context $\atmR{a} \oc \octx$, the atom $\atmR{a}$ already, internally satisfies $\octx$'s demand for $\atmR{a}$.
+In other words, in the context $\atmR{a} \oc \octx$, the atom $\atmR{a}$ already, internally satisfies $\octx$'s demand for $\atmR{a}$.\footnote{The side conditions in these rulesserve to ensure that the last input atom cannot be absorbed into the context.
+  This way, each input transition that derives from an implication cannot degenerate to a reduction.
+  (Input transions that derive from propositions $\up \p{B}$ will require no inputs, however.)}
 The $\jrule{$[\atmL{a}]$C}$ rule is symmetric, involving $\atmL{a}$ on the right.
 Algebraically, these two rules express a form of associativity.
 
@@ -948,7 +952,7 @@ This is because these rules pass $\oante$ through the input transition unaffecte
     \infer[\jrule{$[\atmR{a}]$C}]{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\atmR{a} \oc \octx}{\octx'}}{
       \ireduces{\atmR{\octx}_L \oc \atmR{a} \oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'} &
       \text{($\atmR{\octx}_L \neq (\octxe)$ or $\atmL{\octx}_R \neq (\octxe)$)}}
-    \and
+    \\
     \infer[\jrule{$[\atmL{a}]$C}]{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\octx \oc \atmL{a}}{\octx'}}{
       \ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{a} \oc \atmL{\octx}_R}{\octx}{\octx'} &
       \text{($\atmR{\octx}_L \neq (\octxe)$ or $\atmL{\octx}_R \neq (\octxe)$)}}
@@ -2114,12 +2118,12 @@ What is interesting is that the adequacy of this choreography comes for nearly f
 
 
 
-Recall from \cref{??} that \cref{??} show that the string rewriting specification adequately describes increments and decrements:
+Recall from \cref{sec:string-rewriting:binary-counter} that the string rewriting specification adequately describes increments and decrements:
 \thmadequacysmalldecstring*
 %
 \coradequacydecstring*
 
-Combining these \lcnamecrefs{??} with \cref{thm:formula-as-process:choreograph-completeness}, we have the immediate \lcnamecref{cor:choreographies:oo-counter-adequacy}:
+Combining these \lcnamecrefs{thm:string-rewriting:dec-small-step-adequacy} with \cref{thm:formula-as-process:choreograph-completeness}, we have the immediate \lcnamecref{cor:choreographies:oo-counter-adequacy}:
 \begin{restatable}[
   name=Adequacy of object-oriented choreography,
   label=cor:choreographies:oo-counter-adequacy
@@ -2249,8 +2253,7 @@ As a counterexample, recall the string rewriting specification $(\sralph, \srsig
 \end{equation*}
 For this choreography, the dual role assignment, $\theta^{\bot}$, would map $b$ to a message, either $\atmL{b}$ or $\atmR{b}$.
 And, the axiom $b \reduces \emp$ would, under $\theta^{\bot}$, induce either $\ereduces[\orsig^{\bot}]{\atmL{b}}{(\octxe)}$ or $\ereduces[\orsig^{\bot}]{\atmR{b}}{(\octxe)}$ as a constraint.
-Neither of these possible constraints is satisfiable in the formula-as-process ordered rewriting framework because the premises contain only passive messages.%
-\footnote{See \cref{??}.}
+Neither of these possible constraints is satisfiable in the formula-as-process ordered rewriting framework because the premises contain only messages, which are passive and have no definitions.
 
 One might also ask if a theorem is possible if some additional conditions are imposed on the specification.
 % It appeasr that the conditions necessary for such a theorem are so extremely narrow as to make any obtained theorem of little value.
@@ -2284,9 +2287,9 @@ Depending on whether $\theta^{\bot}$ maps $b$ to $\atmL{b}$ or $\atmR{b}$, the i
 \end{equation*}
 respectively.
 In either case, the constraints are unsatisfiable because one premise in each group involves a message directed outward, away from the premise's process.%
-\footnote{See \cref{??}.}
+\footnote{See \cref{sec:formula-as-process:comments}.}
 
-We will return to this idea of a duality theorem in \cref{??}, where we will see that session types provide just the right conditions for such a theorem.
+We will return to this idea of a duality theorem in\fixnote{??}s \cref{??}, where we will see that session types provide just the right conditions for such a theorem.
 % a b --> ...
 % b c --> ...
 
@@ -2306,7 +2309,7 @@ Instead of responding to a decrement with either a $\atmR{z}$ or $\atmR{s}$ mess
 
 One problem with these choreographies, however, is that, without a $\atmR{z}$ or $\atmR{s}$ response message, there is no way to observe the counter's state.
 Under these choreographies, all counters are, in some sense, equivalent because they can't be distinguished by any of the nonexistent observations.
-We will return to the idea of observational equivalence in the following \lcnamecref{ch:??}.
+We will return to the idea of observational equivalence in the following \lcnamecref{ch:ordered-bisimilarity}.
 
 \begin{table*}[tb]
   \renewcommand{\arraystretch}{1.2}
@@ -2347,8 +2350,8 @@ We will return to the idea of observational equivalence in the following \lcname
 
 \section{Extended example: Choreographing \aclp*{NFA}}\label{sec:formula-as-process:nfa}
 
-Recall from \cref{??} our string rewriting specification of how \iac{NFA} processes its input.
-Given \iac{NFA} $\aut{A} = (Q, \nfapow, F)$\fixnote{symbol?} over an input alphabet $\ialph$, the \ac{NFA}'s operational semantics is adequately captured by the string rewriting specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$, where the axioms $\srsig$ are given by
+Recall from \cref{sec:string-rewriting:nfa} our string rewriting specification of how \iac{NFA} processes its input.
+Given \iac{NFA} $\aut{A} = (Q, \nfapow, F)$\fixnote{symbol?} over an input alphabet $\ialph$, the \ac{NFA}'s operational semantics is adequately captured by the string rewriting specification $(\ialph \dunion \Set{\eow,\symacc, \symrej}, \srsig)$, where the axioms $\srsig$ are given by
 \begin{equation*}
   \!\begin{aligned}
     \srsig = {}
@@ -2357,7 +2360,7 @@ Given \iac{NFA} $\aut{A} = (Q, \nfapow, F)$\fixnote{symbol?} over an input alpha
   \end{aligned}
 \text{ where }
   F(q) = \begin{cases*}
-           \emp & if $q \in F$ \\
+           \symacc & if $q \in F$ \\
            \symrej & if $q \notin F$\,.
          \end{cases*}
 \end{equation*}
@@ -2392,15 +2395,15 @@ Under the role assignment $\theta$, the axioms in $\srsig$ that mention $q$ in t
   \end{lgathered}
   \enspace\text{where }
   \atmR{F}(q) = \begin{cases*}
-                  (\octxe) & if $q \in F$ \\
+                  \atmR{\symacc} & if $q \in F$ \\
                   \atmR{\symrej} & if $q \notin F$
                 \end{cases*}
 \end{equation*}
-as constraints on $\orsig$ that must be satisfied if $(\theta, \orsig)$ is to be a meaningful choreography of the \ac{NFA} specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$.
+as constraints on $\orsig$ that must be satisfied if $(\theta, \orsig)$ is to be a meaningful choreography of the \ac{NFA} specification $(\ialph \dunion \Set{\eow, \symacc, \symrej}, \srsig)$.
 Solving these constraints for $\defp{q}$, we obtain the definition
 \begin{gather*}
   \defp{q} \defd
-    (\atmR{\eow} \limp \up \bigfuse \atmR{F}(q)) \with
+    (\atmR{\eow} \limp \up \atmR{F}(q)) \with
     \bigwith_{a \in \ialph} \bigl(\atmR{a} \limp (
       \textstyle \bigwith_{q'_a \in \nfapow(q, a)} \up \dn \defp{q}'_a)
     \bigr)
@@ -2408,7 +2411,7 @@ Solving these constraints for $\defp{q}$, we obtain the definition
 \intertext{and therefore the full choreographing signature is}
   \orsig = \left(
     \defp{q} \defd
-      (\atmR{\eow} \limp \up \bigfuse \atmR{F}(q)) \with
+      (\atmR{\eow} \limp \up \atmR{F}(q)) \with
       \bigwith_{a \in \ialph} \bigl(\atmR{a} \limp (
         \textstyle \bigwith_{q'_a \in \nfapow(q, a)} \up \dn \defp{q}'_a)
       \bigr)
@@ -2444,7 +2447,7 @@ As a concrete example, the adjacent \lcnamecref{fig:formula-as-process:nfa-examp
   \caption{\Iac*{NFA} that accepts exactly those words, over the alphabet $\ialph = \set{a,b}$, that end with $b$; and a choreography}\label{fig:formula-as-process:nfa-example}
 \end{marginfigure}%
 %
-recalls from \cref{??} \iac{NFA} that accepts those words, over the alphabet $\ialph = \Set{a,b}$, that end with $b$, and also gives a choreographing signature for that \ac{NFA}.
+recalls from \cref{fig:nfa-example-ends-b} \iac{NFA} that accepts those words, over the alphabet $\ialph = \Set{a,b}$, that end with $b$, and also gives a choreographing signature for that \ac{NFA}.
 
 % \begin{equation*}
 %   \orsig =
@@ -2491,9 +2494,9 @@ Recall from \cref{sec:string-rewriting:nfa} the adequacy \lcnamecref{thm:nfa-ade
 %
 \nfaadequacystringrewriting*
 %
-What we would like now is a \lcnamecref{thm:??} that relates \iac{NFA} not to a string rewriting specification but to the above functional choreography.
-In the specific instance of this functional choreography of the \ac{NFA}, \cref{thm:??,thm:??}, the adequacy of the choreographing procedure, can be reduced to the following \lcnamecref{??} -- a result that relates the string rewriting specification to the choreography.
-\begin{corollary}
+What we would like now is a theorem that relates \iac{NFA} not to a string rewriting specification but to the above functional choreography.
+In the specific instance of this functional choreography of the \ac{NFA}, \cref{thm:??,thm:??}, the adequacy of the choreographing procedure, can be reduced to the following \lcnamecref{cor:chor-nfa-adequacy} -- a result that relates the string rewriting specification to the choreography.
+\begin{corollary}\label{cor:chor-nfa-adequacy}
   For the above string rewriting specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$ and choreography $(\theta, \orsig)$, the choreography is adequate with respect to the specification:
   \begin{itemize}[nosep]
   \item

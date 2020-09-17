@@ -98,7 +98,7 @@ Algebraically, ordered contexts $\octx$ form a free noncommutative monoid:
 where the monoid operation is concatenation, denoted by juxtaposition, and the unit element is the empty context, denoted by $(\octxe)$.
 (We will also sometimes use the metavariable $\lctx$ for \emph{ordered} contexts.)
 As a monoid, ordered contexts are equivalent up to associativity and unit laws (see adjacent \lcnamecref{fig:ordered-logic:monoid-laws}).%
-\begin{marginfigure}[-4.65\baselineskip]
+\begin{marginfigure}[-5\baselineskip]
   \begin{gather*}
     (\octx_1 \oc \octx_2) \oc \octx_3 = \octx_1 \oc (\octx_2 \oc \octx_3) \\
     (\octxe) \oc \octx = \octx = \octx \oc (\octxe)
@@ -335,7 +335,7 @@ The two forms of implication each enjoy their own currying laws: the sequents $\
       $B$ \\
     \bottomrule
   \end{tabular}
-  \caption{A resource interpretation of the ordered logical connectives}\label{tbl:ordered-logic:resources}
+  \caption[][-0.25\baselineskip]{A resource interpretation of the ordered logical connectives}\label{tbl:ordered-logic:resources}
 \end{table}
 
 \begin{figure}[tbp]
@@ -524,7 +524,7 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
   a lexicographic structural induction, first on the structure of the cut formula, $A$, and then on the structures of the given proofs.
   We review their proof here.
 
-  As usual, the various cases can be classified into three catagories: identity cases, principal cases, and commutative cases.
+  As usual, the various cases can be classified into three categories: identity cases, principal cases, and commutative cases.
   %
   \begin{description}[parsep=0pt, listparindent=\parindent]
   \item[Identity cases]
@@ -648,8 +648,8 @@ With the admissibility of a cut principle for cut-free proofs established, we ma
 \subsection{Identity elimination}
 
 By this cut elimination \lcnamecref{thm:ordered-logic:cut-elimination}, an arbitrary proof may be put into cut-free form.
-Recall from earlier in this \lcnamecref{sec:ordered-logic:verifications}~(\cpageref{list:ordered-logic:normalization}) that the next step toward proof normalization is to eliminate all remaining instances of the $\jrule{ID}$ rule that occur at non-atomic propositions $A$.
-Before proving the identity elimination \lcnamecref{thm:ordered-logic:id-elimination}, we need to prove that an identity principle is admissible for identity-long proofs.
+Recall from earlier in this \lcnamecref{sec:ordered-logic:verifications} that the next step toward proof normalization is to eliminate all remaining instances of the $\jrule{ID}$ rule that occur at non-atomic propositions $A$.
+Before proving identity elimination, we need to prove that an identity principle is admissible for identity-long proofs.
 %
 \begin{lemma}[
   name=Admissibility of identity,
@@ -767,7 +767,7 @@ We conjecture that persistence is strictly more expressive than recursive defini
 In ordered logic, the difference between the exponential and recursive definitions is essentially one of mobility.
 % The proposition $\bang (p \limp A)$ makes unbounded number of resources $p \limp A$ possible by moving $p \limp A$ into a persistent context, from which $p \limp A$ can be copied \emph{anywhere} into the ordered context, as often as desired.
 % the proposition $\bang (p \limp A)$ and the definition $\defp{p} \defd A$ is one of mobility.
-The persistent resouce $p \limp A$ that derives from $\bang (p \limp A)$ can be copied \emph{anywhere} into the ordered context.
+The persistent resource $p \limp A$ that derives from $\bang (p \limp A)$ can be copied \emph{anywhere} into the ordered context.
 By making the exponential a first-class logical connective, this mobility can be exploited.
 For example, the proposition $\bang (p \limp a \fuse \bang p)$ would allow $p$ to move anywhere within the ordered context.
 In contrast, recursive definitions decouple unbounded behavior from mobility and are not first-class.

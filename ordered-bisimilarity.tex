@@ -37,7 +37,7 @@ As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \l
 % As another example, $\atmR{a} \limp (\atmR{c} \pmir \atmL{b})$ and $(\atmR{a} \limp \atmR{c}) \pmir \atmL{b}$ ought to be behaviorally equivalent, intuitively because they are logically equivalent\footnote{That is, $\oseq{\atmR{a} \limp (\atmR{c} \pmir \atmL{b}) \dashv|- (\atmR{a} \limp \atmR{c}) \pmir \atmL{b}}$.}.
 
 \newthought{Following the vast literature} on various forms of bisimilarity%
-\footnote{See \textcite{??} for a survey.}%
+%\footnote{See \textcite{??} for a survey.}%
 , this \lcnamecref{ch:ordered-bisimilarity} therefore develops a notion of \emph{ordered rewriting bisimilarity} in which atoms are observable.
 %\footnote{We do not consider divergence to be observable, so this behavioral equivalence is not testing equivalence.}
 %
@@ -489,7 +489,7 @@ Because ordered rewriting is asynchronous in this way, we should expect our noti
 
 
 As mentioned above, we will take atoms to be observable, consistent with the local interaction semantics and output transitions defined in \cref{??}.
-It is worth reiterating that an atom's direction and location within a larger context are crucial to its observability.
+It is worth reiterating that an atom's direction and location within a larger context are crucial to its observability -- only outward-directed atoms located at the edges of a context are immediately observable. 
 For example, in $\atmL{a} \oc \octx$ and $\octx \oc \atmR{b}$, the atoms $\atmL{a}$ and $\atmR{b}$, respectively, are observable because they are in position to be received by an observer.
 The observer $(\up \p{A} \pmir \atmL{a})$ can receive $\atmL{a}$ from $\atmL{a} \oc \octx$, and the observer $(\atmR{b} \limp \up \p{B})$ can receive $\atmR{b}$ from $\octx \oc \atmR{b}$:
 \begin{equation*}
@@ -498,7 +498,7 @@ The observer $(\up \p{A} \pmir \atmL{a})$ can receive $\atmL{a}$ from $\atmL{a} 
   (\octx \oc \atmR{b}) \oc (\atmR{b} \limp \up \p{B}) \reduces \octx \oc \p{B}
   \,.
 \end{equation*}
-But these same atoms cannot be observed in $\octx \oc \atmL{a}$ and $\atmR{b} \oc \octx$ when $\octx$ is nonempty, precisely because their new locations do not complement their directions: 
+But these same atoms cannot be observed in $\octx \oc \atmL{a}$ and $\atmR{b} \oc \octx$ when $\octx$ is nonempty, precisely because their new locations do not complement their directions.
 Given the syntactic restriction imposed on left- and right-hand implications, no implication placed to the right of $\atmL{a}$ will be able to consume $\atmL{a}$; likewise for implications placed to the left of $\atmR{b}$.
 In other words, the observable atoms are exactly those atoms that are immediately outgoing.
 
@@ -506,16 +506,17 @@ Recall from \cref{??} that ordered rewriting is asynchronous: $(\up \p{A} \pmir 
 We should therefore expect our notion of rewriting bisimilarity to have some analogy to the kinds of bisimilarities developed for the asynchronous $\pi$-calculus\autocite{Amadio+:TCS98} and asynchronous \acs{CCS}\autocite{Boreale+:IC02}.
 In particular, that means that input processes or, in our case, implications ought not to be directly observable.
 
-Instead, the asynchronous nature of rewriting leads us to the type of experiment that external observers may perform: provide the contexts with some incoming messages (or none at all) and observe any outgoing messages that are eventually produced.
-If the two contexts eventually produce different outgoing messages, then observing those messages will allow us to distinguish the two contexts.
+Instead, the asynchronous nature of rewriting leads us to the type of experiment that external observers may perform: provide two contexts with some incoming messages (or none at all) and observe what outgoing messages, if any, are eventually produced.
+If the two contexts eventually produce different outgoing messages, then those contexts are observably distinguishable and cannot be considered behaviourally equivalent.
 
-Lastly, we will not consider the time or number of computational steps to be observable\footnote{Nor do we consider divergence to be observable, so we do not pursue testing equivalence, only bisimilarity.} -- all that matters is whether the same outputs are eventually produced\fixnote{from the same inputs}.
+Lastly, we will not consider the time or number of computational steps to be observable\footnote{Nor do we consider divergence to be observable, so we do not pursue testing equivalence, only bisimilarity.} -- all that matters is whether, given the same inputs, the same outputs are eventually produced.
 The resulting bisimilarity will therefore be a weak bisimilarity.
 
-So, to summarize, our ordered rewriting bisimilarity will be an asynchronous, weak bisimilarity with two conditions: [...]\fixnote{??}.\footnote{We could combine the two conditions into a monolithic one, but that becomes rather unwieldy.}
-This combination of asynchronous weak bisimilarity with observable atoms means that our definition of ordered rewriting bisimilarity will be similar to \citeauthor{Deng+:MSCS16}'s contextual similarity, although the particulars of our definition will be different.
+So, to summarize, our ordered rewriting bisimilarity will be an asynchronous, weak bisimilarity with two conditions: output bisimulation and input bisimulation.\footnote{We could combine the two conditions into a monolithic one, but that becomes rather unwieldy.}
+This combination of asynchronous weak bisimilarity with observable atoms means that our definition of ordered rewriting bisimilarity will be similar to \citeauthor{Deng+:MSCS16}'s contextual preorder for linear logic.
+Besides the obvious difference in structural properties (ordered and linear) and type of relation (bisimulation and simulation; equivalence and preorder), the particulars of our definition will be different.
 
-We are nearly ready to define ordered rewriting bisimilarity, but we first must define a few auxiliary relations on contexts.
+\newthought{We are nearly} ready to define ordered rewriting bisimilarity, but we first must define a few auxiliary relations on contexts.
 % In this \lcnamecref{sec:ordered-bisimilarity:rewriting-bisimilarity}, we define \emph{ordered rewriting bisimilarity}, a notion of behavioral equivalence for ordered contexts.
 % Before that, however, we must define a few auxiliary relations on contexts.
 %
@@ -545,14 +546,14 @@ We are nearly ready to define ordered rewriting bisimilarity, but we first must 
 \end{definition}
 \noindent
 With these auxiliary relations in hand, we can now turn to defining ordered rewriting bisimilarity.
-
-\newthought{Contexts should be} equivalent only if they are not observably distinguishable by a single type of experiment: provide the contexts with some incoming messages (or none at all) and observe any outgoing messages that are eventually produced.%
-% We take the position that outgoing messages are observable.
-If two contexts may eventually produce different outgoing messages, then observing those messages will allow us to distinguish the two contexts.
-% We may also perform simple experiments on contexts: provide the contexts with some incoming messages (or none at all) and observe any outgoing messages that are eventually produced.%
-In particular, we do not allow the time or number of computational steps to be observed -- all that matters is whether the same outputs are eventually produced from the same inputs.
-The resulting bisimilarity will therefore be a weak bisimilarity.
-% \footnote{We could equivalently combine these into one monolithic condition: If $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
+%
+% \newthought{Contexts should be} equivalent only if they are not observably distinguishable by a single type of experiment: provide the contexts with some incoming messages (or none at all) and observe any outgoing messages that are eventually produced.%
+% % We take the position that outgoing messages are observable.
+% If two contexts may eventually produce different outgoing messages, then observing those messages will allow us to distinguish the two contexts.
+% % We may also perform simple experiments on contexts: provide the contexts with some incoming messages (or none at all) and observe any outgoing messages that are eventually produced.%
+% In particular, we do not allow the time or number of computational steps to be observed -- all that matters is whether the same outputs are eventually produced from the same inputs.
+% The resulting bisimilarity will therefore be a weak bisimilarity.
+% % \footnote{We could equivalently combine these into one monolithic condition: If $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \lrframe{\atmR{\lctx}_L}{\simu{R}}{\atmL{\lctx}_R}\Reduces \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$, then $\atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R \Reduces\lrframe{\atmL{\lctx}'_L}{\simu{R}}{\atmR{\lctx}'_R} \atmL{\lctx}'_L \oc \lctx' \oc \atmR{\lctx}'_R$.
 %   \begin{equation*}
 %     \begin{tikzcd}[ampersand replacement=\&, sep=large]
 %       \atmR{\lctx}_L \oc \octx \oc \atmL{\lctx}_R
@@ -569,10 +570,10 @@ The resulting bisimilarity will therefore be a weak bisimilarity.
 %     \end{tikzcd}
 %   \end{equation*}
 %   However, this formulation is unwieldy, so we prefer the separate output and input bisimulation conditions.}
-
- they have the same input and output behavior.
-Based on this principle, we arrive at the following notion of rewriting bisimilarity with output and input conditions.\footnote{We could equivalently combine the two conditions into a monolithic one, but that becomes rather unwieldy.}
-We will state its definition first and then justify that definition on the basis of observable indistinguishability.
+%
+%  they have the same input and output behavior.
+% Based on this principle, we arrive at the following notion of rewriting bisimilarity with output and input conditions.\footnote{We could equivalently combine the two conditions into a monolithic one, but that becomes rather unwieldy.}
+We will state its definition first and then justify that definition on the basis of indistinguishability of observations.
 %
 \begin{definition}\label{def:ordered-bisimilarity:bisim}
   A \vocab{rewriting bisimulation}, $\simu{R}$, is a symmetric binary relation among contexts that satisfies the following conditions.
@@ -781,7 +782,7 @@ Now we would like to confirm our earlier intuition about the equivalence of $\at
 Unfortunately, the definition of rewriting bisimilarity is not immediately suitable for establishing that two contexts are bisimilar.
 The output and input bisimulation conditions are so strong that they become difficult to prove directly.
 For instance, to establish $\atmR{a} \oc (\atmR{a} \limp \atmR{b}) \osim \atmR{b}$, we would need to prove that:
-\begin{description}[noitemsep]% [leftmargin=0pt]
+\begin{description}[]% [leftmargin=0pt]
 \item[Input bisimulation]% \leavevmode
  $\atmR{\lctx}_L \oc \atmR{a} \oc (\atmR{a} \limp \atmR{b}) \oc \atmL{\lctx}_R \Reduces \lctx'$ implies $\atmR{\lctx}_L \oc \atmR{b} \oc \atmL{\lctx}_R \osim \lctx'$; and % , for all $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$; and
  symmetrically, $\atmR{\lctx}_L \oc \atmR{b} \oc \atmL{\lctx}_R \Reduces \lctx'$ implies $\atmR{\lctx}_L \oc \atmR{a} \oc (\atmR{a} \limp \atmR{b}) \oc \atmL{\lctx}_R \osim \lctx'$; % , for all $\atmR{\lctx}_L$ and $\atmL{\lctx}_R$; and
@@ -819,7 +820,7 @@ Because the labeled transition system is image-finite, proving that two processe
 In this \lcnamecref{sec:ordered-bisimilarity:labeled-bisim}, we follow that strategy and develop \vocab{labeled bisimilarity} as a sound -- and, surprisingly, also complete -- proof technique for rewriting bisimilarity.
 Like its \ac{CCS} and $\pi$-calculus analogues, labeled bisimilarity is more tractable than rewriting bisimilarity because it uses individual input transitions in place of full rewriting sequences.
 
-Instead of defining labeled bisimulations directly, we use a refactorization, standard in the study of up-to techniques\autocite{??}, in which we first define a notion of \emph{progression} and then characterize labeled bisimulations in terms of progression.
+Instead of defining labeled bisimulations directly, we use a refactorization, standard in the study of up-to techniques\autocite{Pous+Sangiorgi:CTTCS11}, in which we first define a notion of \emph{progression} and then characterize labeled bisimulations in terms of progression.
 \begin{definition}
   A binary relation $\simu{R}$ on contexts \vocab{progresses} to binary relation $\simu{S}$ if $\simu{R}$ is symmetric and the two relations satisfy the following conditions.
   \begin{thmdescription}[nosep]
@@ -919,11 +920,9 @@ Instead of defining labeled bisimulations directly, we use a refactorization, st
 \end{definition}
 
 The immediate output, immediate input, and reduction bisimulation conditions are all single-step forms of rewriting bisimilarity's output and input bisimulation conditions~\parencref{def:ordered-bisimilarity:bisim} and reduction bisimulation property~\parencref{thm:bisim-reduction-closure}.
-The emptiness bisimulation condition, on the other hand, is necessary for labeled bisimilarity to be complete.
-A similar condition appears in \citeauthor{Deng+:MSCS16}'s\autocite{Deng+:MSCS16} simulation preorder.
-
-Emptiness bisimulation is equivalent to requiring that $\octx \simu{R} (\octxe)$ implies both $\octx \Reduces (\octxe)$ and $(\octxe) \simu{S} (\octxe)$.%
-\footnote{See \cref{thm:emptiness-bisim-equiv} for a proof sketch.}
+The emptiness bisimulation condition, on the other hand, is necessary for labeled bisimilarity to be complete.\footnote{A similar condition appears in the contextual preorder of \textcite{Deng+:MSCS16}.}
+Emptiness bisimulation is equivalent to requiring that $\octx \simu{R} (\octxe)$ implies both $\octx \Reduces (\octxe)$ and $(\octxe) \simu{S} (\octxe)$.
+(See \cref{thm:emptiness-bisim-equiv} for a proof sketch.)
 In this way, it can be seen that being $\simu{R}$-related to $(\octxe)$ is possible only if $\octx$ is morally equivalent to $(\octxe)$, in the sense that $\octx$ must be able to spontaneously evolve to $(\octxe)$.
 
 
@@ -3084,8 +3083,8 @@ We conjecture that this proof pattern will be useful in proving \lcnamecrefs{thm
 This \lcnamecref{thm:oo-counter-bisim} gives us the opportunity to remark on the interplay between atoms' directionality and rewriting bisimilarity.
 
 Suppose that the formula-as-process ordered rewriting framework was designed without assigning direction to atoms.
-Instead of the directional atoms $\atmL{a}$ and $\atmR{a}$, the framework would have only un(i)directional\fixnote{bidirectional?} atoms $\atm{a}$.
-The definition of rewriting bisimilarity would also be ever so slightly revised to use the un(i)directed atoms.
+Instead of the directed atoms $\atmL{a}$ and $\atmR{a}$, the framework would have only undirected atoms $\atm{a}$.
+The definition of rewriting bisimilarity would also be ever so slightly revised to use the undirected atoms.
 Rewriting bisimilarity would be the largest symmetric relation $\simu{R}$ to satisfy:
 \begin{description}[noitemsep]
 \item[Output bisimulation]
@@ -3094,13 +3093,13 @@ Rewriting bisimilarity would be the largest symmetric relation $\simu{R}$ to sat
   If $\atm{\lctx}_L \oc \octx \oc \atm{\lctx}_R \lrframe{\atm{\lctx}_L}{\simu{R}}{\atm{\lctx}_R}\Reduces \lctx'$, then $\atm{\lctx}_L \oc \octx \oc \atm{\lctx}_R \Reduces\simu{R} \lctx'$.
 \end{description}
 
-Unfortunately, this un(i)directed notion of bisimilarity would be too fine.
+Unfortunately, this undirected notion of bisimilarity would be too fine.
 Without atom directions to distinguish messages intended as inputs from those intended as outputs, input messages could be incorrectly observed as outputs.
 In practice, this means that bisimilarity would rule out desirable equivalences.
 
 Consider, for example, $\defp{e}$ and $\defp{e} \oc \defp{b}_0$.
 These two counters have the same denotation -- both represent $0$.
-Nevertheless, in opposition to \cref{thm:oo-counter-bisim} for directed atoms, $\defp{e}$ and $\defp{e} \oc \defp{b}_0$ would \emph{not} be bisimilar when using un(i)directed atoms.
+Nevertheless, in opposition to \cref{thm:oo-counter-bisim} for directed atoms, $\defp{e}$ and $\defp{e} \oc \defp{b}_0$ would \emph{not} be bisimilar when using undirected atoms.
 
 To see why, suppose, for the sake of deriving a contradiction, that $\defp{e} \osim \defp{e} \oc \defp{b}_0$.
 Because $\defp{e} \oc \defp{b}_0 \oc \atm{d} \Reduces \atm{z} \oc \defp{b}'_0$, it follows from the input bisimulation property that $\defp{e} \oc \atm{d} \Reduces\osim \atm{z} \oc \defp{b}'_0$.

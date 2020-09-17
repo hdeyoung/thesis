@@ -304,7 +304,7 @@ This is captured in the adjacent \lcnamecref{fig:string-rewriting:abb-complete} 
         \arrow[reduces]{uuur}
     \end{tikzcd}
   \end{equation*}
-  \caption{When multiple occurences of $b$ are properly distinguished, a complete trace diagram can be given.}\label{fig:string-rewriting:abb-complete}
+  \caption{When multiple occurrences of $b$ are properly distinguished, a complete trace diagram can be given.}\label{fig:string-rewriting:abb-complete}
 \end{marginfigure}%
 
 More generally, this idea that the interleaving of independent actions is irrelevant is known as \vocab{concurrent equality}\autocite{Watkins+:CMU02}, and it forms the basis of concurrency.
@@ -373,7 +373,7 @@ where $F(q)$ is defined as above.
 
 For a concrete instance of this encoding, recall from \cref{ch:automata} the \ac{NFA} (repeated in the adjacent \lcnamecref{fig:string-rewriting:nfa-example-ends-b})%
 %
-\begin{marginfigure}[-8\baselineskip]
+\begin{marginfigure}[-8.1\baselineskip]
   \begin{equation*}
     \mathllap{\aut{A}_1 = {}}
     \begin{tikzpicture}[baseline=(q_0.base)]
@@ -456,32 +456,32 @@ Here we present a string rewriting specification of these \emph{binary counters}
 \subsection{Binary representations}
 
 In this setting, we represent a natural number in binary by a string that consists of a big-endian sequence of symbols $b_0$ and $b_1$, prefixed by the symbol $e$; leading $b_0$s are permitted.
-For example, both $\octx = e \oc b_1$ and $\octx' = e \oc b_0 \oc b_1$ are valid binary representations of the natural number $1$.%
+For example, both $w = e \oc b_1$ and $w' = e \oc b_0 \oc b_1$ are valid binary representations of the natural number $1$.%
 \fixnote{Replace $\octx$ with $w$ or $c$?}
 
 To be more precise, we inductively define a relation, $\aval{}{}$, that assigns to each binary representation a unique natural number denotation.
-If $\aval{\octx}{n}$, we say that $\octx$ denotes, or represents, natural number $n$ in binary.
+If $\aval{w}{n}$, we say that $w$ denotes, or represents, natural number $n$ in binary.
 \begin{inferences}
   \infer[\jrule{$e$-V}]{\aval{e}{0}}{}
   \and
-  \infer[\jrule{$b_0$-V}]{\aval{\octx \oc b_0}{2n}}{
-    \aval{\octx}{n}}
+  \infer[\jrule{$b_0$-V}]{\aval{w \oc b_0}{2n}}{
+    \aval{w}{n}}
   \and
-  \infer[\jrule{$b_1$-V}]{\aval{\octx \oc b_1}{2n+1}}{
-    \aval{\octx}{n}}
+  \infer[\jrule{$b_1$-V}]{\aval{w \oc b_1}{2n+1}}{
+    \aval{w}{n}}
 \end{inferences}
-Besides providing a denotational semantics of binary numbers, the $\aval{}{}$ relation also serves to implicitly characterize the well-formed binary numbers as those strings $\octx$ that form the relation's domain of definition.%
+Besides providing a denotational semantics of binary numbers, the $\aval{}{}$ relation also serves to implicitly characterize the well-formed binary numbers as those strings $w$ that form the relation's domain of definition.%
 \footnote{Alternatively, the well-formed binary numbers could be described more explicitly by the grammar
 \begin{equation*}
-  \octx \Coloneqq e \mid \octx \oc b_0 \mid \octx \oc b_1
+  w \Coloneqq e \mid w \oc b_0 \mid w \oc b_1
   \,,
 \end{equation*}
 and then their denotations could be expressed in a more functional manner:
 \begin{equation*}
   \begin{lgathered}
     \deno[V]{e} = 0 \\
-    \deno[V]{\octx \oc b_0} = 2 \deno[V]{\octx} \\
-    \deno[V]{\octx \oc b_1} = 2 \deno[V]{\octx} + 1
+    \deno[V]{w \oc b_0} = 2 \deno[V]{w} \\
+    \deno[V]{w \oc b_1} = 2 \deno[V]{w} + 1
     \,.
   \end{lgathered}
 \end{equation*}
@@ -495,50 +495,50 @@ The adequacy of the $\aval{}{}$ relation is proved as the following \lcnamecref{
   Binary representations and their $\aval{}{}$ relation are:
   \begin{thmdescription}
   \item[\emph{Functional}]
-    For each binary number $\octx$, there exists a unique natural number $n$ such that $\aval{\octx}{n}$.
+    For each binary number $w$, there exists a unique natural number $n$ such that $\aval{w}{n}$.
   \item[\emph{Surjective}]
-    For each natural number $n$, there exists a binary number $\octx$ such that $\aval{\octx}{n}$.
+    For each natural number $n$, there exists a binary number $w$ such that $\aval{w}{n}$.
   \item[\emph{Latent}]
-    If $\aval{\octx}{n}$, then $\octx \nreduces$.
+    If $\aval{w}{n}$, then $w \nreduces$.
   \end{thmdescription}
 \end{theorem}
 \begin{proof}
-  The three claims may be proved by induction over the structure of $\octx$, and by induction on $n$, respectively.
+  The three claims may be proved by induction over the structure of $w$, and by induction on $n$, respectively.
 \end{proof}
 
 Notice that the above $\jrule{$e$-V}$ and $\jrule{$b_0$-V}$ rules overlap when the denotation is $0$, giving rise to the leading $b_0$s that make the $\aval{}{}$ relation non-injective:
 for example, both $\aval{e \oc b_1}{1}$ and $\aval{e \oc b_0 \oc b_1}{1}$ hold.
 However, if the $\jrule{$b_0$-V}$ is restricted to \emph{nonzero} even numbers, then each natural number has a unique, canonical representation that is free of leading $b_0$s.%
-\footnote[][-10\baselineskip]{%
+\footnote[][-3\baselineskip]{%
   A restriction of the $b_0$ rule to nonzero even numbers is:
   \begin{equation*}
-    \infer{\aval{\octx \oc b_0}{2n}}{
-      \aval{\octx}{n} & \text{($n > 0$)}}
+    \infer{\aval{w \oc b_0}{2n}}{
+      \aval{w}{n} & \text{($n > 0$)}}
   \,.
   \end{equation*}
-  The leading-$b_0$-free representations could alternatively be seen as the canonical representatives of the equivalence classes induced by the relation among binary numbers that have the same denotation: $\octx \equiv \octx'$ if $\aval{\octx}{n}$ and $\aval{\octx'}{n}$ for some $n$.}
+  The leading-$b_0$-free representations could alternatively be seen as the canonical representatives of the equivalence classes induced by the relation among binary numbers that have the same denotation: $w \equiv w'$ if $\aval{w}{n}$ and $\aval{w'}{n}$ for some $n$.}
 
 
 \subsection{An increment operation}
 
 To use string rewriting to describe an increment operation on binary representations, we introduce a new symbol, $i$, that will serve as an increment instruction.
 
-Given a binary number $\octx$ that represents $n$, we may append $i$ to form an active%
+Given a binary number $w$ that represents $n$, we may append $i$ to form an active%
 \footnote{The \enquote*{active}, \enquote*{latent}, and \enquote*{passive} terminology is borrowed from \textcite{Pfenning+Simmons:LICS09}.
   Active strings are immediately rewritable, but latent strings are rewritable only when combined with other, passive strings.
   The blurry line between latent and passive strings is exploited in \cref{ch:formula-as-process} when we discuss choreographies.}%
-, computational string, $\octx \oc i$.
-For $i$ to adequately represent the increment operation, the string $\octx \oc i$ must meet two conditions, captured by the following global desiderata:
+, computational string, $w \oc i$.
+For $i$ to adequately represent the increment operation, the string $w \oc i$ must meet two conditions, captured by the following global desiderata:
 % \begin{theorem}\label{thm:increment-structural-adequacy}
 %   Let $\octx$ be a binary representation of $n$.
 %   Then:
   \begin{itemize}% [nosep]
   \item
     % \emph{some} computation from $\octx \oc i$ results in a binary representation of $n+1$ -- that is, $\octx \oc i \Reduces\aval{}{n+1}$; and
-    $\octx \oc i \Reduces\aval{}{n+1}$ -- that is, \emph{some} rewriting sequence results in a binary representation of $n+1$; and
+    $w \oc i \Reduces\aval{}{n+1}$ -- that is, \emph{some} rewriting sequence results in a binary representation of $n+1$; and
   \item
     % \emph{any} computation from $\octx \oc i$ results in a binary representation of $n+1$ -- that is, $\octx \oc i \Reduces\aval{}{n'}$ only if $n' = n+1$.%
-    $\octx \oc i \Reduces \octx'$ implies $\octx' \Reduces\aval{}{n+1}$ -- that is, \emph{any} rewriting sequence from $\octx \oc i$ can result in a binary representation of $n+1$.
+    $w \oc i \Reduces w'$ implies $w' \Reduces\aval{}{n+1}$ -- that is, \emph{any} rewriting sequence from $w \oc i$ can result in a binary representation of $n+1$.
   \end{itemize}
 % \end{theorem}
 % \noindent
@@ -606,14 +606,14 @@ To characterize the valid intermediate strings, we define a binary relation, $\a
 \footnote{Like the $\aval{}{}$ relation does for values, the $\ainc{}{}$ relation also serves to implicitly characterize the valid intermediate states as those contexts that form the relation's domain of definition.
 As with values, the valid intermediate states could also be enumerated more explicitly and syntactically with a grammar and denotation function:
 \begin{equation*}
-  \octx \Coloneqq e \mid \octx \oc b_0 \mid \octx \oc b_1 \mid \octx \oc i
+  w \Coloneqq e \mid w \oc b_0 \mid w \oc b_1 \mid w \oc i
 \end{equation*}
 \begin{equation*}
   \begin{lgathered}
     \deno[I]{e} = 0 \\
-    \deno[I]{\octx \oc b_0} = 2 \deno[I]{\octx} \\
-    \deno[I]{\octx \oc b_1} = 2 \deno[I]{\octx} + 1 \\
-    \deno[I]{\octx \oc i} = \deno[I]{\octx} + 1
+    \deno[I]{w \oc b_0} = 2 \deno[I]{w} \\
+    \deno[I]{w \oc b_1} = 2 \deno[I]{w} + 1 \\
+    \deno[I]{w \oc i} = \deno[I]{w} + 1
   \end{lgathered}
 \end{equation*}
 However, we once again prefer the purely relational form.}%
@@ -621,14 +621,14 @@ However, we once again prefer the purely relational form.}%
 \begin{inferences}
   \infer[\jrule{$e$-I}]{\ainc{e}{0}}{}
   \and
-  \infer[\jrule{$b_0$-I}]{\ainc{\octx \oc b_0}{2n}}{
-    \ainc{\octx}{n}}
+  \infer[\jrule{$b_0$-I}]{\ainc{w \oc b_0}{2n}}{
+    \ainc{w}{n}}
   \and
-  \infer[\jrule{$b_1$-I}]{\ainc{\octx \oc b_1}{2n+1}}{
-    \ainc{\octx}{n}}
+  \infer[\jrule{$b_1$-I}]{\ainc{w \oc b_1}{2n+1}}{
+    \ainc{w}{n}}
   \and
-  \infer[\jrule{$i$-I}]{\ainc{\octx \oc i}{n+1}}{
-    \ainc{\octx}{n}}
+  \infer[\jrule{$i$-I}]{\ainc{w \oc i}{n+1}}{
+    \ainc{w}{n}}
 \end{inferences}
 Binary values should themselves be valid, terminal computational states, so the first three rules are carried over from the $\aval{}{}$ relation.
 The $\jrule{$i$-I}$ rule allows multiple increment instructions to be interspersed throughout the state.
@@ -640,22 +640,22 @@ This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then i
   \leavevmode
   \begin{thinthmdescription}
   \item[Value soundness]
-    If $\aval{\octx}{n}$, then $\ainc{\octx}{n}$ and $\octx \nreduces$.
+    If $\aval{w}{n}$, then $\ainc{w}{n}$ and $w \nreduces$.
   \item[Preservation]
-    If $\ainc{\octx}{n}$ and $\octx \reduces \octx'$, then $\ainc{\octx'}{n}$.
+    If $\ainc{w}{n}$ and $w \reduces w'$, then $\ainc{w'}{n}$.
   \item[Progress]
-    If $\ainc{\octx}{n}$, then either
+    If $\ainc{w}{n}$, then either
     \begin{itemize*}[
       % mode=unboxed,
       label=, afterlabel=,
       before=\unskip:\space,
       itemjoin=;\space, itemjoin*=; or\space%
     ]
-    \item $\octx \reduces \octx'$ for some $\octx'$
-    \item $\aval{\octx}{n}$% \fixnote{Compare with \enquote{If $\ainc{\octx}{n}$, then $\aval{\octx}{n}$ if, and only if, $\octx \nreduces$.}}
+    \item $w \reduces w'$ for some $w'$
+    \item $\aval{w}{n}$% \fixnote{Compare with \enquote{If $\ainc{\octx}{n}$, then $\aval{\octx}{n}$ if, and only if, $\octx \nreduces$.}}
     \end{itemize*}.
   \item[Termination]
-    If $\ainc{\octx}{n}$, then every rewriting sequence from $\octx$ is finite.
+    If $\ainc{w}{n}$, then every rewriting sequence from $w$ is finite.
   \end{thinthmdescription}
 \end{theorem}
 %
@@ -666,20 +666,20 @@ This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then i
     labelsep=0.35em
   ]
   \item[Value soundness]
-    can be proved by structural induction on the derivation of $\aval{\octx}{n}$.
+    can be proved by structural induction on the derivation of $\aval{w}{n}$.
   \item[Preservation and progress]
-    can likewise be proved by structural induction on the derivation of $\ainc{\octx}{n}$.
+    can likewise be proved by structural induction on the derivation of $\ainc{w}{n}$.
   \item[Termination]
-    can be proved using an explicit termination measure, $\card[i]{}$, that is strictly decreasing across each rewriting, $\octx \reduces \octx'$.
+    can be proved using an explicit termination measure, $\card[i]{}$, that is strictly decreasing across each rewriting, $w \reduces w'$.
     Specifically, we use a measure (see the adjacent \lcnamecref{fig:string-rewriting:binary-counter:measure}),
     % For valid states $\octx$, we define a measure $\card{\octx}$ that is strictly decreasing across each rewriting $\octx \reduces \octx'$ (see the adjacent \lcnamecref{fig:ordered-rewriting:binary-counter:measure}).
     \begin{marginfigure}
       \begin{equation*}
         \begin{lgathered}
           \card[i]{e} = 0 \\
-          \card[i]{\octx \oc b_0} = \card[i]{\octx} \\
-          \card[i]{\octx \oc b_1} = \card[i]{\octx} + 1 \\
-          \card[i]{\octx \oc i} = \card[i]{\octx} + 2
+          \card[i]{w \oc b_0} = \card[i]{w} \\
+          \card[i]{w \oc b_1} = \card[i]{w} + 1 \\
+          \card[i]{w \oc i} = \card[i]{w} + 2
           % e + i > e + b1  =>  e >= 0
           % b0 + i > b1
           % b1 + i > i + b0 > b1  =>  i > 1
@@ -688,12 +688,12 @@ This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then i
       \caption{A termination measure, adapted from the standard amortized work analysis of increment for binary counters}\label{fig:string-rewriting:binary-counter:measure}
     \end{marginfigure}%
     adapted from the standard amortized constant work analysis of increment for binary counters\autocite{Cormen+:MIT09}.
-    The measure $\card[i]{}$ is such that $\octx \reduces \octx'$ implies $\card[i]{\octx} > \card[i]{\octx'}$;
+    The measure $\card[i]{}$ is such that $w \reduces w'$ implies $\card[i]{w} > \card[i]{w'}$;
     % That is, if $\octx$ is a valid state and $\octx \reduces \octx'$, then $\card{\octx} > \card{\octx'}$.
     because the measure is always nonnegative, only finitely many such rewritings can occur.
 
-    As an example case, consider the intermediate state $\octx \oc b_1 \oc i$ and its rewriting $\octx \oc b_1 \oc i \reduces \octx \oc i \oc b_0$.
-    Indeed, $\card[i]{\octx \oc b_1 \oc i} = \card[i]{\octx} + 3 > \card[i]{\octx} + 2 = \card[i]{\octx \oc i \oc b_0}$.
+    As an example case, consider the intermediate state $w \oc b_1 \oc i$ and its rewriting $w \oc b_1 \oc i \reduces w \oc i \oc b_0$.
+    Indeed, $\card[i]{w \oc b_1 \oc i} = \card[i]{w} + 3 > \card[i]{w} + 2 = \card[i]{w \oc i \oc b_0}$.
   \qedhere
   \end{description}
 \end{proof}
@@ -702,11 +702,11 @@ This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then i
   \leavevmode
   \begin{thinthmdescription}
   \item[Evaluation]
-    If $\ainc{\octx}{n}$, then $\octx \Reduces\aval{}{n}$.
-    In particular, if $\aval{\octx}{n}$, then $\octx \oc i \Reduces\aval{}{n+1}$.
+    If $\ainc{w}{n}$, then $w \Reduces\aval{}{n}$.
+    In particular, if $\aval{w}{n}$, then $w \oc i \Reduces\aval{}{n+1}$.
   \item[Preservation]
-    If $\ainc{\octx}{n}$ and $\octx \Reduces \octx'$, then $\ainc{\octx'}{n}$.
-    In particular, if $\aval{\octx}{n}$ and $\octx \oc i \Reduces \octx'$, then $\octx' \Reduces\aval{}{n+1}$.
+    If $\ainc{w}{n}$ and $w \Reduces w'$, then $\ainc{w'}{n}$.
+    In particular, if $\aval{w}{n}$ and $w \oc i \Reduces w'$, then $w' \Reduces\aval{}{n+1}$.
   \end{thinthmdescription}
 \end{corollary}
 \begin{proof}
@@ -726,24 +726,24 @@ This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then i
 
 Binary counters may also be equipped with a decrement operation.
 Instead of examining decrements \emph{per se}, we will describe a very closely related operation: the normalization of binary representations to what might be called \vocab{head-unary form}.
-(We will frequently abuse terminology, using \enquote*{head-unary normalization} and \enquote*{decrement operation} interchangably.)
-A string $\octx$ will be said to be in head-unary form if it has one of two forms: $\octx = z$; or $\octx = \octx' \oc s$, for some binary number $\octx'$.
+(We will frequently abuse terminology, using \enquote*{head-unary normalization} and \enquote*{decrement operation} interchangeably.)
+A string $w$ will be said to be in head-unary form if it has one of two forms: $w = z$; or $w = w' \oc s$, for some binary number $w'$.
 
-Just as appending the symbol $i$ to a counter $\octx$ initiates an increment, appending a symbol $d$ will cause the counter to begin normalizing to head-unary form.
-For $d$ to adequately represent this operation, the string $\octx \oc d$ must satisfy the following global desiderata when $\adec{\octx}{n}$:
+Just as appending the symbol $i$ to a counter $w$ initiates an increment, appending a symbol $d$ will cause the counter to begin normalizing to head-unary form.
+For $d$ to adequately represent this operation, the string $w \oc d$ must satisfy the following global desiderata when $\adec{w}{n}$:
 % The following \lcnamecref{thm:decrement-adequacy} serves as a specification of head-unary normalization, relating a value's head-unary form to its denotation.
 %
 % \begin{theorem}[Structural adequacy of decrements]
 %   If $\aval{\octx}{n}$, then:
   \begin{itemize}% [nosep]
-  \item $\octx \oc d \Reduces z$ if, and only if, $n=0$;
-  \item $\octx \oc d \Reduces \octx' \oc s$ for some $\octx'$ such that $\aval{\octx'}{n-1}$, if $n > 0$; and
-  \item $\octx \oc d \Reduces \octx' \oc s$ only if $n > 0$ and $\aval{\octx'}{n-1}$.
+  \item $w \oc d \Reduces z$ if, and only if, $n=0$;
+  \item $w \oc d \Reduces w' \oc s$ for some $w'$ such that $\aval{w'}{n-1}$, if $n > 0$; and
+  \item $w \oc d \Reduces w' \oc s$ only if $n > 0$ and $\aval{w'}{n-1}$.
   \end{itemize}
 % \end{theorem}
 %
 % \noindent
-For example, because $e \oc b_1$ denotes $1$, a trace $e \oc b_1 \oc d \Reduces \octx' \oc s$ must exist, for some $\aval{\octx'}{0}$.
+For example, because $e \oc b_1$ denotes $1$, a trace $e \oc b_1 \oc d \Reduces w' \oc s$ must exist, for some $\aval{w'}{0}$.
 
 \newthought{To achieve these} global desiderata, we introduce three additional axioms that describe how the symbols $e$, $b_0$, and $b_1$ may be rewritten when they encounter $d$, the decrement instruction;
 also, an intermediate symbol $b'_0$ and two more axioms are introduced:
@@ -764,14 +764,14 @@ These five axioms can be read as follows:
 \item
   Because $e$ denotes $0$, its head-unary form is simply $z$.
 \item
-  Because $\octx \oc b_1$ denotes $2n+1$ if $\octx$ denotes $n$, its head-unary form, $\octx \oc b_0 \oc s$, can be constructed by flipping the least significant bit to $b_0$ and appending $s$.
+  Because $w \oc b_1$ denotes $2n+1$ if $w$ denotes $n$, its head-unary form, $w \oc b_0 \oc s$, can be constructed by flipping the least significant bit to $b_0$ and appending $s$.
 \item
-  Because $\octx \oc b_0$ denotes $2n$ if $\octx$ denotes $n$, its head-unary form can be contructed by recursively putting the more significant bits, $\octx$, into head-unary form and appending $b'_0$ to process that result.
+  Because $w \oc b_0$ denotes $2n$ if $w$ denotes $n$, its head-unary form can be constructed by recursively putting the more significant bits, $w$, into head-unary form and appending $b'_0$ to process that result.
   \begin{itemize}
   \item
-    If $\octx$ has head-unary form $z$ and therefore denotes $0$, then $\octx \oc b_0$ also denotes $0$ and has head-unary form $z$.
+    If $w$ has head-unary form $z$ and therefore denotes $0$, then $w \oc b_0$ also denotes $0$ and has head-unary form $z$.
   \item
-    Otherwise, if $\octx$ has head-unary form $\octx' \oc s$ and thus denotes $n > 0$, then $\octx \oc b_0$ denotes $2n > 0$ and has head-unary form $\octx' \oc b_1 \oc s$, which can be constructed by replacing $s$ with $b_1 \oc s$.
+    Otherwise, if $w$ has head-unary form $w' \oc s$ and thus denotes $n > 0$, then $w \oc b_0$ denotes $2n > 0$ and has head-unary form $w' \oc b_1 \oc s$, which can be constructed by replacing $s$ with $b_1 \oc s$.
   \end{itemize}
 \end{itemize}
 %
@@ -818,32 +818,32 @@ Note the concurrency that derives from the independence of the increment and dec
 \newthought{These decrement axioms} introduce more strings that may occur as intermediate computational states.
 As before, we define a new binary relation, $\adec{}{}$, that assigns a natural number denotation to each string that may appear as an intermediate state during a decrement.
 \begin{inferences}
-  \infer[\jrule{$d$-D}]{\adec{\octx \oc d}{n}}{
-    \ainc{\octx}{n}}
+  \infer[\jrule{$d$-D}]{\adec{w \oc d}{n}}{
+    \ainc{w}{n}}
   \and
-  \infer[\jrule{$b'_0$-D}]{\adec{\octx \oc b'_0}{2n}}{
-    \adec{\octx}{n}}
+  \infer[\jrule{$b'_0$-D}]{\adec{w \oc b'_0}{2n}}{
+    \adec{w}{n}}
   \and
   \infer[\jrule{$z$-D}]{\adec{z}{0}}{}
   \and
-  \infer[\jrule{$s$-D}]{\adec{\octx \oc s}{n+1}}{
-    \ainc{\octx}{n}}
+  \infer[\jrule{$s$-D}]{\adec{w \oc s}{n+1}}{
+    \ainc{w}{n}}
 \end{inferences}
 At first glance, the $\jrule{$d$-D}$ rule may look a bit odd:
-Why is the denotation unchanged by a decrement, $\octx \oc d$?
+Why is the denotation unchanged by a decrement, $w \oc d$?
 Because the operation is more accurately characterized as head-unary normalization, it makes sense that the denotation remains unchanged.
 The operation described by $d$ does not change the binary counter's value -- it only expresses that same value in a different form.%
-\footnote[][-15\baselineskip]{Once again, the valid intermediate states could also be enumerated more explicitly and syntactically with a grammar and denotation function:%
+\footnote[][-8\baselineskip]{Once again, the valid intermediate states could also be enumerated more explicitly and syntactically with a grammar and denotation function:%
 \begin{align*}
-  \octx &\Coloneqq e \mid \octx \oc b_0 \mid \octx \oc b_1 \mid \octx \oc i \\
-  \lctx &\Coloneqq \octx \oc d \mid \lctx \oc b'_0 \mid z \mid \octx \oc s
+  w &\Coloneqq e \mid w \oc b_0 \mid w \oc b_1 \mid w \oc i \\
+  \lctx &\Coloneqq w \oc d \mid \lctx \oc b'_0 \mid z \mid w \oc s
 \end{align*}
 \begin{equation*}
   \begin{lgathered}
-    \deno[D]{\octx \oc d} = \deno[I]{\octx} \\
+    \deno[D]{w \oc d} = \deno[I]{w} \\
     \deno[D]{\lctx \oc b'_0} = 2 \deno[D]{\lctx} \\
     \deno[D]{z} = 0 \\
-    \deno[D]{\octx \oc s} = \deno[I]{\octx} + 1
+    \deno[D]{w \oc s} = \deno[I]{w} + 1
   \end{lgathered}
 \end{equation*}}%
 
@@ -916,16 +916,16 @@ This small-step \lcnamecref{thm:string-rewriting:dec-small-step-adequacy} then i
   \leavevmode
   \begin{thinthmdescription}[leftmargin=0em]
   \item[Preservation]
-    If $\adec{\octx}{n}$ and $\octx \reduces \octx'$, then $\adec{\octx'}{n}$.
+    If $\adec{w}{n}$ and $w \reduces w'$, then $\adec{w'}{n}$.
   \item[Progress]
-    If $\adec{\octx}{n}$, then either:
+    If $\adec{w}{n}$, then either:
     \begin{itemize}[nosep]
-    \item $\octx \reduces \octx'$, for some $\octx'$;
-    \item $n = 0$ and $\octx = z$; or
-    \item $n > 0$ and $\octx = \octx' \oc s$, for some $\octx'$ such that $\ainc{\octx'}{n-1}$.
+    \item $w \reduces w'$, for some $w'$;
+    \item $n = 0$ and $w = z$; or
+    \item $n > 0$ and $w = w' \oc s$, for some $w'$ such that $\ainc{w'}{n-1}$.
     \end{itemize}
   \item[Termination]
-    If $\adec{\octx}{n}$, then every rewriting sequence from $\octx$ is finite.
+    If $\adec{w}{n}$, then every rewriting sequence from $w$ is finite.
   \end{thinthmdescription}
 \end{restatable}
 \begin{proof}
@@ -935,18 +935,18 @@ This small-step \lcnamecref{thm:string-rewriting:dec-small-step-adequacy} then i
     labelsep=0.35em
   ]
   \item[Preservation and progress]
-    are proved, as before, by structural induction on the given derivation of $\adec{\octx}{n}$.
+    are proved, as before, by structural induction on the given derivation of $\adec{w}{n}$.
   \item[Termination] is proved by exhibiting a measure, $\card[d]{}$, given in the adjacent \lcnamecref{fig:string-rewriting:dec-measure}%
     \begin{marginfigure}
       \begin{equation*}
         \begin{lgathered}
-          \card[d]{\octx \oc d} = \card[i]{\octx} + 3 \card{\octx} \\
-          \card[d]{\octx \oc b'_0} = \card[d]{\octx} + 2 \\
+          \card[d]{w \oc d} = \card[i]{w} + 3 \card{w} \\
+          \card[d]{w \oc b'_0} = \card[d]{w} + 2 \\
           \card[d]{z} = 0 \\
-          \card[d]{\octx \oc s} = \card[i]{\octx}
+          \card[d]{w \oc s} = \card[i]{w}
         \end{lgathered}
       \end{equation*}
-      \caption{A termination measure for decrements, where $\card{\octx}$ denotes the length of string $\octx$}\label{fig:string-rewriting:dec-measure}
+      \caption{A termination measure for decrements, where $\card{w}$ denotes the length of string $w$}\label{fig:string-rewriting:dec-measure}
     \end{marginfigure}%
 , that is strictly decreasing across each rewriting.
     Unlike the amortized constant work increments~\parencref[see proof of]{thm:string-rewriting:inc-small-step-adequacy}, this measure assigns a linear amount of potential to the decrement instruction.%
@@ -954,16 +954,16 @@ This small-step \lcnamecref{thm:string-rewriting:dec-small-step-adequacy} then i
       Therefore, it is actually possible to assign a constant amount of potential to each $d$.
       However, doing so would rely on a somewhat involved lexicographic measure that isn't particularly relevant to our aims in this dissertation, so we use the simpler linear potential.}%
 
-    This measure is strictly decreasing across each rewriting: $\octx \reduces \octx'$ only if $\card[d]{\octx} > \card[d]{\octx'}$.
-    As an example case, consider the intermediate state $\octx \oc b_0 \oc d$ and its rewriting $\octx \oc b_0 \oc d \reduces \octx \oc d \oc b'_0$.
+    This measure is strictly decreasing across each rewriting: $w \reduces w'$ only if $\card[d]{w} > \card[d]{w'}$.
+    As an example case, consider the intermediate state $w \oc b_0 \oc d$ and its rewriting $w \oc b_0 \oc d \reduces w \oc d \oc b'_0$.
     Indeed,
     \begin{equation*}
-      \card[d]{\octx \oc b_0 \oc d}
+      \card[d]{w \oc b_0 \oc d}
         % = \card[i]{\octx \oc b_0} + 3\card{\octx \oc b_0}
-        = \card[i]{\octx} + 3\card{\octx} + 3
-        > \card[i]{\octx} + 3\card{\octx} + 2
+        = \card[i]{w} + 3\card{w} + 3
+        > \card[i]{w} + 3\card{w} + 2
         % = \card[d]{\octx \oc d} + 2
-        = \card[d]{\octx \oc d \oc b'_0}
+        = \card[d]{w \oc d \oc b'_0}
       \,.
     \qedhere
     \end{equation*}
@@ -974,15 +974,15 @@ This small-step \lcnamecref{thm:string-rewriting:dec-small-step-adequacy} then i
   name=Big-step adequacy of decrements,
   label=cor:string-rewriting:dec-big-step-adequacy
 ]{corollary}{coradequacydecstring}
-  If $\adec{\octx}{n}$, then:
+  If $\adec{w}{n}$, then:
   \begin{itemize}[nosep]
-  \item $\octx \Reduces z$ if, and only if, $n = 0$;
-  \item $\octx \Reduces \octx' \oc s$ for some $\octx'$ such that $\ainc{\octx'}{n-1}$, if $n > 0$; and
-  \item $\octx \Reduces \octx' \oc s$ only if $n > 0$ and $\ainc{\octx'}{n-1}$.
+  \item $w \Reduces z$ if, and only if, $n = 0$;
+  \item $w \Reduces w' \oc s$ for some $w'$ such that $\ainc{w'}{n-1}$, if $n > 0$; and
+  \item $w \Reduces w' \oc s$ only if $n > 0$ and $\ainc{w'}{n-1}$.
   \end{itemize}
 \end{restatable}
 \begin{proof}
-  From the small-step preservation result of \cref{thm:string-rewriting:dec-small-step-adequacy}, it is possible to prove, using a structural induction on the given trace, a big-step preservation result: namely, that $\adec{\octx}{n}$ and $\octx \Reduces \octx'$ only if $\adec{\octx'}{n}$.
+  From the small-step preservation result of \cref{thm:string-rewriting:dec-small-step-adequacy}, it is possible to prove, using a structural induction on the given trace, a big-step preservation result: namely, that $\adec{w}{n}$ and $w \Reduces w'$ only if $\adec{w'}{n}$.
   Each of the above claims then follows from either progress and termination~\parencref{thm:string-rewriting:dec-small-step-adequacy} or big-step preservation together with inversion.
 \end{proof}
 

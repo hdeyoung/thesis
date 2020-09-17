@@ -1,4 +1,4 @@
-\chapter{From processes to rewriting}\label{ch:correspond}
+\chapter{From processes to rewriting, and back}\label{ch:correspond}
 
 In the previous \lcnamecrefs{ch:singleton-logic}, we have presented two different proof-theoretic characterizations of concurrency: \emph{concurrency as proof construction} and \emph{concurrency as proof reduction}.
 In this \lcnamecref{ch:correspond}, we describe the relationship between these two by identifying fragments of each that can be put into bijective correspondence.
@@ -11,19 +11,22 @@ Process constructors elegantly map to ordered logical connectives, most notably 
 
 (In fact, instead of a single embedding, there are three closely related embeddings -- a weakly focused, strongly bisimilar embedding~\parencref{sec:embed:weak-focused-strong-bisim}; a strongly focused, strongly bisimilar embedding~\parencref{sec:embed:strong-focused-strong-bisim}; and a strongly focused, weakly bisimilar embedding~\parencref{sec:embed:strong-focused-weak-bisim} -- that trade off the character of focusing discipline (strong vs.\ weak) and character of the bisimulation (strong vs.\ weak) against how directly this correspondence between process constructors and logical connectives is exposed.)
 
-\Cref{sec:correspond:embed:examples} examines the embeddings in the context of the binary counter and \ac{DFA}\fixnote{include \ac{DFA}?}.
+\Cref{sec:correspond:embed:examples} examines the embeddings in the context of the binary counters.
 Pleasingly, when the example process expressions of \cref{sec:process-chains:examples} are embedded in ordered rewriting, we arrive at exactly the same coinductively defined propositions as used in the choreographies of \cref{sec:formula-as-process:counters,sec:formula-as-process:nfa}.
 
-Lastly, the embedding is, syntactically speaking, an injective mapping, and its left inverse can be leveraged to construct process expressions from (a large subset of) ordered propositions.
+Lastly, and arguably most interestingly, the embedding is, syntactically speaking, an injective mapping, and its left inverse can be leveraged to extract process expressions from (a large subset of) ordered propositions.
 In \cref{sec:correspond:types}, we use this idea to reverse-engineer a session-type system for formula-as-process ordered rewriting.
 Well-typed process expressions embed to propositions that are well-typed under this new system, and vice versa.
-     
+
+This allows us to write global, ordered rewriting specifications of concurrent systems and then extract local, process implementations from them, provided that those specifications are well-typed.
+We can have all of the advantages of global specifications, together with all of the advantages of local implementations.
+At least for the well-typed fragment, proof construction and proof reduction are two sides of the same concurrent coin.
 
 \section{Embedding process configurations in formula-as-process ordered rewriting}\label{sec:correspond:embed}
 
 Here we give an embedding, $\trconf{}$, of process configurations into ordered contexts from the formula-as-process rewriting framework of \cref{ch:formula-as-process}.
 % More specifically, we first define two mutually inductive translations, $\trproc[+]{}$ and $\trproc[-]{}$, that map process expressions to positive and negative propositions, respectively, and then define a homomorphism, $\trconf{}$, that maps process configurations to ordered contexts.
-For the embedding to be adequate, it must preserve the dynamics of processes -- $\trconf{}$ must serve as a bisimulation between the reduction semantics for process configurations and the formula-as-process rewriting semantics for ordered contexts.%
+For the embedding to be adequate, it must preserve the dynamics of processes -- the embedding $\trconf{}$ must serve as a bisimulation between the reduction semantics for process configurations and the formula-as-process rewriting semantics for ordered contexts.%
 \footnote{Because they relate process configuration reductions to ordered rewritings, these bisimulations are not rewriting bisimulations of the kind introduced in \cref{ch:ordered-bisimilarity}.
   Instead, they are ordinary, unlabeled \enquote{reduction bisimulations}, using the terminology of \textcite{Sangiorgi+Walker:CUP03}.}
 
@@ -709,43 +712,43 @@ By embedding definitions, we arrive at exactly the same coinductively defined pr
 (Once again, the same definitions arise from the weakly focused, strongly bisimilar embedding.)
 
 % \paragraph*{\aclp*{DFA}}
-The same holds true for \acp{DFA}.\fixnote{But process definitions for \acp{DFA} were not introduced -- only for sequential transducers!}
-Embedding the \ac{DFA} process definitions from \cref{??} yields the same coinductively defined propositions as in the functional and object-oriented choreographies from \cref{sec:formula-as-process:nfa-functional,sec:formula-as-process:nfa-oo}:
-\begin{align*}
-  \trsig{q \defd \caseL[a \in \ialph]{a => q'_a | \eow => \selectR{F}(q)}}
-    &= \bigl(
-         \n{\defp{q}} \defd
-           (\atmR{\eow} \limp \up \atmR{F}(q)) \with
-           {\textstyle \bigwith_{a \in \ialph}(\atmR{a} \limp \up \dn \n{\defp{q}'_a{}})}
-       \bigr)
- \shortintertext{and} 
-  \trsig{a \defd \caseR[q \in Q]{q => \selectL{q}'_a}}
-    &= \bigl(
-         \n{\defp{a}} \defd {\textstyle \bigwith_{q \in Q}(\up \atmL{q}'_a \pmir \atmL{q})}
-       \bigr)
-  \\
-  \trsig{\eow \defd \caseR[q \in Q]{q => \selectR{F}(q)}}
-    &= \bigl(
-         \n{\defp{\eow}} \defd {\textstyle \bigwith_{q \in Q}(\up \atmR{F}(q) \pmir \atmL{q})}
-       \bigr)
-  \,,
-\end{align*}
-respectively.
+Although we do not show the details here, the same holds true for \acp{DFA}, infinite-word sequential transducers, and even Turing machines:
+Embedding the process definitions from \cref{sec:process-chains:examples} yields the same coinductively defined propositions as the choreographies from \cref{sec:formula-as-process:nfa-functional,sec:formula-as-process:nfa-oo}, in the case of \acp{DFA}, or the choreographies that we would have naturally written, in the case of transducers and Turing machines.
+% \begin{align*}
+%   \trsig{q \defd \caseL[a \in \ialph]{a => q'_a | \eow => \selectR{F}(q)}}
+%     &= \bigl(
+%          \n{\defp{q}} \defd
+%            (\atmR{\eow} \limp \up \atmR{F}(q)) \with
+%            {\textstyle \bigwith_{a \in \ialph}(\atmR{a} \limp \up \dn \n{\defp{q}'_a{}})}
+%        \bigr)
+%  \shortintertext{and} 
+%   \trsig{a \defd \caseR[q \in Q]{q => \selectL{q}'_a}}
+%     &= \bigl(
+%          \n{\defp{a}} \defd {\textstyle \bigwith_{q \in Q}(\up \atmL{q}'_a \pmir \atmL{q})}
+%        \bigr)
+%   \\
+%   \trsig{\eow \defd \caseR[q \in Q]{q => \selectR{F}(q)}}
+%     &= \bigl(
+%          \n{\defp{\eow}} \defd {\textstyle \bigwith_{q \in Q}(\up \atmR{F}(q) \pmir \atmL{q})}
+%        \bigr)
+%   \,,
+% \end{align*}
+% respectively.
 
 
-\begin{align*}
-  \trsig{\defp{q} \defd \caseL[a \in \ialph]{a => \spawn{\defp{q}'}{\rev{\selectR{w}}}}}
-    &= \bigl(
-         \n{\defp{q}} \defd
-           {\textstyle \bigwith_{a \in \ialph}(\atmR{a} \limp \up (\dn \n{\defp{q}'{}} \fuse \rev{\atmR{w}}))}
-       \bigr)
- \shortintertext{and} 
-  \trsig{\defp{a} \defd \caseR[q \in Q]{q => \spawn{\selectL{q}'}{\rev{\defp{w}{}}}}}
-    &= \bigl(
-         \n{\defp{a}} \defd {\textstyle \bigwith_{q \in Q}(\up (\atmL{q}' \fuse \rev{\defp{w}}) \pmir \atmL{q})}
-       \bigr)
-  \,,
-\end{align*}
+% \begin{align*}
+%   \trsig{\defp{q} \defd \caseL[a \in \ialph]{a => \spawn{\defp{q}'}{\rev{\selectR{w}}}}}
+%     &= \bigl(
+%          \n{\defp{q}} \defd
+%            {\textstyle \bigwith_{a \in \ialph}(\atmR{a} \limp \up (\dn \n{\defp{q}'{}} \fuse \rev{\atmR{w}}))}
+%        \bigr)
+%  \shortintertext{and} 
+%   \trsig{\defp{a} \defd \caseR[q \in Q]{q => \spawn{\selectL{q}'}{\rev{\defp{w}{}}}}}
+%     &= \bigl(
+%          \n{\defp{a}} \defd {\textstyle \bigwith_{q \in Q}(\up (\atmL{q}' \fuse \rev{\defp{w}}) \pmir \atmL{q})}
+%        \bigr)
+%   \,,
+% \end{align*}
 
 
 
@@ -922,8 +925,6 @@ With these rules, we can prove a result of the now familiar form.
 
 
 
-
-\fixnote{Careful with the 0-ary forms because you could end up with $\slof{\zero |- \top : C}$ and \emph{also} $\slof{A |- \top : \top}$.}
 
 
 %%% Local Variables:

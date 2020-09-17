@@ -20,7 +20,7 @@ This view was pioneered by \textfootcite{Abramsky:TCS93}, further pursued by \te
 Under this isomorphism, propositions are types -- specifically, binary \emph{session types}\autocite{Honda:CONCUR93} that describe the interaction protocol to which a process adheres.
 And concurrency arises when the various interleavings of independent proof reductions are treated indistinguishably.
 
-Under the other, concurrency-as-proof-construction view, computation is the act of building a partial, cut-free proof by nondeterministically applying the inference rules one by one.\fixnote{Ask Frank to read.}
+Under the other, concurrency-as-proof-construction view, computation is the act of building a partial, cut-free proof by nondeterministically applying the inference rules one by one.
 % the search for a cut-free proof, according to a fixed, non-backtracking strategy, forms the basis of concurrent computation.%
 % [\footnote{A backtracking strategy is possible, but would lead to Prolog-like backward-chain\-ing logic programming.}
 % \fixnote{Citation in footnote?}
@@ -48,7 +48,7 @@ Also, because processes are generally long-running or non-terminating, recursion
 \Textcites{Derakhshan+Pfenning:LMCS20}{Somayyajula+Pfenning:20} are currently investigating logically justified inductive and coinductive session types.}
 
 In contrast to proof reduction, the proof-construction approach excels at the task of specifying the behavior of concurrent systems.
-It gives a more global description of the system by focusing on the interactions between processes, without prescribing how those interactions should occur.
+It gives a more global description of the system by focusing on the interactions between processes, without prescribing how those interactions occur.
 Because computation is captured by the construction of a partial cut-free proof and each inference rule has a single principal formula, this approach reflects \emph{a}syn\-chronous communication.
 Moreover, recursion is relatively easy to incorporate because the logical aspects of proof construction are confined to hypothetical derivability and partial proofs, rather than provability and complete proofs.
 
@@ -182,7 +182,7 @@ A choreography then consists of a role assignment together with definitions for 
 Not all role assignments will lead to sensible choreographies, however.
 A sensible choreography is one in which the coinductive definitions admit rewritings that, up to the role assignment, exactly match the string rewriting specification's axioms.
 That is, a choreography is sensible if the role assignment serves as a bisimulation between the string rewriting specification and the message-passing choreography.%
-\footnote{This is the first appearance of a notion of bisimilarity in this document.
+\footnote[][-1.2\baselineskip]{This is the first appearance of a notion of bisimilarity in this document.
 Bisimilarity in its various guises will be a recurring theme throughout this document.}
 Depending on the particular role assignment, it is possible that no such set of definitions exists.
 
@@ -219,7 +219,7 @@ Therefore, \cref{sec:ordered-bisimilarity:labeled-bisim} presents a sound, and s
 \Cref{part:proof-reduction} investigates a different proof-theoretic explanation of concurrency -- concurrency as proof reduction.
 
 \Cref{ch:singleton-logic} begins this investigation by reviewing \emph{singleton logic}\autocites{Santocanale:FOSSACS02}{Fortier+Santocanale:CSL13}, an \emph{a}struc\-tural intuitionistic logic that exhibits many of the symmetries of classical logic by restricting sequents to have exactly one antecedent and one consequent.%
-\footnote{\Citeauthor{Fortier+Santocanale:CSL13} were originally motivated by categorical semantic concerns, moreso than symmetries.}
+\footnote{\Citeauthor{Fortier+Santocanale:CSL13} were originally motivated by categorical semantic concerns, more so than symmetries.}
 Singleton sequents are thus $\slseq{A |- C}$, as opposed to the sequents $\oseq{\octx |- C}$ found in ordered logic, for example.
 \Cref{sec:singleton-logic:seq-calc} verifies that singleton logic's sequent calculus satisfies cut and identity elimination, which ensure that singleton logic has a well-defined proof-theoretic semantics.
 % \fixnote{Because of the single-antecedent restriction, proof terms for singleton logic are variable-free and form a monoid with the $\jrule{CUT}$ rule as the monoid operation.}
@@ -296,19 +296,16 @@ In particular, the Turing machine example shows that, when combined with coinduc
 This embedding serves as a bisimulation between process chains and ordered contexts -- between concurrency as proof reduction and concurrency as proof construction.
 
 The embedding is quite natural in two respects.  
-First, it elegantly maps process constructors to ordered logical connectives, with process composition corresponding to ordered conjuction, for example.
+First, it elegantly maps process constructors to ordered logical connectives, with process composition corresponding to ordered conjunction, for example.
 Second, as shown in \cref{sec:correspond:embed:examples}, when applied to the example processes from \cref{ch:process-chains}, the embedding results in the same coinductively defined propositions as those used as choreographies in \cref{ch:choreographies}.
 
 Additionally, because the embedding is, syntactically speaking, an injective mapping, its left inverse provides a way to construct processes from a large subset of ordered propositions.
 Thus, in \cref{sec:correspond:types}, we use the embedding to reverse-engineer a session type system for ordered rewriting in which well-typed processes correspond to well-typed propositions, and vice versa.
 
+The left-invertible embedding and session type system for ordered rewriting allows us to write global, ordered rewriting specifications of concurrent systems and then extract local, process implementations from them, provided that the specifications are well-typed.
+We can have all of the advantages of global specifications, together with all of the advantages of local implementations.
 
-\subsection{Concluding thoughts}
-
-\Cref{ch:correspond} provides final witness to the thesis stated earlier:
-session types do indeed bridge the proof-construction and proof-reduction notions of concurrency found in ordered and singleton logics, respectively.
-
-The end result can even be seen as a proof-theoretic analogue of multiparty session types.\autocite{Honda+:POPL08}
+Thus, our results can be seen as a proof-theoretic analogue of multiparty session types.\autocite{Honda+:POPL08}
 In multiparty session types, binary session types are generalized to conversations among several parties.
 Conversations in their entirety are specified using global session types, which can then be projected to binary session types for each pair of participants; these projections are close to implementations.
 
@@ -316,8 +313,14 @@ Intuitively, global types for multiparty sessions serve the same purpose as our 
 And, because both extract local information from a global description, the projection of local types from global types is related to our embedding of well-typed processes as choreographies.
 Moreover, our framework has the advantage of generating implementations directly from choreographies, whereas the multiparty session type discipline generates only local types that programmers must then implement.
 
+\subsection{Concluding thoughts}
+
+\Cref{ch:correspond} provides final witness to the thesis stated earlier.
+% session types do indeed bridge the proof-construction and proof-reduction notions of concurrency found in ordered and singleton logics, respectively.
+At least for the well-typed fragment, proof construction and proof reduction are truly two sides of the same concurrent coin.
+
 As described further in \cref{ch:conclusion}, this document raises several avenues for future work.
-These include the obvious generalization of choreographies and the process embedding to proof-construction and proof-reduction notions of concurrency found in intuitionistic linear logic, an investigation of session-typed nondeterministic choice, a study of how the behaviorally inductive and coinductive types of \textfootcite{Derakhshan+Pfenning:LMCS20} and sized types of \textfootcite{Somayyajula+Pfenning:20} might apply to the proof-constrution notion of concurrency, and an exploration of whether generative invariants\autocite{Simmons:CMU12} might relate to session types.
+These include the obvious generalization of choreographies and the process embedding to proof-construction and proof-reduction notions of concurrency found in intuitionistic linear logic, an investigation of session-typed nondeterministic choice, a study of how the behaviorally inductive and coinductive types of \textfootcite{Derakhshan+Pfenning:LMCS20} and sized types of \textfootcite{Somayyajula+Pfenning:20} might apply to the proof-construction notion of concurrency, and an exploration of whether generative invariants\autocite{Simmons:CMU12} might relate to session types.
 
 % In addition to the specific technical contributions outlined in the preceding \lcnamecrefs{sec:introduction:overview}, this document contributes one further piece of evidence in favor of beginning \fixnote{include this? where?}
 % I have learned to begin with examples that are very simple -- even ones that seem ridiculously so.
