@@ -803,10 +803,12 @@
 \cs_new:Npn \__thesis_dreduces:
   {
     \mathrel {
-      \color{gray} \reduces
-      % \tikzcd[cramped, ampersand~replacement=\&]
-      %   \rar[reduces, exists] \& {}
-      % \endtikzcd
+      % \color{gray} \reduces
+      \!\!
+      \tikzcd[cramped, column~sep=1.65em, ampersand~replacement=\&]
+        \rar[reduces, exists] \& {}
+      \endtikzcd
+      \!\!
     }
   }
 

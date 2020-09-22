@@ -1,4 +1,4 @@
-\chapter{A computational interpretation of the semi-axiomatic\\singleton sequent calculus as session-typed communicating chains}\label{ch:process-chains}
+\chapter[Semi-axiomatic singleton seq{}uent proofs as session-typed process chains]{Semi-axiomatic singleton seq{}uent\\proofs as session-typed process chains}\label{ch:process-chains}
 
 In the previous \lcnamecref{ch:singleton-logic}, we took a purely proof-theoretic view of singleton logic and its semi-axiomatic sequent calculus.
 The proof terms assigned to semi-axiomatic sequent proofs were simply syntactic objects,
@@ -7,7 +7,7 @@ and the proof of non-analytic cut elimination~\parencref{thm:singleton:hilbert:c
 
 Even in a purely proof-theoretic setting, however, the computational suggestions of these syntactic manipulations were too strong to ignore:
 % In proving the admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:cut-admissible},
-We saw that the principal cases in the proof of admissibility of non-analytic cuts~\parencref{lem:singleton-logic:hilbert:cut-admissibility}%
+We saw that the principal cases in the proof of admissibility of non-analytic cuts \parencref{lem:singleton-logic:hilbert:cut-admissibility}%
 \marginnote{%
   \vspace*{-\abovedisplayskip}
   \begin{align*}
@@ -29,7 +29,7 @@ For instance, a proof of $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$ corresponds 
 This roughly parallels a recent line of research into a Curry--Howard isomorphism, dubbed \acs{SILL}, between the intuitionistic linear sequent calculus and session-typed concurrent computation\autocites{Caires+:MSCS16}{Caires+:TLDI12} -- with two key differences.
 First, unlike \ac{SILL}, we use singleton logic, not intuitionistic linear logic.
 This restricts the process topology to chains, rather than the tree topology that \ac{SILL} permits.
-But this restriciton should not be seen as a weakness;
+But this restriction should not be seen as a weakness;
 by leveraging this restriction, computation pipelines can be expressed as a logically motivated fragment.
 % However, as sketched in \cref{??}, 
 
@@ -50,7 +50,7 @@ The use of semi-axiomatic sequent proofs enables a clean and direct interpretati
 % Alternatively, Hilbert-style proofs can be seen as well-behaved chains of communicating automata from \cref{??}.
 
 
-\newthought{We begin}, in \cref{sec:process-chains:untyped-chains}, by introducing process chains in their untyped form as finite sequences of processes arranged in a linear topoloogy.
+\newthought{We begin}, in \cref{sec:process-chains:untyped-chains}, by introducing process chains in their untyped form as finite sequences of processes arranged in a chain topology.
 Then, in \cref{sec:process-chains:typed-processes}, we describe the structure of well-typed process expressions that may be used in these chains, and show that the session-typing rules for process expressions correspond to the rules of the semi-axiomatic sequent calculus;
 \cref{sec:process-chains:typed-chains} presents session-typing rules for the process chains themselves.
 In \cref{sec:process-chains:reductions}, we assign an operational semantics to process chains; this operational semantics arises naturally from the semi-axiomatic proof normalization procedure given in the previous \lcnamecref{ch:singleton-logic}.
@@ -61,7 +61,7 @@ Lastly, \cref{sec:process-chains:coinductive} describes coinductively defined ty
 
 \subsection{Untyped process chains}\label{sec:process-chains:untyped-chains}
 
-We envision a process chain, $\chn$, as a (possibly empty) finite sequence of processes $(P_i)_{i=1}^{n}$, each with its own independent thread of control and arranged in a linear topology.
+We envision a process chain, $\chn$, as a (possibly empty) finite sequence of processes $(P_i)_{i=1}^{n}$, each with its own independent thread of control and arranged in a chain topology.
 As depicted in the adjacent \lcnamecref{fig:singleton-processes:chain-topology},%
 %
 \begin{marginfigure}
@@ -107,7 +107,7 @@ As depicted in the adjacent \lcnamecref{fig:singleton-processes:chain-topology},
 % each process $P_i$ shares a unique channel with its left-hand neighbor and a unique channel with its right-hand neighbor.
 each process $P_i$ shares unique channels with its left- and right-hand neighbors.
 Along these channels, neighboring processes may interact and react, changing their own internal state.
-Because process chains always maintain a linear topology, the channels need not be named -- they can instead be referred to as simply the left- and right-hand channels of $P_i$.
+Because process chains always maintain a chain topology, the channels need not be named -- they can instead be referred to as simply the left- and right-hand channels of $P_i$.
 
 A chain $\chn$ does not compute in isolation, however.
 The left-hand channel of $P_1$ and the right-hand channel of $P_n$ enable the chain to interact with its surroundings.
@@ -912,7 +912,7 @@ The session-typing rules and operational semantics enjoy preservation and progre
   By structural induction on the typing derivation, $\slcof{A |- \chn : B}$.
 \end{proof}
 
-\clearpage
+% \clearpage
 \section{Coinductively defined types and process expressions}\label{sec:process-chains:coinductive}
 
 Unfortunately, there are many relatively simple computational behaviors that cannot be described by the finitary session types thus far.
@@ -925,6 +925,23 @@ Coinductively defined types are not particularly useful if process expressions r
 That these definitions are coinductive is guaranteed by requiring that along every cycle among defined types and processes there is a type constructor or process expression constructor.\footnote{This generalizes the local contractivity condition described by \textcite{Gay+Hole:AI05}.}
 This justifies an \emph{equi}\-recursive treatment of types in which type definitions may be silently unfolded (or re-folded) at will.
 
+These mutually coinductive definitions are collected into signatures $\sig$.
+To verify that the definitions are well-formed, we use a judgment $\vdash_{\sig'} \sig$, where the definitions $\sig$ are judged according to the definitions $\sig'$.
+The mutually coinductive knot can be tied by using $\vdash_{\sig} \sig$ at the top level: $\sig$ is well-formed if $\vdash_{\sig} \sig$ holds.
+\begin{equation*}
+  \infer{\vdash_{\sig'} (\sige)}{}
+  \qquad
+  \infer{\vdash_{\sig'} \sig, (\slof{A |- \defp{p} : C} \defd P)}{
+    \vdash_{\sig'} \sig & \slof{A |-_{\sig'} P : C}}
+\end{equation*}
+
+All of the process expression typing judgments are indexed by a well-formed signature $\sig$.
+A call to $\defp{p}$ has type $\slof{A |- C}$ if $\slof{A |- \defp{p} : C} \defp P$ is listed in $\sig$:
+\begin{equation*}
+  \infer{\slof{A |-_{\sig} \defp{p} : C}}{
+    (\slof{A |- \defp{p} : C} \defd P) \in \sig}
+\end{equation*}
+
 As with coinductively defined propositions, these type and process expression definitions are coinductive in only a syntactic sense.
 In particular, the coinductively defined process expressions are not necessarily behaviorally coinductive, \ie, productive.
 For example, $\defp{p} \defd \caseL{a => \spawn{\selectR{a}}{p}}$ is not a productive process -- after receiving an initial message $\selectR{a}$, $p$ diverges without sending or receiving any further messages.
@@ -933,9 +950,9 @@ Once coinductively defined types and process expressions are added, there is, st
 % Extending the session-type system for process chains with recursive type and process definitions means that, strictly speaking, there is no longer a Curry--Howard isomorphism with singleton logic's Hilbert system.
 Importantly, however, the core system remains unchanged and still enjoys the isomorphism because the unbounded behavior is added modularly.
 The situation is once again analogous to the Curry--Howard isomorphism between intuitionistic natural deduction and the simply-typed $\lambda$-calculus:
-When the $\lambda$-calculus is extended with recursive types and functions, the meaning of the type constuctor for simple function types remains unchanged and still isomorphic with intuitionistic implication.
+When the $\lambda$-calculus is extended with recursive types and functions, the meaning of the type constructor for simple function types remains unchanged and still isomorphic with intuitionistic implication.
 
-Just as a Curry--Howard isomorphism can be recovered in the $\lambda$-calculus when general recursive types are restricted to inductive and coinductive types, work by \textcite{Derakhshan+Pfenning:LMCS20} and \textcite{Somayyajula+Pfenning:20} shows that a Curry--Howard isomorphism between session-typed process chains and (sub-)singleton sequent calculus proofs can be recovered if types are inductive or behaviorally coinductive.
+Just as a Curry--Howard isomorphism can be recovered in the $\lambda$-calculus when general recursive types are restricted to inductive and coinductive types, work by \textfootcite{Derakhshan+Pfenning:LMCS20} and \textfootcite{Somayyajula+Pfenning:20} shows that a Curry--Howard isomorphism between session-typed process chains and (sub-)singleton sequent calculus proofs can be recovered if types are inductive or behaviorally coinductive.
 
 
 \section{Examples}\label{sec:process-chains:examples}

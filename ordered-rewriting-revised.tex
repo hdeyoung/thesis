@@ -424,7 +424,7 @@ Second, multi-step rewriting, $\Reduces$, is incomplete with respect to the usua
 \end{proof}
 \noindent
 As expected from the way in which it was developed, ordered rewriting is, however, sound.
-To state and prove soundness, we must first define an operation $\bigfuse \octx$ that reifies an ordered context as a single proposition (see adjacent \lcnamecref{fig:ordered-rewriting:bigfuse}).\fixnote{fix}%
+To state and prove soundness, we must first define an operation $\bigfuse \octx$ that reifies an ordered context as a single proposition (see adjacent \lcnamecref{fig:ordered-rewriting:bigfuse}).%\fixnote{fix}%
 %
 \begin{marginfigure}
   \begin{align*}
@@ -763,21 +763,19 @@ The judgment is given by the following rules.
   \\
   \infer[\lrule{\up}]{\lfocus{}{\up \p{A}}{}{\p{A}}}{}
 \end{inferences}
-The left-focus judgment's rules parallel the usual sequent calculus rules, but maintaining focus on the immediate subformulas -- left focus for subformulas of negative polarity and right focus for subformulas of positive polarity.
+The left-focus judgment's rules parallel the usual sequent calculus rules, but maintain focus on the immediate subformulas -- left focus for subformulas of negative polarity and right focus for subformulas of positive polarity.
 The $\lrule{\up}$ rule ends left focus by decomposing an $\up \p{A}$ antecedent into an $\p{A}$ consequent.
 
 Unlike the right-focus judgment, the left-focus judgment describes a relation (or nondeterministic function), owing to the two rules, $\lrule{\with}_1$ and $\lrule{\with}_2$, that may apply to alternative conjunctions.
-For example, both 
+For example, the following are derivable.
 \begin{gather*}
-  \lfocus{\p{a}}{(\p{a} \limp \up (\p{c} \fuse \p{a})) \with (\p{b} \limp \up \one)}{}{\p{c} \fuse \p{a}}
-\shortintertext{and}
+  \lfocus{\p{a}}{(\p{a} \limp \up (\p{c} \fuse \p{a})) \with (\p{b} \limp \up \one)}{}{\p{c} \fuse \p{a}} \\
   \lfocus{\hphantom{\p{a}}\mathllap{\p{b}}}{(\p{a} \limp \up (\p{c} \fuse \p{a})) \with (\p{b} \limp \up \one)}{}{\mathrlap{\one}\hphantom{\p{c} \fuse \p{a}}}
 \end{gather*}
-are both derivable.
 % when the negative proposition $(\p{a} \limp \up (\p{c} \fuse \p{a})) \with (\p{a} \limp \up \one)$ is in focus.
 
 \newthought{A focused rewriting step arises} when a negative proposition, $\n{A}$, is put into focus and the resulting consequent, $\p{C}$, is subsequently decomposed into the ordered context.%
-\footnote[][-6\baselineskip]{Writing $\rfocus{\np{\octx'{}}}{\p{B}}$ for the right-focus judgment gives this rule the flavor of a cut principle.}
+\footnote{Writing $\rfocus{\np{\octx'{}}}{\p{B}}$ for the right-focus judgment gives this rule the flavor of a cut principle.}
 In addition, the compatibility rule $\jrule{$\reduces$C}$ is retained.
 \begin{inferences}
   \infer[\jrule{$\reduces$I}]{\np{\octx}_L \oc \n{A} \oc \np{\octx}_R \reduces \np{\octx'{}}}{
@@ -788,7 +786,7 @@ In addition, the compatibility rule $\jrule{$\reduces$C}$ is retained.
     \np{\octx} \reduces \np{\octx'{}}}
 \end{inferences}
 
-With this $\jrule{$\reduces$I}$ rule, it is indeed possible to rewrite\fixnote{fix}
+With this $\jrule{$\reduces$I}$ rule, it is indeed possible to rewrite
 \begin{equation*}
   \p{a} \oc \bigl((\p{a} \limp \up (\p{c} \fuse \p{a})) \with (\p{b} \limp \up \one)\bigr)
     \reduces \p{c} \oc \p{a}
@@ -1110,7 +1108,7 @@ where the inversion of $\p{c} \fuse \p{a}$ is now an atomic step of its own.
 
 This weakly focused rewriting discipline could be achieved as an independent system with the rules shown in \cref{fig:ordered-rewriting:weak-focusing}.
 Notice that weakly focused rewriting restricts the left- and right-handed implications to have only atomic premises.
-Although weak focusing is well-defined for arbitrary implications\autocites{Laurent:PhD02}{Simmons+Pfenning:CMU11}, it is not clear how to give a \emph{rewriting} interpretation of weak focusing unless this restriction is made.
+Although weak focusing is well-defined for arbitrary implications, it is not clear how to give a \emph{rewriting} interpretation of weak focusing unless this restriction is made.
 
 \begin{figure}[tbp]
   \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
@@ -1151,8 +1149,8 @@ Although weak focusing is well-defined for arbitrary implications\autocites{Laur
 
 In fact, there is a better approach than using weakly focused ordered rewriting as yet another independent rewriting system.
 Instead of using weakly focused rewriting directly, we can embed it within (strongly) focused ordered rewriting by inserting shifts at specific locations and then use that embedding.
-From here on, we will exclusively use this embedding when weakly focused ordered rewriting is needed.%
-\begin{marginfigure}[2\baselineskip]
+From here on, we will exclusively use this embedding when weakly focused ordered rewriting is needed (which is only in \cref{ch:correspond}).%
+\begin{marginfigure}[-20\baselineskip]
 \begin{equation*}
   \begin{aligned}
     \embed*{\p{\octx}_1 \oc \p{\octx}_2}

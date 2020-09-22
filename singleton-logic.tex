@@ -38,7 +38,7 @@ An analysis of its basic metatheory~\parencref{sec:singleton-logic:sax:cutelim} 
 
 % \Cref{sec:singleton-logic:hilbert:metatheory} establishes the admissibility of a modus ponens-like rule, and contrasts the proof with that of admissibility of cut from \cref{sec:singleton-logic:metatheory}.
 
-Finally, \cref{sec:singleton-logic:extensions} briefly overviews several possible extensions to singleton logic, including a \emph{sub}\-singleton extension that relaxes the single-antecedent restriction and permits an empty context.
+Finally, \cref{sec:singleton-logic:extensions} briefly overviews several possible extensions to singleton logic, including a \emph{sub}\-singleton extension that relaxes the single-an\-tecedent restriction and permits an empty context.
 
 
 
@@ -143,7 +143,7 @@ In addition to providing sequents with an elegant symmetry between antecedents a
     % \end{tikzpicture}
   }
 
-  In data pipelines, the computational processes are arranged in a strictly linear topology, with each process having exactly one upstream provider -- no more and no less.
+  In data pipelines, the computational processes are arranged in a chain topology, with each process having exactly one upstream provider -- no more and no less.
   To study pipelines, a \enquote{single-provider restriction} is needed -- a type-theoretic analogue of the single-antecedent restriction.
 \end{description}
 
@@ -693,10 +693,10 @@ From here on, however, we won't bother to be quite so pedantic, instead often om
 \end{proof}
 
 
-In addition to cut elimination, we can also prove identity eliminiation.
+In addition to cut elimination, we can also prove identity elimination.
 An identity-long proof is one in which all applications of the $\jrule{ID}$ occur at propositional variables.
 Identity elimination -- a slight misnomer -- transforms a proof into an identity-long proof of the same sequent by replacing instances of the $\jrule{ID}^A$ rule with an identity-long proof of $\slseq{A |- A}$.%
-\footnote{Identity eliminiation is a slight misnomer because instances of the $\jrule{ID}$ rule at propositional variables will remain.}
+\footnote{Identity elimination is a slight misnomer because instances of the $\jrule{ID}$ rule at propositional variables will remain.}
 
 \begin{lemma}[Admissibility of identity]
   For all propositions $A$, an identity-long proof of $\slseq{A |- A}$ exists.
@@ -1255,7 +1255,7 @@ Individual labels $\ell$ and $\kay$ are drawn from an unspecified universe of la
 The labeled, $n$-ary proposition $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$ generalizes binary additive disjunction, $A \plus B$, and, because the label set $L$ may even be empty, it also generalizes additive falsehood, $\zero$.
 Likewise, $\with*[sub=_{\ell \in L}]{\ell:A_{\ell}}$ generalizes both $A \with B$ and $\top$.
 
-Because the $\jrule{CUT}$ rule serves to compose two proofs of compatible sequents, the proof term $\spawn{P_1}{P_2}$ was chosen for its suggestion of function compostion, $f_2 \circ f_1$.%
+Because the $\jrule{CUT}$ rule serves to compose two proofs of compatible sequents, the proof term $\spawn{P_1}{P_2}$ was chosen for its suggestion of function composition, $f_2 \circ f_1$.%
 \footnote{Notice that the order of composition in the $\spawn{P_1}{P_2}$ term matches the order of premises in the $\jrule{CUT}$ rule, but is opposite the order traditionally used for function composition.}
 The proof term $\fwd$ is used for the $\jrule{ID}$ rule.
 %

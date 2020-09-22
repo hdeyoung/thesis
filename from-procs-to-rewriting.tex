@@ -121,7 +121,7 @@ These axioms and induced constraints are summarized in \cref{tbl:trconf-constrai
     $\caseR[\ell \in L]{\ell => P_{\ell}} \cc \selectL{\kay} \reduces P_{\kay}$ & $\trproc{\caseR[\ell \in L]{\ell => P_{\ell}}} \oc \trproc{\selectL{\kay}} \dreduces \trproc{P_{\kay}}$\quad($\kay \in L$)
     \\ \addlinespace \bottomrule
   \end{tabular}
-  \caption{Constraints on $\trproc{}$ that must be satisfied if $\trconf{}$ is to be a strong bisimulation}\label{tbl:trconf-constraints}
+  \caption[][-0.25\baselineskip]{Constraints on $\trproc{}$ that must be satisfied if $\trconf{}$ is to be a strong bisimulation}\label{tbl:trconf-constraints}
 \end{table}
 
 For example, the process reduction axiom $\spawn{P}{Q} \reduces P \cc Q$ induces the constraint $\trproc{\spawn{P}{Q}} \dreduces \trproc{P} \oc \trproc{Q}$.
@@ -139,16 +139,15 @@ Then we can define
   \trproc{\spawn{P}{Q}} \dreduces \trproc{P} \oc \trproc{Q}
 \end{equation*}
 because the weak focusing discipline does not invert positive propositions eagerly.
-\begin{marginfigure}
+\begin{marginfigure}[-10\baselineskip]
   \begin{equation*}
-    \begin{tikzcd}
-      \spawn{P}{Q} \arrow[reduces]{rrr} \dar[relation][swap]{\trconf{}}
-        &[-1.85em] &&[-1.85em] P \cc Q \dar[relation]{\trconf{}}
+    \begin{tikzcd}[column sep=huge]
+      \spawn{P}{Q} \rar \dar[relation][swap]{\trconf{}}
+        &[-1.85em] P \cc Q \dar[relation]{\trconf{}}
       \\
-      \trconf{\spawn{P}{Q}} \rar[phantom]{=}
-        & \trproc{P} \fuse \trproc{Q} \rar[reduces]
-        & \trproc{P} \oc \trproc{Q} \rar[phantom]{=}
-        & \trconf{P \cc Q}
+      \trconf{\spawn{P}{Q}} \dar[phantom]{=} & \trconf{P \cc Q} \dar[phantom]{=} \\[-2ex]
+      \trproc{P} \fuse \trproc{Q} \rar[reduces]
+        & \trproc{P} \oc \trproc{Q}
     \end{tikzcd}
   \end{equation*}
 \end{marginfigure}%
@@ -272,7 +271,7 @@ for all $\kay \in L$.
 
 \newthought{%
 In total, the embedding} of process configurations and process expressions into a weakly focused formula-as-process ordered rewriting framework is summarized in \cref{fig:process-embedding:weak-focus-strong-bisim}.
-\begin{marginfigure}[-28\baselineskip]
+\begin{marginfigure}[19.5\baselineskip]
   \begin{align*}
     \trconf{\cnf_1 \cc \cnf_2} &= \trconf{\cnf_1} \oc \trconf{\cnf_2} \\
     \trconf{\cnfe} &= (\octxe) \\
@@ -280,13 +279,16 @@ In total, the embedding} of process configurations and process expressions into 
   %
   \shortintertext{and}
   %
-    \trsig{\sig, (\defp{p} \defd P)}
-      &= \trsig{\sig} , \left(\n{\defp{p}} \defd
-           \begin{cases*}
-             \n{A} & if $\trproc{P} = \dn \n{A}$ \\
-             \up \trproc{P} & otherwise
-           \end{cases*}
-         \right)
+    &\mathclap{\begin{aligned}
+          \MoveEqLeft[.5]
+          \trsig{\sig, (\defp{p} \defd P)} \\
+            &= \trsig{\sig} , \left(\n{\defp{p}} \defd
+                 \begin{cases*}
+                   \n{A} & if $\trproc{P} = \dn \n{A}$ \\[-0.3\baselineskip]
+                   \up \trproc{P} & otherwise
+                 \end{cases*}
+               \right)
+        \end{aligned}}
     \\
     \trconf{\sige} &= (\orsige)
   %
@@ -317,7 +319,7 @@ Especially appealing is the close correspondence between process constructors an
 Moreover, the embedding is a \emph{strong} bisimulation:
 %
 \begin{theorem}[Adequacy of $\trconf{}$]
-  Under the weakly focused formula-as-process ordered rewriting framework, $\trconf{}$ constitutes a strong bisimulation.
+  Under the weakly focused formula-as-pro\-cess ordered rewriting framework, $\trconf{}$ constitutes a strong bisimulation.
   That is:
   \begin{itemize}[nosep]
   \item If\/ $\cnf \reduces \cnf'$, then $\trconf{\cnf} \reduces \trconf{\cnf'}$.
@@ -348,10 +350,10 @@ For example, the composed embedding of $\spawn{P_1}{P_2}$ would be
 \end{equation*}
 which satisfies $\embed{\trproc{\spawn{P_1}{P_2}}} \reduces \embed{\trproc{P_1}} \oc \embed{\trproc{P_2}}$ in the strong focusing framework.
 % because $\rfocus{\embed{\trproc{P_1}} \oc \embed{\trproc{P_2}}}{\bigfuse (\embed{\trproc{P_1}}) \fuse \bigfuse (\embed{\trproc{P_2}})}$ holds.
-Using such a composition via $\trconf{P} = \embed{\trproc{P}}$ would turn $\trconf{}$ into a strongly bisimilar embedding of process configurations within \emph{strongly} focused formula-as-process ordered rewriting framework.
+Using such a composition via $\trconf{P} = \embed{\trproc{P}}$ would turn $\trconf{}$ into a strongly bisimilar embedding of process configurations within the \emph{strongly} focused for\-mu\-la-as-process ordered rewriting framework.
 (For a definition of the embedding for process definitions, see \cref{fig:process-embedding:full-focus-strong-bisim}.)
 %
-\begin{marginfigure}
+\begin{marginfigure}[-0.05\baselineskip]
   \begin{align*}
     \trconf{\cnfe} &= (\octxe) \\
     \trconf{\cnf_1 \cc \cnf_2} &= \trconf{\cnf_1} \oc \trconf{\cnf_2} \\
@@ -359,13 +361,15 @@ Using such a composition via $\trconf{P} = \embed{\trproc{P}}$ would turn $\trco
   %
   \shortintertext{and}
   %
-    \trsig{\sig, (\defp{p} \defd P)} &\phantom{{} = {}} \\
-                   \quad\mathrlap{= \trsig{\sig} , \left(\n{\defp{p}} \defd
-           \begin{cases*}
-             \embed{\trproc{P}} & if $P \neq \selectL{\kay}$ and $P \neq \selectR{\kay}$ \\
-             \up \embed{\trproc{P}} & otherwise
-           \end{cases*}
-         \right)}
+    &\mathclap{\begin{aligned}
+      \MoveEqLeft[.5]
+      \trsig{\sig, (\defp{p} \defd P)} \\
+        &= \trsig{\sig} , \left(\n{\defp{p}} \defd
+             \begin{cases*}
+               \embed{\trproc{P}} & if $P \neq \selectL{\kay}, \selectR{\kay}$ \\
+               \up \embed{\trproc{P}} & otherwise
+             \end{cases*}\right)
+      \end{aligned}}
     \\
     \trconf{\sige} &= (\orsige)
   % %
@@ -408,7 +412,7 @@ Without changing the definition of $\trproc{}$ at all, let us define $\trconf{}$
   \,.
 \end{align*}
 %
-\begin{marginfigure}
+\begin{marginfigure}[10\baselineskip]
   \begin{align*}
     \trconf{\cnf_1 \cc \cnf_2} &= \trconf{\cnf_1} \oc \trconf{\cnf_2} \\
     \trconf{\cnfe} &= (\octxe) \\
@@ -626,6 +630,7 @@ That is to say, the weakness of the bisimulation is a purely administrative arti
 
 In summary, we have three distinct embeddings of process expressions and configurations within focused formula-as-process ordered rewriting.
 \begin{table}[tbp]
+  \centering
   \begin{tabular}{@{}lll@{}}
     \toprule
     \emph{Focusing} & \emph{Bisimilarity} & \emph{Key clause}
@@ -635,7 +640,7 @@ In summary, we have three distinct embeddings of process expressions and configu
     strongly focused & weakly bisimilar & $\trconf{P} = \octx$ where $\rfocus{\octx}{\trproc{P}}$
     \\ \bottomrule
   \end{tabular}
-  \caption{A summary of the process embeddings}\label{tab:embedding-summary}
+  \caption[][-0.25\baselineskip]{A summary of the process embeddings}\label{tab:embedding-summary}
 \end{table}
 Focusing, be it weak or strong, is essential to these embeddings.
 If the unfocused form of ordered rewriting were used, no bisimulation along these lines appears to be possible, not even a weak one.
@@ -667,7 +672,7 @@ Under the strongly focused, weakly bisimilar embedding, the process definition f
     = \bigl(\n{\defp{b}_0} \defd (\up \dn \n{\defp{b}_1} \pmir \atmL{i}) \with (\up (\atmL{d} \fuse \dn \n{\defp{b}'_0{}}) \pmir \atmL{d})\bigr)
   \,.
 \end{equation*}
-This defined proposition is \emph{exactly} the same as the one produced in \cref{sec:formula-as-process:counters-oo} as the object-oriented choreography of the binary counter's initial string rewriting specification.
+This defined proposition is \emph{exactly} the same as the one produced in \cref{sec:formula-as-process:counters-oo} as the object-oriented choreography of the counter's initial string re\-writing specification.
 (Here, for completeness, we have included even the minimally necessary shifts that we would usually elide.)
 Even the $\up \dn$ double shift in front of $\n{\defp{b}_1}$ is correctly produced for free by the embedding.
 
@@ -681,9 +686,9 @@ The same is true of the other process definitions: embedding them yields exactly
              \bigl(\n{\defp{b}'_0{}} \defd (\atmR{z} \limp \up \atmR{z}) \with (\atmR{s} \limp \up (\dn \n{\defp{b}_1} \fuse \atmR{s}))\bigr)
            \end{lgathered}
 \end{equation*}
-(Actually, the same definitions arise when using the weakly focused, strongly bisimilar embedding because it treats process definitions the same as the strongly focused, weakly bisimilar embedding does.)
+(Actually, the same definitions arise when using the weakly focused, strongly bisimilar embedding because it treats process definitions in the same way as the strongly focused, weakly bisimilar embedding does.)
 
-Similarly, recall the functional-style process definitions for the binary counter from \cref{sec:formula-as-process:counters-functional}:
+Similarly, recall from \cref{sec:formula-as-process:counters-functional} the functional-style process definitions for the binary counter:
 \begin{equation*}
   \sig' = \begin{lgathered}[t]
             \bigl(i \defd \caseL{e => \spawn{\selectR{e}}{\selectR{b}_1}
@@ -780,16 +785,17 @@ But the question is, can the image of \emph{well-typed} process expressions unde
 \end{restatable}
 %
 \noindent
-In the judgment $\slof{A |- \p{A}_1 : B}$ and this \lcnamecref{thm:embed:type-props}, $A$ and $B$ are (Curry--Howard interpretations of) singleton propositions that functions as session types, whereas $\p{A}_1$ is a formula-as-process positive ordered proposition that functions as an embedded process expression.
+In the judgment $\slof{A |- \p{A}_1 : B}$ and this \lcnamecref{thm:embed:type-props}, $A$ and $B$ are (Curry--Howard interpretations of) singleton propositions that function as session types, where\-as $\p{A}_1$ is a formula-as-process positive ordered proposition that functions as an embedded process expression.
 
 To construct such a type system, we can simply apply the embedding to session typing rules for process expressions.
 For instance, the typing rule for a process expression $\spawn{P}{Q}$ suggests that ordered conjunctions $\p{A}_1 \fuse \p{A}_2$ be typed with a cut-like rule, as shown in the adjacent \lcnamecref{fig:embed-spawn-typing}.
 \begin{marginfigure}
 \begin{gather*}
-  \left.\trproc{%
-    \infer{\slof{A |- \spawn{P}{Q} : C}}{
-      \slof{A |- P : B} & \slof{B |- Q : C}}%
-  \right}
+  \left\lbrack\,% .\trproc{%
+    \raisebox{-0.375\baselineskip}{%
+      \infer{\slof{A |- \spawn{P}{Q} : C}}{
+        \slof{A |- P : B} & \slof{B |- Q : C}}}\,%
+  \right\rbrack% }
   \\\rightsquigarrow\\
   \infer{\slof{A |- \trproc{\spawn{P}{Q}} = \trproc{P} \fuse \trproc{Q} : C}}{
     \slof{A |- \trproc{P} : B} & \slof{B |- \trproc{Q} : C}}
@@ -854,6 +860,8 @@ These take the form of rules verifying that a collection of mutually coinductive
 The judgment is $\vdash_{\orsig'} \orsig$, where the definitions $\orsig$ are judged according to the definitions $\orsig'$.
 The standard trick of tying the mutually recursive knot by using $\vdash_{\orsig} \orsig$ at the top level is used: $\orsig$ is well-typed if $\vdash_{\orsig} \orsig$ holds.
 \begin{inferences}
+  \infer{\vdash_{\orsig'} (\orsige)}{}
+  \and
   \infer{\vdash_{\orsig'} \orsig , (\slof{A |- \n{\defp{p}} \defd \n{A}_0 : B})}{
     \text{($\n{A}_0 \neq \up \p{B}_0$)} &
     \vdash_{\orsig'} \orsig &
@@ -924,7 +932,22 @@ With these rules, we can prove a result of the now familiar form.
 \end{proof}
 
 
+% \subsection{Duality}
 
+% \begin{equation*}
+%   \sym*{\orsige} = (\orsige) \\
+%   \sym*{\orsig , (\slof{A |- \n{\defp{p}} : B} \defd \n{A}_0)} = \sym*{\orsig} , 
+% \end{equation*}
+
+% \begin{theorem}
+%   If $\chorsig{\theta}{\srsig}{\orsig}$ and $\vdash_{\orsig} \orsig$, then $\chorsig{\theta^{\bot}}{\srsig}{\orsig'}$ for some $\orsig'$.
+% \end{theorem}
+% \begin{proof}
+%   \begin{equation*}
+%     \infer{\chorsig{\theta}{\srsig_0 , \bigl(w_i^L \wc a \wc w_i^R \reduces w'_i\bigr)_{i \in I}}{\orsig_0 , \bigl(\defp{a} \defd \bigwith_{i \in I} \n{A}_i\bigr)}}{
+%       \qimp{\atmR{\octx}_i^L}{\up \bigfuse \theta(w'_i)}{\atmL{\octx}_i^R}{\n{A}_i}}
+%   \end{equation*}
+% \end{proof}
 
 
 %%% Local Variables:

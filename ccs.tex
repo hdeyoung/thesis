@@ -1,36 +1,36 @@
-\chapter{\acs*{CCS}}
+\chapter{Appendix}\label{app:emptiness}
 
-\begin{theorem}
-  The following are equivalent.
-  \begin{itemize}
-  \item If $P \simu{R}\overset{c}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.
-  \item If $P \simu{R} Q$ and $\bar{c} \mid Q \overset{\tau}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.
-  \end{itemize}
-\end{theorem}
-\begin{proof}
-  We prove each direction separately.
-  \begin{itemize}
-  \item 
-  Assume that $P \simu{R} Q$ and $\bar{c} \mid Q \overset{\tau}{\reduces} Q'$.
-  Either the internal transition on $\bar{c} \mid Q$ is derived from an input on $c$ -- \ie, $Q \overset{c}{\reduces} Q'$ -- or it leaves the message $\bar{c}$ untouched -- \ie, there exists a process $Q'_0$ such that $Q \overset{\tau}{\Reduces} Q'_0$ and $Q' = \bar{c} \mid Q'_0$.
-  \begin{itemize}
-  \item
-    In the former case, we have $P \simu{R}\overset{c}{\reduces} Q'$ and can deduce that $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.
-  \item 
-    In the latter case, $P \overset{\tau}{\Reduces}\simu{R} Q'_0$ because $\simu{R}$ is reduction-closed.
-    Framing $\bar{c}$ on yields $\bar{c} \mid P \overset{\tau}{\Reduces} \bar{c} \mid P'_0$ and $P'_0 \simu{R} Q'_0$, for some process $P'_0$.
-    $\bar{c} \mid P'_0 \Reduces\simu{R} \bar{c} \mid Q'_0 = Q'$.
-  \end{itemize}
+% \begin{theorem}
+%   The following are equivalent.
+%   \begin{itemize}
+%   \item If $P \simu{R}\overset{c}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.
+%   \item If $P \simu{R} Q$ and $\bar{c} \mid Q \overset{\tau}{\reduces} Q'$, then $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.
+%   \end{itemize}
+% \end{theorem}
+% \begin{proof}
+%   We prove each direction separately.
+%   \begin{itemize}
+%   \item 
+%   Assume that $P \simu{R} Q$ and $\bar{c} \mid Q \overset{\tau}{\reduces} Q'$.
+%   Either the internal transition on $\bar{c} \mid Q$ is derived from an input on $c$ -- \ie, $Q \overset{c}{\reduces} Q'$ -- or it leaves the message $\bar{c}$ untouched -- \ie, there exists a process $Q'_0$ such that $Q \overset{\tau}{\Reduces} Q'_0$ and $Q' = \bar{c} \mid Q'_0$.
+%   \begin{itemize}
+%   \item
+%     In the former case, we have $P \simu{R}\overset{c}{\reduces} Q'$ and can deduce that $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.
+%   \item 
+%     In the latter case, $P \overset{\tau}{\Reduces}\simu{R} Q'_0$ because $\simu{R}$ is reduction-closed.
+%     Framing $\bar{c}$ on yields $\bar{c} \mid P \overset{\tau}{\Reduces} \bar{c} \mid P'_0$ and $P'_0 \simu{R} Q'_0$, for some process $P'_0$.
+%     $\bar{c} \mid P'_0 \Reduces\simu{R} \bar{c} \mid Q'_0 = Q'$.
+%   \end{itemize}
 
-  \item 
-  Assume that $P \simu{R}\overset{c}{\reduces} Q'$ -- \ie, that $P \simu{R} Q$ and $Q \overset{c}{\reduces} Q'$, for some process $Q$.
-  It follows that $\bar{c} \mid Q \overset{\tau}{\reduces} Q'$.
-  Because $\simu{R}$ is contextual, $\bar{c} \mid P \simu{R} \bar{c} \mid Q$.\fixnote{Except that it isn't!}
-  Because $\simu{R}$ is $\overset{\tau}{\Reduces}$-closed, $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.
-  % 
-  \qedhere
-\end{itemize}
-\end{proof}
+%   \item 
+%   Assume that $P \simu{R}\overset{c}{\reduces} Q'$ -- \ie, that $P \simu{R} Q$ and $Q \overset{c}{\reduces} Q'$, for some process $Q$.
+%   It follows that $\bar{c} \mid Q \overset{\tau}{\reduces} Q'$.
+%   Because $\simu{R}$ is contextual, $\bar{c} \mid P \simu{R} \bar{c} \mid Q$.\fixnote{Except that it isn't!}
+%   Because $\simu{R}$ is $\overset{\tau}{\Reduces}$-closed, $\bar{c} \mid P \overset{\tau}{\Reduces}\simu{R} Q'$.
+%   % 
+%   \qedhere
+% \end{itemize}
+% \end{proof}
 
 \begin{theorem}\label{thm:emptiness-bisim-equiv}
   The following are equivalent.
@@ -57,7 +57,7 @@
   \item
     Consider the case in which $\atmR{a} \oc \octx \reduces\Reduces\rframe{\simu{S}}{\atmR{a}} \atmR{a}$.
     Because $\atmR{a}$ does not appear in $\octx$, it cannot participate in the initial reduction, so $\octx \reduces \octx'$ and $\atmR{a} \oc \octx' \Reduces\rframe{\simu{S}}{\atmR{a}} \atmR{a}$, for some context $\octx'$.
-    Moreover, because it arises from $\octx$, the context $\octx'$ does not contain any occurances of $\atmR{a}$.
+    Moreover, because it arises from $\octx$, the context $\octx'$ does not contain any occurrences of $\atmR{a}$.
     From the inductive hypothesis it therefore follows that $\octx' \Reduces (\octxe) \simu{S} (\octxe)$;
     prepending the reduction from $\octx$, we conclude that $\octx \Reduces (\octxe) \simu{S} (\octxe)$.
   \end{itemize}

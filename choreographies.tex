@@ -4,7 +4,7 @@
 % In \cref{ch:string-rewriting}, we saw that string rewriting can be used to specify the dynamics of concurrent systems, but that those specifications are quite abstract.
 % Even the operational semantics is left completely abstract: permitted rewritings just \emph{happen}, as if a central, meta-level actor schedules and otherwise coordinates rewriting.
 
-In \cref{ch:string-rewriting}, we saw that string rewriting can be used to specify the dynamics of concurrent systems, but that those specifications are quite abstract.\fixnote{Move toward programing, away from modeling}
+In \cref{ch:string-rewriting}, we saw that string rewriting can be used to specify the dynamics of concurrent systems, but that those specifications are quite abstract.
 Even the operational semantics is left completely abstract:
 String rewriting is a state-transformation model of concurrency, with axioms $w \reduces w'$
 % are strictly global in their phrasing, stating
@@ -17,17 +17,17 @@ Ordered rewriting, in both its unfocused and focused variants, continues to leav
 The string rewriting and (strongly) focused ordered rewriting frameworks are both expressive enough to specify the dynamics of concurrent systems that have chain topologies% behaviors%
 \footnote{See \cref{sec:string-rewriting:concurrency,sec:ordered-rewriting:concurrency}.}%
 , and the ordered rewriting framework's logical foundations make it a proof-construction approach to concurrency.
-But without a concrete operational semantics neither framework is yet suitable for\fixnote{suited to} our ultimate goal -- 
+But without a concrete operational semantics neither framework is yet suitable for our ultimate goal -- 
 % a method for extracting local, message-passing implementations from concurrent specifications.
 to establish the relationship between proof-construction and proof-reduction descriptions of concurrency.
 %  operating at such a high level of abstraction that neither framework's operational semantics can be cleanly implemented\fixnote{word choice?} in terms of local, message-passing communication.
-In other words, string re-writing and focused ordered re-writing frameworks are well-suited to specification but not to programming.
+In other words, string rewriting and focused ordered rewriting frameworks are well-suited to specification but not to programming.
 
-This \lcnamecref{ch:formula-as-process} takes three significant steps away from pure specifacation and toward programming, using the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} as a stepping stone.
+This \lcnamecref{ch:formula-as-process} takes three significant steps away from pure specification and toward programming, using the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} as a stepping stone.
 \begin{itemize}[listparindent=\parindent, itemsep=\dimexpr\itemsep+\parsep\relax, parsep=0pt]
 \item
   In \cref{sec:formula-as-process:interpretation}, we refine the focused ordered rewriting framework of the previous \lcnamecref{ch:ordered-rewriting} into one that can be given a \emph{formula-as-process} interpretation%
-  \footnote{This interpretation is \emph{very} closely related to the process-as-formula view of concurrency put forth by \textcites{Miller:ELP92}{Cervesato+Scedrov:IC09}.
+  \footnote[][-3.1\baselineskip]{This interpretation is \emph{very} closely related to the process-as-formula view of concurrency put forth by \textcites{Miller:ELP92}{Cervesato+Scedrov:IC09}.
     For us, however, the logical aspects, and propositions in particular, are conceptually prior to any notion of process, hence our use of the reversed \emph{formula-as-process} terminology.}
   in which rewriting faithfully represents message-passing communication among concurrent processes that are arranged in a linear topology.
   In this way, the formula-as-process interpretation assigns a concrete operational semantics to ordered rewriting, nudging it away from a state-transformation model of concurrency and toward a process-based model.
@@ -59,12 +59,12 @@ This \lcnamecref{ch:formula-as-process} takes three significant steps away from 
   By analogy with the $\pi$-calculus's operational semantics, the existing rewriting relation, $\reduces$, serves as a reduction semantics, but now an equivalent, labeled transition semantics can also be given~\parencref{sec:formula-as-process:transition-semantics}.
 
   The labeled transition semantics describes how ordered contexts, now understood as process configurations, interact with neighboring contexts.
-  It thus goes hand-in-hand with the formula-as-process interpretation in establishing a concrete and local operational semantics for ordered rewriting.
+  It thus goes hand-in-hand with the formula-as-process interpretation in establishing a concrete, local operational semantics for ordered rewriting.
 
 \item
   Having established a formula-as-process refinement of the focused ordered rewriting framework that permits only local, message-passing interactions, we then revisit string rewriting specifications.
 
-  In \cref{sec:formula-as-process:choreographies}, we describe, first informally and then formally, a method for operationalizing, or \emph{choreographing}, string rewriting specifications within the formula-as-process ordered rewriting framework.
+  In \cref{sec:formula-as-process:choreographies}, we describe, first informally and then formally, a method for operationalizing, or \emph{choreographing}, the string rewriting specifications within the formula-as-process ordered rewriting framework.
   %
   Symbols in the specification's alphabet are uniquely mapped to propositions, thereby casting each symbol in one of two roles -- either a message role or a process role.
   % Each symbol in the specification's alphabet is uniquely mapped to either an atomic or compound\fixnote{terminology?} proposition -- hence casting each symbol in either a message or process role.
@@ -185,7 +185,7 @@ In this section, we present the formula-as-process interpretation of focused ord
 More specifically,
 % under this formula-as-process interpretation,
 (positive) atoms, $\p{a}$, may be viewed as messages, and negative propositions, $\n{A}$, as processes that receive and react to those messages.
-Ordered contexts, $\np{\octx}$, which consist of negative propositions and (positive) atoms, are then linear-topology run-time configurations of processes and messages.
+Ordered contexts, $\np{\octx}$, which consist of negative propositions and (positive) atoms, are then chain-topology run-time configurations of processes and messages.
 And positive propositions, $\p{A}$, which reify ordered contexts as propositions, are process expressions that reify configurations.
 Lastly, but most importantly, the rewriting relation, $\reduces$, is viewed as a reduction semantics for message-passing communication among the processes in a configuration.%
 \begin{margintable}
@@ -231,7 +231,7 @@ We will often elide the polarity annotation, writing $\atmL{a}$ and $\atmR{a}$ i
   \n{A} , \n{B} \Coloneqq \p{\atmR{a}} \limp \n{B} \mid \n{B} \pmir \p{\atmL{a}} \mid \n{A} \with \n{B} \mid \top \mid \up \p{A} \mid \n{\defp{p}}
 \end{equation*}%
 %
-\begin{margintable}
+\begin{margintable}[-6\baselineskip]
   \begin{center}
     \begin{tabular}{@{}r@{\enspace}>{\itshape}l@{}}
       $\p{\atmR{a}} \limp \n{B}$ & receive message $\p{\atmR{a}}$ from the right \\
@@ -263,7 +263,7 @@ We will often elide the polarity annotation, writing $\atmL{a}$ and $\atmR{a}$ i
   Lastly, $\n{\defp{p}}$ is a coinductively defined negative proposition that is interpreted as a recursive process, which we discuss in more detail in \cref{sec:formula-as-process:coinductive}.
 % \end{itemize}
 
-\newthought{Ordered contexts}, $\np{\octx}$, are interpreted as linear-topology run-time configurations of processes and the messages that pass between them.
+\newthought{Ordered contexts}, $\np{\octx}$, are interpreted as chain-topology run-time configurations of processes and the messages that pass between them.
 \begin{align*}
   \np{\octx} , \np{\lctx} &\Coloneqq \np{\octx}_1 \oc \np{\octx}_2 \mid \octxe \mid \oante \\
   \oante &\Coloneqq \n{A} \mid \p{\atmL{a}} \mid \p{\atmR{a}}
@@ -304,8 +304,8 @@ More precisely, these are generated by the grammars
 \begin{equation*}
   \p{A} , \p{B} \Coloneqq \p{\atmL{a}} \mid \p{\atmR{a}} \mid \p{A} \fuse \p{B} \mid \one \mid \dn \n{A}
 \end{equation*}
-This reification is expressed as $\bigfuse \np{\octx} = \p{A}$, as defined in the adjacent \lcnamecref{fig:formula-as-process:reify-configuration}.%
-\begin{marginfigure}
+This reification is expressed as $\bigfuse \np{\octx} = \p{A}$, as defined in the adjacent \lcnamecref{fig:formula-as-process:reify-configuration}.
+\begin{marginfigure}[-8\baselineskip]
   \begin{align*}
     \bigfuse \p{\atmL{a}} &= \p{\atmL{a}} \\
     \bigfuse \p{\atmR{a}} &= \p{\atmR{a}} \\
@@ -496,10 +496,15 @@ Formally, this property that outgoing messages cannot be recaptured is establish
 \end{proof}
 
 As a related consequence of these syntactic restrictions, there is no contention for messages.
-Without these restrictions, the above trace could be adapted to one in which a race could arise between two processes contending for the same message:\fixnote{fix}
+Without these restrictions, the above trace could be adapted to one in which a race could arise between two processes contending for the same message:
 \begin{equation*}
   \hphantom{(\up \dn \n{B} \pmir \p{a}) \oc \p{a} \oc (\p{a} \limp \up \dn \n{C})}
-  \begin{tikzcd}[row sep=tiny, column sep=small]
+  \begin{tikzcd}[
+    cells={inner xsep=0.65ex,
+           inner ysep=0.4ex},
+    row sep=0.2em,
+    column sep=small
+  ]
     & \n{B} \\
     \mathllap{(\up \dn \n{B} \pmir \p{\atmR{a}}) \oc \p{\atmR{a}} \oc (\p{\atmR{a}} \limp \up \dn \n{C})}
       \urar[reduces] \drar[reduces] \\
@@ -543,7 +548,7 @@ For all of these reasons, we choose not to impose any restrictions on ordered co
 
 \subsection{Coinductively defined negative propositions}\label{sec:formula-as-process:coinductive}
 
-Recall from \cref{ch:ordered-rewriting} that \acl{FOR} is terminating: for all ordered contexts $\np{\octx}$, every rewriting sequence from $\np{\octx}$ is finite~\parencref{thm:ordered-rewriting:termination-focused}.
+Recall from \cref{ch:ordered-rewriting} that ordered rewriting is terminating: for all ordered contexts $\np{\octx}$, every rewriting sequence from $\np{\octx}$ is finite~\parencref{thm:ordered-rewriting:termination}.
 Although a seemingly pleasant property, termination significantly limits the expressiveness of \acl{FOR}.
 For example, without unbounded rewriting, we cannot even describe producer--consumer systems or finite automata.
 
@@ -573,7 +578,7 @@ Therefore, our coinductively defined propositions are \emph{not} greatest fixed 
 % To rule out definitions like $\n{\defp{p}} \defd \n{\defp{p}}$ that do not correspond to sensible infinite propositions and also to rule out sensible but inessential definitions like $\n{\defp{p}} \defd \n{\defp{q}}$, we require that all definitions be \emph{contractive}\autocite{??} -- \ie, that the body of each recursive definition begin with a logical connective, logical constant, or atomic proposition at the top level.
 
 Coinductive definitions are collected into a signature, $\orsig$, that indexes the rewriting relations: $\reduces_{\orsig}$ and $\Reduces_{\orsig}$.%
-\footnote{We often elide the index, as it is usually clear from context.}
+\footnote[][-0.6\baselineskip]{We often elide the index, as it is usually clear from context.}
 Syntactically, these signatures are given by the grammar
 \begin{equation*}
   \orsig \Coloneqq \orsige \mid \orsig, (\n{\defp{p}} \defd \n{A})
@@ -581,7 +586,7 @@ Syntactically, these signatures are given by the grammar
 \end{equation*}
 A signature $\orsig$ is well-formed if every $\n{\defp{p}}$ that occurs in the body of a definition itself has a definition in $\orsig$.
 
-\newthought{By analogy with} recursive types from functional programming\footnote{See \textcite{Pierce:MIT02}, for example.}, we must then decide whether to treat the coinductive definitions $\n{\defp{p}} \defd \n{A}$ \emph{iso}\-recursively or \emph{equi}\-recursively.\fixnote{equi-coinductively?}
+\newthought{By analogy with} recursive types from functional programming\footnote{See \textcite{Pierce:MIT02}, for example.}, we must then decide whether to treat the coinductive definitions $\n{\defp{p}} \defd \n{A}$ \emph{iso}\-recursive\-ly or \emph{equi}\-recursively.
 Under an equirecursive treatment, definitions may be silently unrolled or rolled at will;
 in other words, $\n{\defp{p}}$ is literally \emph{equal} to its unrolling: $\n{\defp{p}} = \n{A}$.
 In contrast, under an isorecursive treatment, unrolling a coinductively defined proposition would count only as an explicit rule for the left-focus judgment: $\n{\defp{p}} \neq \n{A}$ but the adjacent $\lrule{\defd}$ rule would be present.%
@@ -590,7 +595,7 @@ In contrast, under an isorecursive treatment, unrolling a coinductively defined 
     \text{($(\n{\defp{p}} \defd \n{A}) \in \orsig$)} &
     \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{_{\orsig} \p{C}}}$}
 
-Because these coinductively defined propositions are not generative, there is not much difference between the equirecursive and isorecursive treatments.\autocite{Amadio+Cardelli:TOPLAS93}
+Because these coinductively defined propositions are not generative, there is not much difference between their equirecursive and isorecursive treatments.\autocite{Amadio+Cardelli:TOPLAS93}
 We choose an equirecursive treatment of definitions simply because the accompanying generous notion of equality helps to minimize the conceptual overhead of coinductively defined propositions.
 % As a simple example, under the equirecursive definition $\n{\defp{p}} \defd \p{\atmR{a}} \limp \up \dn \n{\defp{p}}$, we have the trace
 % \begin{equation*}
@@ -803,7 +808,7 @@ All communication occurs through message passing, so there are just two ways a p
 % The ability of a configuration to make these two forms of transition is captured by two distinct judgments.
 A process configuration can also forgo interacting with its environment and make a silent, internal transition as the configuration's components interact with each other.
 
-Traditionally, these three forms of transition -- internal, output, and input -- are expressed with a unified labeled transition judgment in which the labels distinguish among the three forms of trnsition.
+Traditionally, these three forms of transition -- internal, output, and input -- are expressed with a unified labeled transition judgment in which the labels distinguish among the three forms of transition.
 % output transitions from input transitions.
 Here we instead prefer to use distinct syntax for each form of transition.
 
@@ -902,9 +907,9 @@ Two of these rules allow the external inputs expected by an input transition to 
     \text{($\atmR{\octx}_L \neq (\octxe)$ or $\atmL{\octx}_R \neq (\octxe)$)}}
 \end{inferences}
 For example, the $\jrule{$[\atmR{a}]$C}$ rule: if $\octx$ can reduce to $\octx'$ upon input of surrounding $\atmR{\octx}_L \oc \atmR{a}$ and $\atmL{\octx}_R$, then $\atmR{a} \oc \octx$ can reduce to $\octx'$ upon input of surrounding $\atmR{\octx}_L$ and $\atmL{\octx}_R$.
-In other words, in the context $\atmR{a} \oc \octx$, the atom $\atmR{a}$ already, internally satisfies $\octx$'s demand for $\atmR{a}$.\footnote{The side conditions in these rulesserve to ensure that the last input atom cannot be absorbed into the context.
+In other words, in the context $\atmR{a} \oc \octx$, the atom $\atmR{a}$ already, internally satisfies $\octx$'s demand for $\atmR{a}$.\footnote{The side conditions in these rules serve to ensure that the last input atom cannot be absorbed into the context.
   This way, each input transition that derives from an implication cannot degenerate to a reduction.
-  (Input transions that derive from propositions $\up \p{B}$ will require no inputs, however.)}
+  (Input tensions that derive from propositions $\up \p{B}$ will require no inputs, however.)}
 The $\jrule{$[\atmL{a}]$C}$ rule is symmetric, involving $\atmL{a}$ on the right.
 Algebraically, these two rules express a form of associativity.
 
@@ -944,6 +949,7 @@ This is because these rules pass $\oante$ through the input transition unaffecte
 % \end{inferences}
 
 \begin{figure}[tbp]
+  \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
   \begin{inferences}
     \infer[\jrule{$[]{\reduces}$C}]{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\n{A}}{\octx'}}{
       \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{\p{C}} &
@@ -1009,6 +1015,15 @@ Together, these soundness and completeness results may also be thought of as est
     \octx'_L \oc \lctx' \oc \octx'_R = \octx'}
 \end{equation*}
 
+The following lemma will also prove useful later.
+\begin{lemma}\label{lem:choreographies:input-invert}
+  If $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\atmR{a} \oc \lctx}{\lctx'}$, then either: $\ireduces{\atmR{\lctx}_L \oc \atmR{a} \oc #1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$; or $\atmR{\lctx}_L$ is empty and $\lctx' = \atmR{a} \oc \lctx'_0$ and $\ireduces{#1 \oc \atmL{\lctx}_R}{\lctx}{\lctx'_0}$, for some $\lctx'_0$.
+  Symmetrically, if $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{\lctx}_R}{\lctx \oc \atmL{a}}{\lctx'}$, then either: $\ireduces{\atmR{\lctx}_L \oc #1 \oc \atmL{a} \oc \atmL{\lctx}_R}{\lctx}{\lctx'}$; or $\atmL{\lctx}_R$ is empty, $\lctx' = \lctx'_0 \oc \atmL{a}$, and $\ireduces{\atmR{\lctx}_L \oc #1}{\lctx}{\lctx'_0}$, for some $\lctx'_0$.
+\end{lemma}
+\begin{proof}
+  By induction on the structure of the given derivation.
+\end{proof}
+
 We could also consider a notion of eventual, or weak, input transition, akin to the $\pi$-calculus's $\overset{\smash{x(y)}}{\Reduces}$ relation.
 There is not an especially concise way to express weak input transitions using our notation for strong input transitions, and weak input transitions in and of themselves will not prove to be particularly useful to us, so we do not pursue them here.
 
@@ -1022,7 +1037,7 @@ There is not an especially concise way to express weak input transitions using o
   % $\octx'_L \oc \atmR{\octx}^*_L \oc \octx_0 \oc \atmL{\octx}^*_R \oc \octx'_R$ and $\ireduces{\atmR{\octx}^*_L \oc #1 \oc \atmL{\octx}^*_R \oc \atmL{\octx}_R}{\octx_0}{\octx'_0}$
 % \end{proof}
 
-\clearpage
+% \clearpage
 \section{Choreographing string rewriting specifications}\label{sec:formula-as-process:choreographies}\label{sec:choreographies:choreographies}
 
 So far in this \lcnamecref{ch:formula-as-process}, we have presented a formula-as-process refinement of the focused ordered rewriting framework and given it a local interaction semantics based on an implicit labeled transition system for output and input transitions.
@@ -1126,7 +1141,7 @@ In this example, the axioms $a \wc b \reduces b$ and $b \reduces \emp$ induce th
   \end{tikzcd}
   \,.
 \end{equation*}
-\begin{marginfigure}
+\begin{marginfigure}[-6\baselineskip]
 \begin{equation*}
   \begin{tikzcd}
     a \wc b \arrow[reduces, subscript=\srsig]{rrr} \dar[relation][swap]{\theta}
@@ -1180,7 +1195,7 @@ For a set of constraints to be satisfiable, three conditions must hold.
   \emph{Each message in a premise must be directed inward, toward the premise's process.}
   In the above example, for instance, the role assignment $\theta'$ such that $a \mapsto \atmL{a}$ and $b \mapsto \defp{b}$ does not yield a meaningful choreography.
   The axiom $a \wc b \reduces b$ induces the constraint $\ereduces[\orsig']{\atmL{a} \oc \defp{b}}{\defp{b}}$.
-  There is, however, no defintion for $\defp{b}$ that satisfies this constraint because the formula-as-process framework requires that implications have atomic premises of \emph{complementary} direction: a process can only receive messages intended for itself.
+  There is, however, no definition for $\defp{b}$ that satisfies this constraint because the formula-as-process framework requires that implications have atomic premises of \emph{complementary} direction: a process can only receive messages intended for itself.
 \end{itemize}
 
 More generally, these observations suggest that only constraints of the form $\ereduces[\orsig]{\atmR{\octx}_L \oc \defp{a} \oc \atmL{\octx}_R}{\octx'}$ are satisfiable, and that these constraints are induced by axioms of the form $w_1 \wc a \wc w_2 \reduces w'$.
@@ -1300,7 +1315,7 @@ This intuition is captured in the proof of the following \lcnamecref{lem:qimp-co
 Given a string rewriting specification $(\sralph, \srsig)$ and a role assignment $\theta$, this judgment produces formula-as-process definitions $\orsig$ that, together with $\theta$, constitute a choreography of $(\sralph, \srsig)$.
 %
 In other words, when $\chorsig{\theta}{_{\sralph} \srsig}{\orsig}$ holds, the definitions $\orsig$ are a solution to the constraints induced by axioms $\srsig$ under the role assignment $\theta$, such that $\theta$ is a (strong) bisimulation between $\reduces_{\srsig}$ and $\reduces_{\orsig}$.%
-\marginnote{%
+\marginnote[-1.7\baselineskip]{%
   \begin{tabular}{@{}c@{}}
     $\chorsig{\theta}{\srsig}{\orsig}$
     \\only if\\
@@ -1732,7 +1747,7 @@ We prove the first diagram as the following completeness \lcnamecref{thm:formula
     \end{gather*}
     where $a \neq b$ and $\srsig = \srsig_0, \bigl(v^L_i \wc b \wc v^R_i \reduces v'_i\bigr)_{i \in \mathcal{I}}$ and $\orsig = \orsig_0, \bigl(\defp{b} \defd \bigwith_{i \in \mathcal{I}} \n{B}_i\bigr)$.
 
-    By the inductive hypthesis, there exists a string rewriting axiom $(w_1 \wc a \wc w_2 \reduces w') \in \srsig_0$ such that $\atmR{\octx}_L = \theta(w_1)$ and $\atmL{\octx}_R = \theta(w_2)$ and $\p{C} = \bigfuse \theta(w')$.
+    By the inductive hypothesis, there exists a string rewriting axiom $(w_1 \wc a \wc w_2 \reduces w') \in \srsig_0$ such that $\atmR{\octx}_L = \theta(w_1)$ and $\atmL{\octx}_R = \theta(w_2)$ and $\p{C} = \bigfuse \theta(w')$.
     The same axiom is contained in the signature $\srsig$.
 
 
@@ -1906,7 +1921,7 @@ We prove the first diagram as the following completeness \lcnamecref{thm:formula
   \end{itemize}
 \end{theorem}
 \begin{proof}
-  As a negative proposition, $\defp{a}$ serves as a barrier for interactions between $\octx_L$ and $\octx_R$ -- in \ac{PFOR}, implications cannot consume negative propositions.
+  As a negative proposition, $\defp{a}$ serves as a barrier for interactions between $\octx_L$ and $\octx_R$ -- in process-as-formula focused ordered rewriting, implications cannot consume negative propositions.
   Thus, any reduction on $\octx_L \oc \defp{a} \oc \octx_R$ must occur within either $\octx_L$ or $\octx_R$ alone or must arise from $\defp{a}$.
 
   If the reduction on $\octx_L \oc \defp{a} \oc \octx_R$ arises from $\defp{a}$, then it arises from a bipole that begins by focusing on $\defp{a}$.
@@ -1936,7 +1951,7 @@ We prove the first diagram as the following completeness \lcnamecref{thm:formula
   If $\chorsig{\theta}{\srsig}{\orsig}$, then $\theta(w) \reduces_{\orsig} \octx'$ if, and only if, there exists $w'$ such that $w \reduces_{\orsig} w'$ and $\theta(w') = \octx'$.
 \end{corollary}
 
-\section{Extended example: Choreographing binary counters}\label{sec:formula-as-process:counters}
+\section{Example: Choreographing binary counters}\label{sec:formula-as-process:counters}
 
 In this \lcnamecref{sec:formula-as-process:counters}, we revisit binary counters, \ie, binary representations of natural numbers equipped with increment and decrement operations.
 Here we use them as an extended example of choreographing string rewriting specifications.
@@ -1968,7 +1983,7 @@ We will present several distinct choreographies of this specification, including
 \subsection{An object-oriented choreography}\label{sec:formula-as-process:counters-oo}
 
 Let $\theta$ be%
-\marginnote{$
+\marginnote[-\baselineskip]{$
   \theta = \{
     \begin{lgathered}[t]
       e \mapsto \smash{\defp{e}} , b_0 \mapsto \smash{\defp{b}_0} , b_1 \mapsto \smash{\defp{b}_1} , \\
@@ -2018,7 +2033,7 @@ Similar reasoning allows us to construct coinductive definitions for $\defp{b}_0
       & $\defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \defp{b}_1 \fuse \atmR{s})$
     \\ \addlinespace \bottomrule
   \end{tabular}
-  \caption{Deriving an object-oriented choreography of binary counters}\label{tbl:formula-as-process:deriving-oo-counter}
+  \caption[][1.25\baselineskip]{Deriving an object-oriented choreography of binary counters}\label{tbl:formula-as-process:deriving-oo-counter}
 \end{table*}
 %
 In full, the solution to these constraints is the definitions $\orsig$:
@@ -2207,7 +2222,7 @@ Upon solving the remaining constraints for the other coinductively defined propo
       & $\defp{b}'_0 \defd (\atmR{z} \limp \atmR{z}) \with (\atmR{s} \limp \atmR{b}_1 \fuse \atmR{s})$
     \\ \addlinespace \bottomrule
   \end{tabular}
-  \caption{Deriving a functional choreography of binary counters}\label{tbl:formula-as-process:deriving-functional-choreography}
+  \caption[][1.25\baselineskip]{Deriving a functional choreography of binary counters}\label{tbl:formula-as-process:deriving-functional-choreography}
 \end{table*}%
 %
 \footnote{See \cref{tbl:formula-as-process:deriving-functional-choreography} for a sketch.}
@@ -2229,7 +2244,7 @@ Again, it is easy to verify that these definitions are exactly those that are co
 In contrast with the previous, object-oriented choreography, this choreography treats its data -- the bits $e$, $b_0$, and $b_1$ -- as messages that are manipulated by processes that represent the operations -- increments $i$ and decrements $d$.
 For this reason, the choreography $(\theta', \orsig')$ might be called \emph{functional} for its similarity to functional programming.
 
-\clearpage
+% \clearpage
 \subsection{Duality and other choreographies}
 
 These two (roughly) dual object-oriented and functional choreographies hint at a fundamental duality between the object-oriented and functional programming paradigms.
@@ -2289,7 +2304,7 @@ respectively.
 In either case, the constraints are unsatisfiable because one premise in each group involves a message directed outward, away from the premise's process.%
 \footnote{See \cref{sec:formula-as-process:comments}.}
 
-We will return to this idea of a duality theorem in\fixnote{??}s \cref{??}, where we will see that session types provide just the right conditions for such a theorem.
+% We will return to this idea of a duality theorem in\fixnote{??}s \cref{??}, where we will see that session types provide just the right conditions for such a theorem.
 % a b --> ...
 % b c --> ...
 
@@ -2344,11 +2359,11 @@ We will return to the idea of observational equivalence in the following \lcname
      \end{aligned}$
     \\ \addlinespace \bottomrule
   \end{tabular}
-  \caption{Two other choreographies for the binary counter specification}
+  \caption[][1.25\baselineskip]{Two other choreographies for the binary counter specification}
 \end{table*}
 
 
-\section{Extended example: Choreographing \aclp*{NFA}}\label{sec:formula-as-process:nfa}
+\section{Example: Choreographing \aclp*{NFA}}\label{sec:formula-as-process:nfa}
 
 Recall from \cref{sec:string-rewriting:nfa} our string rewriting specification of how \iac{NFA} processes its input.
 Given \iac{NFA} $\aut{A} = (Q, \nfapow, F)$\fixnote{symbol?} over an input alphabet $\ialph$, the \ac{NFA}'s operational semantics is adequately captured by the string rewriting specification $(\ialph \dunion \Set{\eow,\symacc, \symrej}, \srsig)$, where the axioms $\srsig$ are given by
@@ -2375,7 +2390,7 @@ Let $\theta$ be%
     \!\begin{lgathered}[t]
       \Set{ a \mapsto \atmR{a} \given a \in \ialph } \union \Set{ \eow \mapsto \atmR{\eow} } \\
       {} \union \Set{ q \mapsto \defp{q} \given q \in Q } \\
-      {} \union \Set{ \symrej \mapsto \atmR{\symrej} }
+      {} \union \Set{ \symacc \mapsto \atmR{\symacc} , \symrej \mapsto \atmR{\symrej} }
     \end{lgathered}
 $}
 the role assignment that maps each input symbol $a \in \ialph$ to a right-directed message, $\atmR{a}$; the end-of-word marker, $\eow$, to a right-directed message, $\atmR{\eow}$; each state $q \in Q$ to a coinductively defined proposition, $\defp{q}$; and the rejection symbol, $\symrej$, to a right-directed message, $\atmR{\symrej}$.
@@ -2434,12 +2449,11 @@ As a concrete example, the adjacent \lcnamecref{fig:formula-as-process:nfa-examp
       q_2;
     };
   \end{tikzpicture}
-
   \begin{equation*}
     \orsig =
     \begin{lgathered}[t]
       \bigl(\defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0) \with (\atmR{b} \limp (\up \dn \defp{q}_0 \with \up \dn \defp{q}_1)) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
-      \bigl(\defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \one)\bigr) \,, \\
+      \bigl(\defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symacc})\bigr) \,, \\
       \bigl(\defp{q}_2 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr)
     \end{lgathered}
   \end{equation*}
@@ -2495,7 +2509,7 @@ Recall from \cref{sec:string-rewriting:nfa} the adequacy \lcnamecref{thm:nfa-ade
 \nfaadequacystringrewriting*
 %
 What we would like now is a theorem that relates \iac{NFA} not to a string rewriting specification but to the above functional choreography.
-In the specific instance of this functional choreography of the \ac{NFA}, \cref{thm:??,thm:??}, the adequacy of the choreographing procedure, can be reduced to the following \lcnamecref{cor:chor-nfa-adequacy} -- a result that relates the string rewriting specification to the choreography.
+In the specific instance of this functional choreography of the \ac{NFA}, \cref{cor:formula-as-process:choreography-adequacy}, the adequacy of the choreographing procedure, can be reduced to the following \lcnamecref{cor:chor-nfa-adequacy} -- a result that relates the string rewriting specification to the choreography.
 \begin{corollary}\label{cor:chor-nfa-adequacy}
   For the above string rewriting specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$ and choreography $(\theta, \orsig)$, the choreography is adequate with respect to the specification:
   \begin{itemize}[nosep]
@@ -2510,7 +2524,7 @@ In the specific instance of this functional choreography of the \ac{NFA}, \cref{
   \end{itemize}
 \end{corollary}
 %
-\noindent By composing this with \cref{??}, the adequacy of the \ac{NFA} string rewriting specification, we arrive at:
+\noindent By composing this with \cref{thm:nfa-adequacy-string-rewriting}, the adequacy of the \ac{NFA} string rewriting specification, we arrive at:
 %
 \begin{marginfigure}
   \begin{equation*}
@@ -2521,7 +2535,7 @@ In the specific instance of this functional choreography of the \ac{NFA}, \cref{
       \end{cases*}
   \end{equation*}
   \caption{An anti-homomorphism from input words to sequences of right-directed messages.
-    Notice that $\rev{\atmR{w}} = \theta(\rev{w})$, where $\rev{}$ is defined in \cref{??}.}\label{fig:formula-as-process:msg-rev}
+    Notice that $\rev{\atmR{w}} = \theta(\rev{w})$, where $\rev{}$ is defined in \cref{fig:string-rewriting:reversal}.}\label{fig:formula-as-process:msg-rev}
 \end{marginfigure}%
 %
 \begin{restatable}[
@@ -2560,7 +2574,7 @@ Specifically, let $\theta'$ be%
       \!\begin{lgathered}[t]
         \Set{ a \mapsto \defp{a} \given a \in \ialph } \union \Set{ \eow \mapsto \defp{\eow} } \\
         {} \union \Set{ q \mapsto \atmL{q} \given q \in Q } \\
-        {} \union \Set{ \symrej \mapsto \atmR{\symrej} }
+        {} \union \Set{ \symacc \mapsto \atmR{\symacc} , \symrej \mapsto \atmR{\symrej} }
       \end{lgathered}
 $}
 the role assignment that maps each input symbol $a \in \ialph$ and the end-of-word marker, $\eow$, to coinductively defined propositions, $\defp{a}$ and $\defp{\eow}$, respectively; each state $q \in Q$ to a left-directed message, $\atmL{q}$; and the rejection symbol, $\symrej$, to a right-directed message, $\atmR{\symrej}$.
@@ -2593,12 +2607,12 @@ In full, the choreographing signature $\orsig'$ is therefore
 \end{equation*}
 \noindent
 Indeed, this is the same choreographing signature that is produced by the formal procedure:
-\begin{proposition}
-  For the string rewriting specification $(\ialph \dunion \Set{\eow, \symrej}, \srsig)$ and role assignment $\theta'$, the judgment $\chorsig{\theta'}{\srsig}{\orsig'}$ holds.
+\begin{proposition}\label{prop:formula-as-process:nfa-oochor-sr}
+  For the string rewriting specification $(\ialph \dunion \Set{\eow, \symacc, \symrej}, \srsig)$ and role assignment $\theta'$, the judgment $\chorsig{\theta'}{\srsig}{\orsig'}$ holds.
 \end{proposition}
 
-As for the functional choreography, we may then establish a shortcut adequacy theorem for this object-oriented choreography as a \lcnamecref{??} of earlier results.
-Composing this \lcnamecref{??} with \cref{??}, the adequacy of formula-as-process choreographies with respect to their underlying string rewriting specifications, we arrive at:
+As for the functional choreography, we may then establish a shortcut adequacy theorem for this object-oriented choreography as a \lcnamecref{cor:formula-as-process:nfa-oochor-adequacy} of earlier results.
+Composing this \lcnamecref{prop:formula-as-process:nfa-oochor-sr} with \cref{thm:nfa-adequacy-string-rewriting}, the adequacy of formula-as-process choreographies with respect to their underlying string rewriting specifications, we arrive at:
 \begin{corollary}\label{cor:formula-as-process:nfa-oochor-adequacy}
   Let $\aut{A} = (Q, \nfapow, F)$ be \iac{NFA} over the input alphabet $\ialph$, with choreography $(\theta', \orsig')$ as described above.
   The following hold.
@@ -2620,7 +2634,7 @@ However, there is one slight blemish to the soundness clauses.
 Its premise, \enquote{If $\defp{a} \oc \atmL{q} \reduces_{\orsig'} \octx'$ \textelp{}} deals only with ideas from the choreography and ordered rewriting.
 Its conclusion, however, entangles ideas from the mathematical model of the \ac{NFA} (\enquote{then $q \nfareduces[a] q'_a$ for some state $q'_a$ \textelp{}}) with ideas from the choreography (\enquote{\textelp{} such that $\octx' = \atmL{q}'_a$.}).
 In a way, the soundness clause violates a kind of meta-level stratification.
-Soundness should relate one model\fixnote{word choice?}, on the one hand, to another model, on the other hand, but that is not what happens here.
+Soundness should relate one model, on the one hand, to another model, on the other hand, but that is not what happens here.
 
 Fortunately, it is not difficult to rephrase the soundness clause in a way that adheres to the desired meta-level stratification.
 Upon examining the definition of $\defp{a}$, a rewriting $\defp{a} \oc \atmL{q} \reduces_{\orsig'} \octx'$ exists if and, most importantly, only if $\octx' = \atmL{q}'$ for some state $q'$.
@@ -2642,7 +2656,7 @@ Therefore, we can simplify the statement further and combine it with completenes
 
 \subsection{Incorporating \acs*{NFA} bisimilarity}\label{sec:formula-as-process:nfa-bisim}
 
-Recall from \cref{??} the nearly free adequacy result for the functional choreography of \acp{NFA}.
+Recall from \cref{cor:formula-as-process:nfa-fnchor-adequacy} the nearly free adequacy result for the functional choreography of \acp{NFA}.
 %
 \cornfafnchoradequacy*
 %
@@ -2694,22 +2708,22 @@ The equirecursive treatment of coinductively defined propositions leads to a qui
              -> ["a,b", loop above]
             q_2;
             %
-            s_1 [accepting, below = of q_1.south]
-             -> ["a,b" sloped]
+            s_1 [accepting, below = -0.5 of q_1.south]
+             -> ["a,b" {sloped, swap}]
             q_2;
           };
         \end{tikzpicture}
       \end{equation*}
-
   \begin{equation*}
     \orsig =
     \begin{lgathered}[t]
       \bigl(\defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0) \with (\atmR{b} \limp (\up \dn \defp{q}_0 \with \up \dn \defp{q}_1)) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
-      \bigl(\defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \one)\bigr) \,, \\
+      \bigl(\defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symacc})\bigr) \,, \\
       \bigl(\defp{q}_2 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
-      \bigl(\defp{s}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \one)\bigr)
+      \bigl(\defp{s}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symacc})\bigr)
     \end{lgathered}
   \end{equation*}
+
     \caption{A slightly modified version of the \ac*{NFA} from \cref{fig:formula-as-process:nfa-example}; and a choreography}\label{fig:formula-as-process:nfa-counterexample}
   \end{marginfigure}%
 % \begin{proof}[Counterexample]
@@ -2750,7 +2764,7 @@ For instance, given the pairwise distinct atoms $\Set{\atmR{q} \given q \in F}$ 
     \end{cases*}
 \end{equation*}
 %
-Under this alternative encoding, the states $q_1$ and $s_1$ of \cref{fig:ordered-rewriting:dfa-counterexample} are no longer a counterexample to injectivity:
+Under this alternative encoding, the states $q_1$ and $s_1$ of \cref{fig:formula-as-process:nfa-counterexample} are no longer a counterexample to injectivity:
 Because $q_1$ and $s_1$ are distinct states, they correspond to distinct tags, and so $\check{q}_1 \neq \check{s}_1$.
 
 % One possible remedy
@@ -2783,7 +2797,7 @@ Because $q_1$ and $s_1$ are distinct states, they correspond to distinct tags, a
 % % With this change, the alternative encoding is now injective: $\check{q} = \check{s}$ implies $q = s$.
 
 Although such a solution is certainly possible, it seems unsatisfyingly ad~hoc.
-A closer examination of the preceding counterexample reveals that the states $q_1$ and $s_1$, while not equal, are in fact bisimilar~\parencref{??}.
+A closer examination of the preceding counterexample reveals that the states $q_1$ and $s_1$, while not equal, are in fact bisimilar~\parencref{sec:finite-automata:bisimilarity}.
 In other words, although the choreographing of states is not, strictly speaking, injective, it is injective \emph{up to bisimilarity}: $\defp{q} = \defp{s}$ implies $q \asim s$.
 % This suggests a more elegant solution to the apparent lack of adequacy: the adequacy should be judged up to \ac{NFA} bisimilarity.
 
@@ -2855,10 +2869,11 @@ Unfortunately, the converse is not true: bisimilar \ac{NFA} states do not, in ge
     \end{equation*}
     \begin{equation*}
       \begin{lgathered}[t]
-        \defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0 \with \up \dn \defp{q}_1) \with (\atmR{\eow} \limp \up \one) \\
-        \defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_1) \with (\atmR{\eow} \limp \up \one)
+        \defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0 \with \up \dn \defp{q}_1) \with (\atmR{\eow} \limp \up \atmR{\symacc}) \\
+        \defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_1) \with (\atmR{\eow} \limp \up \atmR{\symacc})
       \end{lgathered}
     \end{equation*}
+
     \caption{\Iacs*{NFA} that accepts all finite words over the alphabet $\ialph = \Set{a}$}\label{fig:formula-as-process:nfa-bisim-falseclaim}
   \end{marginfigure}
   It is straightforward to verify that $q_0$ and $q_1$ are bisimilar states.
@@ -2891,8 +2906,8 @@ First, although for \acp{NFA} bisimilar states do not always have equal encoding
 \noindent
 Thus, for \acp{DFA} only, we have $\atmR{a} \oc \defp{q} \reduces_{\orsig} \defp{q}'$ if, and only if, $q \nfareduces[a]\asim q'$, which is properly stratified.
 
-Second, in the following \lcnamecref{ch:??}, we will develop a richer notion of propositional equivalence, \emph{ordered rewriting bisimilarity}.
-In applying it to the functional choreography of \acp{NFA}~\parencref{sec:??}, we will see that \ac{NFA} states that are \ac{NFA}-bisimilar have state encodings that, while not necessarily equal, are always rewriting-bisimilar; the converse will also hold.
+Second, in the following \lcnamecref{ch:ordered-bisimilarity}, we will develop a richer notion of propositional equivalence, \emph{ordered rewriting bisimilarity}.
+In applying it to the functional choreography of \acp{NFA}~\parencref{sec:formula-as-process:nfa-functional}, we will see that \ac{NFA} states that are \ac{NFA}-bisimilar have state encodings that, while not necessarily equal, are always rewriting-bisimilar; the converse will also hold.
 This will allow us to rephrase soundness (and completeness) of the \ac{NFA} choreography to a form that is properly stratified: $\atmR{a} \oc \defp{q} \reduces_{\orsig}\osim \defp{q}'$ if, and only if, $q \nfareduces[a]\asim q'$.\fixnote{Check}
 
 

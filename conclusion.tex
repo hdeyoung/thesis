@@ -8,7 +8,7 @@ We have shown how to take string rewriting specifications of concurrent systems~
 On the proof-reduction side, we have uncovered a semi-axiomatic sequent calculus for singleton logic, a logic that restricts sequents to have exactly one antecedent~\parencref{ch:singleton-logic}.
 We have demonstrated that the semi-axiomatic nature of this calculus gives rise to a clean correspondence between proof normalization and asynchronous message-passing communication~\parencref{ch:process-chains}.
 
-Lastly, we have shown that the asynchronous processes that arise from the semi-axiomatic sequent calculus for singleton logic can be fathfully embedded within the message-passing ordered rewriting framework~\parencref{ch:correspond}.
+Lastly, we have shown that the asynchronous processes that arise from the semi-axiomatic sequent calculus for singleton logic can be faithfully embedded within the message-passing ordered rewriting framework~\parencref{ch:correspond}.
 This has provided a relationship between the proof-construction and proof-reduction characterizations of concurrency.
 
 This document now closes by discussing a few avenues for future work.
@@ -42,7 +42,7 @@ Here the first-order parameters $x$ and $y$ thread together propositions in the 
 In line with work by \textcite{Simmons+Pfenning:HOSC11}, $\defp{b}_0(x, y)$ is the \emph{destination-passing} embedding of $\defp{b}_0$.
 In a formula-as-process interpretation, the destinations $x$ and $y$ can be viewed as channels that connect processes.
 
-This example, however, does not fully exploit the expressive power of first-order linearity because the binary counter still has a linear topology.
+This example, however, does not fully exploit the expressive power of first-order linearity because the binary counter still has a chain topology.
 Because \ac{SILL} processes admit tree topologies, defined propositions that use destinations in a tree topology should be allowed.
 But a judgment for checking that destinations do not form cycles would likely be needed, for otherwise a destinations-as-channels interpretation would lead to ill-formed \ac{SILL} processes.
 
@@ -87,7 +87,7 @@ In particular, from the session-typing rules for $\caseL[\ell \in L]{\ell => P_{
   \infer[\rrule{\with}]{\slof{A |- \dn {\textstyle \bigwith_{\ell \in L}(\up \p{A}_{\ell} \pmir \atmL{\ell})} : \with*[sub=_{\ell \in L}]{\ell:B_{\ell}}}}{
     \multipremise{\ell \in L}{\slof{A |- \p{A}_{\ell} : B_{\ell}}}}
 \end{gather*}
-Focusing in combination with the left- or right-handed implication ensures that the choices embodied by the alternative conjunction here are determinstic, not nondeterministic, choices.
+Focusing in combination with the left- or right-handed implication ensures that the choices embodied by the alternative conjunction here are deterministic, not nondeterministic, choices.
 
 However, in terms of the ordered propositions alone, it would seem more natural to have a typing rule for $\n{A}_1 \with \n{A}_2$ -- that is, a rule something like
 \begin{equation*}
@@ -100,7 +100,7 @@ Finding such a rule for the ordered proposition $\n{A}_1 \with \n{A}_2$ might th
 It would be interesting to consider whether his ideas can be adapted to the formula-as-process ordered rewriting framework.
 
 
-\subsection{Induction and coinduction, termination and productivity}
+\subsection{Induction, coinduction, termination, and productivity}
 
 \Textfootcite{Derakhshan+Pfenning:LMCS20} have developed an infinitary calculus in which inductive and coinductive session types can be used to guarantee the termination and productivity of well-typed processes in a Curry--Howard interpretation of singleton logic.
 Leveraging types, their validity condition on circular proofs is locally and effectively decidable.
@@ -120,7 +120,7 @@ But ordered rewriting is untyped, at least natively, so whether productivity can
 Also, unlike proofs, rewriting traces are constructed from open-ended derivations.
 Does that open-endedness in any way affect the existence or shape of the productivity condition?
 
-\subsection{A correspondence between generative invariants and session types}
+\subsection{Generative invariants and session types}
 
 \Textfootcite{Simmons:CMU12} describes \emph{generative invariants} as a way to express invariants of ordered logical specifications.
 These generative invariants generalize context-free grammars, as well as regular worlds from \textsc{lf}.

@@ -3,7 +3,7 @@
 In this \lcnamecref{ch:string-rewriting}, we consider abstract rewriting as a framework for specifying the dynamics of concurrent systems.
 This is not, of course, a new idea.
 Multiset rewriting\autocites{Meseguer:TCS92}{Cervesato+Scedrov:IC09} has previously been put forward as a state-transformation model of concurrency, and has been used to describe security protocols\autocites{Cervesato+:CSFW99}{Durgin+:JCS04}, for example.
-Unlike in multiset rewriting, we are particularly interested in concurrent systems whose components are arranged in a linear topology and have a monoidal structure.
+Unlike in multiset rewriting, we are particularly interested in concurrent systems whose components are arranged in a chain topology and have a monoidal structure.
 Given that finite strings over an alphabet $\ialph$ form a free monoid, string rewriting, rather than multiset rewriting, is a good match for the structure we are interested in.
 
 For a broad sketch of string rewriting, consider the finite strings over the alphabet $\Set{a,b}$, and let $\reduces$ be the least compatible binary relation over those strings that satisfies the axioms
@@ -315,7 +315,7 @@ As such, we will frequently refer to rewriting sequences as \vocab{traces}.
 We may also evaluate string rewriting for confluence.
 Confluence requires that all strings with a common ancestor be joinable, \ie, that $w'_1 \secudeR\Reduces w'_2$ implies $w'_1 \Reduces\secudeR w'_2$, for all strings $w'_1$ and $w'_2$.
 
-Because string rewriting is an asymmetric, committed-choice relation, some nondeterministic choices are irreversible.
+String rewriting is an asymmetric, committed-choice relation, so some nondeterministic choices are irreversible.
 For example, under the axioms of our running example (\cref{eq:string-rewriting:example-signature}), $a \wc b$ can be nondeterministically rewritten into either $a$ or $\emp$, as shown in \cref{fig:string-rewriting:abb-complete}%
 % \begin{marginfigure}
 %   \begin{equation*}
@@ -338,12 +338,12 @@ However, neither $a$ nor $\emp$ can be rewritten, so confluence fails to hold fo
 \paragraph*{Non-termination}
 In our running example, rewriting always terminates: each possible rewriting step removes exactly one symbol, and each string contains only finitely many symbols.
 
-In general, however, string rewriting does not terminate even though strings are finite.
+In general, string rewriting does not terminate even though strings are finite.
 For a simple example, consider rewriting of strings over the alphabet $\Set{a,b}$ with axioms
 $a \reduces b$ and $b \reduces a$.
 Every finite trace from a nonempty string can always be extended by applying one of these axioms, so string rewriting in this example never terminates.
 
-\section{Extended example: \Aclp*{NFA}}\label{sec:string-rewriting:nfa}
+\section{Example: \Aclp*{NFA}}\label{sec:string-rewriting:nfa}
 
 As an extended example of string rewriting, we will specify how \iac{NFA} processes its input.
 Beginning with this specification, \acp{NFA} will serve as a recurring example throughout the remainder of this dissertation.
@@ -445,7 +445,7 @@ This adequacy \lcnamecref{thm:nfa-adequacy-string-rewriting} is relatively strai
 On the other hand, when a system is not so clearly based on a labeled transition system, stating and proving the adequacy of its string rewriting specification becomes a bit more involved.
 This is the case for the next example, binary representations of natural numbers.
 
-\section{Extended example: Binary representations of natural numbers}\label{sec:string-rewriting:binary-counter}
+\section{Example: Binary representations of natural numbers}\label{sec:string-rewriting:binary-counter}
 
 For a second recurring example, we will use
 binary representations of natural numbers equipped with increment and decrement operations. % , or \vocab{binary counters}.
@@ -456,8 +456,7 @@ Here we present a string rewriting specification of these \emph{binary counters}
 \subsection{Binary representations}
 
 In this setting, we represent a natural number in binary by a string that consists of a big-endian sequence of symbols $b_0$ and $b_1$, prefixed by the symbol $e$; leading $b_0$s are permitted.
-For example, both $w = e \oc b_1$ and $w' = e \oc b_0 \oc b_1$ are valid binary representations of the natural number $1$.%
-\fixnote{Replace $\octx$ with $w$ or $c$?}
+For example, both $w = e \oc b_1$ and $w' = e \oc b_0 \oc b_1$ are valid binary representations of the natural number $1$.
 
 To be more precise, we inductively define a relation, $\aval{}{}$, that assigns to each binary representation a unique natural number denotation.
 If $\aval{w}{n}$, we say that $w$ denotes, or represents, natural number $n$ in binary.
@@ -950,7 +949,7 @@ This small-step \lcnamecref{thm:string-rewriting:dec-small-step-adequacy} then i
     \end{marginfigure}%
 , that is strictly decreasing across each rewriting.
     Unlike the amortized constant work increments~\parencref[see proof of]{thm:string-rewriting:inc-small-step-adequacy}, this measure assigns a linear amount of potential to the decrement instruction.%
-    \footnote{Actually, because the increment and decrement operations are defined only for binary representations, not head-unary forms, there can be at most one $d$.
+    \footnote[][0.5\baselineskip]{Actually, because the increment and decrement operations are defined only for binary representations, not head-unary forms, there can be at most one $d$.
       Therefore, it is actually possible to assign a constant amount of potential to each $d$.
       However, doing so would rely on a somewhat involved lexicographic measure that isn't particularly relevant to our aims in this dissertation, so we use the simpler linear potential.}%
 
