@@ -6,7 +6,7 @@ repository and compiling the LaTeX source to a PDF, I suggest:
 
     git clone https://github.com/hdeyoung/thesis.git
     pdflatex thesis.tex
-    biblatex thesis.tex
+    biber thesis.tex
     pdflatex thesis.tex
     pdflatex thesis.tex
 
