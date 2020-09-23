@@ -49,7 +49,7 @@ Accordingly, the description of ordered logic in this \lcnamecref{ch:ordered-log
 \newthought{\Cref{sec:ordered-logic:sequent-calculus} introduces} ordered logic's sequent calculus as a collection of inference rules, informally justifying them with a resource interpretation similar to that of linear logic.
 
 For this collection of rules to constitute a well-defined logic, it must have a verificationist meaning-theory in the tradition of \citeauthor{Gentzen:MZ35}, \citeauthor{Dummett:WJ76}, and \citeauthor{Martin-Lof:Siena83}\autocites{Gentzen:MZ35}{Dummett:WJ76}{Martin-Lof:Siena83}.
-Together, the cut and identity elimination \lcnamecrefs{thm:ordered-logic:cut-elimination}~\parencref[\cref{thm:ordered-logic:cut-elimination,thm:ordered-logic:id-elimination},]{sec:ordered-logic:verifications} serve to establish a proof normalization result: every proof has a corresponding verification.
+Together, the cut elimination and identity elimination \lcnamecrefs{thm:ordered-logic:cut-elimination}~\parencref[\cref{thm:ordered-logic:cut-elimination,thm:ordered-logic:id-elimination},]{sec:ordered-logic:verifications} serve to establish a proof normalization result: every proof has a corresponding verification.
 
 \Cref{sec:ordered-logic:circular} sketches an extension of the ordered sequent calculus with circular propositions and proofs, and \cref{sec:ordered-logic:extensions} briefly describes several other extensions that are possible.
 
@@ -90,7 +90,7 @@ can be interpreted as a recipe for producing resource $A$ from the resources $A_
 The small twist is that these resources are inherently ordered and may not be permuted, exactly because ordered logic rejects the exchange property that linear logic admits.
 
 \paragraph{Contexts}
-To keep the notation for sequents concise, the list of antecedents is usually packaged into an ordered context $\octx = A_1 \oc A_2 \dotsb A_n$, with the sequent then written $\oseq{\octx |- A}$.
+To keep the notation for sequents concise, the list of antecedents is usually packaged into an ordered context $\octx = A_1 \oc A_2 \dotsb A_n$, with the sequent then written $\oseq{\octx |- A}$.\footnote{We will also sometimes use $\lctx$ as an additional metavariable for ordered contexts.}
 Algebraically, ordered contexts $\octx$ form a free noncommutative monoid:
 \begin{equation*}
   \octx , \lctx \Coloneqq \octx_1 \oc \octx_2 \mid \octxe \mid A \,,
@@ -214,7 +214,7 @@ The sequents $\oseq{\one \fuse A \dashv|- \oseq{A \dashv|- A \fuse \one}}$ are a
 In addition to $A \fuse B$, the proposition $A \esuf B$, read \enquote{$A$ twist $B$}, is included.
 Under the resource interpretation, $A \esuf B$ is the side-by-side pair of resources $B$ and $A$, packaged as a single ordered resource.
 If we gave sequent calculus inference rules for $A \esuf B$, the sequents $\oseq{B \fuse A \dashv|- A \esuf B}$ and $\oseq{\one \esuf A \dashv|- \oseq{A \dashv|- A \esuf \one}}$ would all be derivable.
-Therefore, instead of taking $A \esuf B$ as a primitive and explicitly giving, we choose to treat it as merely a notational definition for the ordered conjunction $B \fuse A$.
+Therefore, instead of taking $A \esuf B$ as a primitive and explicitly giving it inference rules, we choose to treat it as merely a notational definition for the ordered conjunction $B \fuse A$.
 
 
 \paragraph{Disjunction and its unit}
@@ -315,6 +315,8 @@ The two forms of implication each enjoy their own currying laws: the sequents $\
     \\
     Multiplicative truth & $\one$ & The unit of ordered conjunction 
     \\
+    Twisted conjunction & $A \esuf B$ & A side-by-side pair of resources $B$ and $A$ % , packaged as one % a single resource
+    \\
     (Additive) disjunction & $A \plus B$ & % A resource package that contains
       A package containing  $A$ or $B$ (not both)
     \\
@@ -343,11 +345,11 @@ The two forms of implication each enjoy their own currying laws: the sequents $\
   \begin{syntax*}
     Propositions & A,B,C &
       a \begin{array}[t]{@{{} \mid {}}l@{}}
-          A \fuse B \mid \one \mid A \plus B \mid \zero \\
+          A \fuse B \mid \one \mid A \esuf B \mid A \plus B \mid \zero \\
           A \with B \mid \top \mid A \limp B \mid B \pmir A
         \end{array}
     \\
-    Contexts & \octx &
+    Contexts & \octx, \lctx &
       \octx_1 \oc \octx_2 \mid \octxe \mid A
   \end{syntax*}
   \begin{inferences}
@@ -373,6 +375,8 @@ The two forms of implication each enjoy their own currying laws: the sequents $\
     \and
     \infer[\lrule{\one}]{\oseq{\octx'_L \oc \one \oc \octx'_R |- C}}{
       \oseq{\octx'_L \oc \octx'_R |- C}}
+    \\
+    A \esuf B \overset{\text{def}}{=} B \fuse A
     \\
     \infer[\rrule{\plus}_1]{\oseq{\octx |- A \plus B}}{
       \oseq{\octx |- A}}
@@ -519,7 +523,7 @@ From here on, we won't bother to be quite so pedantic, instead often omitting th
 \orderedcutadmissibility
 %
 \begin{proof}
-  This \lcnamecref{lem:ordered-logic:cut-admissibility} was proved in a similar setting by \textcite{Polakow+Pfenning:MFPS99} using a standard technique for proving the admissibility of a cut principle\autocite{Pfenning:LICS95} --
+  This \lcnamecref{lem:ordered-logic:cut-admissibility} was proved in a similar setting by \textfootcite{Polakow+Pfenning:MFPS99} using a standard technique for proving the admissibility of a cut principle\autocite{Pfenning:LICS95} --
   % We follow a standard technique for proving the admissibility of a cut principle\autocite{Pfenning:LICS95} --
   a lexicographic structural induction, first on the structure of the cut formula, $A$, and then on the structures of the given proofs.
   We review their proof here.
@@ -619,7 +623,7 @@ With the admissibility of a cut principle for cut-free proofs established, we ma
 \orderedcutelimination
 %
 \begin{proof}
-  We follow the proof sketched by \textcite{Polakow+Pfenning:MFPS99}.
+  We follow the proof sketched by \textfootcite{Polakow+Pfenning:MFPS99}.
   The proof is by structural induction on the proof of $\oseq{\octx |- A}$, with appeals to the admissibility of cut~\parencref{lem:ordered-logic:cut-admissibility} whenever a $\jrule{CUT}$ rule is encountered.
 
   Like the admissibility of cut \lcnamecref{lem:ordered-logic:cut-admissibility}, this \lcnamecref{thm:ordered-logic:cut-elimination} may be rendered as an admissible rule:

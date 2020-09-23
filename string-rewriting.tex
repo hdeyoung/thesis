@@ -81,7 +81,7 @@ Algebraically, strings form a free (noncommutative) monoid over symbols $a \in \
 \end{equation*}
 where the monoid operation is string concatenation, denoted by $w_1 \wc w_2$, and the unit element is the empty string, denoted by $\emp$.%
 % and $a$ is a symbol drawn from the alphabet $\ialph$.%
-\footnote[][-2.25\baselineskip]{Strings are isomorphic to the finite words used by automata~\parencref{ch:automata}, but the two serve different conceptual roles in this dissertation.}
+\footnote[][-2.25\baselineskip]{Strings are isomorphic to the finite words used by automata~\parencref{ch:automata}, but the two serve different conceptual roles in this document.}
 
 As a monoid, strings are equivalent up to associativity and unit laws (see adjacent \lcnamecref{fig:string-rewriting:monoid-laws}).%
 \begin{marginfigure}
@@ -346,7 +346,7 @@ Every finite trace from a nonempty string can always be extended by applying one
 \section{Example: \Aclp*{NFA}}\label{sec:string-rewriting:nfa}
 
 As an extended example of string rewriting, we will specify how \iac{NFA} processes its input.
-Beginning with this specification, \acp{NFA} will serve as a recurring example throughout the remainder of this dissertation.
+Beginning with this specification, \acp{NFA} will serve as a recurring example throughout the remainder of this document.
  
 Given \iac{NFA} $\aut{A} = (Q, \nfapow, F)$ over an input alphabet $\ialph$, the idea is to introduce a string rewriting axiom for each transition that the \ac{NFA} can make:
 \begin{equation*}
@@ -635,7 +635,10 @@ The $\jrule{$i$-I}$ rule allows multiple increment instructions to be interspers
 With this $\ainc{}{}$ relation in hand, we can now prove a stronger, small-step adequacy theorem.
 This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then implies the big-step desiderata from above.
 %
-\begin{theorem}[Small-step adequacy of increments]\label{thm:string-rewriting:inc-small-step-adequacy}
+\begin{restatable}[
+  name=Small-step adequacy of increments,
+  label=thm:string-rewriting:inc-small-step-adequacy
+]{theorem}{thmincsmallstepadequacy}
   \leavevmode
   \begin{thinthmdescription}
   \item[Value soundness]
@@ -656,7 +659,7 @@ This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then i
   \item[Termination]
     If $\ainc{w}{n}$, then every rewriting sequence from $w$ is finite.
   \end{thinthmdescription}
-\end{theorem}
+\end{restatable}
 %
 \begin{proof}
   Each part is proved separately.
@@ -835,12 +838,12 @@ The operation described by $d$ does not change the binary counter's value -- it 
 \footnote[][-8\baselineskip]{Once again, the valid intermediate states could also be enumerated more explicitly and syntactically with a grammar and denotation function:%
 \begin{align*}
   w &\Coloneqq e \mid w \oc b_0 \mid w \oc b_1 \mid w \oc i \\
-  \lctx &\Coloneqq w \oc d \mid \lctx \oc b'_0 \mid z \mid w \oc s
+  w^h &\Coloneqq w \oc d \mid w^h \oc b'_0 \mid z \mid w \oc s
 \end{align*}
 \begin{equation*}
   \begin{lgathered}
     \deno[D]{w \oc d} = \deno[I]{w} \\
-    \deno[D]{\lctx \oc b'_0} = 2 \deno[D]{\lctx} \\
+    \deno[D]{w^h \oc b'_0} = 2 \deno[D]{w^h} \\
     \deno[D]{z} = 0 \\
     \deno[D]{w \oc s} = \deno[I]{w} + 1
   \end{lgathered}

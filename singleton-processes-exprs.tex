@@ -5,7 +5,7 @@ The proof terms assigned to semi-axiomatic sequent proofs were simply syntactic 
 % and the proof of the admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:cut-admissible} described a meta-level function for manipulating these syntactic objects.
 and the proof of non-analytic cut elimination~\parencref{thm:singleton:hilbert:cutelim} described a meta-level function for normalizing these syntactic objects.
 
-Even in a purely proof-theoretic setting, however, the computational suggestions of these syntactic manipulations were too strong to ignore:
+Even in a purely proof-theoretic setting, however, the computational suggestions of these syntactic manipulations were much too strong to ignore:
 % In proving the admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:cut-admissible},
 We saw that the principal cases in the proof of admissibility of non-analytic cuts \parencref{lem:singleton-logic:hilbert:cut-admissibility}%
 \marginnote{%
@@ -28,7 +28,7 @@ For instance, a proof of $\plus*[sub=_{\ell \in L}]{\ell:A_{\ell}}$ corresponds 
 
 This roughly parallels a recent line of research into a Curry--Howard isomorphism, dubbed \acs{SILL}, between the intuitionistic linear sequent calculus and session-typed concurrent computation\autocites{Caires+:MSCS16}{Caires+:TLDI12} -- with two key differences.
 First, unlike \ac{SILL}, we use singleton logic, not intuitionistic linear logic.
-This restricts the process topology to chains, rather than the tree topology that \ac{SILL} permits.
+This restricts the process topology to chains,\footnote{\Textcite{Dezani-Ciancaglini+:PLACES14} also consider chains of session-typed processes with unnamed left- and right-hand channels, but not from the logical perspective of a Curry--Howard correspondence.} rather than the tree topology that \ac{SILL} permits.
 But this restriction should not be seen as a weakness;
 by leveraging this restriction, computation pipelines can be expressed as a logically motivated fragment.
 % However, as sketched in \cref{??}, 
@@ -656,7 +656,7 @@ In particular, the distinction helps to relate this process interpretation of si
 \subsection{From admissibility of non-analytic cuts to an operational semantics}\label{sec:process-chains:reductions}
 
 In the previous \lcnamecref{ch:singleton-logic}, we presented a procedure for normalizing semi-axio\-matic sequent proofs in singleton logic.
-Proof normalization was important to establish
+Proof normalization was important to establish that the singleton logic has a well-defined meaning-theoretic explanation.
 
 In this \lcnamecref{ch:process-chains}, however, our perspective has shifted from proof theory to concurrent computation, from proofs to processes.
 And so normalization is no longer appropriate -- we now want to expose the concurrent computational behavior, not just normal forms.
@@ -799,7 +799,7 @@ The operational semantics formalizes these notions in rules that decompose $\spa
 %   \end{gather*}
 %   \caption{Pictorial representations of the reductions for $\spawn{P_1}{P_2}$ and $\fwd$}
 % \end{marginfigure}%
-Because process chains are always considered up to associativity and unit laws, these reduction rules (along with the above $\cc$-compatibility rules) reflect the associative and identity normalization steps in the proof of admissibility of non-analytic cuts\parencref{lem:singleton-logic:hilbert:cut-admissibility}.
+Because process chains are always considered up to associativity and unit laws, these reduction rules (along with the above $\cc$-compatibility rules) reflect the associative and identity normalization steps in the proof of admissibility of non-analytic cuts~\parencref{lem:singleton-logic:hilbert:cut-admissibility}.
 For example, just as
 \begin{gather*}
   \nspawn{(\spawn{N_0}{\selectR{\kay}})}{M} = \nspawn{N_0}{(\nspawn{\selectR{\kay}}{M})} \\
@@ -1057,7 +1057,7 @@ As an example of these processes in action, observe that $\defp{e} \cc \defp{b}_
 \end{align*}
 
 
-
+Alternatively, we can give process definitions for $i$ and $d$ and treat $e$, $b_0$, and $b_1$ as messages.  This is the analogue of the functional choreography from \cref{sec:formula-as-process:counters-functional}, as we will discuss more in \cref{ch:correspond}.
 \begin{equation*}
   \begin{lgathered}
     \defp{\imath} \defd \caseL{e => \spawn{\selectR{e}}{\selectR{b}_1}
@@ -1084,7 +1084,7 @@ Instead, we will use sequential transducers, as introduced in \cref{ch:finite-au
 
 We should first construct a type that describes the words over an alphabet $\ialph$, respectively.
 However, because the language formulated in this \lcnamecref{ch:process-chains} does not have inductive types, we cannot describe the finite words $\finwds{\ialph}$ alone.
-With the inductive session types studied by \textcite{Derakhshan+Pfenning:LMCS20} and \textcite{Somayyajula+Pfenning:20}, that would be possible, but we do not pursue that extension here.
+With the inductive session types studied by \textfootcite{Derakhshan+Pfenning:LMCS20} and \textfootcite{Somayyajula+Pfenning:20}, that would be possible, but we do not pursue that extension here.
 
 Instead, we will construct a type that describes the \emph{infinite} words over alphabet $\ialph$:
 \begin{equation*}
