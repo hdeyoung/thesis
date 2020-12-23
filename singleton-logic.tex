@@ -17,7 +17,7 @@ That such a severe restriction on the structure of sequents yields a well-define
 This \lcnamecref{ch:singleton-logic} will thereafter focus on the proof-theoretic consequences of the single-antecedent restriction.
 % [This \lcnamecref{ch:singleton-logic} is primarily devoted to the proof-theoretic consequences of the single-antecedent restriction, so the operational aspects are mostly postponed to \cref{ch:singleton-processes}.]
 
-Having fully motivated the single-antecedent restriction, we then proceed to \cref{sec:singleton-logic:seq-calc} where we derive the singleton sequent calculus by systematically applying the restriction to the intuitionistic ordered sequent calculus of \cref{ch:ordered-logic}.
+\change[ap]{After we motivate} the single-antecedent restriction, we then proceed to \cref{sec:singleton-logic:seq-calc} where we derive the singleton sequent calculus by systematically applying the restriction to the intuitionistic ordered sequent calculus of \cref{ch:ordered-logic}.\footnote[][-\baselineskip]{\change[ic]{After the single-antecedent restriction is enforced, nothing ordered remains -- a single antecedent is trivially ordered.  So we could equally well derive singleton sequent calculus from the linear sequent calculus.}}
 (Not all of the ordered logical connectives will be able to survive the restriction, however.
 As we will explain, it is precisely the multiplicative connectives that are absent from singleton logic.)
 
@@ -189,7 +189,7 @@ For instance, consider the ordered cut rule (see neighboring display).
 % \end{equation*}
 For the first premise to satisfy the single-antecedent restriction, the finitary context $\octx$ must be exactly a single antecedent, $A$.
 Because the second premise already contains the antecedent $B$, the contexts $\octx'_L$ and $\octx'_R$ must also be empty.
-After these revisions, the rule contains only well-formed singleton sequents and is a candidate for inclusion in the singleton sequent calculus.
+After these revisions, the rule contains only well-formed singleton sequents and is a candidate for inclusion in the singleton sequent calculus.\footnote[][0.5\baselineskip]{\change[ap]{In its singleton form, the cut rule is even more clearly related to transitivity of provability than it is in the ordered sequent calculus.}}
 
 % With these revisions, all sequents of the resulting rule are well-formed singleton sequents, 
 
@@ -228,7 +228,8 @@ For example, singleton sequent calculus rules for additive disjunction may also 
 \begin{figure*}[tbp]
   % \captionsetup{captionskip=0pt,farskip=0pt,nearskip=0pt}
   \vspace*{-\abovecaptionskip}
-  
+
+  \hfill  
   $\begin{array}{@{}l@{}ccc@{}}
     & \text{\itshape Ordered sequent calculus} && \text{\itshape Singleton sequent calculus}
     \\[1ex]
@@ -268,8 +269,9 @@ For example, singleton sequent calculus rules for additive disjunction may also 
       \infer[\mathrlap{\lrule{\plus}}]{\slseq{B_1 \plus B_2 |- C}}{
         \slseq{B_1 |- C} & \slseq{B_2 |- C}}
     \end{gathered}
-  \end{array}$
-  \caption{Deriving the singleton sequent calculus rules for additive disjunction from the corresponding ordered sequent calculus rules}\label{fig:singleton-logic:seq-calc:derive-plus}
+  \end{array}\phantom{\rrule{\plus}_2}$
+  \caption[][1.25\baselineskip]{Deriving the singleton sequent calculus rules for additive disjunction from the corresponding ordered sequent calculus rules}\label{fig:singleton-logic:seq-calc:derive-plus}
+  \forceversofloat
 \end{figure*}
 %
 Rules for the other additive connectives ($\with$, $\top$, and $\zero$) can be constructed, too, but we will momentarily postpone displaying them.
@@ -323,7 +325,9 @@ From a category-theoretic perspective, it would be quite natural to rewrite the 
 % Viewed through a category-theoretic lens, this rule is quite innocuous, even natural.
 However, from a proof-theoretic perspective, this rule is not suitable -- with this rule, the meaning of left-handed implication depends on the meaning of another connective, namely multiplicative conjunction.
 % From a proof-theoretic perspective, however, the meaning of a logical connective should be independent from other connectives, and this rule creates an objectionable dependence of left-handed implication upon ordered conjunction.
-As a practical consequence, the subformula property and related cut elimination theorem would fail to hold if the singleton sequent calculus adopted this rule.
+As a practical consequence, the usual subformula property and related cut elimination theorem would fail to hold if the singleton sequent calculus adopted this rule.\footnote[][\baselineskip]{It might be possible to recover these results by using a weight induction that considers multiplicative conjunction to be smaller than left-handed implication.
+Still, the meaning of implication would depend on the meaning of conjunction.
+This seems a bit unsatisfying, so we do not pursue this idea further.}
 
 In attempting to construct singleton sequent calculus rules for left-handed implication, the fundamental problem is that the $\rrule{\limp}$ rule introduces an additional antecedent to a context that is, and must remain, a singleton.
 Changing the size of the context by introducing, or sometimes removing, antecedents is an essential characteristic of multiplicative connectives, and so the multiplicative connectives, by their very nature, cannot appear in singleton logic.
@@ -416,6 +420,7 @@ is not even a well-formed sequent in the singleton sequent calculus, for the sim
   \end{inferences}
   \vspace*{-\belowdisplayskip}
   \caption{A sequent calculus for propositional singleton logic\label{fig:singleton-logic:seq-calc}}
+  \forcerectofloat
 \end{figure}
 
 That said, singleton logic only differs from the additive fragment of ordered logic in its treatment of $\zero$ and $\top$ -- the $\zero$,$\top$-free fragment of singleton logic coincides exactly with the $\zero$,$\top$-free, additive fragment (that is, the $\plus$,$\with$-fragment) of ordered logic.
@@ -440,7 +445,7 @@ Interestingly, because the single-antecedent restriction exactly constrains the 
 
 \newthought{Symmetry was} one of the motivations behind examining the single-ante\-cedent restriction and the singleton logic that results from it.
 With a sequent calculus for singleton logic, we can now make that symmetry precise.
-For instance, the $\rrule{\with}$ rule can be exactly obtained from the $\lrule{\plus}$ rule -- and \emph{vice versa} -- by reversing the turnstiles and replacing the $\plus$ connective with $\with$:
+For instance, the $\rrule{\with}$ rule can be exactly obtained from the $\lrule{\plus}$ rule -- and \emph{vice versa} -- by replacing the $\plus$ connective with $\with$ and reversing the turnstiles \change[ap]{so that the antecedent and consequent exchange places}: 
 \begin{equation*}
   \infer[\lrule{\plus}]{\slseq{A_1 \plus A_2 |- B}}{
     \slseq{A_1 |- B} & \slseq{A_2 |- B}}
@@ -533,7 +538,7 @@ As usual, the cut elimination \lcnamecref{thm:singleton-logic:seq-calc:cut-elimi
 \newthought{Before proceeding} to this \lcnamecref{lem:singleton-logic:cut-admissibility}'s proof, it is worth emphasizing a subtle distinction between the singleton sequent calculus's primitive $\jrule{CUT}$ rule and the admissible cut principle that this \lcnamecref{lem:singleton-logic:cut-admissibility} establishes.
 
 To be completely formal, we could treat cut-freeness as an extrinsic, Curry-style property of proofs%
-\footnote[][-.5\baselineskip]{Contrast this with a separate, intrinsically cut-free sequent calculus in the style of Church~\parencite{Pfenning:Andrews08}.}
+\footnote[][-1.5\baselineskip]{Contrast this with a separate, intrinsically cut-free sequent calculus in the style of Church~\parencite{Pfenning:Andrews08}.}
 and indicate cut-freeness by decorating the turnstile, so that $\cfslseq{A |- C}$ denotes a cut-free proof of $\slseq{A |- C}$.
 The admissible cut principle stated in \cref{lem:singleton-logic:cut-admissibility} could then be expressed as the rule
 \begin{equation*}
@@ -695,8 +700,8 @@ From here on, however, we won't bother to be quite so pedantic, instead often om
 
 In addition to cut elimination, we can also prove identity elimination.
 An identity-long proof is one in which all applications of the $\jrule{ID}$ occur at propositional variables.
-Identity elimination -- a slight misnomer -- transforms a proof into an identity-long proof of the same sequent by replacing instances of the $\jrule{ID}^A$ rule with an identity-long proof of $\slseq{A |- A}$.%
-\footnote{Identity elimination is a slight misnomer because instances of the $\jrule{ID}$ rule at propositional variables will remain.}
+Identity elimination transforms a proof into an identity-long proof of the same sequent by replacing instances of the $\jrule{ID}^A$ rule with an identity-long proof of $\slseq{A |- A}$.%
+\footnote{Identity \emph{elimination} is a slight misnomer because instances of the $\jrule{ID}$ rule at propositional variables will remain.}
 
 \begin{lemma}[Admissibility of identity]
   For all propositions $A$, an identity-long proof of $\slseq{A |- A}$ exists.
@@ -1484,7 +1489,7 @@ But many of the choices that would be made in breaking ties, such as between the
         \slof{A |- P_1 : B} & \slof{B |- P_2 : C}}}
     =\:
     \infer-[\jrule{A-CUT}^B]{\slof{A |- \nspawn{\ce{P_1}}{\ce{P_2}} : C}}{
-      \infer-[\jrule{CE}]{\slof{A |- \ce{P_1} : C}}{
+      \infer-[\jrule{CE}]{\slof{A |- \ce{P_1} : B}}{
         \slof{A |- P_1 : B}} &
       \infer-[\jrule{CE}]{\slof{B |- \ce{P_2} : C}}{
         \slof{B |- P_2 : C}}}
@@ -1964,6 +1969,28 @@ However, \citeauthor{Sambin+:JSL00} appear to have considered the axioms of refl
 %       \infer[\jrule{$\limp$A}]{\oseq{A \oc (A \limp B) |- B}}{}}
 %   \end{equation*}
 % }
+
+\subsection{KeYmaera~X}
+
+The semi-axiomatic sequent calculus is characterized by a mixture of sequent calculus rules and Hilbert-style axioms, with ``short'' cuts in which one premise is an axiom.
+In the semi-axiomatic sequent calculus, these features are used to express asynchronous cut reductions that correspond to asynchronous communication, as we will see in \cref{ch:process-chains}.
+ 
+The proof system underlying KeYmaera~X uses a related mixture of sequent calculus rules and Hilbert system axioms in the context of differential dynamic logic.\autocites{Platzer:JAR17}{Fulton+:CADE15}
+This gives KeYmaera~X a similar flavor to the semi-axiomatic sequent calculus.
+The goal is different, however; instead of targeting asynchronous communication, KeYmaera~X uses the mixture to balance the convenient reasoning of a sequent calculus with the minimality of a Hilbert system.
+The diffence in goal accounts for the specific differences between KeYmaera~X and the semi-axiomatic sequent calculus. 
+
+First, the KeYmaera~X proof system is a purely Hilbert-like system, and does not adopt any of sequent calculus rules as primitives.
+This differs from the semi-axiomatic sequent calculus presented here: the semi-axiomatic calculus does retain the usual sequent calculus $\lrule{\plus}$ and $\rrule{\with}$ rules as primitives.
+
+The KeYmaera~X tool does include sequent calculus rules as tactics that behave like defined shorthands, not primitive rules.
+This feeds into a second difference between KeYmaera~X and the semi-axiomatic sequent calculus -- one of provability vs.\ proofs.
+Having sequent calculus rules as defined shorthands is suitable for KeYmaera~X as a verification tool in which determining provability is the goal.
+On the other hand, the goal of the semi-axiomatic sequent calculus is to provide a proof-theoretic underpinning for asynchronous communication.
+In this computational setting, the particulars of the proofs themselves, not just provability alone, are important.
+
+Lastly, the KeYmaera~X proof system uses uniform substitution to reduce the usual axiom schemata of Hilbert systems to axioms about particular concrete propositions.
+In the semi-axiomatic sequent calculus, no notion of uniform substitution is used, and we content ourselves to axiom schemata.
   
 %%% Local Variables:
 %%% mode: latex

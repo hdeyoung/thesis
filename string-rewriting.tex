@@ -16,7 +16,7 @@ For a broad sketch of string rewriting, consider the finite strings over the alp
 This relation can be seen as a rewriting relation on strings.
 For instance, because $a \wc b \wc b \reduces b \wc b$, we would say that $a \wc b \wc b$ may be rewritten to $b \wc b$.
 
-More generally, under the rewriting axioms of \cref{eq:string-rewriting:ends-b-nondeterministic}, a string $w$ can be rewritten to the empty string -- that is, $w \reduces \dotsb \reduces \emp$ -- if, and only if, that string ends with $b$.
+More generally, under the rewriting axioms of \cref{eq:string-rewriting:ends-b-nondeterministic}, \change[ap]{a string $w$ ends with $b$ if, and only if, there exists a way to rewrite $w$ to the empty string}\footnote{\change[ap]{Though other rewritings that do not lead to the empty string may also exist; see below.}} -- that is, $w \reduces \dotsb \reduces \emp$.
 For example, the string $abb$ ends with $b$, and $abb$ can indeed be rewritten to the empty string:
 \begin{equation*}
   a \wc b \wc b
@@ -27,7 +27,7 @@ For example, the string $abb$ ends with $b$, and $abb$ can indeed be rewritten t
 \end{equation*}
 In this way, the rewriting axioms of \cref{eq:string-rewriting:ends-b-nondeterministic} constitute a specification of a system that identifies those strings over the alphabet $\Set{a,b}$ that end with $b$.
 
-The usual operational semantics for string rewriting employs committed\-choice nondeterminism, which
+However, the usual operational semantics for string rewriting employs committed-choice nondeterminism, which
 % this specification is nondeterministic
 % and that that nondeterminism
 can lead to stuck, or otherwise undesirable, states.
@@ -42,7 +42,7 @@ No backtracking is performed to reconsider these choices.
 Disjoint segments of a string may be rewritten independently.
 For example, the substring $a \wc b$ can be rewritten to $b$, and the final $b$ of $a \wc b \wc b$ can be rewritten to the empty string.
 Being independent, these rewritings can occur in either order, as shown in the adjacent \lcnamecref{fig:string-rewriting:independent1}.
-\begin{marginfigure}[-\baselineskip]
+\begin{marginfigure}[-4\baselineskip]
   \begin{equation*}
     \hphantom{a \wc b \wc {}}
     \begin{tikzcd}[ampersand replacement=\&, sep=small]
@@ -84,7 +84,7 @@ where the monoid operation is string concatenation, denoted by $w_1 \wc w_2$, an
 \footnote[][-2.25\baselineskip]{Strings are isomorphic to the finite words used by automata~\parencref{ch:automata}, but the two serve different conceptual roles in this document.}
 
 As a monoid, strings are equivalent up to associativity and unit laws (see adjacent \lcnamecref{fig:string-rewriting:monoid-laws}).%
-\begin{marginfigure}
+\begin{marginfigure}[0.5\baselineskip]
   \begin{gather*}
     (w_1 \wc w_2) \wc w_3 = w_1 \wc (w_2 \wc w_3) \\
     \emp \wc w = w = w \wc \emp
@@ -156,7 +156,8 @@ to ensure that the rewriting relation is compatible with the monoidal structure 
 % \end{equation}
 
 The $\reduces$ relation thus describes the rewritings that are possible in a single step: exactly one axiom, perhaps embellished by the compatibility rules.
-In addition to these single-step rewritings, it will frequently be useful to describe the rewritings that are possible in some finite number of steps.
+\change[ic]{(We will also write $w \nreduces$ if there does \emph{not} exist a string $w'$ such that $w \reduces w'$.)}
+In addition to the single-step rewritings, it will frequently be useful to describe the rewritings that are possible in some finite number of steps.
 For this, we construct a multi-step rewriting relation, $\Reduces$, from the reflexive, transitive closure of $\reduces$.%
 \footnote{Usually written as $\reduces^*$, we instead choose $\Reduces$ for the reflexive, transitive closure because of its similarity with standard process calculus notation for weak transitions, $\Reduces[\smash{\raisebox{-0.25ex}{$\scriptstyle\alpha$}}]$.
   Our reasons for this choice of notation will become clearer in subsequent \lcnamecrefs{ch:ordered-rewriting}.}
@@ -219,6 +220,7 @@ A summary of string rewriting is shown in \cref{fig:string-rewriting:summary}.
       w \reduces w' & w' \Reduces w''}
   \end{inferences}
   \caption{A string rewriting framework}\label{fig:string-rewriting:summary}
+  \forceversofloat
 \end{figure}
 
 \subsection{Properties of the string rewriting framework}\label{sec:string-rewriting:concurrency}
@@ -413,8 +415,9 @@ Indeed, just as the \ac{NFA} $\aut{A}_1$ accepts the input word $abb$, its rewri
 \end{equation*}
 
 More generally, this string rewriting specification of \acp{NFA} adequately describes their operational semantics, in the sense that it simulates all \ac{NFA} transitions.
-Given the reversal (anti-)\-homo\-morph\-ism for finite words defined in the adjacent \lcnamecref{fig:string-rewriting:reversal}%
-\begin{marginfigure}[-8\baselineskip]
+Given the reversal\footnote[][2.5\baselineskip]{\change[ic]{At this point in the narrative, it would probably make more sense to specify \acp{NFA} without reversing the input word, writing the state $q_i$ at the string's left end.  But we choose this specification instead because it will align more conveniently with the most natural process chain implementation of \acp{DFA} and transducers~\parencref{sec:process-chains:transducer}.}} (anti-)\-homo\-morph\-ism for finite words defined in the adjacent \lcnamecref{fig:string-rewriting:reversal}%
+\begin{marginfigure}[-28
+\baselineskip]
   \begin{align*}
     \rev*{w_1 \wc w_2} &= \rev{w_2} \oc \rev{w_1} \\
     \rev{\emp} &= \emp \\
@@ -729,9 +732,16 @@ This small-step \lcnamecref{thm:string-rewriting:inc-small-step-adequacy} then i
 Binary counters may also be equipped with a decrement operation.
 Instead of examining decrements \emph{per se}, we will describe a very closely related operation: the normalization of binary representations to what might be called \vocab{head-unary form}.
 (We will frequently abuse terminology, using \enquote*{head-unary normalization} and \enquote*{decrement operation} interchangeably.)
-A string $w$ will be said to be in head-unary form if it has one of two forms: $w = z$; or $w = w' \oc s$, for some binary number $w'$.
+% A string $w$ will be said to be in head-unary form if it has one of two forms: $w = z$; or $w = w' \oc s$, for some binary number $w'$.
+
+\change[ic]{The possible head-unary forms are $z$ and $w' \oc s$, where $w'$ is a binary number.
+The symbols $z$ and $s$ were chosen to suggest the zero and successor constructors for unary representations of natural numbers.
+In this way, $z$ is the unique head-unary form of every binary number $w$ that denotes $0$, and $w' \oc s$ is a head-unary form of binary number $w$, if $w$ denotes $n>0$ and $w'$ denotes $n-1$.
+For example, $e \oc b_0$ has head-unary form $z$, and $e \oc b_1 \oc b_0$ has $e \oc b_0 \oc b_1 \oc s$ as a head-unary form\footnote{Leading $b_0$s could also be added or removed to this head-unary form}.}
 
 Just as appending the symbol $i$ to a counter $w$ initiates an increment, appending a symbol $d$ will cause the counter to begin normalizing to head-unary form.
+In other words, $w \oc d$ will rewrite to either $z$ (representing the head-unary form of the number $0$) or $w' \oc s$ (representing a head-unary normal form of the number $n>0$, where $w'$ denotes $n-1$).
+
 For $d$ to adequately represent this operation, the string $w \oc d$ must satisfy the following global desiderata when $\adec{w}{n}$:
 % The following \lcnamecref{thm:decrement-adequacy} serves as a specification of head-unary normalization, relating a value's head-unary form to its denotation.
 %
@@ -745,7 +755,9 @@ For $d$ to adequately represent this operation, the string $w \oc d$ must satisf
 % \end{theorem}
 %
 % \noindent
-For example, because $e \oc b_1$ denotes $1$, a trace $e \oc b_1 \oc d \Reduces w' \oc s$ must exist, for some $\aval{w'}{0}$.
+\change[ic]{Notice that these last two desiderata function as converses.}
+For example, because $e \oc b_1$ denotes $1$, there must exist a trace $e \oc b_1 \oc d \Reduces w' \oc s$ for some $\aval{w'}{0}$.
+\change[ic]{Conversely, because $e$ denotes $0$, there must \emph{not} exist a trace $e \oc d \Reduces w' \oc s$ for any $w'$.}
 
 \newthought{To achieve these} global desiderata, we introduce three additional axioms that describe how the symbols $e$, $b_0$, and $b_1$ may be rewritten when they encounter $d$, the decrement instruction;
 also, an intermediate symbol $b'_0$ and two more axioms are introduced:

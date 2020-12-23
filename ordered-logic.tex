@@ -90,7 +90,7 @@ can be interpreted as a recipe for producing resource $A$ from the resources $A_
 The small twist is that these resources are inherently ordered and may not be permuted, exactly because ordered logic rejects the exchange property that linear logic admits.
 
 \paragraph{Contexts}
-To keep the notation for sequents concise, the list of antecedents is usually packaged into an ordered context $\octx = A_1 \oc A_2 \dotsb A_n$, with the sequent then written $\oseq{\octx |- A}$.\footnote{We will also sometimes use $\lctx$ as an additional metavariable for ordered contexts.}
+To keep the notation for sequents concise, the list of antecedents is usually packaged into an ordered context $\octx = A_1 \oc A_2 \dotsb A_n$, with the sequent then written $\oseq{\octx |- A}$.
 Algebraically, ordered contexts $\octx$ form a free noncommutative monoid:
 \begin{equation*}
   \octx , \lctx \Coloneqq \octx_1 \oc \octx_2 \mid \octxe \mid A \,,
@@ -337,7 +337,7 @@ The two forms of implication each enjoy their own currying laws: the sequents $\
       $B$ \\
     \bottomrule
   \end{tabular}
-  \caption[][-0.25\baselineskip]{A resource interpretation of the ordered logical connectives}\label{tbl:ordered-logic:resources}
+  \caption[][-0.25\baselineskip]{A resource interpretation of the ordered logical connectives}\label{tbl:ordered-logic:resources}\forceversofloat
 \end{table}
 
 \begin{figure}[tbp]
@@ -418,7 +418,7 @@ The two forms of implication each enjoy their own currying laws: the sequents $\
     \infer[\lrule{\pmir}]{\oseq{\octx'_L \oc (B \pmir A) \oc \octx \oc \octx'_R |- C}}{
       \oseq{\octx |- A} & \oseq{\octx'_L \oc B \oc \octx'_R |- C}}
   \end{inferences}
-  \caption{A summary of  ordered logic's sequent calculus, as presented in \cref{sec:ordered-logic:sequent-calculus}}\label{fig:ordered-logic:sequent-calculus}
+  \caption{A summary of  ordered logic's sequent calculus, as presented in \cref{sec:ordered-logic:sequent-calculus}}\label{fig:ordered-logic:sequent-calculus}\forceversofloat
 \end{figure}
 
 \section{A verificationist meaning-theory of the ordered sequent calculus}\label{sec:ordered-logic:verifications}\label{sec:ordered-logic:meanings}
@@ -774,12 +774,14 @@ In ordered logic, the difference between the exponential and recursive definitio
 The persistent resource $p \limp A$ that derives from $\bang (p \limp A)$ can be copied \emph{anywhere} into the ordered context.
 By making the exponential a first-class logical connective, this mobility can be exploited.
 For example, the proposition $\bang (p \limp a \fuse \bang p)$ would allow $p$ to move anywhere within the ordered context.
+\Textfootcite{Kanovich+:MSCS19} show that cut elimination fails for classical non-commutative linear logic when contractions is strictly local.
+
 In contrast, recursive definitions decouple unbounded behavior from mobility and are not first-class.
 The definition $\defp{p} \defd a \fuse \defp{p}$ is the nearest we can get to $\bang (p \limp a \fuse \bang p)$, and this definition does not imply mobility.
 As we will see in \cref{ch:process-chains}, recursive definitions will therefore prove to be a good match for recursive processes, which ought not to be able to move around within a configuration just because they have unbounded behavior.
 
 
-\Textfootcite{Fortier+Santocanale:CSL13} have used recursive definitions together with circular derivations in a fragment of the linear sequent calculus, establishing a sound condition under which these definitions constitute least and greatest fixed points and these derivations constitute valid inductive and coinductive proofs.
+\Textfootcite{Fortier+Santocanale:CSL13} have used recursive definitions together with circular derivations\footnote{\change[ic]{A circular derivation is a partial proof in which the unfilled premises at the leaves point recursively back to the root of the proof or other circular derivations.}} in a fragment of the linear sequent calculus, establishing a sound condition under which these definitions constitute least and greatest fixed points and these derivations constitute valid inductive and coinductive proofs.
 Extending their work, \textfootcite{Derakhshan+Pfenning:LMCS20} have presented a related, locally decidable condition on circular derivations in first-order intuitionistic multiplicative and additive linear logic that ensures cut elimination is productive.
 We know of no work on applying these ideas to ordered logic, but we expect that similar results ought to hold.
 In any case, in the remainder of this document we are concerned only with general recursive definitions, not inductive or coinductive definitions.

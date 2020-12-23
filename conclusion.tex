@@ -15,7 +15,7 @@ This document now closes by discussing a few avenues for future work.
 
 \section{Potential avenues for future work}\label{sec:conclusion:nondeterminism}
 
-\subsection{From ordered rewriting to multiset rewriting, singleton processes to linear processes}
+\subsection{From ordered rewriting to multiset rewriting, singleton processes to linear processes}\label{sec:conclusion:generalize}
 
 One obvious avenue for future work is to extend the ideas in this document to linear logic.
 We conjecture that the string rewriting specifications of \cref{ch:string-rewriting} would be replaced with multiset rewriting specifications\autocite{Meseguer:TCS92}; the formula-as-process ordered rewriting of \cref{ch:formula-as-process}, with formula-as-process linear rewriting based on the focused linear sequent calculus\autocites{Miller:ELP92}{Cervesato+Scedrov:IC09}; and the singleton processes of \cref{ch:process-chains}, with \acs{SILL} processes\autocite{Caires+:MSCS16}.
@@ -110,7 +110,7 @@ An interesting question is whether their ideas might be applied to (formula-as-p
 Productivity is about observable progress and even untyped ordered rewriting has a notion of observation, as embodied in ordered bisimilarity~\parencref{ch:ordered-bisimilarity}.
 So it seems likely that productive ordered rewriting systems can be characterized.
 
-What is unclear is whether there is an locally and effectively decidable condition on ordered propositions that can guarantee productivity.
+What is unclear is whether there is a locally and effectively decidable condition on ordered propositions that can guarantee productivity.
 The local decidability of condition on circular proofs introduced by \citeauthor{Derakhshan+Pfenning:LMCS20}
 % Can their validity condition on circular proofs be mapped to a condition on ordered propositions?
 very much relies on the unrolling of inductive and coinductive types.

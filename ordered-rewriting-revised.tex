@@ -11,6 +11,7 @@ Ordered rewriting increases the expressive power of string rewriting by enrichin
 % As a generalization of string rewriting, ordered rewriting will serve as a framework for specifying the dynamics of concurrent systems that have chain topologies.
 Like the string rewriting framework that it generalizes, ordered rewriting will serve as a framework for specifying concurrent systems that have chain topologies.
 But unlike string rewriting, ordered rewriting, being derived from the ordered sequent calculus, will have the advantage of constituting a \emph{proof-construction} explanation of concurrency.
+\change[ap]{In addition to grounding concurrency in logic, ordered rewriting provides the logical connectives, which function as a richer, more convenient set of primitives for describing concurrent systems.}
 
 \newthought{\Cref{sec:ordered-rewriting:rewriting} begins} by observing that many of the ordered sequent calculus's left rules share a large amount of boilerplate, with only very little of each left rule being devoted to the primary task of decomposing the principal proposition.
 By introducing a new judgment, $\octx \reduces \octx'$, for decomposing principal propositions, it is possible to refactor the ordered sequent calculus in such a way that boilerplate is almost exclusively confined to a cut principle for the decomposition judgment~\parencref{sec:ordered-rewriting:boilerplate}.
@@ -125,7 +126,7 @@ For example, the decomposition of $A \fuse B$ into $A \oc B$ is captured by
   \,,
 \end{equation*}
 and the standard $\lrule{\fuse}$ rule can then be recovered as shown in the adjacent \lcnamecref{fig:ordered-rewriting:fuse-refactoring}.%
-\begin{marginfigure}
+\begin{marginfigure}[-6\baselineskip]
   \begin{equation*}
     \begin{gathered}[t]
       \infer[\mathrlap{\lrule{\fuse}}]{\oseq{\octx'_L \oc (A \fuse B) \oc \octx'_R |- C}}{
@@ -190,7 +191,7 @@ This contrasts with, for example, the $\jrule{$\fuse$D}$ rule that decomposes $A
 
 For these reasons, the above $\jrule{$\limp$D}'$ and $\jrule{$\pmir$D}'$ rules are somewhat undesirable.
 Fortunately, there is an alternative.
-Filling in the $\oseq{\octx |- A}$ premises with the $\jrule{ID}^A$ rule, we arrive at the derivable rules
+Filling in the $\oseq{\octx |- A}$ premises with the $\jrule{ID}^A$ rule, we arrive at the derivable \change[ap]{\emph{modus ponens}-like} rules
 \begin{equation}\label{eq:ordered-rewriting:limp-pmir-decomposition-nullary}
   \infer[\jrule{$\limp$D}]{A \oc (A \limp B) \reduces B}{}
   \qquad\text{and}\qquad
@@ -237,7 +238,7 @@ The $\lrule{\plus}$ rule certainly does decompose $A \plus B$, but it does so by
 Just as $A \plus B$ has two futures, $\zero$, as its nullary analogue, has no future.
 
 The straight-line nature of the $\octx \reduces \octx'$ judgment seems incompatible with this branching behavior, so we choose to retain the standard $\lrule{\plus}$ and $\lrule{\zero}$ rules.%
-\footnote{It might be possible to introduce a branching judgment, something like $\octx \reduces \octx'_1 \mid \octx'_2$, but we will not pursue that here.}
+\footnote[][-1.5\baselineskip]{It might be possible to introduce a branching judgment, something like $\octx \reduces \octx'_1 \mid \octx'_2$, but we will not pursue that here.}
 
 \begin{figure}[tbp]
   \vspace*{\dimexpr-\abovedisplayskip-\abovecaptionskip\relax}
@@ -295,6 +296,7 @@ The straight-line nature of the $\octx \reduces \octx'$ judgment seems incompati
     \infer[\lrule{\zero}]{\oseq{\octx'_L \oc \zero \oc \octx'_R |- C}}{}
   \end{inferences}
   \caption{A refactoring of the ordered sequent calculus to emphasize that most left rules amount to resource decomposition}\label{fig:ordered-rewriting:decompose-seq-calc}
+  \forceversofloat
 \end{figure}
 
 \newthought{\Cref{fig:ordered-rewriting:decompose-seq-calc} presents} the refactored sequent calculus for ordered logic in its entirety.
@@ -411,7 +413,7 @@ First, interpreting the resource decomposition rules as rewriting only confirms 
 The $\jrule{$\limp$D}'$ and $\jrule{$\pmir$D}'$ rules~(eq.~\ref{eq:ordered-rewriting:limp-pmir-decomposition}), with their $\oseq{\octx |- A}$ premises, would be problematic as rewriting rules because they would introduce a dependence of rewriting upon general provability
 % By instead using the $\jrule{$\limp$D}$ and $\jrule{$\pmir$D}$ rules, we ensures that ordered rewriting is a syntactic procedure that
 % Instead, we want ordered rewriting to be a syntactic procedure, withou 
- and the accompanying proof search would take ordered rewriting too far afield from traditional, syntactic notions of string and multiset rewriting.
+ and the accompanying proof search would take ordered rewriting too far afield from traditional, syntactic notions of string and multiset rewriting.\footnote{\change[ic]{For similar reasons, the $\omega$ rewriting system proposed by \textcite{Cervesato+Scedrov:IC09} restricts the linear implication rule to have no minor premise.}}
 
 Second, multi-step rewriting, $\Reduces$, is incomplete with respect to the usual ordered sequent calculus~\parencref{fig:ordered-logic:sequent-calculus} because all right rules have been discarded.%
 %
@@ -434,6 +436,8 @@ To state and prove soundness, we must first define an operation $\bigfuse \octx$
   \end{align*}
   \caption{From ordered contexts to propositions}\label{fig:ordered-rewriting:bigfuse}
 \end{marginfigure}%
+\change[ap]{This operation creates a proposition that can be \enquote{flattened} into $\octx$.
+The proposition $\bigfuse \octx$ is equivalent to $\octx$ in the following sense:}
 %
 \begin{lemma}
   For all $\octx$ and $C$, if $\oseq{\octx |- C}$, then $\oseq{\bigfuse \octx |- C}$.
@@ -524,7 +528,7 @@ conceptually, at least, only the big-step trace from $a \oc (a \limp b) \oc (c \
 \paragraph*{Non-confluence}
 
 Although it admits concurrency, ordered rewriting is not confluent.
-Confluence would require that all states with a common ancestor, \ie, states $\octx'_1$ and $\octx'_2$ such that $\octx'_1 \secudeR\Reduces \octx'_2$, be joinable, \ie, $\octx'_1 \Reduces\secudeR \octx'_2$.
+\change[ap]{Recall from \cref{ch:string-rewriting} that confluence requires} all states with a common ancestor, \ie, states $\octx'_1$ and $\octx'_2$ such that $\octx'_1 \secudeR\Reduces \octx'_2$, to be joinable, \ie, $\octx'_1 \Reduces\secudeR \octx'_2$.
 % Because ordered rewriting is directional\fixnote{Is this phrasing correct?} and the relation $\Reduces$ is not symmetric, some nondeterministic choices are irreversible.%
 %
 \begin{falseclaim}[Confluence]
@@ -611,7 +615,7 @@ We may use this \lcnamecref{lem:ordered-rewriting:reduction} to prove that order
 \begin{proof}
   Let $\octx$ be an arbitrary ordered context.
   Beginning from state $\octx_0 = \octx$, some state $\octx_i$ will eventually be reached such that either: $\octx_i \nreduces$; or $\card{\octx_i}_{\star} = 0$ and $\octx_i \reduces \octx_{i+1}$.
-  In the latter case, \cref{lem:ordered-rewriting:reduction} establishes $\card{\octx_{i+1}}_{\star} < 0$, which is impossible because $\card{}_{\star}$ is a measure and hence nonnegative.
+  In the latter case, \cref{lem:ordered-rewriting:reduction} establishes $\card{\octx_{i+1}}_{\star} < 0$, which is impossible because $\card{}_{\star}$ is a measure \change[ap]{of the number of logical connectives in a context} and is hence nonnegative.
 \end{proof}
 
 
@@ -660,8 +664,8 @@ Rather than having each of these rules give rise to a separate step, we can trea
 
 The rewriting framework described above might be termed \emph{unfocused} ordered rewriting; we will now describe a focused ordered rewriting framework.
 
-This idea of using focusing to increase the granularity of rewriting steps dates back to, at least, the \acf{CLF}\autocite{Watkins+:CMU02} and was later streamlined in linear logic by \textfootcite{Cervesato+Scedrov:IC09}
-\Textfootcite{Simmons:CMU12} has studied a focused ordered rewriting framework, though in a somewhat different formulation than the one we present here.
+This idea of using focusing to increase the granularity of rewriting steps dates back to, at least, the \acf{CLF}\autocite{Watkins+:CMU02} and was later streamlined in linear logic by \textfootcite{Cervesato+Scedrov:IC09}.
+\Textfootcite{Simmons:CMU12} has studied a focused ordered rewriting framework, though in a somewhat different formulation than the one we present here -- \change[ap]{\citeauthor{Simmons:CMU12} uses small-step focusing rules rather than \textfootcite{Zeilberger:POPL08}}.
 
 
 \newthought{The ordered propositions} are now polarized into positive and negative classes, or \vocab{polarities}\autocite{Andreoli:JLC92}, according to the invertibility of their sequent calculus rules; two \enquote*{shift} operators, $\dn$ and $\up$, mediate between the two classes.
@@ -686,7 +690,7 @@ Ordered contexts are formed as the free monoid over negative propositions and po
   \,.
 \end{equation*}
 As usual, we do not distinguish those ordered contexts that are equivalent up to the monoid laws.
-Notice that we use the same metavariables for these polarized ordered contexts as we did for the unpolarized contexts of the preceding (unfocused) ordered rewriting framework -- the intended context, either polarized or not, will always be clear from context.
+Notice that we use the same metavariables for these polarized ordered contexts as we did for the unpolarized contexts of the preceding (unfocused) ordered rewriting framework -- the intended \change[ic]{form}, either polarized or not, will always be clear from context.
 
 We may also reify an ordered context $\np{\octx}$ as a positive proposition, $\bigfuse \np{\octx}$, using the operation defined in the neighboring \lcnamecref{fig:ordered-rewriting:bigfuse}%
 %
@@ -702,9 +706,11 @@ We may also reify an ordered context $\np{\octx}$ as a positive proposition, $\b
 %
 .
 This operation is the polarized analogue of the operation shown in \cref{fig:ordered-rewriting:bigfuse}.
+\change[ap]{The positive proposition $\bigfuse \octx$ can be \enquote{flattened} into $\octx$.
+The $\dn$ shifts are needed to incorporate negative propositions $\n{A}$ within the positive structure of $\bigfuse \octx$.}
 
 \newthought{Each class of propositions} is then equipped with its own focusing judgment: a \vocab{left-focus judgment}, $\lfocus{\np{\octx}_L}{\n{A}}{\np{\octx}_R}{\p{C}}$, that focuses on a negative proposition, $\n{A}$, that occurs to the left of the turnstile; and a \vocab{right-focus judgment}, $\rfocus{\np{\octx}}{\p{A}}$, that focuses on a positive proposition, $\p{A}$, that occurs to the right of the turnstile.%
-\footnote{We choose a left-facing turnstile for the right-focus judgment to emphasize its input/output mode; see the next paragraph.}
+\footnote[][-1.5\baselineskip]{We choose a left-facing turnstile for the right-focus judgment to emphasize its input/output mode; see the next paragraph.}
 
 Following \textfootcite{Zeilberger:POPL08}, each of these judgments can be read as a function that provides a form of extended decomposition -- the in-focus proposition is decomposed beyond its immediate subformulas, until subformulas of the opposite polarity are reached.
 % The judgment $\rfocus{\octx}{\p{A}}$ decomposes the in-focus proposition $\p{A}$ into the ordered context $\octx$ of negative subformulas,
@@ -907,12 +913,18 @@ and so
       \octx \reduces \octx' & \octx' \Reduces \octx''}
   \end{inferences}
   \caption{A framework for focused ordered rewriting}
+  \forceversofloat
 \end{figure}
 
 \section{Using shifts to control focusing}\label{sec:ordered-rewriting:shifts}
 
 With careful placement of shifts, it is possible to control the behavior of focused rewriting.
 It is even possible to embed the unfocused ordered rewriting framework of \cref{sec:ordered-rewriting:unfocused} and a weakly focused ordered rewriting framework within focused ordered rewriting in an operationally faithful way, as we now show.
+
+\change[cs]{Our goal in presenting this is twofold.
+First, these embeddings demonstrate the expressive power of focusing when shifts are present.
+In particular, by embedding the unfocused ordered rewriting framework in the focused framework, we can see that the focused framework is more expressive than the unfocused one.
+Second, we will make use of the embedding of weakly focused ordered rewriting in \cref{ch:correspond} to arrive at a stronger theorem than we would otherwise get.}
 % in \cref{sec:ordered-rewriting:embed-unfocused,sec:ordered-rewriting:embed-weakly-focused}.
 % But first, we discuss a minimal polarization strategy for propositions.
 
@@ -1150,7 +1162,7 @@ Although weak focusing is well-defined for arbitrary implications, it is not cle
 In fact, there is a better approach than using weakly focused ordered rewriting as yet another independent rewriting system.
 Instead of using weakly focused rewriting directly, we can embed it within (strongly) focused ordered rewriting by inserting shifts at specific locations and then use that embedding.
 From here on, we will exclusively use this embedding when weakly focused ordered rewriting is needed (which is only in \cref{ch:correspond}).%
-\begin{marginfigure}[-20\baselineskip]
+\begin{marginfigure}[-5\baselineskip]
 \begin{equation*}
   \begin{aligned}
     \embed*{\p{\octx}_1 \oc \p{\octx}_2}
@@ -1176,6 +1188,9 @@ From here on, we will exclusively use this embedding when weakly focused ordered
 \end{equation*}
   \caption{An embedding of weakly focused ordered rewriting within (strongly) focused ordered rewriting}
 \end{marginfigure}
+
+\change[ap]{The $\embedp*{\p{A}}$ translation turns a (weakly focused) positive proposition $\p{A}$ into either an atomic proposition or a negative proposition by judiciously inserting or removing shifts.
+The $\embedn*{\n{A}}$ translation turns a (weakly focused) negative proposition $\n{A}$ into a (strongly focused) negative proposition compositionally.}
 
 % \begin{equation*}
 %   \begin{aligned}

@@ -77,7 +77,8 @@ Thus, the remainder of this document serves to establish the following thesis st
 
 We also conjecture that the results contained in this document can be generalized in a relatively straightforward way to tree topologies.
 This will introduce a moderately large notational overhead, but should present no conceptual difficulties.
-The singleton logic used for proof-reduction-as-concurrency would be replaced with propositional linear logic, and the modality-free ordered logic used for proof-construction-as-concurrency would be replaced with first-order linear logic.
+In \cref{sec:conclusion:generalize}, we will sketch how we expect this generalization to occur.
+Broadly, it will be based on a destination-passing style\autocite{Pfenning+Simmons:HOSC11}, and the singleton logic used for proof-reduction-as-concurrency would be replaced with propositional linear logic, and the modality-free ordered logic used for proof-construction-as-concurrency would be replaced with first-order linear logic.
 
 % \clearpage
 \section{Overview}\label{sec:introduction:overview}
@@ -182,7 +183,7 @@ A choreography then consists of a role assignment together with definitions for 
 Not all role assignments will lead to sensible choreographies, however.
 A sensible choreography is one in which the coinductive definitions admit rewritings that, up to the role assignment, exactly match the string rewriting specification's axioms.
 That is, a choreography is sensible if the role assignment serves as a bisimulation between the string rewriting specification and the message-passing choreography.%
-\footnote[][-1.2\baselineskip]{This is the first appearance of a notion of bisimilarity in this document.
+\footnote{This is the first appearance of a notion of bisimilarity in this document.
 Bisimilarity in its various guises will be a recurring theme throughout this document.}
 Depending on the particular role assignment, it is possible that no such set of definitions exists.
 

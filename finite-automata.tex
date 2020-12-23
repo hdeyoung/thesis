@@ -16,6 +16,8 @@ For relations written as arrows, such as $\reduces$ and $\Reduces$, we often ins
 For instance, $\secudeR$ would be the inverse of $\Reduces$, so that $y \secudeR x$ exactly when $x \Reduces y$.
 
 We write the relational composition of $\simu{R}$ and $\simu{S}$ as juxtaposition, so that $x \simu{R}\simu{S} z$ holds exactly when there exists a $y$ such that $x \simu{R} y$ and $y \simu{S} z$.
+\change[ap]{In particular, we often use relational composition in the various definitions of bisimilarity that are presented, so that one of the relations is some form of transition or reduction, which are often written as arrows.
+For instance, $x \simu{R}\reduces z$ would hold exactly when there exists a $y$ such that $x \simu{R} y$ and $y \reduces z$.}
 
 \section{Alphabets, words, and languages}
 
@@ -134,7 +136,7 @@ Here, \ac{NFA} bisimilarity is a relation on states, and the observer may provid
   An \emph{\acs{NFA} bisimulation} on $\aut{A}$ is a \emph{symmetric} binary relation on states, $\mathord{\simu{R}} \subseteq Q \times Q$, that satisfies the following conditions.
   \begin{thmdescription}[noitemsep]
   \item[Input bisimulation]
-    If $q \simu{R}\nfareduces[a] s'$, then $q \nfareduces[a]\simu{R} s'$.
+    If $q \simu{R}\nfareduces[a] s'$, then $q \nfareduces[a]\simu{R} s'$.%
     % (See the adjacent \lcnamecref{fig:nfa-bisim:diagrams}.)% 
     \begin{marginfigure}
       \begin{equation*}
@@ -161,6 +163,8 @@ Here, \ac{NFA} bisimilarity is a relation on states, and the observer may provid
       \end{equation*}
       \caption{\Acs*{NFA} bisimilarity, in diagrams}\label{fig:nfa-bisim:diagrams}
     \end{marginfigure}%
+    \footnote[][\baselineskip]{\change[ic]{Recall that we use juxtaposition of relations to denote relational composition, so that, for example, $q \simu{R}\nfareduces[\smash{a}] s'$ holds exactly when there exists a state $s$ such that $q \simu{R} s$ and $s \nfareduces[\smash{a}] s'$.
+    Similarly, $q \simu{R} s \in F$ holds if both $q \simu{R} s$ and $s \in F$ hold.}}
 
   \item[Finality bisimulation]
     If $q \simu{R} s \in F$, then $q \in F$.

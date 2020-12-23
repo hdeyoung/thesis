@@ -185,6 +185,10 @@ In this section, we present the formula-as-process interpretation of focused ord
 More specifically,
 % under this formula-as-process interpretation,
 (positive) atoms, $\p{a}$, may be viewed as messages, and negative propositions, $\n{A}$, as processes that receive and react to those messages.
+\change[ap]{Intuitively, processes have a negative polarity because they wait for an external signal to begin computation.
+Messages have a positive polarity because they exist without external input.
+This kind of external/internal duality is typical of negative and positive propositions.\autocite{Zeilberger:CMU09}}
+
 Ordered contexts, $\np{\octx}$, which consist of negative propositions and (positive) atoms, are then chain-topology run-time configurations of processes and messages.
 And positive propositions, $\p{A}$, which reify ordered contexts as propositions, are process expressions that reify configurations.
 Lastly, but most importantly, the rewriting relation, $\reduces$, is viewed as a reduction semantics for message-passing communication among the processes in a configuration.%
@@ -231,11 +235,11 @@ We will often elide the polarity annotation, writing $\atmL{a}$ and $\atmR{a}$ i
   \n{A} , \n{B} \Coloneqq \p{\atmR{a}} \limp \n{B} \mid \n{B} \pmir \p{\atmL{a}} \mid \n{A} \with \n{B} \mid \top \mid \up \p{A} \mid \n{\defp{p}}
 \end{equation*}%
 %
-\begin{margintable}[-6\baselineskip]
+\begin{margintable}[-0.5\baselineskip]
   \begin{center}
     \begin{tabular}{@{}r@{\enspace}>{\itshape}l@{}}
-      $\p{\atmR{a}} \limp \n{B}$ & receive message $\p{\atmR{a}}$ from the right \\
-      $\n{B} \pmir \p{\atmL{a}}$ & receive message $\p{\atmL{a}}$ from the left \\
+      $\p{\atmR{a}} \limp \n{B}$ & receive message $\p{\atmR{a}}$ from the left \\
+      $\n{B} \pmir \p{\atmL{a}}$ & receive message $\p{\atmL{a}}$ from the right \\
       $\n{A} \with \n{B}$ & nondeterministic branching \\% continue as $\n{A}$ or $\n{B}$ \\
       $\top\hphantom{\n{}}$ & stuck process \\
       $\up \p{A}$ & quoted configuration \\
@@ -315,7 +319,7 @@ This reification is expressed as $\bigfuse \np{\octx} = \p{A}$, as defined in th
   \end{align*}
   \caption{Reifying a configuration as a process}\label{fig:formula-as-process:reify-configuration}
 \end{marginfigure}%
-This operation is the same as the one defined in \cref{fig:ordered-rewriting:polarized-bigfuse}, except that atom directions are preserved.
+This operation \change[ap]{is the same as the one defined in \cref{fig:ordered-rewriting:polarized-bigfuse}}, except that atom directions are preserved.
 
 The propositions $\p{\atmL{a}}$ and $\p{\atmR{a}}$ are the expressions for left- and right-directed messages.
 The proposition $\p{A} \fuse \p{B}$ reifies parallel, end-to-end composition of configurations: $\p{A} \fuse \p{B}$ is now interpreted as the expression for a process that spawns a new process, $\p{A}$, and then continues as $\p{B}$.
@@ -336,7 +340,7 @@ Lastly, the proposition $\dn \n{A}$ is interpreted as the expression for a quote
 \end{margintable}
 
 Notice that there is no propositional connective that corresponds to a \emph{send} operation.
-Sending a message is instead accomplished by spawning a process that is itself only a message: $\p{\atmL{a}} \fuse \p{B}$, $\p{B} \fuse \p{\atmR{a}}$, $\p{\atmR{a}} \fuse \p{B}$, and $\p{B} \fuse \p{\atmL{a}}$ are all possible but built from other propositional forms.
+Sending a message is instead accomplished by spawning a process that is itself only a message: $\p{\atmL{a}} \fuse \p{B}$, $\p{B} \fuse \p{\atmR{a}}$, $\p{\atmR{a}} \fuse \p{B}$, and $\p{B} \fuse \p{\atmL{a}}$ \change[ap]{-- sending to the left, sending to the right, self-sending at the left, and self-sending at the right, respectively --} are all possible but built from other propositional forms.
 This is analogous to the way that the asynchronous $\pi$-calculus sends a message by parallel composition, as in $\bar{x}\langle y\rangle \mid P$.
 Treating send operations this way makes the formula-as-process ordered rewriting framework an asynchronous calculus.
 
@@ -372,7 +376,7 @@ The left-focus rules for the left- and right-handed implications are also revise
   \,,
 \end{inferences}
 which are the derivable from the earlier $\lrule{\limp}$ and $\lrule{\pmir}$ rules, as shown in the adjacent \lcnamecref{fig:formula-as-process:limp-focus}.%
-\begin{marginfigure}
+\begin{marginfigure}[-8.5\baselineskip]
   \begin{gather*}
     \infer[\mathrlap{\lrule{\limp}}]{\lfocus{\atmR{\octx}_L \oc \p{\atmR{a}}}{\p{\atmR{a}} \limp \n{B}}{\atmL{\octx}_R}{\p{C}}}{
       \infer[\jrule{ID}\smash{^{\p{\atmR{a}}}}]{\rfocus{\p{\atmR{a}}}{\p{\atmR{a}}}}{} &
@@ -393,7 +397,7 @@ which are the derivable from the earlier $\lrule{\limp}$ and $\lrule{\pmir}$ rul
 %   \infer[\lrule{\pmir}']{\lfocus{\atmR{\octx}_L}{\n{B} \pmir \atmL{a}}{\atmL{a} \oc \atmL{\octx}_R}{\p{C}}}{
 %     \lfocus{\atmR{\octx}_L}{\n{B}}{\atmL{\octx}_R}{\p{C}}}
 % \end{equation*}
-The other rules for the left-focus judgment remain fundamentally unchanged, save for the fact that the left- and right-hand contexts now contain only atoms of the complementary direction.
+The other rules for the left-focus judgment remain fundamentally unchanged, save for the fact that the left- and right-hand contexts now contain only atoms of the complementary direction.\footnote{\change[ic]{That the left- and right-hand contexts now contain only atoms might seem like a harsh restriction, but these judgments are for focusing.  The rewriting judgment will allow other negative propositions to appear via its compatibility rule.}}
 \end{itemize}
 % \Cref{fig:??} summarizes the revised rules for the right- and left-focus judgments.
 % 
@@ -494,6 +498,8 @@ Formally, this property that outgoing messages cannot be recaptured is establish
 \begin{proof}
   By induction on the structure of the given rewriting sequence, using inversion on the individual rewriting steps.
 \end{proof}
+\noindent
+\change[ap]{In addition, this \lcnamecref{thm:formula-as-process:no-recapture-outputs} shows that no interactions among $\atmL{\octx}_L$, nor among $\atmR{\octx}_R$, are possible.  This is because $\atmL{\octx}_L$ and $\atmR{\octx}_R$ consist only of messages, which are passive and only trigger computation when delivered to processes.}
 
 As a related consequence of these syntactic restrictions, there is no contention for messages.
 Without these restrictions, the above trace could be adapted to one in which a race could arise between two processes contending for the same message:
@@ -595,7 +601,7 @@ In contrast, under an isorecursive treatment, unrolling a coinductively defined 
     \text{($(\n{\defp{p}} \defd \n{A}) \in \orsig$)} &
     \lfocus{\atmR{\octx}_L}{\n{A}}{\atmL{\octx}_R}{_{\orsig} \p{C}}}$}
 
-Because these coinductively defined propositions are not generative, there is not much difference between their equirecursive and isorecursive treatments.\autocite{Amadio+Cardelli:TOPLAS93}
+Because our coinductively defined propositions are \emph{not} generative\footnote[][0.75\baselineskip]{\change[ap]{Generative type abstraction, such as that of ML modules, would ensure that an abstract type is distinguished from its representation -- isomorphic types are not equal.}}, there is not much difference between their equirecursive and isorecursive treatments.\autocite{Amadio+Cardelli:TOPLAS93}
 We choose an equirecursive treatment of definitions simply because the accompanying generous notion of equality helps to minimize the conceptual overhead of coinductively defined propositions.
 % As a simple example, under the equirecursive definition $\n{\defp{p}} \defd \p{\atmR{a}} \limp \up \dn \n{\defp{p}}$, we have the trace
 % \begin{equation*}
@@ -848,7 +854,8 @@ This equality expresses an immediate, or strong, output of messages $\atmL{\octx
 \footnote{It is roughly analogous to $\overset{x\langle y\rangle}{\reduces}$, the $\pi$-calculus's output transition relation.}
 We will sometimes refer to the context $\octx'$ here as the \vocab{continuation context} because it represents the context that remains after the output of $\atmL{\octx}_L$ and $\atmR{\octx}_R$ occurs.
 
-As an example, both $\atmL{a} \oc \atmL{b} \oc \n{C}$ and $\atmL{a} \oc \n{C} \oc \atmL{b}$ output $\atmL{a}$ to the left (and nothing to the right), but more precisely, the former outputs $\atmL{a} \oc \atmL{b}$, whereas the latter does not output $\atmL{b}$ at all.
+As examples, both $\atmL{a} \oc \atmL{b} \oc \n{C}$ and $\atmL{a} \oc \n{C} \oc \atmL{b}$ \change[ap]{immediately} output $\atmL{a}$ to the left (and nothing to the right).
+More precisely, the former \change[ap]{immediately} outputs $\atmL{a} \oc \atmL{b}$, whereas the latter does not \change[ap]{immediately} output $\atmL{b}$ at all.
 
 In addition to immediate, or strong, output transitions, it is also typical in a labeled transition semantics to express eventual, or weak, output transitions.
 A weak output transition consists of finitely many internal transitions, followed by a single strong output transition, along with finitely many internal transitions on the continuation.
@@ -858,6 +865,9 @@ In the $\pi$-calculus, the weak output transition relation is $\mathord{\overset
 In the formula-as-process ordered rewriting framework, a weak output transition could be expressed by $\octx \Reduces \atmL{\octx}'_L \oc \octx'_0 \oc \atmR{\octx}'_R$ and $\octx'_0 \Reduces \octx'$ together -- the context $\octx$ eventually outputs $\atmL{\octx}'_L$ and $\atmR{\octx}'_R$ and eventually arrives at the continuation context $\octx'$.
 Based on \cref{thm:formula-as-process:no-recapture-outputs}, we can more concisely express the same weak output transition as $\octx \Reduces \atmL{\octx}'_L \oc \octx' \oc \atmR{\octx}'_R$.
 This is the form in which we will usually express weak output transitions.
+
+\change[ap]{For example, as we saw above, $\atmL{a} \oc (\atmL{b} \pmir \atmL{b}) \oc \atmL{b}$ does not immediately output $\atmL{a} \oc \atmL{b}$.
+But $\atmL{a} \oc (\atmL{b} \pmir \atmL{b}) \oc \atmL{b}$ does \emph{weakly} output $\atmL{a} \oc \atmL{b}$, by virtue of the rewriting $\atmL{a} \oc (\atmL{b} \pmir \atmL{b}) \oc \atmL{b} \reduces \atmL{a} \oc \atmL{b}$.}
 
 \paragraph*{Input transitions}
 
@@ -873,11 +883,11 @@ In other words, for each such judgment there should be a corresponding reduction
   If $\ireduces{\atmR{\octx}_L \oc ##1 \oc \atmL{\octx}_R}{\octx}{\octx'}$, then $\atmR{\octx}_L \oc \octx \oc \atmL{\octx}_R \reduces \octx'$.
 \end{restatable}
 
-In terms of the judgment's input/output mode, $\octx$ is the sole input to the judgment, whereas it produces the contexts $\atmR{\octx}_L$, $\atmL{\octx}_R$, and $\octx'$ as outputs of the judgments.
+\change[ap]{In terms of a functional reading of the judgment, this judgment is a function on contexts $\octx$ that returns the contexts $\atmR{\octx}_L$, $\atmL{\octx}_R$, and $\octx'$.}\footnote{\change[ap]{Stated in terms of an input/output mode, $\octx$ is the input to the judgment, whereas the input contexts $\atmR{\octx}_L$ and $\atmL{\octx}_R$ and the context $\octx'$ are outputs of the judgment.}}
 Thus, the input transition judgment answers the question \enquote{What input messages suffice for $\octx$ to make a reduction?}
 
 \newthought{As the notation} is intended to suggest, each input transition at its heart derives from focusing on a single negative proposition, $\n{A}$, as captured by the $\jrule{$[]{\reduces}$I}$ rule:%
-\footnote{Notice that it is quite possible in this rule for both $\atmR{\octx}_L$ and $\atmL{\octx}_R$ to be empty and for the judgment to express the input of no messages at all.
+\footnote[][-\baselineskip]{Notice that it is quite possible in this rule for both $\atmR{\octx}_L$ and $\atmL{\octx}_R$ to be empty and for the judgment to express the input of no messages at all.
 But that happens only if $\n{A}$ has an $\up$ shift as its top-level connective.}
 \begin{equation*}
   \infer[\jrule{$[]{\reduces}$I}]{\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\n{A}}{\octx'}}{
@@ -888,12 +898,10 @@ But that happens only if $\n{A}$ has an $\up$ shift as its top-level connective.
 Aside from the change of judgment in the rule's conclusion, this $\jrule{$[]{\reduces}$I}$ rule is identical to the core $\jrule{$\reduces$I}$ rule for reduction.
 How can we claim that the input transition judgment is distinct from the reduction judgment?
 
-The difference between the judgments is twofold.
-First, and most importantly, this input transition differs from a reduction in terms of its input/output mode.
+The difference is that, unlike the reduction judgment, the input transition judgment is enriched with several other rules.%
+\footnote{Another difference is the input/output mode of this input transition, as compared to that of a reduction.
 In a reduction $\atmR{\octx}_L \oc \n{A} \oc \atmL{\octx}_R \reduces \np{\octx'{}}$, the entire $\atmR{\octx}_L \oc \n{A} \oc \atmL{\octx}_R$ context is treated as an input to the reduction judgment, and $\octx'$ is treated as an output made by the judgment.
-In the input transition $\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\n{A}}{\np{\octx'{}}}$, on the other hand, only the proposition $\n{A}$ is treated as an input to the judgment, and the contexts $\atmR{\octx}_L$, $\atmL{\octx}_R$, and $\np{\octx'{}}$ are all treated as outputs made by the input transition judgment.
-
-The second difference is that, unlike the reduction judgment, the input transition judgment is enriched with several other rules.
+In the input transition $\ireduces{\atmR{\octx}_L \oc #1 \oc \atmL{\octx}_R}{\n{A}}{\np{\octx'{}}}$, on the other hand, only the proposition $\n{A}$ is treated as an input to the judgment, and the contexts $\atmR{\octx}_L$, $\atmL{\octx}_R$, and $\np{\octx'{}}$ are all treated as outputs made by the input transition judgment.}
 In addition to the core input transition rule, $\jrule{$[]{\reduces}$I}$, other compatibility rules exist.
 
 Two of these rules allow the external inputs expected by an input transition to be (partially) satisfied internally by the context itself.
@@ -1198,12 +1206,14 @@ For a set of constraints to be satisfiable, three conditions must hold.
   There is, however, no definition for $\defp{b}$ that satisfies this constraint because the formula-as-process framework requires that implications have atomic premises of \emph{complementary} direction: a process can only receive messages intended for itself.
 \end{itemize}
 
+\change[ic]{As an example, these observations show that a string rewriting axiom $a \wc a \reduces w'$ has no valid choreography -- if $a$ takes a process role, then $\defp{a} \oc \defp{a} \reduces \theta(w')$ violates the second observation; if $a$ takes a message role, then $\atmL{a} \oc \atmL{a} \reduces \theta(w')$ or $\atmR{a} \oc \atmR{a} \reduces \theta(w')$ violates the first observation.}
+
 More generally, these observations suggest that only constraints of the form $\ereduces[\orsig]{\atmR{\octx}_L \oc \defp{a} \oc \atmL{\octx}_R}{\octx'}$ are satisfiable, and that these constraints are induced by axioms of the form $w_1 \wc a \wc w_2 \reduces w'$.
 In the following \lcnamecref{sec:formula-as-process:choreograph-formal}, we leverage these ideas to present a more formal description of the above procedure for choreographing string rewriting specifications within the formula-as-process ordered rewriting framework.
 
 \subsection{A formal description of choreographing specifications}\label{sec:formula-as-process:choreograph-formal}\label{sec:choreographies:choreograph-formal}
 
-To give a formal description of choreographing specifications, we define a judgment $\chorsig{\theta}{\srsig}{\orsig}$ that, when given a string rewriting specification $(\sralph, \srsig)$ and a role assignment $\theta$, yields formula-as-process definitions $\orsig$ that make string rewriting under $\srsig$ and formula-as-process ordered rewriting under $\orsig$ bisimilar, if such definitions exist:
+To give a formal description of choreographing specifications, we define a judgment\footnote{\change[ic]{We will frequently omit the string rewriting alphabet $\sralph$ from this judgment, as the intended alphabet is always clear from context.}} $\chorsig{\theta}{_{\sralph} \srsig}{\orsig}$ that, when given a string rewriting specification $(\sralph, \srsig)$ and a role assignment $\theta$, yields formula-as-process definitions $\orsig$ that make string rewriting under $\srsig$ and formula-as-process ordered rewriting under $\orsig$ bisimilar, if such definitions exist:
 % \begin{equation*}
 %   ??
 % \end{equation*}
@@ -1240,7 +1250,7 @@ also relies on an auxiliary elaboration judgment, $\qimp{\atmR{\octx}_L}{\up \p{
 % Before giving the rules for the principal judgment, we will [...].
 
 \newthought{The auxiliary judgment} $\qimp{\atmR{\octx}_L}{\up \p{A}}{\atmL{\octx}_R}{\n{B}}$ elaborates the quasi-propo\-si\-tion $\atmR{\octx}_L \limp \up \p{A} \pmir \atmL{\octx}_R$ into a well-formed proposition $\n{B}$ by nondeterministically abstracting one-by-one from either the left or right contexts.%
-\footnote{This procedure could be made deterministic by preferring one side over the other, but we refrain from doing so because the choice of side to prefer is completely arbitrary.}
+\footnote[][-2.25\baselineskip]{This procedure could be made deterministic by preferring one side over the other, but we refrain from doing so because the choice of side to prefer is completely arbitrary.}
 This proposition $\n{B}$ is semantically equivalent to the quasi-proposition $\atmR{\octx}_L \limp \up \p{A} \pmir \atmL{\octx}_R$ in the sense that the two intuitively satisfy the \enquote{same} left-focus judgments:
 % $\n{B}$ satisfies $\atmR{\octx}_L \oc \n{B} \oc \atmL{\octx}_R \reduces \octx'$ if, and only if, $\rfocus{\octx'}{\p{A}}$.
 We would expect the quasi-proposition to satisfy $\lfocus{\atmR{\octx}_L}{\atmR{\octx}_L \limp \up \p{A} \pmir \atmL{\octx}_R}{\atmL{\octx}_R}{\p{A}}$, and indeed, when $\qimp{\atmR{\octx}_L}{\up \p{A}}{\atmL{\octx}_R}{\n{B}}$, we have
@@ -2011,7 +2021,7 @@ Similar reasoning allows us to construct coinductive definitions for $\defp{b}_0
 %
 \begin{table*}[tbp]
   \renewcommand{\arraystretch}{1.2}
-  \begin{tabular}{@{}l@{\qquad}l@{\qquad}l@{}}
+  \hfill\begin{tabular}{@{}l@{\qquad}l@{\qquad}l@{}}
     \toprule
     \emph{Axioms, $\srsig$} &
     \emph{Rewriting constraints on $\orsig$} & \emph{Solution, $\orsig$}
@@ -2323,7 +2333,7 @@ In either case, the constraints are unsatisfiable because one premise in each gr
 The two alternatives are broadly similar to the object-oriented and functional choreographies, with two exceptions: the unary constructors $z$ and $s$ are treated as processes, not messages; and $b'_0$ is treated as a message, not a process.
 Instead of responding to a decrement with either a $\atmR{z}$ or $\atmR{s}$ message, these choreographies transform the binary counter into head-unary form where the head is a process -- either $\defp{z}$ or $\defp{s}$.
 
-One problem with these choreographies, however, is that, without a $\atmR{z}$ or $\atmR{s}$ response message, there is no way to observe the counter's state.
+One problem with these \change[ic]{alternative} choreographies, however, is that, without a $\atmR{z}$ or $\atmR{s}$ response message, there is no way to observe the counter's state.
 Under these choreographies, all counters are, in some sense, equivalent because they can't be distinguished by any of the nonexistent observations.
 We will return to the idea of observational equivalence in the following \lcnamecref{ch:ordered-bisimilarity}.
 
@@ -2361,6 +2371,7 @@ We will return to the idea of observational equivalence in the following \lcname
     \\ \addlinespace \bottomrule
   \end{tabular}
   \caption[][1.25\baselineskip]{Two other choreographies for the binary counter specification}
+  \forcerectofloat
 \end{table*}
 
 
@@ -2435,7 +2446,7 @@ Solving these constraints for $\defp{q}$, we obtain the definition
 \end{gather*}
 As a concrete example, the adjacent \lcnamecref{fig:formula-as-process:nfa-example}
 %
-\begin{marginfigure}
+\begin{marginfigure}[-1.5\baselineskip]
   \centering
   \begin{tikzpicture}
     \graph [automaton] {
@@ -2453,7 +2464,7 @@ As a concrete example, the adjacent \lcnamecref{fig:formula-as-process:nfa-examp
   \begin{equation*}
     \orsig =
     \begin{lgathered}[t]
-      \bigl(\defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0) \with (\atmR{b} \limp (\up \dn \defp{q}_0 \with \up \dn \defp{q}_1)) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
+      \bigl(\defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0) \begin{array}[t]{@{{}\with{}}l@{}} (\atmR{b} \limp (\up \dn \defp{q}_0 \with \up \dn \defp{q}_1)) \\ (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \end{array} \\
       \bigl(\defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symacc})\bigr) \,, \\
       \bigl(\defp{q}_2 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr)
     \end{lgathered}
@@ -2578,7 +2589,7 @@ Specifically, let $\theta'$ be%
         {} \union \Set{ \symacc \mapsto \atmR{\symacc} , \symrej \mapsto \atmR{\symrej} }
       \end{lgathered}
 $}
-the role assignment that maps each input symbol $a \in \ialph$ and the end-of-word marker, $\eow$, to coinductively defined propositions, $\defp{a}$ and $\defp{\eow}$, respectively; each state $q \in Q$ to a left-directed message, $\atmL{q}$; and the rejection symbol, $\symrej$, to a right-directed message, $\atmR{\symrej}$.
+the role assignment that maps each input symbol $a \in \ialph$ and the end-of-word marker, $\eow$, to coinductively defined propositions, $\defp{a}$ and $\defp{\eow}$, respectively; each state $q \in Q$ to a left-directed message, $\atmL{q}$; and the \change[ic]{acceptance and} rejection symbols, $\symacc$ and $\symrej$, to right-directed messages, \change[ic]{$\atmR{\symacc}$ and} $\atmR{\symrej}$.
 
 Under the role assignment $\theta'$, the axioms in $\srsig$ that mention $a$ and $\eow$ in their premises induce the rewritings
 \begin{equation*}
@@ -2718,7 +2729,7 @@ The equirecursive treatment of coinductively defined propositions leads to a qui
   \begin{equation*}
     \orsig =
     \begin{lgathered}[t]
-      \bigl(\defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0) \with (\atmR{b} \limp (\up \dn \defp{q}_0 \with \up \dn \defp{q}_1)) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
+      \bigl(\defp{q}_0 \defd (\atmR{a} \limp \up \dn \defp{q}_0) \begin{array}[t]{@{{}\with{}}l@{}} (\atmR{b} \limp (\up \dn \defp{q}_0 \with \up \dn \defp{q}_1)) \\ (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \end{array} \\
       \bigl(\defp{q}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symacc})\bigr) \,, \\
       \bigl(\defp{q}_2 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symrej})\bigr) \,, \\
       \bigl(\defp{s}_1 \defd (\atmR{a} \limp \up \dn \defp{q}_2) \with (\atmR{b} \limp \up \dn \defp{q}_2) \with (\atmR{\eow} \limp \up \atmR{\symacc})\bigr)

@@ -52,10 +52,11 @@ In addition, the embedding $\trconf{}$ ought to be a monoid homomorphism from pr
 \begin{equation*}
   \begin{aligned}
     \trconf{\cnf_1 \cc \cnf_2} &= \trconf{\cnf_1} \oc \trconf{\cnf_2} \\
-    \trconf{\cnfe} &= (\octxe)
+    \trconf{\cnfe} &= (\octxe) \\
+    \trconf{P} &=
   \end{aligned}
 \end{equation*}
-with a clause for $\trconf{P}$ that remains to be filled in.
+with a clause for $\trconf{P}$ that \change[ap]{remains to be filled in}.
 
 By varying how that $\trconf{P}$ clause is filled in and whether we are working with weak focusing or full focusing (hereafter \emph{strong} focusing), we will arrive at three closely related embeddings: a weakly focused, strongly bisimilar embedding~\parencref{sec:embed:weak-focused-strong-bisim}; a strongly focused, strongly bisimilar embedding~\parencref{sec:embed:strong-focused-strong-bisim}; and a strongly focused, weakly bisimilar embedding~\parencref{sec:embed:strong-focused-weak-bisim}.
 Of these three embeddings, we prefer the first and last because they most directly expose an appealing correspondence between process constructors and logical connectives.
@@ -353,10 +354,10 @@ which satisfies $\embed{\trproc{\spawn{P_1}{P_2}}} \reduces \embed{\trproc{P_1}}
 Using such a composition via $\trconf{P} = \embed{\trproc{P}}$ would turn $\trconf{}$ into a strongly bisimilar embedding of process configurations within the \emph{strongly} focused for\-mu\-la-as-process ordered rewriting framework.
 (For a definition of the embedding for process definitions, see \cref{fig:process-embedding:full-focus-strong-bisim}.)
 %
-\begin{marginfigure}[-0.05\baselineskip]
+\begin{marginfigure}[-13.5\baselineskip]
   \begin{align*}
-    \trconf{\cnfe} &= (\octxe) \\
     \trconf{\cnf_1 \cc \cnf_2} &= \trconf{\cnf_1} \oc \trconf{\cnf_2} \\
+    \trconf{\cnfe} &= (\octxe) \\
     \trconf{P} &= \embed{\trproc{P}}
   %
   \shortintertext{and}
@@ -388,10 +389,22 @@ Using such a composition via $\trconf{P} = \embed{\trproc{P}}$ would turn $\trco
   %   \embed{\trproc{\selectL{\kay}}} &= \atmL{\kay}
   %   \\
   %   \embed{\trproc{\defp{p}}} &= \n{\defp{p}}
-  \end{align*}
-  where $\trproc{P}$ is defined exactly as in \cref{fig:process-embedding:weak-focus-strong-bisim}.
+  \intertext{where $\trproc{P}$ is defined exactly as in \cref{fig:process-embedding:weak-focus-strong-bisim}:}
   %
-  \vspace{.75\baselineskip}
+    \trproc{\spawn{P_1}{P_2}}
+      &= \trproc{P_1} \fuse \trproc{P_2} \\
+    \trproc{\fwd} &= \one
+    \\
+    \trproc{\selectR{\kay}} &= \atmR{\kay} \\
+    \trproc{\caseL[\ell \in L]{\ell => P_{\ell}}}
+      &= \dn {\textstyle \bigwith_{\ell \in L}(\atmR{\ell} \limp \up \trproc{P_{\ell}})}
+    \\
+    \trproc{\caseR[\ell \in L]{\ell => P_{\ell}}}
+      &= \dn {\textstyle \bigwith_{\ell \in L}(\up \trproc{P_{\ell}} \pmir \atmL{\ell})} \\
+    \trproc{\selectL{\kay}} &= \atmL{\kay}
+    \\
+    \trproc{\defp{p}} &= \dn \n{\defp{p}}
+  \end{align*}
   %
   \caption{A \emph{strongly} bisimilar embedding of process configurations within the \emph{strongly} focused formula-as-process ordered rewriting framework}\label{fig:process-embedding:full-focus-strong-bisim}
 \end{marginfigure}%
@@ -411,19 +424,47 @@ Without changing the definition of $\trproc{}$ at all, let us define $\trconf{}$
   \trconf{P} &= \octx \text{ where $\rfocus{\octx}{\trproc{P}}$}
   \,.
 \end{align*}
+\change[ap]{Notice that $\octx$ is unique, based on properties of the right focus judgment~(see \cref{ch:choreographies}).}
 %
 \begin{marginfigure}[10\baselineskip]
   \begin{align*}
     \trconf{\cnf_1 \cc \cnf_2} &= \trconf{\cnf_1} \oc \trconf{\cnf_2} \\
     \trconf{\cnfe} &= (\octxe) \\
     \trconf{P} &= \octx \text{ where $\rfocus{\octx}{\trproc{P}}$}
-  \end{align*}
-  and where $\trsig{\sig}$ and $\trproc{P}$ are defined exactly as in \cref{fig:process-embedding:weak-focus-strong-bisim}.
+  \intertext{and where $\trsig{\sig}$ and $\trproc{P}$ are defined exactly as in \cref{fig:process-embedding:weak-focus-strong-bisim}:}
   %
-  \vspace{.75\baselineskip}
+    &\mathclap{\begin{aligned}
+          \MoveEqLeft[.5]
+          \trsig{\sig, (\defp{p} \defd P)} \\
+            &= \trsig{\sig} , \left(\n{\defp{p}} \defd
+                 \begin{cases*}
+                   \n{A} & if $\trproc{P} = \dn \n{A}$ \\[-0.3\baselineskip]
+                   \up \trproc{P} & otherwise
+                 \end{cases*}
+               \right)
+        \end{aligned}}
+    \\
+    \trconf{\sige} &= (\orsige)
+  %
+  \shortintertext{and}
+  %
+    \trproc{\spawn{P_1}{P_2}}
+      &= \trproc{P_1} \fuse \trproc{P_2} \\
+    \trproc{\fwd} &= \one
+    \\
+    \trproc{\selectR{\kay}} &= \atmR{\kay} \\
+    \trproc{\caseL[\ell \in L]{\ell => P_{\ell}}}
+      &= \dn {\textstyle \bigwith_{\ell \in L}(\atmR{\ell} \limp \up \trproc{P_{\ell}})}
+    \\
+    \trproc{\caseR[\ell \in L]{\ell => P_{\ell}}}
+      &= \dn {\textstyle \bigwith_{\ell \in L}(\up \trproc{P_{\ell}} \pmir \atmL{\ell})} \\
+    \trproc{\selectL{\kay}} &= \atmL{\kay}
+    \\
+    \trproc{\defp{p}} &= \dn \n{\defp{p}}
+  \end{align*}
   %
   \caption{A \emph{weakly} bisimilar embedding of process configurations within the \emph{strongly} focused formula-as-process ordered rewriting framework}\label{fig:process-embedding:strong-focus-weak-bisim}
-\end{marginfigure}
+\end{marginfigure}%
 %
 Decomposing the process expression $\spawn{P}{Q}$ now takes no time at all in its embedded form:
 \begin{equation*}
@@ -640,7 +681,8 @@ In summary, we have three distinct embeddings of process expressions and configu
     strongly focused & weakly bisimilar & $\trconf{P} = \octx$ where $\rfocus{\octx}{\trproc{P}}$
     \\ \bottomrule
   \end{tabular}
-  \caption[][-0.25\baselineskip]{A summary of the process embeddings}\label{tab:embedding-summary}
+  \caption[][-0.25\baselineskip]{A summary of the process embeddings}\label{tab:embedding-summary}%
+  \forcerectofloat%
 \end{table}
 Focusing, be it weak or strong, is essential to these embeddings.
 If the unfocused form of ordered rewriting were used, no bisimulation along these lines appears to be possible, not even a weak one.
@@ -787,24 +829,27 @@ But the question is, can the image of \emph{well-typed} process expressions unde
 \noindent
 In the judgment $\slof{A |- \p{A}_1 : B}$ and this \lcnamecref{thm:embed:type-props}, $A$ and $B$ are (Curry--Howard interpretations of) singleton propositions that function as session types, where\-as $\p{A}_1$ is a formula-as-process positive ordered proposition that functions as an embedded process expression.
 
-To construct such a type system, we can simply apply the embedding to session typing rules for process expressions.
-For instance, the typing rule for a process expression $\spawn{P}{Q}$ suggests that ordered conjunctions $\p{A}_1 \fuse \p{A}_2$ be typed with a cut-like rule, as shown in the adjacent \lcnamecref{fig:embed-spawn-typing}.
-\begin{marginfigure}
-\begin{gather*}
+\change[ap]{To construct} \change[cs]{such a type system}, we can simply apply the embedding to session typing rules for process expressions.
+For instance, take the session typing rule for a process expression $\spawn{P}{Q}$.
+If we apply the embedding to that rule, we arrive at:
+\begin{equation*}
   \left\lbrack\,% .\trproc{%
     \raisebox{-0.375\baselineskip}{%
-      \infer{\slof{A |- \spawn{P}{Q} : C}}{
+      \infer[\jrule{CUT}\smash{^B}]{\slof{A |- \spawn{P}{Q} : C}}{
         \slof{A |- P : B} & \slof{B |- Q : C}}}\,%
   \right\rbrack% }
-  \\\rightsquigarrow\\
-  \infer{\slof{A |- \trproc{\spawn{P}{Q}} = \trproc{P} \fuse \trproc{Q} : C}}{
+  \rightsquigarrow
+  \infer{\slof{A |- \begin{array}[t]{@{}c@{}}\trproc{\spawn{P}{Q}}\\=\\\trproc{P} \fuse \trproc{Q}\end{array} : C}}{
     \slof{A |- \trproc{P} : B} & \slof{B |- \trproc{Q} : C}}
-\shortintertext{suggests}
+\end{equation*}
+This embedded rule suggests that ordered conjunctions $\p{A}_1 \fuse \p{A}_2$ be typed with a cut-like rule:
+\begin{equation*}
+  \infer{\slof{A |- \begin{array}[t]{@{}c@{}}\trproc{\spawn{P}{Q}}\\=\\\trproc{P} \fuse \trproc{Q}\end{array} : C}}{
+    \slof{A |- \trproc{P} : B} & \slof{B |- \trproc{Q} : C}}
+  \rightsquigarrow
   \infer[\jrule{CUT}\smash{^B}]{\slof{A |- \p{A}_1 \fuse \p{A}_2 : C}}{
     \slof{A |- \p{A}_1 : B} & \slof{B |- \p{A}_2 : C}}
-\end{gather*}
-\caption{The embedding suggests a session-typing rule for ordered conjunction.}\label{fig:embed-spawn-typing}
-\end{marginfigure}%
+\end{equation*}
 %
 By this procedure, we can also reverse-engineer session-typing rules for the other polarized positive propositions from the session-typing rules for process expressions.
 We arrive at:
@@ -827,12 +872,13 @@ We arrive at:
     \text{($\kay \in L$)}}
   \\
   \infer[]{\slof{A |-_{\orsig} \dn \n{\defp{p}} : B}}{
-    \text{($\slof{A |- \n{\defp{p}} \defd \n{A}_0 : B}) \in \orsig$)}}
+    \text{($(\slof{A |- \n{\defp{p}} \defd \n{A}_0 : B}) \in \orsig$)}}
 \end{inferences}
 
 At first, these rules may be a bit startling.
 It's especially surprising to see the proposition $\p{A}_1 \fuse \p{A}_2$ typed without splitting the context and the proposition $\one$ typed with a nonempty context to its left.
 But once viewed from the formula-as-process perspective, these rules become quite natural: $\p{A}_1 \fuse \p{A}_2$ is a composition of process expressions and cut-as-composition is familiar; and $\one$ is a forwarding process, so using the identity rule is not that surprising after all.
+\change[ap]{Moreover, just as identity serves as the unit of cut, so does $\one$ serve as the unit of $\fuse$.}
 
 Now we can prove the adequacy of these typing rules for positive propositions.
 %
@@ -854,6 +900,7 @@ Even so, the \lcnamecref{thm:embed:type-props} is quite strong.
 As a final remark, we would like to point out that the $0$-ary forms of the above $\lrule{\plus}$ and $\rrule{\with}$ rules need careful consideration.
 Because we identify a $0$-ary alternative conjunction with $\top$, the $0$-ary forms of these rules can lead to a system in which two different typings of $\top$ are possible: $\slof{\zero |- \top : C}$ and $\slof{A |- \top : \top}$.
 For this reason, we disallow $0$-ary alternative conjunctions and require that the label set $L$ is nonempty.
+\change[ap]{Disallowing $0$-ary alternative conjunctions is not a significant sacrifice, for empty label sets $L$ are extremely unusual in practice.}
 
 \newthought{Coinductively defined propositions} can also be given session-typing rules.
 These take the form of rules verifying that a collection of mutually coinductive definitions is well-typed.

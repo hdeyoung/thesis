@@ -65,7 +65,7 @@ We envision a process chain, $\chn$, as a (possibly empty) finite sequence of pr
 As depicted in the adjacent \lcnamecref{fig:singleton-processes:chain-topology},%
 %
 \begin{marginfigure}
-  \centering
+  % \centering
   \begin{tikzcd}[
     ampersand replacement = \&,
     execute at end picture = {
@@ -75,11 +75,11 @@ As depicted in the adjacent \lcnamecref{fig:singleton-processes:chain-topology},
         {};
     },
   ]
-    {} \rar[dash] \&
+    |[coordinate]| \rar[dash] \&
     |[circle, draw, alias=P_1]| P_1 \rar[dash][description, text height=1ex]{\displaystyle\dotsb} \&[1.2em]
     |[circle, draw, alias=P_i]| P_i \rar[dash][description, text height=1ex]{\displaystyle\dotsb} \&[1.2em]
     |[circle, draw, alias=P_n]| P_{\mathrlap{n}\phantom{i}} \rar[dash] \&
-    {}
+    |[coordinate]|
   \end{tikzcd}
   % \begin{tikzpicture}
   %   \graph [math nodes, nodes={circle, draw}] {
@@ -120,7 +120,7 @@ As finite sequences of processes $P_i$, chains form a free monoid:
   \chn,\chn* \Coloneqq (\chn_1 \cc \chn_2) \mid (\chne) \mid P
   \,,
 \end{equation*}
-where $\cc$ denotes end-to-end composition of chains and $(\chne)$ denotes the empty chain.
+where $\cc$ denotes \change[ap]{left-to-right}, end-to-end composition of chains\footnote{\change[ap]{Specifically, the right endpoint of $\chn_1$ will be attached to the left endpoint of $\chn_2$, with the left endpoint of $\chn_1$ and right endpoint of $\chn_2$ becoming the respective left and right endpoints of $\chn_1 \cc \chn_2$.}} and $(\chne)$ denotes the empty chain.
 As a monoid, chains are subject to associativity and unit laws (see adjacent \lcnamecref{fig:chains:monoid-laws}).
 \begin{marginfigure}
 \begin{gather*}
@@ -434,7 +434,8 @@ The empty chain offers a service $A$ to its right-hand client by using the servi
 Save for the contrasting $\slcof{|-}$ turnstile and the empty chain in place of a forwarding process expression, this mirrors the $\jrule{ID}\smash{^A}$, the identity rule for process expressions.
 We will see shortly that this is not a coincidence.
 
-Finally, a parallel composition of chains, $\chn_1 \cc \chn_2$, is well-typed only if $\chn_1$ offers the same service that $\chn_2$ uses, otherwise communication between $\chn_1$ and $\chn_2$ would be mismatched.
+Finally, a parallel composition of chains, $\chn_1 \cc \chn_2$, is well-typed only if $\chn_1$ \emph{offers} the same service that $\chn_2$ \emph{uses}, otherwise communication between $\chn_1$ and $\chn_2$ would be mismatched.
+In other words, because the right-hand end of $\chn_1$ connects to the left-hand end of $\chn_2$, the two chains must use the same protocol at those ends.
 This condition is reflected in a cut principle for the session-typing judgment:
 \begin{equation*}
   \infer[\jrule{C-CUT}\smash{^B}]{\slcof{A |- \chn_1 \cc \chn_2 : C}}{
@@ -485,7 +486,8 @@ This condition is reflected in a cut principle for the session-typing judgment:
 %
 % The notation $\chn_1 \cc \chn_2$ is intended to recall parallel composition of processes, $P_1 \mid P_2$, in the $\pi$-calculus.
 % However, unlike $\pi$-calculus composition, parallel composition of chains is \emph{not} commutative because the sequential order of processes within a chain matters.
-%
+(The left-hand end of $\chn_1$ and the right-hand end of $\chn_2$ communicate with their respective surroundings, so those types are unrelated.)
+
 Once again, there are strong similarities to a process expression -- $\spawn{P_1}{P_2}$ and its $\jrule{CUT}^B$ session-typing rule, in this case.
 We can make these similarities explicit by defining a homomorphism, $\pf*{-}$, from chains to process expressions:
 \begin{marginfigure}
@@ -650,6 +652,7 @@ In particular, the distinction helps to relate this process interpretation of si
   \end{inferences}
   \caption{Well-typed process expressions and process chains}
   \label{fig:process-chains:session-typed-summary}
+  \forceversofloat
 \end{figure}
 
 % \clearpage
@@ -927,7 +930,7 @@ This justifies an \emph{equi}\-recursive treatment of types in which type defini
 
 These mutually coinductive definitions are collected into signatures $\sig$.
 To verify that the definitions are well-formed, we use a judgment $\vdash_{\sig'} \sig$, where the definitions $\sig$ are judged according to the definitions $\sig'$.
-The mutually coinductive knot can be tied by using $\vdash_{\sig} \sig$ at the top level: $\sig$ is well-formed if $\vdash_{\sig} \sig$ holds.
+The mutually coinductive knot can be tied by using $\vdash_{\sig} \sig$ at the top level: $\sig$ is well-formed if $\vdash_{\sig} \sig$ holds \change[ap]{with a finite, non-circular proof}.
 \begin{equation*}
   \infer{\vdash_{\sig'} (\sige)}{}
   \qquad
@@ -936,7 +939,7 @@ The mutually coinductive knot can be tied by using $\vdash_{\sig} \sig$ at the t
 \end{equation*}
 
 All of the process expression typing judgments are indexed by a well-formed signature $\sig$.
-A call to $\defp{p}$ has type $\slof{A |- C}$ if $\slof{A |- \defp{p} : C} \defp P$ is listed in $\sig$:
+A call to $\defp{p}$ has type $\slof{A |- C}$ if $\slof{A |- \defp{p} : C} \defd P$ is listed in $\sig$:
 \begin{equation*}
   \infer{\slof{A |-_{\sig} \defp{p} : C}}{
     (\slof{A |- \defp{p} : C} \defd P) \in \sig}

@@ -5,7 +5,7 @@
 \documentclass[
   tufte-book,
   notoc,
-% symmetric,
+  symmetric,
   biblatex={
     citestyle=authoryear-comp,
     % citestyle=authortitle-icomp,
@@ -27,6 +27,9 @@
 
 \input{preamble}
 
+\geometry{letterpaper,left=1.25in,top=1in,headsep=2\baselineskip,textwidth=26pc,marginparsep=2pc,marginparwidth=12pc,textheight=44\baselineskip,headheight=\baselineskip}
+
+
 \usepackage{cmu-titlepage2}
 
 
@@ -40,12 +43,13 @@
 \begin{document}
 
 \frontmatter
+% \pagenumbering{roman}
 % \pagestyle{empty}
 
 \title{Session-Typed Ordered Logical Specifications}
 
 \author{Henry DeYoung}
-\date{September 29, 2020}
+\date{December 2020}
 \Year{2020}
 \trnumber{CMU-CS-20-133}
 
@@ -67,7 +71,18 @@
 
 \maketitle
 
-% \pagestyle{plain}
+\cleardoublepage
+\begin{center}
+\vspace*{2in}
+\textit{For my parents and brother}
+\end{center}
+
+\makeatletter
+\clearpage
+\thispagestyle{empty}
+\@ifundefined{@keywords}{}{\vspace*{\fill} \noindent{\bf Keywords:} \@keywords}
+\cleardoublepage
+\makeatother
 
 \begin{abstract}
 \normalsize
@@ -86,9 +101,25 @@ Ultimately, the message-passing processes can be faithfully embedded within the 
 Perhaps surprising is that, because the embedding is left-invertible, we can also identify fairly broad conditions under which local, process implementations can be \emph{extracted} from global, message-passing ordered rewriting specifications.
 \end{abstract}
 
-% \begin{acknowledgments}
-%   Fill this in
-% \end{acknowledgments}
+\begin{acknowledgments}
+  \normalsize
+  First, and foremost, the debt of gratitude that I owe Frank Pfenning cannot be overstated.
+  Frank has been such a wonderful advisor and mentor to me throughout my time here at CMU, always patient and kind.
+  Thank you, Frank, for inviting me on many a hike through the woods of proof theory and programming languages with you.
+
+  I also wish to thank the members of my thesis committee -- Iliano Cervesato, Bob Harper, Andr\'{e} Platzer, Simon Gay, and Carsten Sch\"{u}rmann -- for being so generous with their time in talking with me and for their detailed feedback on my thesis document.  
+
+  I am also grateful to my co-authors and the other people with whom I've had invaluable discussions over the years:
+  Stephanie Balzer, Lu\'{\i}s Caires, Ankush Das, Anupam Datta, Farzaneh Derakhshan, Deepak Garg, Dilsun K\i rl\i\ Kaynar, Limin Jia, Andreia Mordido, Klaas Pruiksma, Rob Simmons, and Bernardo Toninho.
+
+  Also, I would like to thank to Mark Stehlik for guiding me toward logic and programming languages.
+  What still impresses me even now, all these years out of undergrad, is how he was able to recognize that it was just the field for me -- before I had any inkling of that myself.
+
+  I am also thankful for everyone over the years who has helped me with scribing and typing my school work.
+
+  Last, but most importantly, I want to thank my parents and my brother for all their love, care, and support through all these nearly 36 years -- not through only the good times, but most especially through the hard times.
+  I love you.
+\end{acknowledgments}
 
 \oddsidemargin=\saveoddsidemargin
 \evensidemargin=\saveevensidemargin
@@ -98,6 +129,7 @@ Perhaps surprising is that, because the embedding is left-invertible, we can als
 % \listoftables
 
 \mainmatter
+% \pagenumbering{arabic}
 
 % \pagestyle{fancy}
 
