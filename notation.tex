@@ -1,4 +1,23 @@
 \chapter{List of notation}
 
+\noindent\setlength{\extrarowheight}{0.75ex}
 \begin{tabular}{@{}lll@{}}
-  
+  $q \nfareduces[a] q'$ & \ac*{NFA} transition & \Cref{ch:automata} \\
+  $q \asim q'$ & \ac*{NFA} bisimilarity & \Cref{ch:automata} \\
+  $\octx \vdash A$ & Ordered sequent & \Cref{ch:ordered-logic} \\
+  $w \reduces w'$ & String rewriting &\Cref{ch:string-rewriting} \\
+  $\octx \reduces \octx'$ & Ordered rewriting & \Cref{ch:ordered-rewriting} \\
+  $\rfocus{\octx}{\p{A}}$ & Right focus &\Cref{ch:ordered-rewriting,ch:choreographies} \\
+  $\lfocus{\octx_L}{\n{A}}{\octx_R}{\p{C}} $ & Left focus & \Cref{ch:ordered-rewriting,ch:choreographies} \\
+  $\ireduces{\atmR{\octx}_L\oc #1 \oc \atmL{\octx}_R}{\octx}{\octx'}$ & Input transition & \Cref{ch:choreographies} \\
+  $\chorsig{\theta}{_{\sralph} \srsig}{\orsig}$ & Choreography & \Cref{ch:choreographies} \\
+  $\qimp{\atmR{\octx}_L}{\up \p{A}}{\atmL{\octx}_R}{\n{B}}$ & Quasi-implication & \Cref{ch:choreographies} \\
+  $\octx \osim \lctx$ & Ordered rewriting bisimilarity & \Cref{ch:ordered-bisimilarity} \\
+  $A \vdash B$ & Singleton sequent & \Cref{ch:singleton-logic} \\
+  $\cnf \reduces \cnf'$ & Process configuration reduction & \Cref{ch:process-chains} \\
+  $A \vdash P : B$ & Process expression typing & \Cref{ch:process-chains} \\
+  $A \Vdash \cnf : B$ & Process configuration typing & \Cref{ch:process-chains} \\
+  $A \vdash \p{A} : B$ & Proposition typing & \Cref{ch:correspond} \\
+  $A \Vdash \octx : B$ & Ordered context typing & \Cref{ch:correspond}
+\end{tabular}
+\setlength{\extrarowheight}{0pt}
